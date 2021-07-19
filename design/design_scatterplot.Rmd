@@ -1,0 +1,289 @@
+---
+title: "Scatterplot module design" 
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+source("https://raw.github.roche.com/gist/sabanesd/0e839ca7d4920fab342d8ed4b9d668fc/raw/eeaf752448e1b07641cc0c2a3af2172af7b99c94/install_nest.R")
+install_nest("teal", "1185_dataset_specific_filter_panel")
+
+library(teal)
+library(teal.devel)
+library(hermes)
+```
+
+## Scatterplot module design
+
+We want to design a simple scatterplot teal module.
+
+## Example data
+
+```{r}
+MAE <- multi_assay_experiment # from hermes
+mae <- dataset("MAE", MAE)
+
+data <- teal_data(mae) 
+```
+
+
+## Plot function
+
+In order to test the plotting separately, we write a separate function for the plot.
+This takes the SE object, the name of the assay, the optional facet variable, and the names of the x and y variables which are genes, and produces the ggplot.
+
+Note: this is similar to https://github.roche.com/EDISNHL/dashdis/blob/master/R/draw_scatterplot.R
+so we can look into that repo to get ideas.
+
+```{r}
+is.blank <- function(x) identical(x, "")
+
+library(assertthat)
+draw_scatterplot <- function(object, assayname, facetvar, xvar, yvar) {
+  # browser()
+  assert_that(
+    is(object, "SummarizedExperiment"),
+    is.string(assayname),
+    is.null(facetvar) || is.string(facetvar),
+    is.string(xvar),
+    is.string(yvar)
+  )
+  mat <- assay(object, assayname)
+  
+  # we add this since xvar, yvar could be blank first
+  if (is.blank(xvar)) {
+    xvar <- 1
+  }
+  if (is.blank(yvar)) {
+    yvar <- 1
+  }
+  df <- data.frame(x = mat[xvar, ], y = mat[yvar, ])
+  if (!is.null(facetvar)) {
+    cd <- colData(object)
+    df$facet <- cd[[facetvar]]
+  }
+  p <- ggplot(df, aes(x = x, y = y)) +
+    geom_point() +
+    geom_smooth(method = "lm", formula = y ~ x) +
+    labs(x = xvar, y = yvar)
+  if (!is.null(facetvar)) {
+    p <- p + facet_wrap(~ facet)
+  }
+  p
+}
+```
+
+Test it:
+
+```{r}
+object <- HermesData(summarized_experiment)
+draw_scatterplot(
+  object,
+  assayname = "counts",
+  facetvar = "",
+  xvar = genes(object)[1],
+  yvar = genes(object)[2]
+)
+draw_scatterplot(
+  object,
+  assayname = "counts",
+  facetvar = "SEX",
+  xvar = genes(object)[1],
+  yvar = genes(object)[2]
+)
+```
+
+## UI function
+
+Next we define the user interface via the UI function.
+
+Note that:
+1. The experiment choices are taken directly from the (filtered) MAE, so we don't need to hardcode them.
+1. The facetvar choices will be updated in the server function based on the chosen experiment.
+1. Same for the assay.
+1. Also the gene choices depend in the same way on the experiment, so follow the same flow. 
+1. Since there are many choices here we use `selectizeInput()` see https://shiny.rstudio.com/articles/selectize.html for the genes.
+
+```{r}
+ui_scatterplot <- function(id, datasets, dataname) {
+  ns <- NS(id)
+  mae <- datasets$get_data(dataname, filtered = TRUE)
+  standard_layout(
+    output = plotOutput(ns("plot")),
+    encoding = div(
+      tags$label("Encodings", class = "text-primary"),
+      helpText("Analysis Data:", tags$code(dataname)),
+      selectInput(ns("experiment"), "experiment", names(mae)),
+      selectInput(ns("assay"), "assay", choices = ""),
+      optionalSelectInput(ns("facetvar"), "facet by"),
+      selectizeInput(ns("xvar"), "x gene", choices = ""),
+      selectizeInput(ns("yvar"), "y gene", choices = "")
+    )
+  )
+}
+```
+
+## Server function
+
+```{r}
+srv_scatterplot <- function(input, output, session, datasets, dataname) {
+  
+  # Reactive for experiment data since that is used in multiple places below.
+  experiment_data <- reactive({
+    mae <- datasets$get_data(dataname, filtered = TRUE)
+    experiment <- if (is.null(input$experiment)) {
+      1
+    } else {
+      input$experiment
+    }
+    mae[[experiment]]
+  })
+  
+  experiment_call <- reactive({
+    dat <- datasets$get_filtered_datasets(dataname)
+    if (is.null(input$experiment)) {
+      NULL
+    } else {
+      dat$get_filter_queues(input$experiment)$get_call()
+    }
+  })
+  
+  # When the chosen experiment call changes,
+  # we recompute gene names.
+  genes <- eventReactive(experiment_call(), ignoreNULL = FALSE, {
+    object <- experiment_data()
+    rownames(object)
+  })
+  
+  # When the chosen experiment changes, recompute the assay names. 
+  assaynames <- eventReactive(input$experiment, ignoreInit = TRUE, {
+    object <- experiment_data()
+    SummarizedExperiment::assayNames(object)
+  })
+  
+  # When the chosen experiment changes, recompute the col vars.
+  colvars <- eventReactive(input$experiment, {
+    object <- experiment_data()
+    names(colData(object))
+  })
+  
+  # When the assay names change, update the choices for assay.
+  observeEvent(assaynames(), {
+    # First: resolve all reactivity.
+    assaynames <- assaynames()
+
+    # Second: do the action.
+    updateSelectInput(
+      session, 
+      "assay",
+      choices = assaynames,
+      selected = assaynames[1]
+    )
+  })
+  
+  # When the colvars change, update the choices for facetvar.
+  observeEvent(colvars(), {
+    # First: resolve all reactivity.
+    colvars <- colvars()
+
+    # Second: do the action.
+    updateOptionalSelectInput(
+      session, 
+      "facetvar",
+      choices = colvars,
+      selected = character()
+    )
+  })
+  
+  # When the genes are recomputed, update the choices for genes in the UI.
+  observeEvent(genes(), {
+    # First: resolve all reactivity.
+    gene_choices <- genes()
+    
+    # Second: do the action.
+    idnames <- c("xvar", "yvar")
+    for (i in seq_along(idnames)) {
+      updateSelectizeInput(
+        session, 
+        idnames[i],
+        choices = gene_choices,
+        selected = gene_choices[i],
+        server = TRUE
+      )
+    }
+  })
+  
+  output$plot <- renderPlot({
+    # First: resolve all reactivity.
+    experiment <- input$experiment
+    object <- experiment_data()
+    xvar <- input$xvar
+    yvar <- input$yvar
+    facetvar <- input$facetvar
+    assayname <- input$assay
+    
+    # Second: validate.
+    validate(need(is.string(experiment), "please select one experiment"))
+    validate(need(is.string(assayname), "please select one assay"))
+    validate(need(is.string(xvar), "please select one gene for the x variable"))
+    validate(need(is.string(yvar), "please select one gene for the y variable"))
+    validate(need(xvar != yvar, "please select different genes for x and y variables"))
+    
+    # Third: plot
+    draw_scatterplot(
+      object, 
+      assayname = assayname, 
+      xvar = xvar, 
+      yvar = yvar, 
+      facetvar = facetvar
+    ) 
+  })
+}
+```
+
+Unfortunately in the current shiny version in the dockers we cannot yet try this out separately actually. With shiny above 1.5 it might work... we'll try this later.
+
+## Teal module function
+
+```{r}
+tm_g_scatterplot <- function(label = "Simple MAE module", 
+                             info = NULL, 
+                             dataname = NULL, 
+                             pre_output = NULL, 
+                             post_output = NULL) {
+  module(
+    label = label,
+    server = srv_scatterplot,
+    ui = ui_scatterplot,
+    ui_args = list(dataname = dataname),
+    server_args = list(dataname = dataname),
+    filters = "all"
+  )
+}
+```
+
+## Try it out
+
+Now we can try it out.
+
+```{r}
+app <- init(
+  data = data,
+  modules = root_modules(
+    static = {
+      tm_g_scatterplot(
+        label = "scatterplot",
+        dataname = "MAE"
+      )
+    }
+  )
+)
+
+shinyApp(app$ui, app$server)
+```
+
+
+
