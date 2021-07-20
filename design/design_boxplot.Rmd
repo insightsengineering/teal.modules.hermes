@@ -1,0 +1,272 @@
+---
+title: "Boxplot module design" 
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+source("https://raw.github.roche.com/gist/sabanesd/0e839ca7d4920fab342d8ed4b9d668fc/raw/eeaf752448e1b07641cc0c2a3af2172af7b99c94/install_nest.R")
+install_nest("teal", "1185_dataset_specific_filter_panel")
+library(teal)
+library(teal.devel)
+library(dplyr)
+library(ggplot2)
+library(random.cdisc.data)
+library(hermes)
+```
+
+## Boxplot module design
+
+We want to design a simple boxplot teal module.
+
+## Example data
+
+```{r}
+MAE <- multi_assay_experiment # from hermes
+mae <- dataset("MAE", MAE)
+
+data <- teal_data(mae) 
+```
+
+
+## Plot function
+
+In order to test the plotting separately, we write a separate function for the plot.
+This takes the SE object, the name of the assay, the optional facet variable, and the names of the x variable which is sample information accessed using colData and y variable which is gene of interest, and produces the ggplot.
+
+
+```{r}
+is.blank <- function(x) identical(x, "")
+
+library(assertthat)
+draw_boxplot <- function(object, assayname, facetvar, xvar, yvar) {
+  assert_that(
+    is(object, "SummarizedExperiment"),
+    is.string(assayname),
+    is.null(facetvar) || is.string(facetvar),
+    is.string(xvar),
+    is.string(yvar)
+  )
+  
+  mat <- assay(object, assayname)
+  cd <- colData(object)
+  # we add this since xvar, yvar could be blank first
+  if (is.blank(xvar)) {
+    xvar <- 1
+  }
+  if (is.blank(yvar)) {
+    yvar <- 1
+  }
+  df <- data.frame(x = cd[, xvar], y = mat[yvar, ])
+  if (!is.null(facetvar)) {
+    df$facet <- cd[[facetvar]]
+  }
+  p <- ggplot(df, aes(x = x, y = y)) +
+    geom_boxplot() +
+    stat_boxplot(geom = "errorbar") +
+    labs(x = xvar, y = yvar)
+  if (!is.null(facetvar)) {
+    p <- p + facet_wrap(~ facet)
+  }
+  p
+}
+```
+
+Test it:
+
+```{r}
+object <- HermesData(summarized_experiment)
+draw_boxplot(
+  object,
+  assayname = "counts",
+  facetvar = NULL,
+  xvar = "SEX",
+  yvar = genes(object)[2]
+)
+draw_boxplot(
+  object,
+  assayname = "counts",
+  facetvar = "RACE",
+  xvar = "SEX",
+  yvar = genes(object)[2]
+)
+
+```
+
+## UI function
+
+Next we define the user interface via the UI function.
+
+Note that:
+1. The experiment choices are taken directly from the (filtered) MAE, so we don't need to hardcode them.
+2. The facetvar choices will be updated in the server function based on the chosen experiment.
+3. Also the gene choices depend in the same way on the experiment, so follow the same flow. Since there are many choices here we should consider to use `selectizeInput()` see https://shiny.rstudio.com/articles/selectize.html in production.
+
+
+```{r}
+
+# helper function
+emptySelectInput <- function(inputId, label, ...) {
+  selectInput(
+    inputId = inputId,
+    label = label,
+    choices = "",
+    selected = "",
+    ...
+  )
+}
+
+ui_boxplot <- function(id, datasets, dataname) {
+  ns <- NS(id)
+  mae <- datasets$get_data(dataname, filtered = TRUE)
+  standard_layout(
+    output = plotOutput(ns("plot")),
+    encoding = div(
+      tags$label("Encodings", class = "text-primary"),
+      helpText("Analysis Data:", tags$code(dataname)),
+      selectInput(ns("experiment"), "experiment", names(mae)),
+      selectInput(ns("assay"), "assay", choices = ""),
+      selectizeInput(ns("yvar"), "Select Gene of Interest", choices = ""),
+      selectizeInput(ns("xvar"), "Stratify by", choices = ""),
+      optionalSelectInput(ns("facetvar"), "Facet by")
+    )
+  )
+}
+```
+
+## Server function
+
+```{r}
+srv_boxplot <- function(input, output, session, datasets, dataname) {
+
+  # Reactive function for experiment data since it is used in multiple places below.
+  experiment_data <- reactive({
+    mae <- datasets$get_data(dataname, filtered = TRUE)
+    experiment <- if (is.null(input$experiment)) {
+      1
+    } else {
+      input$experiment
+    }
+    mae[[experiment]] 
+  })
+  
+  genes <- reactive({
+    object <- experiment_data()
+    rownames(object)
+  })
+  
+  colvars <- reactive({
+    object <- experiment_data()
+    names(colData(object))
+  })
+  
+  # When the colvars, update the choices for facetvar and stratification factor.
+  # Todo: at the moment this always triggers when experiment data is updated.
+  # how can we trigger this only when colvars really changes?
+  observeEvent(colvars(), {
+    # First: resolve all reactivity.
+    colvars <- colvars()
+    
+    # Second: do the action.
+    updateSelectInput(
+      session,
+      "xvar",
+      choices = colvars,
+      selected = ""
+    )
+    updateOptionalSelectInput(
+      session, 
+      "facetvar",
+      choices = colvars,
+      selected = ""
+    )
+  })
+  
+  # When the genes in the experiment change, update the choices for genes.
+  # Todo: at the moment this always triggers when experiment data is updated.
+  # how can we trigger this only when genes really changes?
+  observeEvent(genes(), {
+    # browser()
+    # First: resolve all reactivity.
+    genes <- genes()
+    gene_choices <- if (is.null(genes)) {
+      ""
+    } else {
+      genes
+    }
+    
+    # Second: do the action.
+      updateSelectInput(
+        session, 
+        "yvar",
+        choices = gene_choices,
+        selected = gene_choices[1]
+      )
+  })
+    
+  output$plot <- renderPlot({
+    # browser()
+    # First: resolve all reactivity.
+    object <- experiment_data()
+    xvar <- input$xvar
+    yvar <- input$yvar
+    facetvar <- input$facetvar
+    assayname <- "counts"
+    
+    # Second: validate.
+    # add later
+    # teal.devel::as.global(experiment_data)
+    
+    # Third: plot
+    draw_boxplot(
+      object, 
+      assayname = assayname, 
+      xvar = xvar, 
+      yvar = yvar, 
+      facetvar = facetvar
+    ) 
+  })
+}
+```
+
+Unfortunately in the current shiny version in the dockers we cannot yet try this out separately actually. With shiny above 1.5 it works:
+
+## Teal module function
+
+```{r}
+tm_g_boxplot <- function(label = "Simple MAE module", 
+                             info = NULL, 
+                             dataname = NULL, 
+                             pre_output = NULL, 
+                             post_output = NULL) {
+  module(
+    label = label,
+    server = srv_boxplot,
+    ui = ui_boxplot,
+    ui_args = list(dataname = dataname),
+    server_args = list(dataname = dataname),
+    filters = "all"
+  )
+}
+```
+
+## Try it out
+
+Now we can try it out.
+
+```{r}
+app <- init(
+  data = data,
+  modules = root_modules(
+    static = {
+      tm_g_boxplot(
+        label = "boxplot",
+        dataname = "MAE"
+      )
+    }
+  )
+)
+shinyApp(app$ui, app$server)
+```
