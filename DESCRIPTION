@@ -1,0 +1,31 @@
+Package: teal.modules.hermes
+Title: RNA-seq analysis modules to add to a teal application
+Type: Package
+Date: 2021-07-07
+Version: 0.1.0
+Authors@R: c(
+  person("NEST", email = "nestcicd@roche.com", role = c("aut", "cre"))
+  )
+Description: RNA-seq analysis teal modules based on the `hermes` package.
+License: file LICENSE
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+RdMacros: lifecycle
+URL: https://github.roche.com/NEST/teal.modules.hermes/
+BugReports: https://github.roche.com/NEST/teal.modules.hermes/issues
+Depends: 
+  ggplot2,
+  shiny,
+  teal
+Imports:
+  checkmate,
+  hermes,
+  lifecycle,
+  SummarizedExperiment,
+  teal.devel
+Suggests:
+  knitr,
+  test.nest (>= 0.2.9),
+  testthat (>= 2.0)

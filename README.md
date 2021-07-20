@@ -1,2 +1,2 @@
 # teal.modules.hermes
-teal modules for RNAseq analysis
+teal modules for RNA-seq analysis

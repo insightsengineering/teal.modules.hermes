@@ -1,0 +1,103 @@
+url: https://go.roche.com/nest-docs/releases/latest/api-reference/hermes
+
+template:
+  params:
+    bootswatch: cerulean
+
+navbar:
+  right:
+    - icon: fa-github
+      href: https://github.roche.com/NEST/hermes
+
+reference:
+  - title: Classes
+    contents:
+      - HermesData
+      - RangedHermesData
+      - HermesDataCor
+      - HermesDataPca
+      - HermesDataTopGenes
+      - HermesDataSummary
+      - HermesDataPcaCor
+      - HermesDataDiffExpr
+      - ConnectionBiomart
+  - title: Constructors
+    contents:
+      - HermesData
+      - HermesDataFromMatrix
+  - title: Internal Helper Functions
+    contents:
+      - all_na
+      - validate_counts
+      - validate_cols
+      - validate_row_data
+      - validate_col_data
+      - validate_names
+      - validate_prefix
+      - h_rpkm
+      - h_cpm
+      - h_tpm
+      - h_voom
+      - h_low_expression_flag
+      - h_low_depth_flag
+      - h_tech_failure_flag
+      - h_diff_expr_voom
+      - h_diff_expr_deseq2
+      - h_pca_var_rsquared
+      - h_pca_df_r2_matrix
+      - h_get_annotation_biomart
+      - h_strip_prefix
+      - h_has_req_annotations
+  - title: Example Data
+    contents:
+      - expression_set
+      - summarized_experiment
+      - multi_assay_experiment
+  - title: Methods
+    contents:
+      - annotation
+      - cbind
+      - correlate
+      - counts
+      - filter
+      - genes
+      - metadata
+      - normalize
+      - prefix
+      - query
+      - rbind
+      - samples
+      - show
+      - subset
+      - summary
+  - title: Functions
+    contents:
+      - add_quality_flags
+      - calc_pca
+      - diff_expression
+      - set_tech_failure
+      - top_genes
+      - connect_biomart
+      - df_char_to_factor
+  - title: Graphs
+    contents:
+      - draw_libsize_hist
+      - draw_libsize_qq
+      - draw_libsize_densities
+      - draw_nonzero_boxplot
+      - draw_genes_barplot
+      - plot_all
+  - title: Control Functions
+    contents:
+      - control_normalize
+      - control_quality
+  - title: Assertions
+    contents:
+      - is_class
+      - is_counts_vector
+      - is_hermes_data
+      - is_list_with
+      - is_constant
+  - title: Constants
+    contents:
+      - .row_data_annotation_cols
