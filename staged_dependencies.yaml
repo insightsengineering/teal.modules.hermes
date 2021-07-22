@@ -8,6 +8,7 @@ upstream_repos:
 - repo: insightsengineering/teal
   host: https://github.com
 - repo: insightsengineering/hermes
+  host: https://github.com
 
 downstream_repos:
 - repo: insightsengineering/utils.nest

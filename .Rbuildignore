@@ -13,3 +13,4 @@ TODO\.md
 ^\.lintr$
 ^data-raw$
 ^.github$
+^staged_dependencies.yaml$
