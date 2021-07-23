@@ -3,7 +3,7 @@ source("https://raw.github.roche.com/gist/sabanesd/0e839ca7d4920fab342d8ed4b9d66
 install_nest("teal", "1185_dataset_specific_filter_panel")
 
 tm_made_up_merge_pr <- function(label = "PR merge", info = NULL, dataname = NULL, pre_output = NULL, post_output = NULL) {
-  
+
   args <- as.list(environment())
   module(
     label = label,
@@ -16,9 +16,9 @@ tm_made_up_merge_pr <- function(label = "PR merge", info = NULL, dataname = NULL
 }
 ui_made_up_merge_pr <- function(id, ...) {
   arguments <- list(...)
-  
+
   ns <- NS(id)
-  
+
   standard_layout(
     output = white_small_well(
       verbatimTextOutput(outputId = ns("filter_expr")),
@@ -50,17 +50,17 @@ ui_made_up_merge_pr <- function(id, ...) {
 }
 srv_made_up_merge_pr <- function(input, output, session, datasets, dataname) {
   init_chunks()
-  
+
   output$filter_expr <- renderText({
     paste(
       c(
-        as.character(datasets$get_filter_expr(dataname)),
-        as.character(datasets$get_filter_expr("ADSL"))
+        as.character(datasets$get_call(dataname)),
+        as.character(datasets$get_call("ADSL"))
       ),
       collapse = "\n"
     )
   })
-  
+
   output$col_data_table <- renderText({
     MAE <- datasets$get_data(dataname, filtered = TRUE)
     chunks_reset()
@@ -69,7 +69,7 @@ srv_made_up_merge_pr <- function(input, output, session, datasets, dataname) {
     }))
     chunks_safe_eval()
   })
-  
+
   output$adsl_data_table <- renderText({
     ADSL <- datasets$get_data("ADSL", filtered = TRUE)
     chunks_reset()
@@ -78,10 +78,10 @@ srv_made_up_merge_pr <- function(input, output, session, datasets, dataname) {
     }))
     chunks_safe_eval()
   })
-  
-  
+
+
   observeEvent(input$show_rcode, {
-    
+
     show_rcode_modal(
       title = "R Code for MAE analysis",
       rcode = get_rcode(
@@ -100,17 +100,17 @@ library(random.cdisc.data)
 adsl <- cdisc_dataset("ADSL", radsl(cached = TRUE, na_percentage = 0.2)) %>%
   mutate_dataset(
     "ADSL$SEX[1:20] <- NA
-     ADSL$AGE[21:30] <- Inf
-     ADSL$AGE[31:40] <- NaN
-     ADSL$EOSDT[51:60] <- NA
-     ADSL$EOSDT[71:70] <- NA
-     ADSL$all_na <- NA
-     ADSL$unknown <- as.list(ADSL$SEX)"
+    ADSL$AGE[21:30] <- Inf
+    ADSL$AGE[31:40] <- NaN
+    ADSL$EOSDT[51:60] <- NA
+    ADSL$EOSDT[71:70] <- NA
+    ADSL$all_na <- NA
+    ADSL$unknown <- as.list(ADSL$SEX)"
   )
 adtte <- cdisc_dataset("ADTTE", radtte(cached = TRUE))  %>%
   mutate_dataset(
     "ADTTE$CNSR <- as.logical(ADTTE$CNSR)
-     ADTTE$CNSR[100:110] <- NA"
+    ADTTE$CNSR[100:110] <- NA"
   )
 
 
@@ -118,7 +118,7 @@ MAE <- multi_assay_experiment # from hermes
 mae <- dataset("MAE", MAE)
 
 
-data <- teal_data(mae, adsl, adtte) %>%
+data <- cdisc_data(mae, adsl, adtte) %>%
   mutate_join_keys("MAE", "MAE", c("STUDYID", "USUBJID"))
 
 app <- init(
