@@ -5,7 +5,7 @@ current_repo:
   host: https://github.com
 
 upstream_repos:
-- repo: insightsengineering/teal
+- repo: insightsengineering/teal.devel
   host: https://github.com
 - repo: insightsengineering/hermes
   host: https://github.com
