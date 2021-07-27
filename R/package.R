@@ -5,7 +5,6 @@
 #'
 "_PACKAGE"
 
-#' @import checkmate
 #' @import ggplot2
 #' @import shiny
 #' @import teal
