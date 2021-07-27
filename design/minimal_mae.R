@@ -1,5 +1,13 @@
 # Simplest example to pass MAE data to teal module.
 
+
+# 1) Install teal from the right feature branch.
+source("https://raw.github.roche.com/gist/sabanesd/0e839ca7d4920fab342d8ed4b9d668fc/raw/eeaf752448e1b07641cc0c2a3af2172af7b99c94/install_nest.R")
+install_nest("teal", "cb200aa2738f820b9dcffaffd858581fad9cf90e")
+
+# 2) Try simplest example.
+=======
+
 tm_made_up_merge_pr <- function(label = "Simple MAE module",
                                 info = NULL,
                                 dataname = NULL,
