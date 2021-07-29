@@ -58,7 +58,6 @@ tm_g_scatterplot <- function(label,
 
 #' @describeIn tm_g_scatterplot sets up the user interface.
 #' @inheritParams module_arguments
-#' @importFrom teal.devel standard_layout
 #' @export
 ui_g_scatterplot <- function(id,
                              datasets,
@@ -93,8 +92,6 @@ ui_g_scatterplot <- function(id,
 
 #' @describeIn tm_g_scatterplot sets up the server with reactive graph.
 #' @inheritParams module_arguments
-#' @importFrom SummarizedExperiment assayNames colData
-#' @importFrom hermes draw_scatterplot
 #' @export
 srv_g_scatterplot <- function(input,
                               output,
@@ -220,8 +217,6 @@ srv_g_scatterplot <- function(input,
 }
 
 #' @describeIn tm_g_scatterplot sample module function.
-#' @importFrom hermes HermesData
-#' @importFrom utils data
 #' @export
 #' @examples
 #' \dontrun{

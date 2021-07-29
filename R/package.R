@@ -8,5 +8,4 @@
 #' @import ggplot2
 #' @import shiny
 #' @import teal
-#' @importFrom lifecycle deprecate_soft
 NULL
