@@ -24,6 +24,7 @@ Imports:
   checkmate,
   hermes,
   lifecycle,
+  shinyWidgets,
   SummarizedExperiment,
   teal.devel
 Suggests:

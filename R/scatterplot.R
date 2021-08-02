@@ -11,11 +11,11 @@
 #'
 #' @examples
 #' library(hermes)
-#' utils::data("multi_assay_experiment", package = "hermes")
-#' for (i in seq_along(multi_assay_experiment)) {
-#'   multi_assay_experiment[[i]] <- hermes::HermesData(multi_assay_experiment[[i]])
+#' mae <- hermes::multi_assay_experiment
+#' for (i in seq_along(mae)) {
+#'   mae[[i]] <- hermes::HermesData(mae[[i]])
 #' }
-#' mae_data <- dataset("MAE", multi_assay_experiment)
+#' mae_data <- dataset("MAE", mae)
 #' data <- teal_data(mae_data)
 #' app <- init(
 #'   data = data,
@@ -243,4 +243,3 @@ sample_tm_g_scatterplot <- function() {
   )
   shinyApp(app$ui, app$server)
 }
-globalVariables("multi_assay_experiment")
