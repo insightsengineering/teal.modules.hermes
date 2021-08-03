@@ -54,10 +54,7 @@ test_that("tm_g_scatterplot works as expected in the sample app", {
     "teal-main_ui-modules_ui-root_scatterplot-x_var" = "GeneID:101927746",
     "teal-main_ui-modules_ui-root_scatterplot-y_var" = "GeneID:101927746"
   )
-  output <- app$getAllValues(
-    output = "teal-main_ui-modules_ui-root_scatterplot-plot",
-    input = FALSE, export = FALSE
-  )[[1]][[1]]
+  output <- app$getOutputValue("teal-main_ui-modules_ui-root_scatterplot-plot")
   expect_identical(output$message, "please select different genes for x and y variables")
 
   # Now change the experiment_name and confirm that genes are updated accordingly.
@@ -71,11 +68,7 @@ test_that("tm_g_scatterplot works as expected in the sample app", {
   expect_identical(now_y_var, "GeneID:102723793")
 
   # Also now the plot exists.
-  final_output <- app$getAllValues(
-    output = "teal-main_ui-modules_ui-root_scatterplot-plot",
-    input = FALSE, export = FALSE
-  )[[1]][[1]]
-
+  final_output <- app$getOutputValue("teal-main_ui-modules_ui-root_scatterplot-plot")
   expect_identical(final_output$alt, "Plot object")
   expect_match(final_output$src, "^data:image/png")
 

@@ -21,6 +21,7 @@ reference:
     contents:
   - title: Teal Module Functions
     contents:
+      - tm_g_barplot
       - tm_g_scatterplot
   - title: Graphs
     contents:
