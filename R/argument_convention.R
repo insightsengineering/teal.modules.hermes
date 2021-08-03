@@ -42,3 +42,19 @@ NULL
 #'
 #' @name assertion_arguments
 NULL
+
+# function_arguments ----
+
+#' Standard Function Arguments
+#'
+#' The documentation to this function lists all the conventional arguments in
+#' functions.
+#'
+#' @param adtte (`data frame`)\cr an adtte dataset.
+#' @param mae (`MultiAssayExperiment`)\cr contains `SummarizedExperiment` objects.
+#' @param gene_var (`character`)\cr a gene(s) of interest.
+#' @param experiment_name (`string`)\cr the desired experiment to use.
+#' @param assay_name (`string`)\cr the assay to define the groups.
+#'
+#' @name function_arguments
+NULL
