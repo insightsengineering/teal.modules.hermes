@@ -33,10 +33,12 @@
 #' }
 tm_g_scatterplot <- function(label,
                              mae_name,
+                             exclude_assays = "counts",
                              pre_output = NULL,
                              post_output = NULL) {
   assert_string(label)
   assert_string(mae_name)
+  assert_character(exclude_assays, any.missing = FALSE)
   assert_tag(pre_output, null.ok = TRUE)
   assert_tag(post_output, null.ok = TRUE)
 
@@ -44,7 +46,8 @@ tm_g_scatterplot <- function(label,
     label = label,
     server = srv_g_scatterplot,
     server_args = list(
-      mae_name = mae_name
+      mae_name = mae_name,
+      exclude_assays = exclude_assays
     ),
     ui = ui_g_scatterplot,
     ui_args = list(
@@ -97,7 +100,8 @@ srv_g_scatterplot <- function(input,
                               output,
                               session,
                               datasets,
-                              mae_name) {
+                              mae_name,
+                              exclude_assays) {
   # When the filtered data set of the chosen experiment changes, update the
   # experiment data object.
   experiment_data <- reactive({
@@ -136,13 +140,15 @@ srv_g_scatterplot <- function(input,
 
   # When the assay names change, update the choices for assay.
   observeEvent(assay_names(), {
-    assay_name_choices <- assay_names()
+    assay_name_choices <- setdiff(
+      assay_names(),
+      exclude_assays
+    )
 
     updateSelectInput(
       session,
       "assay_name",
-      choices = assay_name_choices,
-      selected = assay_name_choices[1]
+      choices = assay_name_choices
     )
   })
 
@@ -191,10 +197,9 @@ srv_g_scatterplot <- function(input,
     req(
       x_var,
       y_var,
-      assay_name,
       smooth_method,
       # Note: The following statements are important to make sure the UI inputs have been updated.
-      isTRUE(assay_name %in% SummarizedExperiment::assayNames(experiment_data)),
+      is_blank(assay_name) || isTRUE(assay_name %in% SummarizedExperiment::assayNames(experiment_data)),
       isTRUE(all(c(x_var, y_var) %in% rownames(experiment_data))),
       isTRUE(all(c(facet_var, color_var) %in% names(SummarizedExperiment::colData(experiment_data)))),
       cancelOutput = FALSE
@@ -202,6 +207,10 @@ srv_g_scatterplot <- function(input,
 
     # Validate and give useful messages to the user. Note: no need to duplicate here req() from above.
     validate(need(hermes::is_hermes_data(experiment_data), "please use HermesData() on input experiments"))
+    validate(need(
+      !is_blank(assay_name),
+      "no assays are available for this experiment, please choose another experiment"
+    ))
     validate(need(x_var != y_var, "please select different genes for x and y variables"))
 
     hermes::draw_scatterplot(
@@ -226,7 +235,10 @@ srv_g_scatterplot <- function(input,
 sample_tm_g_scatterplot <- function() {
   mae <- hermes::multi_assay_experiment
   for (i in seq_along(mae)) {
-    mae[[i]] <- hermes::HermesData(mae[[i]])
+    this_experiment <- mae[[i]]
+    this_experiment <- hermes::HermesData(this_experiment)
+    this_experiment <- hermes::normalize(this_experiment)
+    mae[[i]] <- this_experiment
   }
   mae_data <- dataset("MAE", mae)
   data <- teal_data(mae_data)
