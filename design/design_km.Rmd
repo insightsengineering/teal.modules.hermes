@@ -365,7 +365,7 @@ binned_adtte <- new_adtte %>%
                 dplyr::mutate(gene_factor = tern::cut_quantile_bins(gene_counts, probs = .3))
 
 variables <- list(tte = "AVAL", is_event = "CNSR", arm = "gene_factor")
-g_km(binned_adtte, variables = variables)
+tern::g_km(binned_adtte, variables = variables)
 
 ```
 
@@ -373,3 +373,46 @@ g_km(binned_adtte, variables = variables)
 # UI again
 # Server
 # App
+
+# Template_g_km
+```{r}
+
+ $data
+{
+  anl <- binned_adtte
+  ANL <- radtte(cached = TRUE) %>% mutate(CNSR = as.logical(CNSR)) 
+    anl <- ANL %>% mutate(ARM = droplevels(ARM)) %>% mutate(is_event = CNSR == 
+        0)
+}
+
+$variables
+variables <- list(tte = "AVAL", is_event = "is_event", arm = "ARM")
+variables <- list(tte = "AVAL", is_event = "CNSR", arm = "gene_factor")
+
+$graph
+{
+    grid::grid.newpage()
+    lyt <- grid::grid.layout(nrow = nlevels(anl$SEX), ncol = 1) %>% 
+        grid::viewport(layout = .) %>% grid::pushViewport()
+    result <- mapply(df = as.data.frame(anl), nrow = seq_along(levels(anl$SEX)),
+        FUN = function(df_i, nrow_i) {
+            # if (nrow(df_i) == 0) {
+            #     grid::grid.text("No data found for a given facet value.", 
+            #       x = 0.5, y = 0.5, vp = grid::viewport(layout.pos.row = nrow_i, 
+            #         layout.pos.col = 1))
+            # }
+            # else {
+                tern::g_km(df = df_i, 
+                           variables = variables, 
+                           xlab = paste0("Survival time", " (", anl$AVALU[1], ")"),
+                           yval = "Survival", xticks = NULL, newpage = FALSE,
+                           title = "KM Plot",
+                           annot_surv_med = TRUE,
+                           control_coxph_pw = control_coxph(conf_level = 0.95, pval_method = "log-rank", ties = "efron"), 
+                           ci_ribbon = FALSE, 
+                           vp = grid::viewport(layout.pos.col = 1))
+            # }
+        })
+}
+```
+
