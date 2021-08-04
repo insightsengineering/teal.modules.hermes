@@ -95,7 +95,8 @@ ui_g_quality <- function(id,
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
       selectInput(ns("experiment_name"), "Select Experiment", experiment_name_choices),
-      selectInput(ns("plottype"), "Plot Type", choices = c("Histogram", "Q-Q", "Density", "Boxplot")),
+      selectInput(ns("assayname"), "Select Assay", choices = ""),
+      selectInput(ns("plot_type"), "Plot Type", choices = c("Histogram", "Q-Q Plot", "Density", "Boxplot", "Top Genes Plot", "Correlation Heatmap")),
       sliderInput(ns("min_cpm"), label = ("Minimum CPM"), min = 1, max = 10, value = 5),
       sliderInput(ns("min_cpm_prop"), label = ("Minimum CPM Proportion"), min = 0.01, max = 0.99, value = 0.25),
       sliderInput(ns("min_corr"), label = ("Minimum Correlation"), min = 0.01, max = 0.99, value = 0.5),
@@ -133,6 +134,12 @@ srv_g_quality <- function(input,
     names(SummarizedExperiment::rowData(object))
   })
 
+  # When the chosen experiment changes, recompute the assay names.
+  assays <- eventReactive(input$experiment_name, {
+    object <- experiment_data()
+    SummarizedExperiment::assayNames(object)
+  })
+
   # When the chosen experiment changes, recompute the maximum CPM available.
   max_cpm <- eventReactive(input$experiment_name, {
     object <- experiment_data()
@@ -146,15 +153,24 @@ srv_g_quality <- function(input,
   })
 
   observeEvent(annotations(), {
-    # First: resolve all reactivity.
     annotations <- annotations()
 
-    # Second: do the action.
     updateOptionalSelectInput(
       session,
       "annotate",
       choices = annotations,
       selected = "WidthBP"
+    )
+  })
+
+  observeEvent(input$experiment_name, {
+    assays <- assays()
+
+    updateSelectInput(
+      session,
+      "assayname",
+      choices = assays,
+      selected = assays[1]
     )
   })
 
@@ -195,12 +211,11 @@ srv_g_quality <- function(input,
 
   object_final <- reactive({
     object <- experiment_data()
-
+    assays <- input$assayname
     min_cpm <- input$min_cpm
     min_cpm_prop <- input$min_cpm_prop
     min_corr <- input$min_corr
     min_depth_final <- min_depth_final()
-
     filter <- input$filter
     annotations <- input$annotate
 
@@ -224,14 +239,22 @@ srv_g_quality <- function(input,
 
   output$quality <- renderPlot({
     object_final <- object_final()
-    plot_type <- input$plottype
+    plot_type <- input$plot_type
+    top_gene <- hermes::top_genes(object_final,
+                                  n_top = 10,
+                                  summary_fun = rowMeans)
+    # heatmap <- hermes::correlate(object_final,
+    #                              assay_name = input$assayname,
+    #                              method = "spearman")
 
     switch(
       plot_type,
       "Histogram" = hermes::draw_libsize_hist(object_final),
       "Density" = hermes::draw_libsize_densities(object_final),
-      "Q-Q" = hermes::draw_libsize_qq(object_final),
-      "Boxplot" = hermes::draw_nonzero_boxplot(object_final)
+      "Q-Q Plot" = hermes::draw_libsize_qq(object_final),
+      "Boxplot" = hermes::draw_nonzero_boxplot(object_final),
+      "Top Genes Plot" = hermes::autoplot(top_gene)
+      # "Correlation Heatmap" = hermes::autoplot(heatmap)
     )
   })
 }
