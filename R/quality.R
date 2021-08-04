@@ -72,15 +72,16 @@ ui_g_quality <- function(id,
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
       selectInput(ns("experiment_name"), "Select Experiment", experiment_name_choices),
+      selectInput(ns("plottype"), "Plot Type", choices = c("Histogram" = "lib_hist", "Q-Q" = "lib_qq", "Density" = "lib_den", "Boxplot" = "nz_box")),
       sliderInput(ns("min_cpm"), label = ("Minimum CPM"), min = 1, max = 10, value = 5),
       sliderInput(ns("min_cpm_prop"), label = ("Minimum CPM Proportion"), min = 0.01, max = 0.99, value = 0.25),
       sliderInput(ns("min_corr"), label = ("Minimum Correlation"), min = 0.01, max = 0.99, value = 0.5),
       radioButtons(ns("min_depth"), label = ("Minimum Depth"), choices = c("Default", "Specify"), selected = NULL),
-      conditionalPanel(condition = paste0("input['", ns("min_depth"), "']" , ".includes('Specify')"), sliderInput(ns("min_depth_continuous"), label = NULL, min = 1, max = 10, value = 5)),
+      conditionalPanel(condition = paste0("input['", ns("min_depth"), "']" , ".includes('Specify')"), sliderInput(ns("min_depth_continuous"), label = NULL, min = 1, max = 10, value = 1)),
       checkboxGroupInput(ns("filter"), label = ("Filter"), choiceNames = list("Genes", "Samples"), choiceValues = list("genes", "samples"), selected = NULL),
       optionalSelectInput(ns("annotate"), label = "Annotations", choices = "", selected = NULL)
     ),
-    output = verbatimTextOutput(ns("quality")),
+    output = plotOutput(ns("quality")),
     pre_output = pre_output,
     post_output = post_output
   )
@@ -113,7 +114,14 @@ srv_g_quality <- function(input,
   max_cpm <- eventReactive(input$experiment_name, {
     object <- experiment_data()
     object <- HermesData(object)
-    max(edgeR::cpm(hermes::counts(object)))
+    floor(max(edgeR::cpm(hermes::counts(object))))
+  })
+
+  # When the chosen experiment changes, recompute the maximum library size (depth) available.
+  max_depth <- eventReactive(input$experiment_name, {
+    object <- experiment_data()
+    object <- HermesData(object)
+    max(hermes::counts(object))
   })
 
   observeEvent(annotations(), {
@@ -141,8 +149,21 @@ srv_g_quality <- function(input,
     )
   })
 
-  output$quality <- renderPrint({
+  observeEvent(input$experiment_name, {
+    max_depth <- max_depth()
+
+    updateSliderInput(
+      session,
+      "min_depth_continuous",
+      min = 1,
+      max = max_depth,
+      value = 1
+    )
+  })
+
+  output$quality <- renderPlot({
     object <- experiment_data()
+    plottype <- input$plottype
     min_cpm <- input$min_cpm
     min_cpm_prop <- input$min_cpm_prop
     min_corr <- input$min_corr
@@ -157,8 +178,9 @@ srv_g_quality <- function(input,
       NULL
     }
 
-    hermes::run_qc(
+    hermes::qc_normalize_filter(
       object,
+      plottype = plottype,
       min_cpm = min_cpm,
       min_cpm_prop = min_cpm_prop,
       min_corr = min_corr,
