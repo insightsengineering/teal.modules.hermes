@@ -74,6 +74,211 @@ h_km_mae_to_adtte <- function (adtte,
   merged_adtte
 }
 
+#' Expression List. ---Taken from TMC (nonexported function)
+#'
+#' Add a new expression to a list (of expressions).
+#'
+#' @param expr_ls (`list` of `call`)\cr the list to which a new expression
+#'   should be added.
+#' @param new_expr (`call`)\cr the new expression to add.
+#'
+#' @return a `list` of `call`.
+#'
+#' @details Offers a stricter control to add new expressions to an existing
+#'   list. The list of expressions can be later used to generate a pipeline,
+#'   for instance with `pipe_expr`.
+#'
+#' @import assertthat
+#'
+#' @examples
+#'
+#' lyt <- list()
+#' lyt <- teal.modules.clinical:::add_expr(lyt, substitute(basic_table()))
+#' lyt <- teal.modules.clinical:::add_expr(
+#'   lyt, substitute(split_cols_by(var = arm), env = list(armcd = "ARMCD"))
+#' )
+#' lyt <- teal.modules.clinical:::add_expr(
+#'   lyt,
+#'   substitute(
+#'     test_proportion_diff(
+#'       vars = "rsp", method = "cmh", variables = list(strata = "strat")
+#'     )
+#'   )
+#' )
+#' lyt <- teal.modules.clinical:::add_expr(lyt, quote(build_table(df = dta)))
+#' teal.modules.clinical:::pipe_expr(lyt)
+#'
+add_expr <- function(expr_ls, new_expr) {
+
+  assert_that(
+    is.list(expr_ls),
+    is.call(new_expr) || is.name(new_expr)
+  )
+
+  # support nested expressions such as expr({a <- 1; b <- 2})
+  if (is(new_expr, "{")) {
+    res <- expr_ls
+    for (idx in seq_along(new_expr)[-1]) {
+      res <- add_expr(res, new_expr[[idx]])
+    }
+    return(res)
+  }
+
+  c(
+    expr_ls,
+    list(new_expr)
+  )
+}
+
+#' Expressions as a Pipeline.  ---Taken from TMC (nonexported function)
+#'
+#' Concatenate expressions in a single pipeline-flavor expression.
+#'
+#' @param exprs (`list` of `call`)\cr expressions to concatenate in a
+#'   pipeline (`%>%`).
+#' @param pipe_str (`character`)\cr the character which separates the expressions.
+#'
+#' @examples
+#'
+#' result <- teal.modules.clinical:::pipe_expr(
+#'   list(
+#'     expr1 = substitute(df),
+#'     expr2 = substitute(head)
+#'   )
+#' )
+#' result
+#'
+pipe_expr <- function(exprs, pipe_str = "%>%") {
+  exprs <- lapply(exprs, h_concat_expr)
+  exprs <- unlist(exprs)
+  exprs <- paste(exprs, collapse = pipe_str)
+  str2lang(exprs)
+}
+
+#' Expression: Arm Preparation.  ---Taken from TMC (nonexported function)
+#'
+#' The function generate the standard expression for pre-processing of dataset
+#' in teal module applications. This is especially of interest when the same
+#' preprocessing steps needs to be applied similarly to several datasets
+#' (e.g. ADSL and ADRS).
+#'
+#' @details
+#' In `teal.modules.clinical`, the user interface includes manipulation of
+#' the study arms. Classically: the arm variable itself (e.g. `ARM`, `ACTARM`),
+#' the reference arm (0 or more), the comparison arm (1 or more) and the
+#' possibility to combine comparison arms.
+#'
+#' Note that when no arms should be compared with each other, then the produced
+#' expression is reduced to optionally dropping non-represented levels of the arm.
+#'
+#' When comparing arms, the pre-processing includes three steps:
+#' 1. Filtering of the dataset to retain only the arms of interest (reference
+#' and comparison).
+#' 2. Optional, if more than one arm is designated as _reference_ they are
+#' combined into a single level.
+#' 3. The reference is explicitly reassigned and the non-represented levels of
+#' arm are dropped.
+#'
+#' @inheritParams template_arguments
+#' @param ref_arm_val (`character`)\cr replacement name for the reference level.
+#' @param drop (`logical`)\cr drop the unused variable levels.
+#' @examples
+#'
+#' \dontrun{
+#' teal.modules.clinical::prepare_arm(
+#'   dataname = "adrs",
+#'   arm_var = "ARMCD",
+#'   ref_arm = "ARM A",
+#'   comp_arm = c("ARM B", "ARM C")
+#' )
+#'
+#' teal.modules.clinical::prepare_arm(
+#'   dataname = "adsl",
+#'   arm_var = "ARMCD",
+#'   ref_arm = c("ARM B", "ARM C"),
+#'   comp_arm = "ARM A"
+#' )
+#' }
+#'
+prepare_arm <- function(dataname,
+                        arm_var,
+                        ref_arm,
+                        comp_arm,
+                        compare_arm = !is.null(ref_arm),
+                        ref_arm_val = paste(ref_arm, collapse = "/"),
+                        drop = TRUE) {
+  assert_that(
+    is.string(dataname),
+    is.string(arm_var),
+    is.null(ref_arm) || is.character(ref_arm),
+    is.character(comp_arm) || is.null(comp_arm),
+    is.flag(compare_arm),
+    is.string(ref_arm_val),
+    is.flag(drop)
+  )
+
+  data_list <- list()
+
+  if (compare_arm) {
+    # Data are filtered to keep only arms of interest.
+    data_list <- add_expr(
+      data_list,
+      substitute(
+        expr = dataname %>%
+          filter(arm_var %in% arm_val),
+        env = list(
+          dataname = as.name(dataname),
+          arm_var = as.name(arm_var),
+          arm_val = if (compare_arm) c(ref_arm, comp_arm) else comp_arm
+        )
+      )
+    )
+
+    # Several reference levels are combined.
+    if (length(ref_arm) > 1) {
+      data_list <- add_expr(
+        data_list,
+        substitute_names(
+          expr = mutate(arm_var = combine_levels(arm_var, levels = ref_arm, new_level = ref_arm_val)),
+          names = list(arm_var = as.name(arm_var)),
+          others = list(ref_arm = ref_arm, ref_arm_val = ref_arm_val)
+        )
+      )
+    }
+
+    # Reference level is explicit.
+    data_list <- add_expr(
+      data_list,
+      substitute_names(
+        expr = mutate(arm_var = relevel(arm_var, ref = ref_arm_val)),
+        names = list(arm_var = as.name(arm_var)),
+        others = list(ref_arm_val = ref_arm_val)
+      )
+    )
+  }  else {
+    data_list <- add_expr(
+      data_list,
+      substitute(
+        expr = dataname,
+        env = list(dataname = as.name(dataname))
+      )
+    )
+  }
+
+  # Unused levels are optionally dropped.
+  if (drop) {
+    data_list <- add_expr(
+      data_list,
+      substitute_names(
+        expr = mutate(arm_var = droplevels(arm_var)),
+        names = list(arm_var = as.name(arm_var))
+      )
+    )
+  }
+
+  pipe_expr(data_list)
+}
+
 #' Template: Kaplan-Meier Hermes
 #'
 #' @inheritParams template_arguments
@@ -87,7 +292,7 @@ h_km_mae_to_adtte <- function (adtte,
 #'
 #' @importFrom grid grid.newpage grid.layout viewport pushViewport
 template_g_km <- function(dataname = "ANL",
-                          arm_var = "ARM",
+                          arm_var = "gene_factor",
                           ref_arm = NULL,
                           comp_arm = NULL,
                           compare_arm = FALSE,
@@ -109,17 +314,17 @@ template_g_km <- function(dataname = "ANL",
                           annot_coxph = TRUE,
                           ci_ribbon = FALSE,
                           title = "KM Plot") {
-  assert_that(
-    is.string(dataname),
-    is.string(arm_var),
-    is.string(aval_var),
-    is.string(cnsr_var),
-    is.string(time_unit_var),
-    is.flag(compare_arm),
-    is.flag(combine_comp_arms),
-    is.null(xticks) | is.numeric(xticks),
-    is.string(title)
-  )
+  # assert_that(
+  #   is.string(dataname),
+  #   is.string(arm_var),
+  #   is.string(aval_var),
+  #   is.string(cnsr_var),
+  #   is.string(time_unit_var),
+  #   is.flag(compare_arm),
+  #   is.flag(combine_comp_arms),
+  #   is.null(xticks) | is.numeric(xticks),
+  #   is.string(title)
+  # )
 
   ref_arm_val <- paste(ref_arm, collapse = "/")
   y <- list()
@@ -150,17 +355,17 @@ template_g_km <- function(dataname = "ANL",
     )
   )
 
-  if (compare_arm && combine_comp_arms) {
-    comp_arm_val <- paste(comp_arm, collapse = "/")
-    data_list <- add_expr(
-      data_list,
-      substitute_names(
-        expr = mutate(arm_var = combine_levels(arm_var, levels = comp_arm, new_level = comp_arm_val)),
-        names = list(arm_var = as.name(arm_var)),
-        others = list(comp_arm = comp_arm, comp_arm_val = comp_arm_val)
-      )
-    )
-  }
+  # if (compare_arm && combine_comp_arms) {
+  #   comp_arm_val <- paste(comp_arm, collapse = "/")
+  #   data_list <- add_expr(
+  #     data_list,
+  #     substitute_names(
+  #       expr = mutate(arm_var = combine_levels(arm_var, levels = comp_arm, new_level = comp_arm_val)),
+  #       names = list(arm_var = as.name(arm_var)),
+  #       others = list(comp_arm = comp_arm, comp_arm_val = comp_arm_val)
+  #     )
+  #   )
+  # }
 
   y$data <- substitute(
     expr = {
