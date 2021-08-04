@@ -1,7 +1,30 @@
+# To do: add roxygen documentation here
+qc_filter_normalize <- function(object,
+                                min_cpm,
+                                min_cpm_prop,
+                                min_corr,
+                                min_depth,
+                                filter,
+                                annotations) {
+  assert_class(object, "AnyHermesData")
+
+  control <- hermes::control_quality(
+    min_cpm = min_cpm,
+    min_cpm_prop = min_cpm_prop,
+    min_corr = min_corr,
+    min_depth = min_depth
+  )
+
+  result <- hermes::add_quality_flags(object, control = control)
+  result <- hermes::filter(result, what = filter, annotation_required = annotations)
+  result <- hermes::normalize(result)
+
+  result
+}
+
 #' Teal Module for RNA-seq Quality Control
 #'
-#' This module conducts quality control on a SummarizedExperiment input
-#' for RNA-seq gene expression analysis.
+#' This module conducts quality control for RNA-seq gene expression analysis.
 #'
 #' @inheritParams module_arguments
 #'
@@ -72,14 +95,14 @@ ui_g_quality <- function(id,
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
       selectInput(ns("experiment_name"), "Select Experiment", experiment_name_choices),
-      selectInput(ns("plottype"), "Plot Type", choices = c("Histogram" = "lib_hist", "Q-Q" = "lib_qq", "Density" = "lib_den", "Boxplot" = "nz_box")),
+      selectInput(ns("plottype"), "Plot Type", choices = c("Histogram", "Q-Q", "Density", "Boxplot")),
       sliderInput(ns("min_cpm"), label = ("Minimum CPM"), min = 1, max = 10, value = 5),
       sliderInput(ns("min_cpm_prop"), label = ("Minimum CPM Proportion"), min = 0.01, max = 0.99, value = 0.25),
       sliderInput(ns("min_corr"), label = ("Minimum Correlation"), min = 0.01, max = 0.99, value = 0.5),
-      radioButtons(ns("min_depth"), label = ("Minimum Depth"), choices = c("Default", "Specify"), selected = NULL),
+      radioButtons(ns("min_depth"), label = ("Minimum Depth"), choices = c("Default", "Specify"), selected = "Default"),
       conditionalPanel(condition = paste0("input['", ns("min_depth"), "']" , ".includes('Specify')"), sliderInput(ns("min_depth_continuous"), label = NULL, min = 1, max = 10, value = 1)),
-      checkboxGroupInput(ns("filter"), label = ("Filter"), choiceNames = list("Genes", "Samples"), choiceValues = list("genes", "samples"), selected = NULL),
-      optionalSelectInput(ns("annotate"), label = "Annotations", choices = "", selected = NULL)
+      checkboxGroupInput(ns("filter"), label = ("Filter"), choices = list("Genes" = "genes", "Samples" = "samples"), selected = c("genes", "samples")),
+      optionalSelectInput(ns("annotate"), label = "Required Annotations", choices = "", selected = "", multiple = TRUE)
     ),
     output = plotOutput(ns("quality")),
     pre_output = pre_output,
@@ -113,15 +136,13 @@ srv_g_quality <- function(input,
   # When the chosen experiment changes, recompute the maximum CPM available.
   max_cpm <- eventReactive(input$experiment_name, {
     object <- experiment_data()
-    object <- HermesData(object)
     floor(max(edgeR::cpm(hermes::counts(object))))
   })
 
   # When the chosen experiment changes, recompute the maximum library size (depth) available.
   max_depth <- eventReactive(input$experiment_name, {
     object <- experiment_data()
-    object <- HermesData(object)
-    max(hermes::counts(object))
+    max(colSums(hermes::counts(object)))
   })
 
   observeEvent(annotations(), {
@@ -133,7 +154,7 @@ srv_g_quality <- function(input,
       session,
       "annotate",
       choices = annotations,
-      selected = annotations[1]
+      selected = "WidthBP"
     )
   })
 
@@ -161,32 +182,56 @@ srv_g_quality <- function(input,
     )
   })
 
-  output$quality <- renderPlot({
-    object <- experiment_data()
-    plottype <- input$plottype
-    min_cpm <- input$min_cpm
-    min_cpm_prop <- input$min_cpm_prop
-    min_corr <- input$min_corr
+  min_depth_final <- reactive({
     min_depth <- input$min_depth
     min_depth_continuous <- input$min_depth_continuous
-    filter <- input$filter
-    annotations <- input$annotate
-
-    min_depth <- if (min_depth == "Specify") {
+    if (min_depth == "Specify") {
+      req(min_depth_continuous)
       min_depth_continuous
     } else {
       NULL
     }
+  })
 
-    hermes::qc_normalize_filter(
+  object_final <- reactive({
+    object <- experiment_data()
+
+    min_cpm <- input$min_cpm
+    min_cpm_prop <- input$min_cpm_prop
+    min_corr <- input$min_corr
+    min_depth_final <- min_depth_final()
+
+    filter <- input$filter
+    annotations <- input$annotate
+
+    req(
+      min_cpm,
+      min_cpm_prop,
+      min_corr,
+      annotations
+    )
+
+    qc_filter_normalize(
       object,
-      plottype = plottype,
       min_cpm = min_cpm,
       min_cpm_prop = min_cpm_prop,
       min_corr = min_corr,
-      min_depth = min_depth,
+      min_depth = min_depth_final,
       filter = filter,
       annotations = annotations
+    )
+  })
+
+  output$quality <- renderPlot({
+    object_final <- object_final()
+    plot_type <- input$plottype
+
+    switch(
+      plot_type,
+      "Histogram" = hermes::draw_libsize_hist(object_final),
+      "Density" = hermes::draw_libsize_densities(object_final),
+      "Q-Q" = hermes::draw_libsize_qq(object_final),
+      "Boxplot" = hermes::draw_nonzero_boxplot(object_final)
     )
   })
 }
