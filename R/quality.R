@@ -24,7 +24,9 @@ qc_filter_normalize <- function(object,
 
 #' Teal Module for RNA-seq Quality Control
 #'
-#' This module conducts quality control for RNA-seq gene expression analysis.
+#' This module adds quality flags, filters by genes and/or samples,
+#' normalizes `AnyHermesData` objects and provides interactive plots
+#' for RNA-seq gene expression analysis.
 #'
 #' @inheritParams module_arguments
 #'
@@ -220,11 +222,19 @@ srv_g_quality <- function(input,
     annotations <- input$annotate
 
     req(
+      assays,
       min_cpm,
       min_cpm_prop,
       min_corr,
       annotations
+      # Note: The following statements are important to make sure the UI inputs have been updated.
+      # isTRUE(assays %in% SummarizedExperiment::assayNames(experiment_data)),
+      # isTRUE(annotations %in% names(SummarizedExperiment::rowData(experiment_data))),
+      # cancelOutput = FALSE
     )
+
+    # Validate and give useful messages to the user. Note: no need to duplicate here req() from above.
+    validate(need(hermes::is_hermes_data(experiment_data), "please use HermesData() on input experiments"))
 
     qc_filter_normalize(
       object,
@@ -243,9 +253,9 @@ srv_g_quality <- function(input,
     top_gene <- hermes::top_genes(object_final,
                                   n_top = 10,
                                   summary_fun = rowMeans)
-    # heatmap <- hermes::correlate(object_final,
-    #                              assay_name = input$assayname,
-    #                              method = "spearman")
+    heatmap <- hermes::correlate(object_final,
+                                 assay_name = input$assayname,
+                                 method = "spearman")
 
     switch(
       plot_type,
@@ -253,8 +263,8 @@ srv_g_quality <- function(input,
       "Density" = hermes::draw_libsize_densities(object_final),
       "Q-Q Plot" = hermes::draw_libsize_qq(object_final),
       "Boxplot" = hermes::draw_nonzero_boxplot(object_final),
-      "Top Genes Plot" = hermes::autoplot(top_gene)
-      # "Correlation Heatmap" = hermes::autoplot(heatmap)
+      "Top Genes Plot" = hermes::autoplot(top_gene),
+      "Correlation Heatmap" = hermes::autoplot(heatmap)
     )
   })
 }
@@ -269,7 +279,7 @@ srv_g_quality <- function(input,
 sample_tm_g_quality <- function() {
   mae <- hermes::multi_assay_experiment
   for (i in seq_along(mae)) {
-    mae[[i]] <- hermes::HermesData(mae[[i]])
+    mae[[i]] <- hermes::normalize(hermes::HermesData(mae[[i]]))
   }
   mae_data <- dataset("MAE", mae)
   data <- teal_data(mae_data)
