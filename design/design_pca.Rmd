@@ -9,8 +9,9 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 source("https://raw.github.roche.com/gist/sabanesd/0e839ca7d4920fab342d8ed4b9d668fc/raw/eeaf752448e1b07641cc0c2a3af2172af7b99c94/install_nest.R")
 install_nest("teal", "cb200aa2738f820b9dcffaffd858581fad9cf90e")
-library(teal)
+librlibrary(teal)
 library(teal.devel)
+library(DT)
 library(dplyr)
 library(ggplot2)
 library(random.cdisc.data)
@@ -23,19 +24,36 @@ library(assertthat)
 ```{r}
 object <- HermesData(summarized_experiment) %>%
   add_quality_flags() %>% 
-  filter() %>% 
+  hermes::filter() %>% 
   normalize()
 
 
 result <- calc_pca(object)
-result <- calc_pca(object, assay_name = "tpm")
+result1 <- calc_pca(object, assay_name = "tpm")
 
 result_cpm <- calc_pca(object, assay_name = "cpm")
 autoplot(result)
 autoplot(result, x = 2, y = 3)
 autoplot(result, variance_percentage = FALSE)
 autoplot(result, label = TRUE, label.repel = TRUE)
+autoplot(result, label = FALSE, label.repel = TRUE)
 autoplot(result, label = TRUE, label.repel = FALSE)
+
+hermes::autoplot(
+      object = result,
+      assay_name = "counts",
+      x = 3,
+      y = 4,
+      data = as.data.frame(colData(object)), 
+      colour = "COUNTRY",
+      variance_percentage = TRUE,
+      label = TRUE,
+      label.repel = TRUE
+    )
+
+cors <- hermes::correlate(result, object)
+autoplot(cors)
+autoplot(cors, cluster_columns = FALSE)
 ```
 
 ## Teal module
@@ -92,14 +110,28 @@ ui_g_pca <- function(id,
       helpText("Analysis of MAE:", tags$code(mae_name)),
       selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
       selectInput(ns("assay_name"), "Select assay", choices = ""),
+      optionalSelectInput(ns("color_var"), "Optional color variable"),
       selectizeInput(ns("x_var"), "Select Principal Component to Plot on X-axis", choices = ""),
       selectizeInput(ns("y_var"), "Select Principal Component to Plot on Y-axis", choices = ""),
       tags$label("Show Variance Percentage"),
       shinyWidgets::switchInput(ns("var_pct"), value = TRUE, size = "mini"),
       tags$label("Show Sample Label"),
       shinyWidgets::switchInput(ns("label"), value = TRUE, size = "mini"),
+      tags$label("Repel overlapping text labels"),
+      shinyWidgets::switchInput(ns("label_repel"), value = TRUE, size = "mini"),
+      tags$label("Cluster columns for correlation heatmap"),
+      shinyWidgets::switchInput(ns("cluster_columns"), value = FALSE, size = "mini")
     ),
-    output = plotOutput(ns("plot")),
+    # output = div(
+    #   tableOutput(ns("table_pca"))
+    # ),
+    output = div(
+      tableOutput(ns("table_pca")),
+     # dataTableOutput(ns("table_pca")),
+      plotOutput(ns("plot_pca")),
+      plotOutput(ns("plot_cor"))
+    ),
+    #output = plotOutput(ns("plot")),
     pre_output = pre_output,
     post_output = post_output
   )
@@ -112,10 +144,166 @@ srv_g_pca <- function(input,
                       output,
                       session,
                       datasets,
-                      mae_name) {}
+                      mae_name) {
+  # When the filtered data set of the chosen experiment changes, update the
+  # experiment data object.
+  experiment_data <- reactive({
+    req(input$experiment_name)  # Important to avoid running into NULL here.
 
+    mae <- datasets$get_data(mae_name, filtered = TRUE)
+    mae[[input$experiment_name]]
+  })
+
+  # When the filtered data set or the chosen experiment changes, update
+  # the call that creates the chosen experiment data object.
+  experiment_call <- reactive({
+    req(input$experiment_name)  # Important to avoid running into NULL here.
+
+    dat <- datasets$get_filtered_datasets(mae_name)
+    dat$get_filter_states(input$experiment_name)$get_call()
+  })
+
+  # # When the chosen experiment call changes, we recompute gene names.
+  # genes <- eventReactive(experiment_call(), ignoreNULL = FALSE, {
+  #   object <- experiment_data()
+  #   rownames(object)
+  # })
+
+  # When the chosen experiment changes, recompute the assay names.
+  assay_names <- eventReactive(input$experiment_name, ignoreNULL = TRUE, {
+    object <- experiment_data()
+    SummarizedExperiment::assayNames(object)
+  })
+
+  # When the assay_names changes, update the choices for assay.
+  observeEvent(assay_names(), {
+    assay_name_choices <- assay_names()
+
+    updateSelectInput(
+      session,
+      "assay_name",
+      choices = assay_name_choices,
+      selected = assay_name_choices[1]
+    )
+  })
+  
+  # When the chosen experiment changes, recompute the colData variables.
+  col_data_vars <- eventReactive(input$experiment_name, ignoreNULL = TRUE, {
+    object <- experiment_data()
+    names(SummarizedExperiment::colData(object))
+  })
+
+  # When the colData variables change, update the choices for color_var.
+  observeEvent(col_data_vars(), {
+    color_var_choices <- col_data_vars()
+    
+    updateOptionalSelectInput(
+      session,
+      "color_var",
+      choices = color_var_choices,
+      selected = character()
+    )
+  })
+  
+  # When the chosen experiment or assay name changes, recompute the PC
+  pca_result <- reactive({
+    req(input$experiment_name) 
+    req(input$assay_name)
+    object <- experiment_data()
+    assay_name <- assay_names()
+    hermes::calc_pca(object, assay_name)
+  })
+  
+  # When experiment or assay name changes, update choices for PCs in x_var and y_var
+  observeEvent(pca_result(), {
+    pca_result_x <- pca_result()$x
+    pc_choices <- colnames(as.data.frame(pca_result_x))
+
+    id_names <- c("x_var", "y_var")
+    for (i in seq_along(id_names)) {
+      updateSelectizeInput(
+        session,
+        id_names[i],
+        choices = pc_choices,
+        selected = pc_choices[i]
+      )
+    }
+  })
+  
+  # Compute correlatin of PC with sample variables
+  cor_result <- reactive({
+    hermes::correlate(pca_result(), experiment_data())
+  })
+  
+  output$table_pca <- renderTable({
+    pca_result_x <- pca_result()$x
+    as.data.frame(pca_result_x)
+  }, rownames = TRUE)
+  
+  # output$table_pca <- DT::renderDataTable({
+  #   pca_result_x()
+  # },
+  # rownames = TRUE, options = list(scrollX= TRUE, pageLength = 5)
+  # )
+  
+  output$plot_pca <- renderPlot({
+    # browser()
+    # Resolve all reactivity.
+    pca_result <- pca_result()
+    x_var <- as.numeric(substring(input$x_var, 3))
+    y_var <- as.numeric(substring(input$y_var, 3))
+    data <- as.data.frame(colData(experiment_data()))
+    color_var <- input$color_var
+    assay_name <- input$assay_name
+    var_pct <- input$var_pct
+    label <- input$label
+    label_repel <- input$label_repel
+
+    # Require which states need to be truthy.
+    req(
+      assay_name,
+      # Note: The following statements are important to make sure the UI inputs have been updated.
+      isTRUE(assay_name %in% SummarizedExperiment::assayNames(experiment_data())),
+      #isTRUE(all(c(color_var)) %in% names(data)), ### WHY DOES THIS FAIL??? ###
+      cancelOutput = FALSE
+    )
+
+    # Validate and give useful messages to the user. Note: no need to duplicate here req() from above.
+    #validate(need(hermes::is_hermes_data(experiment_data), "please use HermesData() on input experiments"))
+    #validate(need(x_var != y_var, "please select different two principal components"))
+
+    hermes::autoplot(
+      object = pca_result,
+      assay_name = assay_name,
+      x = x_var,
+      y = y_var,
+      data = data,
+      colour = color_var,
+      variance_percentage = var_pct,
+      label = label,
+      label.repel = label_repel
+    )
+  })
+  
+  output$plot_cor <- renderPlot({
+    # Resolve all reactivity.
+    cor_result <- cor_result()
+    cluster_columns <- input$cluster_columns
+
+    hermes::autoplot(
+      object = cor_result,
+      cluster_columns = cluster_columns
+    )
+  })
+  
+}
 ```
 
+
+TO DO:
+1. add a feature where label.repel aligns with label and when label = false, then label.repel is not true (auto-update and error)
+
+WHY DOES renderDataTable / dataTableOutput doesn't work????
 
 ## Sample app
 
