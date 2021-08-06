@@ -111,13 +111,15 @@ ui_g_pca <- function(id,
       selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
       selectInput(ns("assay_name"), "Select assay", choices = ""),
       optionalSelectInput(ns("color_var"), "Optional color variable"),
-      selectizeInput(ns("x_var"), "Select Principal Component to Plot on X-axis", choices = ""),
-      selectizeInput(ns("y_var"), "Select Principal Component to Plot on Y-axis", choices = ""),
+      selectizeInput(ns("x_var"), "PCA Plot: Select Principal Component to Plot on X-axis", 
+                     choices = ""),
+      selectizeInput(ns("y_var"), "PCA Plot: Select Principal Component to Plot on Y-axis", 
+                     choices = ""),
       tags$label("PCA Plot: Show Variance Percentage"),
       shinyWidgets::switchInput(ns("var_pct"), value = TRUE, size = "mini"),
-      # tags$label("PCA Plot: Show Sample Label"),
-      # shinyWidgets::switchInput(ns("label"), value = TRUE, size = "mini"),
       tags$label("PCA Plot: Show Sample Label"),
+      shinyWidgets::switchInput(ns("label"), value = TRUE, size = "mini"),
+      tags$label("PCA Plot: Repel Sample Label"),
       shinyWidgets::switchInput(ns("label_repel"), value = TRUE, size = "mini"),
       tags$label("Correlation Plot: Cluster columns for correlation heatmap"),
       shinyWidgets::switchInput(ns("cluster_columns"), value = FALSE, size = "mini"),
@@ -274,22 +276,17 @@ srv_g_pca <- function(input,
                   options = list(scrollX = TRUE, pageLength = 30, lengthMenu = c(5, 15, 30, 100)),
                   caption = "Correlation Matrix")
   })
-  
-  # # update label_repel based on input$label
-  # observeEvent(input$label == FALSE, {
-  #   shinyWidgets::updateSwitchInput(
-  #     session,
-  #     inputId = input$label_repel,
-  #     value = FALSE
-  #   )
-  # })
-  # observeEvent(input$label == TRUE, {
-  #   shinyWidgets::updateSwitchInput(
-  #     session,
-  #     inputId = input$label_repel,
-  #     value = TRUE
-  #   )
-  # })
+
+  # Turn off label_repel when input$label is off
+  observeEvent(input$label, {
+    if (input$label == FALSE) {
+      shinyWidgets::updateSwitchInput(
+        session,
+        inputId = "label_repel",
+        value = FALSE
+      )
+    }
+  })
   
   # Render plot pca output
   output$plot_pca <- renderPlot({
@@ -302,7 +299,7 @@ srv_g_pca <- function(input,
     color_var <- input$color_var
     assay_name <- input$assay_name
     var_pct <- input$var_pct
-    #label <- input$label
+    label <- input$label
     label_repel <- input$label_repel
 
     # Require which states need to be truthy.
@@ -326,7 +323,7 @@ srv_g_pca <- function(input,
       data = data,
       colour = color_var,
       variance_percentage = var_pct,
-      #label = label,
+      label = label,
       label.repel = label_repel
     )
   })
