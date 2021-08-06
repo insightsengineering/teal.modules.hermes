@@ -13,7 +13,7 @@ is_blank(x)
 Flag whether \code{x} is identical to an empty string, i.e. \code{""}.
 }
 \description{
-\ifelse{html}{\out{<a href='https://www.tidyverse.org/lifecycle/#experimental'><img src='figures/lifecycle-experimental.svg' alt='Experimental lifecycle'></a>}}{\strong{Experimental}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 This predicate function is helpful for functions where arguments could
 not yet be initialized from the teal module.

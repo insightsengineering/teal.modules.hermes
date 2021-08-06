@@ -12,9 +12,13 @@
 #' MAE (assay, Sample IDs) for a given gene(s).
 #'
 #' @examples
+#' library(dplyr)
+#' library(random.cdisc.data)
 #' mae <- hermes::multi_assay_experiment
-#' adtte <- random.cdisc.data::radtte(cached = TRUE) %>% dplyr::mutate(CNSR = as.logical(CNSR))
-#' #make sure patient IDs match some in adtte to test function
+#' adtte <- radtte(cached = TRUE) %>%
+#'   mutate(CNSR = as.logical(CNSR))
+#'
+#' # Make sure patient IDs match some in adtte to test the function.
 #' experiment_name <- "se2"
 #' se_test <- mae[[experiment_name]]
 #' hd_test <- hermes::HermesData(se_test)
