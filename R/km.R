@@ -11,6 +11,7 @@
 #' @return A data frame containing all columns/rows from adtte and select columns from
 #' MAE (assay, Sample IDs) for a given gene(s).
 #'
+#' @export
 #' @examples
 #' library(dplyr)
 #' library(random.cdisc.data)
