@@ -113,25 +113,44 @@ ui_g_pca <- function(id,
       optionalSelectInput(ns("color_var"), "Optional color variable"),
       selectizeInput(ns("x_var"), "Select Principal Component to Plot on X-axis", choices = ""),
       selectizeInput(ns("y_var"), "Select Principal Component to Plot on Y-axis", choices = ""),
-      tags$label("Show Variance Percentage"),
+      tags$label("PCA Plot: Show Variance Percentage"),
       shinyWidgets::switchInput(ns("var_pct"), value = TRUE, size = "mini"),
-      tags$label("Show Sample Label"),
-      shinyWidgets::switchInput(ns("label"), value = TRUE, size = "mini"),
-      tags$label("Repel overlapping text labels"),
+      # tags$label("PCA Plot: Show Sample Label"),
+      # shinyWidgets::switchInput(ns("label"), value = TRUE, size = "mini"),
+      tags$label("PCA Plot: Show Sample Label"),
       shinyWidgets::switchInput(ns("label_repel"), value = TRUE, size = "mini"),
-      tags$label("Cluster columns for correlation heatmap"),
-      shinyWidgets::switchInput(ns("cluster_columns"), value = FALSE, size = "mini")
+      tags$label("Correlation Plot: Cluster columns for correlation heatmap"),
+      shinyWidgets::switchInput(ns("cluster_columns"), value = FALSE, size = "mini"),
+      tags$label("Show corresponding matrix"),
+      shinyWidgets::switchInput(ns("show_matrix"), value = FALSE, size = "mini")
     ),
-    # output = div(
-    #   tableOutput(ns("table_pca"))
-    # ),
-    output = div(
-      tableOutput(ns("table_pca")),
-     # dataTableOutput(ns("table_pca")),
-      plotOutput(ns("plot_pca")),
-      plotOutput(ns("plot_cor"))
+    output = tagList(
+        tabsetPanel(type = "tabs",
+          tabPanel(
+            title = "PCA",
+            column(
+              width = 12,
+              div(style = "height:20px;"),
+              h4("Principal Components Analysis"),
+              plotOutput(ns("plot_pca")),
+              br(), br(), br(),
+              DTOutput(ns("table_pca"))
+            )
+          ),
+          tabPanel(
+            title = "PCA Correlation",
+            column(
+              width = 12,
+              div(style = "height:20px;"),
+              h4("Correlation of Principal Components with Sample Variables"),
+              plotOutput(ns("plot_cor")),
+              br(), br(), br(),
+              DTOutput(ns("table_cor"))
+            )
+          )
+        )
+      #)
     ),
-    #output = plotOutput(ns("plot")),
     pre_output = pre_output,
     post_output = post_output
   )
@@ -162,12 +181,6 @@ srv_g_pca <- function(input,
     dat <- datasets$get_filtered_datasets(mae_name)
     dat$get_filter_states(input$experiment_name)$get_call()
   })
-
-  # # When the chosen experiment call changes, we recompute gene names.
-  # genes <- eventReactive(experiment_call(), ignoreNULL = FALSE, {
-  #   object <- experiment_data()
-  #   rownames(object)
-  # })
 
   # When the chosen experiment changes, recompute the assay names.
   assay_names <- eventReactive(input$experiment_name, ignoreNULL = TRUE, {
@@ -235,17 +248,50 @@ srv_g_pca <- function(input,
     hermes::correlate(pca_result(), experiment_data())
   })
   
-  output$table_pca <- renderTable({
-    pca_result_x <- pca_result()$x
-    as.data.frame(pca_result_x)
-  }, rownames = TRUE)
+  # Compute & display pca matrix table if show_matrix is TRUE
+  show_matrix_pca <- reactive({
+    if (input$show_matrix) {
+      pca_result_x <- pca_result()$x
+      as.data.frame(pca_result_x)
+    }
+  })
+  output$table_pca <- renderDT({
+    DT::datatable(show_matrix_pca(),
+                  rownames = TRUE, 
+                  options = list(scrollX = TRUE, pageLength = 30, lengthMenu = c(5, 15, 30, 100)),
+                  caption = "PCA Matrix")
+  })
   
-  # output$table_pca <- DT::renderDataTable({
-  #   pca_result_x()
-  # },
-  # rownames = TRUE, options = list(scrollX= TRUE, pageLength = 5)
-  # )
+  # Compute & display correlation matrix if show_matrix is TRUE
+  show_matrix_cor <- reactive({
+    if (input$show_matrix) {
+      cor_result_df <- as.data.frame(cor_result())
+    }
+  })
+  output$table_cor <- renderDT({
+    DT::datatable(show_matrix_cor(), 
+                  rownames = TRUE, 
+                  options = list(scrollX = TRUE, pageLength = 30, lengthMenu = c(5, 15, 30, 100)),
+                  caption = "Correlation Matrix")
+  })
   
+  # # update label_repel based on input$label
+  # observeEvent(input$label == FALSE, {
+  #   shinyWidgets::updateSwitchInput(
+  #     session,
+  #     inputId = input$label_repel,
+  #     value = FALSE
+  #   )
+  # })
+  # observeEvent(input$label == TRUE, {
+  #   shinyWidgets::updateSwitchInput(
+  #     session,
+  #     inputId = input$label_repel,
+  #     value = TRUE
+  #   )
+  # })
+  
+  # Render plot pca output
   output$plot_pca <- renderPlot({
     # browser()
     # Resolve all reactivity.
@@ -256,7 +302,7 @@ srv_g_pca <- function(input,
     color_var <- input$color_var
     assay_name <- input$assay_name
     var_pct <- input$var_pct
-    label <- input$label
+    #label <- input$label
     label_repel <- input$label_repel
 
     # Require which states need to be truthy.
@@ -264,13 +310,13 @@ srv_g_pca <- function(input,
       assay_name,
       # Note: The following statements are important to make sure the UI inputs have been updated.
       isTRUE(assay_name %in% SummarizedExperiment::assayNames(experiment_data())),
-      #isTRUE(all(c(color_var)) %in% names(data)), ### WHY DOES THIS FAIL??? ###
+      #isTRUE(all(color_var) %in% names(SummarizedExperiment::colData(experiment_data))), ### WHY DOES THIS FAIL??? ###
       cancelOutput = FALSE
     )
 
     # Validate and give useful messages to the user. Note: no need to duplicate here req() from above.
-    #validate(need(hermes::is_hermes_data(experiment_data), "please use HermesData() on input experiments"))
-    #validate(need(x_var != y_var, "please select different two principal components"))
+    validate(need(hermes::is_hermes_data(experiment_data()), "please use HermesData() on input experiments"))
+    validate(need(x_var != y_var, "please select two different principal components"))
 
     hermes::autoplot(
       object = pca_result,
@@ -280,11 +326,12 @@ srv_g_pca <- function(input,
       data = data,
       colour = color_var,
       variance_percentage = var_pct,
-      label = label,
+      #label = label,
       label.repel = label_repel
     )
   })
   
+  # render correlation heatmap
   output$plot_cor <- renderPlot({
     # Resolve all reactivity.
     cor_result <- cor_result()
@@ -298,12 +345,6 @@ srv_g_pca <- function(input,
   
 }
 ```
-
-
-TO DO:
-1. add a feature where label.repel aligns with label and when label = false, then label.repel is not true (auto-update and error)
-
-WHY DOES renderDataTable / dataTableOutput doesn't work????
 
 ## Sample app
 
