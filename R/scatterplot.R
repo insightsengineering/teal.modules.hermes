@@ -112,16 +112,18 @@ srv_g_scatterplot <- function(input,
   })
 
   # When the filtered data set or the chosen experiment changes, update
-  # the call that creates the chosen experiment data object.
-  experiment_call <- reactive({
+  # the calls that subset the genes of the chosen experiment data object.
+  experiment_subset_calls <- reactive({
     req(input$experiment_name)  # Important to avoid running into NULL here.
 
-    dat <- datasets$get_filtered_datasets(mae_name)
-    dat$get_filter_states(input$experiment_name)$get_call()
+    filtered_mae <- datasets$get_filtered_datasets(mae_name)
+    filter_states <- filtered_mae$get_filter_states(input$experiment_name)
+    subset_queue <- filter_states$queue_get("subset")
+    sapply(subset_queue, function(x) x$get_call())
   })
 
-  # When the chosen experiment call changes, we recompute gene names.
-  genes <- eventReactive(experiment_call(), ignoreNULL = FALSE, {
+  # When the chosen gene subset changes, we recompute gene names.
+  genes <- eventReactive(experiment_subset_calls(), ignoreNULL = FALSE, {
     object <- experiment_data()
     rownames(object)
   })
