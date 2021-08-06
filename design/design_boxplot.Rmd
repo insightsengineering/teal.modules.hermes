@@ -245,7 +245,7 @@ tm_g_boxplot <- function(label = "Simple MAE module",
     label = label,
     server = srv_boxplot,
     ui = ui_boxplot,
-    ui_args = list(dataname = dataname),
+    ui_args = args,,
     server_args = list(dataname = dataname),
     filters = "all"
   )

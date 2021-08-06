@@ -42,3 +42,6 @@ design/*.html
 
 # MacOS Files
 .DS_Store
+
+# Test results
+tests/unit_testing_results.rds

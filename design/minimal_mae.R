@@ -1,14 +1,17 @@
 # Simplest example to pass MAE data to teal module.
 
+
 # 1) Install teal from the right feature branch.
 source("https://raw.github.roche.com/gist/sabanesd/0e839ca7d4920fab342d8ed4b9d668fc/raw/eeaf752448e1b07641cc0c2a3af2172af7b99c94/install_nest.R")
-install_nest("teal", "1185_dataset_specific_filter_panel")
+install_nest("teal", "cb200aa2738f820b9dcffaffd858581fad9cf90e")
 
 # 2) Try simplest example.
-tm_made_up_merge_pr <- function(label = "Simple MAE module", 
-                                info = NULL, 
-                                dataname = NULL, 
-                                pre_output = NULL, 
+=======
+
+tm_made_up_merge_pr <- function(label = "Simple MAE module",
+                                info = NULL,
+                                dataname = NULL,
+                                pre_output = NULL,
                                 post_output = NULL) {
   args <- as.list(environment())
   module(
@@ -23,9 +26,9 @@ tm_made_up_merge_pr <- function(label = "Simple MAE module",
 
 ui_made_up_merge_pr <- function(id, ...) {
   arguments <- list(...)
-  
+
   ns <- NS(id)
-  
+
   standard_layout(
     output = white_small_well(
       tabsetPanel(
@@ -36,7 +39,7 @@ ui_made_up_merge_pr <- function(id, ...) {
 }
 
 srv_made_up_merge_pr <- function(input, output, session, datasets, dataname) {
-  
+
   output$col_data_table <- renderText({
     MAE <- datasets$get_data(dataname, filtered = TRUE)
     paste(capture.output(print(MAE)), collapse = "\n")
@@ -51,7 +54,7 @@ MAE <- multi_assay_experiment # from hermes
 mae <- dataset("MAE", MAE)
 
 
-data <- teal_data(mae) 
+data <- teal_data(mae)
 
 app <- init(
   data = data,
