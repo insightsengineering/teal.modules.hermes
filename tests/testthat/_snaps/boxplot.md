@@ -15,19 +15,19 @@
                   <code>MyMAE</code>
                 </span>
                 <div class="form-group shiny-input-container">
-                  <label class="control-label" for="testid-experiment_name">Select experiment</label>
+                  <label class="control-label" id="testid-experiment_name-label" for="testid-experiment_name">Select experiment</label>
                   <div>
                     <select id="testid-experiment_name"><option value="se1" selected>se1</option>
       <option value="se2">se2</option>
       <option value="se3">se3</option></select>
-                    <script type="application/json" data-for="testid-experiment_name" data-nonempty="">{}</script>
+                    <script type="application/json" data-for="testid-experiment_name" data-nonempty="">{"plugins":["selectize-plugin-a11y"]}</script>
                   </div>
                 </div>
                 <div class="form-group shiny-input-container">
-                  <label class="control-label" for="testid-assay_name">Select assay</label>
+                  <label class="control-label" id="testid-assay_name-label" for="testid-assay_name">Select assay</label>
                   <div>
                     <select id="testid-assay_name"><option value="" selected></option></select>
-                    <script type="application/json" data-for="testid-assay_name">{}</script>
+                    <script type="application/json" data-for="testid-assay_name">{"plugins":["selectize-plugin-a11y"]}</script>
                   </div>
                 </div>
                 <div class="form-group shiny-input-container">
@@ -39,17 +39,17 @@
                   <select data-actions-box="false" data-none-selected-text="- Nothing selected -" data-max-options="1" data-show-subtext="true" data-live-search="false" id="testid-facet_var" class="selectpicker form-control" multiple="multiple"><option value=""></option></select>
                 </div>
                 <div class="form-group shiny-input-container">
-                  <label class="control-label" for="testid-y_var">Select gene of interest</label>
+                  <label class="control-label" id="testid-y_var-label" for="testid-y_var">Select gene of interest</label>
                   <div>
                     <select id="testid-y_var" class="form-control"><option value="" selected></option></select>
-                    <script type="application/json" data-for="testid-y_var">{}</script>
+                    <script type="application/json" data-for="testid-y_var">{"plugins":["selectize-plugin-a11y"]}</script>
                   </div>
                 </div>
                 <div class="form-group shiny-input-container">
-                  <label class="control-label" for="testid-x_var">Select stratifying variable</label>
+                  <label class="control-label" id="testid-x_var-label" for="testid-x_var">Select stratifying variable</label>
                   <div>
                     <select id="testid-x_var" class="form-control"><option value="" selected></option></select>
-                    <script type="application/json" data-for="testid-x_var">{}</script>
+                    <script type="application/json" data-for="testid-x_var">{"plugins":["selectize-plugin-a11y"]}</script>
                   </div>
                 </div>
                 <label>Jitter</label>
@@ -63,7 +63,7 @@
             <div class="well">
               <div id="pre-output"></div>
               <div id="output">
-                <div id="testid-plot" class="shiny-plot-output" style="width: 100% ; height: 400px"></div>
+                <div id="testid-plot" class="shiny-plot-output" style="width:100%;height:400px;"></div>
               </div>
               <div id="post-output"></div>
             </div>

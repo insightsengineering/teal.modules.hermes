@@ -4,7 +4,7 @@
 \alias{function_arguments}
 \title{Standard Function Arguments}
 \arguments{
-\item{adtte}{(\verb{data frame})\cr an adtte dataset.}
+\item{adtte}{(\verb{data frame})\cr an \code{adtte} dataset.}
 
 \item{mae}{(\code{MultiAssayExperiment})\cr contains \code{SummarizedExperiment} objects.}
 
