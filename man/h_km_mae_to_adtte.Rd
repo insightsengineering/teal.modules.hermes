@@ -28,7 +28,7 @@ A data frame containing all columns/rows from adtte and select columns from
 MAE (assay, Sample IDs) for a given gene(s).
 }
 \description{
-\ifelse{html}{\out{<a href='https://www.tidyverse.org/lifecycle/#experimental'><img src='figures/lifecycle-experimental.svg' alt='Experimental lifecycle'></a>}}{\strong{Experimental}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 A function to help with merging of MAE to ADTTE object for use with \code{g_km}.
 }
@@ -41,8 +41,8 @@ adtte <- random.cdisc.data::radtte(cached = TRUE) \%>\% dplyr::mutate(CNSR = as.
 #make sure patient IDs match some in adtte to test function
 experiment_name <- "se2"
 se_test <- mae[[experiment_name]]
-hd_test <- HermesData(se_test)
-mae_samplemap <- sampleMap(mae)
+hd_test <- hermes::HermesData(se_test)
+mae_samplemap <- MultiAssayExperiment::sampleMap(mae)
 samplemap_experiment <- mae_samplemap[mae_samplemap$assay == experiment_name, ]
 se_patients <- samplemap_experiment$primary
 adtte$USUBJID[1:9] <- se_patients

@@ -22,8 +22,7 @@ test_that("tm_g_quality works as expected in the sample app", {
     "quality/",
     loadTimeout = 1e5,
     debug = "all",
-    phantomTimeout = 1e5,
-    seed = 123
+    phantomTimeout = 1e5
   )
   app$getDebugLog()
   app$snapshotInit("test-app")
