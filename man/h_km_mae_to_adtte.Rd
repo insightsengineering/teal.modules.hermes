@@ -13,7 +13,7 @@ h_km_mae_to_adtte(
 )
 }
 \arguments{
-\item{adtte}{(\verb{data frame})\cr an adtte dataset.}
+\item{adtte}{(\verb{data frame})\cr an \code{adtte} dataset.}
 
 \item{mae}{(\code{MultiAssayExperiment})\cr contains \code{SummarizedExperiment} objects.}
 
@@ -24,25 +24,29 @@ h_km_mae_to_adtte(
 \item{assay_name}{(\code{string})\cr the assay to define the groups.}
 }
 \value{
-A data frame containing all columns/rows from adtte and select columns from
+A data frame containing all columns/rows from \code{adtte} and select columns from
 MAE (assay, Sample IDs) for a given gene(s).
 }
 \description{
-\ifelse{html}{\out{<a href='https://www.tidyverse.org/lifecycle/#experimental'><img src='figures/lifecycle-experimental.svg' alt='Experimental lifecycle'></a>}}{\strong{Experimental}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-A function to help with merging of MAE to ADTTE object for use with \code{g_km}.
+A function to help with merging of MAE to \code{ADTTE} for use with \code{g_km}.
 }
 \note{
 We require that each patient only has one sample.
 }
 \examples{
+library(dplyr)
+library(random.cdisc.data)
 mae <- hermes::multi_assay_experiment
-adtte <- random.cdisc.data::radtte(cached = TRUE) \%>\% dplyr::mutate(CNSR = as.logical(CNSR))
-#make sure patient IDs match some in adtte to test function
+adtte <- radtte(cached = TRUE) \%>\%
+  mutate(CNSR = as.logical(CNSR))
+
+# Make sure patient IDs match some in `adtte` to test the function.
 experiment_name <- "se2"
 se_test <- mae[[experiment_name]]
-hd_test <- HermesData(se_test)
-mae_samplemap <- sampleMap(mae)
+hd_test <- hermes::HermesData(se_test)
+mae_samplemap <- MultiAssayExperiment::sampleMap(mae)
 samplemap_experiment <- mae_samplemap[mae_samplemap$assay == experiment_name, ]
 se_patients <- samplemap_experiment$primary
 adtte$USUBJID[1:9] <- se_patients
