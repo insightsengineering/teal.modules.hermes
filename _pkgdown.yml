@@ -23,6 +23,7 @@ reference:
     contents:
       - tm_g_barplot
       - tm_g_scatterplot
+      - tm_g_volcanoplot
   - title: Graphs
     contents:
   - title: Control Functions
