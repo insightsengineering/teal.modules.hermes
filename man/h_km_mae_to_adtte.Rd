@@ -13,7 +13,7 @@ h_km_mae_to_adtte(
 )
 }
 \arguments{
-\item{adtte}{(\verb{data frame})\cr an adtte dataset.}
+\item{adtte}{(\verb{data frame})\cr an \code{adtte} dataset.}
 
 \item{mae}{(\code{MultiAssayExperiment})\cr contains \code{SummarizedExperiment} objects.}
 
@@ -24,13 +24,13 @@ h_km_mae_to_adtte(
 \item{assay_name}{(\code{string})\cr the assay to define the groups.}
 }
 \value{
-A data frame containing all columns/rows from adtte and select columns from
+A data frame containing all columns/rows from \code{adtte} and select columns from
 MAE (assay, Sample IDs) for a given gene(s).
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-A function to help with merging of MAE to ADTTE object for use with \code{g_km}.
+A function to help with merging of MAE to \code{ADTTE} for use with \code{g_km}.
 }
 \note{
 We require that each patient only has one sample.
@@ -42,7 +42,7 @@ mae <- hermes::multi_assay_experiment
 adtte <- radtte(cached = TRUE) \%>\%
   mutate(CNSR = as.logical(CNSR))
 
-# Make sure patient IDs match some in adtte to test the function.
+# Make sure patient IDs match some in `adtte` to test the function.
 experiment_name <- "se2"
 se_test <- mae[[experiment_name]]
 hd_test <- hermes::HermesData(se_test)
