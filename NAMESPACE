@@ -2,6 +2,7 @@
 
 export(assert_tag)
 export(check_tag)
+export(h_km_mae_to_adtte)
 export(is_blank)
 export(sample_tm_g_barplot)
 export(sample_tm_g_boxplot)
