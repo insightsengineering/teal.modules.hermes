@@ -7,9 +7,7 @@ editor_options:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-source("https://raw.github.roche.com/gist/sabanesd/0e839ca7d4920fab342d8ed4b9d668fc/raw/eeaf752448e1b07641cc0c2a3af2172af7b99c94/install_nest.R")
-install_nest("teal", "cb200aa2738f820b9dcffaffd858581fad9cf90e")
-librlibrary(teal)
+library(teal)
 library(teal.devel)
 library(DT)
 library(dplyr)
@@ -17,6 +15,7 @@ library(ggplot2)
 library(random.cdisc.data)
 library(hermes)
 library(assertthat)
+library(checkmate)
 ```
 
 ## Hermes functions we want to use for this module
@@ -24,9 +23,8 @@ library(assertthat)
 ```{r}
 object <- HermesData(summarized_experiment) %>%
   add_quality_flags() %>% 
-  hermes::filter() %>% 
+  filter() %>% 
   normalize()
-
 
 result <- calc_pca(object)
 result1 <- calc_pca(object, assay_name = "tpm")
