@@ -28,6 +28,7 @@ Imports:
   shinyWidgets,
   SummarizedExperiment,
   teal.devel,
+  teal.modules.clinical,
   tern
 Suggests:
   dplyr,

@@ -81,212 +81,7 @@ h_km_mae_to_adtte <- function(adtte,
   merged_adtte
 }
 
-#' Expression List. ---Taken from TMC (nonexported function)
-#'
-#' Add a new expression to a list (of expressions).
-#'
-#' @param expr_ls (`list` of `call`)\cr the list to which a new expression
-#'   should be added.
-#' @param new_expr (`call`)\cr the new expression to add.
-#'
-#' @return a `list` of `call`.
-#'
-#' @details Offers a stricter control to add new expressions to an existing
-#'   list. The list of expressions can be later used to generate a pipeline,
-#'   for instance with `pipe_expr`.
-#'
-#' @import assertthat
-#'
-#' @examples
-#'
-#' lyt <- list()
-#' lyt <- teal.modules.clinical:::add_expr(lyt, substitute(basic_table()))
-#' lyt <- teal.modules.clinical:::add_expr(
-#'   lyt, substitute(split_cols_by(var = arm), env = list(armcd = "ARMCD"))
-#' )
-#' lyt <- teal.modules.clinical:::add_expr(
-#'   lyt,
-#'   substitute(
-#'     test_proportion_diff(
-#'       vars = "rsp", method = "cmh", variables = list(strata = "strat")
-#'     )
-#'   )
-#' )
-#' lyt <- teal.modules.clinical:::add_expr(lyt, quote(build_table(df = dta)))
-#' teal.modules.clinical:::pipe_expr(lyt)
-#'
-add_expr <- function(expr_ls, new_expr) {
-
-  assert_that(
-    is.list(expr_ls),
-    is.call(new_expr) || is.name(new_expr)
-  )
-
-  # support nested expressions such as expr({a <- 1; b <- 2})
-  if (is(new_expr, "{")) {
-    res <- expr_ls
-    for (idx in seq_along(new_expr)[-1]) {
-      res <- add_expr(res, new_expr[[idx]])
-    }
-    return(res)
-  }
-
-  c(
-    expr_ls,
-    list(new_expr)
-  )
-}
-
-#' Expressions as a Pipeline.  ---Taken from TMC (nonexported function)
-#'
-#' Concatenate expressions in a single pipeline-flavor expression.
-#'
-#' @param exprs (`list` of `call`)\cr expressions to concatenate in a
-#'   pipeline (`%>%`).
-#' @param pipe_str (`character`)\cr the character which separates the expressions.
-#'
-#' @examples
-#'
-#' result <- teal.modules.clinical:::pipe_expr(
-#'   list(
-#'     expr1 = substitute(df),
-#'     expr2 = substitute(head)
-#'   )
-#' )
-#' result
-#'
-pipe_expr <- function(exprs, pipe_str = "%>%") {
-  exprs <- lapply(exprs, h_concat_expr)
-  exprs <- unlist(exprs)
-  exprs <- paste(exprs, collapse = pipe_str)
-  str2lang(exprs)
-}
-
-#' Expression: Arm Preparation.  ---Taken from TMC (nonexported function)
-#'
-#' The function generate the standard expression for pre-processing of dataset
-#' in teal module applications. This is especially of interest when the same
-#' preprocessing steps needs to be applied similarly to several datasets
-#' (e.g. ADSL and ADRS).
-#'
-#' @details
-#' In `teal.modules.clinical`, the user interface includes manipulation of
-#' the study arms. Classically: the arm variable itself (e.g. `ARM`, `ACTARM`),
-#' the reference arm (0 or more), the comparison arm (1 or more) and the
-#' possibility to combine comparison arms.
-#'
-#' Note that when no arms should be compared with each other, then the produced
-#' expression is reduced to optionally dropping non-represented levels of the arm.
-#'
-#' When comparing arms, the pre-processing includes three steps:
-#' 1. Filtering of the dataset to retain only the arms of interest (reference
-#' and comparison).
-#' 2. Optional, if more than one arm is designated as _reference_ they are
-#' combined into a single level.
-#' 3. The reference is explicitly reassigned and the non-represented levels of
-#' arm are dropped.
-#'
-#' @inheritParams template_arguments
-#' @param ref_arm_val (`character`)\cr replacement name for the reference level.
-#' @param drop (`logical`)\cr drop the unused variable levels.
-#' @examples
-#'
-#' \dontrun{
-#' teal.modules.clinical::prepare_arm(
-#'   dataname = "adrs",
-#'   arm_var = "ARMCD",
-#'   ref_arm = "ARM A",
-#'   comp_arm = c("ARM B", "ARM C")
-#' )
-#'
-#' teal.modules.clinical::prepare_arm(
-#'   dataname = "adsl",
-#'   arm_var = "ARMCD",
-#'   ref_arm = c("ARM B", "ARM C"),
-#'   comp_arm = "ARM A"
-#' )
-#' }
-#'
-prepare_arm <- function(dataname,
-                        arm_var,
-                        ref_arm,
-                        comp_arm,
-                        compare_arm = !is.null(ref_arm),
-                        ref_arm_val = paste(ref_arm, collapse = "/"),
-                        drop = TRUE) {
-  assert_that(
-    is.string(dataname),
-    is.string(arm_var),
-    is.null(ref_arm) || is.character(ref_arm),
-    is.character(comp_arm) || is.null(comp_arm),
-    is.flag(compare_arm),
-    is.string(ref_arm_val),
-    is.flag(drop)
-  )
-
-  data_list <- list()
-
-  if (compare_arm) {
-    # Data are filtered to keep only arms of interest.
-    data_list <- add_expr(
-      data_list,
-      substitute(
-        expr = dataname %>%
-          filter(arm_var %in% arm_val),
-        env = list(
-          dataname = as.name(dataname),
-          arm_var = as.name(arm_var),
-          arm_val = if (compare_arm) c(ref_arm, comp_arm) else comp_arm
-        )
-      )
-    )
-
-    # Several reference levels are combined.
-    if (length(ref_arm) > 1) {
-      data_list <- add_expr(
-        data_list,
-        substitute_names(
-          expr = mutate(arm_var = combine_levels(arm_var, levels = ref_arm, new_level = ref_arm_val)),
-          names = list(arm_var = as.name(arm_var)),
-          others = list(ref_arm = ref_arm, ref_arm_val = ref_arm_val)
-        )
-      )
-    }
-
-    # Reference level is explicit.
-    data_list <- add_expr(
-      data_list,
-      substitute_names(
-        expr = mutate(arm_var = relevel(arm_var, ref = ref_arm_val)),
-        names = list(arm_var = as.name(arm_var)),
-        others = list(ref_arm_val = ref_arm_val)
-      )
-    )
-  }  else {
-    data_list <- add_expr(
-      data_list,
-      substitute(
-        expr = dataname,
-        env = list(dataname = as.name(dataname))
-      )
-    )
-  }
-
-  # Unused levels are optionally dropped.
-  if (drop) {
-    data_list <- add_expr(
-      data_list,
-      substitute_names(
-        expr = mutate(arm_var = droplevels(arm_var)),
-        names = list(arm_var = as.name(arm_var))
-      )
-    )
-  }
-
-  pipe_expr(data_list)
-}
-
-#' Template: Kaplan-Meier Hermes
+#' Template: Kaplan-Meier
 #'
 #' @inheritParams template_arguments
 #' @inheritParams tern::g_km
@@ -299,7 +94,8 @@ prepare_arm <- function(dataname,
 #'
 #' @importFrom grid grid.newpage grid.layout viewport pushViewport
 template_g_km <- function(dataname = "ANL",
-                          arm_var = "gene_factor",
+                          arm_var = "GENE",
+                          quantiles = c(0.33, 0.66),
                           ref_arm = NULL,
                           comp_arm = NULL,
                           compare_arm = FALSE,
@@ -321,26 +117,56 @@ template_g_km <- function(dataname = "ANL",
                           annot_coxph = TRUE,
                           ci_ribbon = FALSE,
                           title = "KM Plot") {
-  # assert_that(
-  #   is.string(dataname),
-  #   is.string(arm_var),
-  #   is.string(aval_var),
-  #   is.string(cnsr_var),
-  #   is.string(time_unit_var),
-  #   is.flag(compare_arm),
-  #   is.flag(combine_comp_arms),
-  #   is.null(xticks) | is.numeric(xticks),
-  #   is.string(title)
-  # )
+  assertthat::assert_that(
+    assertthat::is.string(dataname),
+    assertthat::is.string(arm_var),
+    tern::is_proportion_vector(quantiles, include_boundaries = TRUE),
+    assertthat::is.string(aval_var),
+    assertthat::is.string(cnsr_var),
+    assertthat::is.string(time_unit_var),
+    assertthat::is.flag(compare_arm),
+    assertthat::is.flag(combine_comp_arms),
+    is.null(xticks) | is.numeric(xticks),
+    assertthat::is.string(title)
+  )
 
   ref_arm_val <- paste(ref_arm, collapse = "/")
   y <- list()
 
+  preprocessing_list <- list()
+
+  preprocessing_list <- add_expr(
+    preprocessing_list,
+    substitute(
+      expr = dataname,
+      env = list(dataname = as.name(dataname))
+    )
+  )
+
+  preprocessing_list <- add_expr(
+    preprocessing_list,
+    utils.nest::substitute_names(
+      expr = dplyr::mutate(arm_var = tern::cut_quantile_bins(arm_var, probs = quantiles)),
+      names = list(arm_var = as.name(arm_var)),
+      others = list(quantiles = quantiles)
+    )
+  )
+
+  y$preprocessing <- substitute(
+    expr = {
+      anl <- preprocessing_pipe
+    },
+    env = list(
+      preprocessing_pipe = pipe_expr(preprocessing_list)
+    )
+  )
+
   data_list <- list()
+
   data_list <- add_expr(
     data_list,
     prepare_arm(
-      dataname = dataname,
+      dataname = "anl",
       arm_var = arm_var,
       ref_arm = ref_arm,
       comp_arm = comp_arm,
@@ -352,7 +178,7 @@ template_g_km <- function(dataname = "ANL",
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = mutate(
+      expr = dplyr::mutate(
         is_event = cnsr_var == 0
       ),
       env = list(
@@ -362,17 +188,17 @@ template_g_km <- function(dataname = "ANL",
     )
   )
 
-  # if (compare_arm && combine_comp_arms) {
-  #   comp_arm_val <- paste(comp_arm, collapse = "/")
-  #   data_list <- add_expr(
-  #     data_list,
-  #     substitute_names(
-  #       expr = mutate(arm_var = combine_levels(arm_var, levels = comp_arm, new_level = comp_arm_val)),
-  #       names = list(arm_var = as.name(arm_var)),
-  #       others = list(comp_arm = comp_arm, comp_arm_val = comp_arm_val)
-  #     )
-  #   )
-  # }
+  if (compare_arm && combine_comp_arms) {
+    comp_arm_val <- paste(comp_arm, collapse = "/")
+    data_list <- add_expr(
+      data_list,
+      utils.nest::substitute_names(
+        expr = dplyr::mutate(arm_var = tern::combine_levels(arm_var, levels = comp_arm, new_level = comp_arm_val)),
+        names = list(arm_var = as.name(arm_var)),
+        others = list(comp_arm = comp_arm, comp_arm_val = comp_arm_val)
+      )
+    )
+  }
 
   y$data <- substitute(
     expr = {
@@ -429,7 +255,7 @@ template_g_km <- function(dataname = "ANL",
                   vp = grid::viewport(layout.pos.row = nrow_i, layout.pos.col = 1)
                 )
               } else {
-                g_km(
+                tern::g_km(
                   df = df_i,
                   variables = variables,
                   font_size = font_size,
@@ -454,8 +280,8 @@ template_g_km <- function(dataname = "ANL",
                   ggtheme = theme_minimal(),
                   annot_surv_med = annot_surv_med,
                   annot_coxph = annot_coxph,
-                  control_surv = control_surv_timepoint(conf_level = conf_level),
-                  control_coxph_pw = control_coxph(conf_level = conf_level, pval_method = pval_method, ties = ties),
+                  control_surv = tern::control_surv_timepoint(conf_level = conf_level),
+                  control_coxph_pw = tern::control_coxph(conf_level = conf_level, pval_method = pval_method, ties = ties),
                   ci_ribbon = ci_ribbon,
                   vp = grid::viewport(layout.pos.row = nrow_i, layout.pos.col = 1),
                   draw = TRUE
@@ -489,7 +315,7 @@ template_g_km <- function(dataname = "ANL",
       graph_list,
       substitute(
         expr = {
-          result <- g_km(
+          result <- tern::g_km(
             df = anl,
             variables = variables,
             font_size = font_size,
@@ -508,8 +334,8 @@ template_g_km <- function(dataname = "ANL",
             xticks = xticks,
             newpage = TRUE,
             ggtheme = theme_minimal(),
-            control_surv = control_surv_timepoint(conf_level = conf_level),
-            control_coxph_pw = control_coxph(conf_level = conf_level, pval_method = pval_method, ties = ties),
+            control_surv = tern::control_surv_timepoint(conf_level = conf_level),
+            control_coxph_pw = tern::control_coxph(conf_level = conf_level, pval_method = pval_method, ties = ties),
             annot_surv_med = annot_surv_med,
             annot_coxph = annot_coxph,
             ci_ribbon = ci_ribbon,
@@ -540,7 +366,6 @@ template_g_km <- function(dataname = "ANL",
   y
 }
 
-
 #' Teal Module: Kaplan-Meier
 #'
 #' This teal module produces a grid style Kaplan-Meier plot for data with
@@ -556,6 +381,7 @@ template_g_km <- function(dataname = "ANL",
 #' @examples
 #'
 #' library(scda)
+#' library(dplyr)
 #'
 #' ADSL <- synthetic_cdisc_data("latest")$adsl
 #' ADTTE <- synthetic_cdisc_data("latest")$adtte
@@ -608,7 +434,7 @@ template_g_km <- function(dataname = "ANL",
 #'
 tm_g_km <- function(label,
                     dataname,
-                    parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var), "ADSL"),
+                    parentname = ifelse(is(arm_var, "data_extract_spec"), teal.devel::datanames_input(arm_var), "ADSL"),
                     arm_var,
                     arm_ref_comp = NULL,
                     paramcd,
@@ -638,8 +464,8 @@ tm_g_km <- function(label,
  #    )
  #  )
 
-  check_slider_input(plot_height, allow_null = FALSE)
-  check_slider_input(plot_width)
+  utils.nest::check_slider_input(plot_height, allow_null = FALSE)
+  utils.nest::check_slider_input(plot_width)
 
   args <- as.list(environment())
   data_extract_list <- list(
@@ -668,7 +494,7 @@ tm_g_km <- function(label,
         plot_width = plot_width
       )
     ),
-    filters = get_extract_datanames(data_extract_list)
+    filters = teal.devel::get_extract_datanames(data_extract_list)
   )
 }
 
@@ -680,7 +506,7 @@ tm_g_km <- function(label,
 ui_g_km <- function(id, ...) {
 
   a <- list(...)
-  is_single_dataset_value <- is_single_dataset(
+  is_single_dataset_value <- teal.devel::is_single_dataset(
     a$arm_var,
     a$paramcd,
     a$strata_var,
@@ -692,41 +518,41 @@ ui_g_km <- function(id, ...) {
 
   ns <- NS(id)
 
-  standard_layout(
-    output = white_small_well(
+  teal.devel::standard_layout(
+    output = teal.devel::white_small_well(
       verbatimTextOutput(outputId = ns("text")),
-      plot_with_settings_ui(
+      teal.devel::plot_with_settings_ui(
         id = ns("myplot")
       )
     ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      datanames_input(a[c("arm_var", "paramcd", "strata_var", "facet_var", "aval_var", "cnsr_var")]),
-      data_extract_input(
+      teal.devel::datanames_input(a[c("arm_var", "paramcd", "strata_var", "facet_var", "aval_var", "cnsr_var")]),
+      teal.devel::data_extract_input(
         id = ns("paramcd"),
         label = "Select Endpoint",
         data_extract_spec = a$paramcd,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      teal.devel::data_extract_input(
         id = ns("aval_var"),
         label = "Analysis Variable",
         data_extract_spec = a$aval_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      teal.devel::data_extract_input(
         id = ns("cnsr_var"),
         label = "Censor Variable",
         data_extract_spec = a$cnsr_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      teal.devel::data_extract_input(
         id = ns("facet_var"),
         label = "Facet Plots by",
         data_extract_spec = a$facet_var,
         is_single_dataset = is_single_dataset_value
       ),
-      data_extract_input(
+      teal.devel::data_extract_input(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
@@ -763,7 +589,7 @@ ui_g_km <- function(id, ...) {
               "Combine all comparison groups?",
               value = FALSE
             ),
-            data_extract_input(
+            teal.devel::data_extract_input(
               id = ns("strata_var"),
               label = "Stratify by",
               data_extract_spec = a$strata_var,
@@ -774,8 +600,8 @@ ui_g_km <- function(id, ...) {
       ),
       conditionalPanel(
         condition = paste0("input['", ns("compare_arms"), "']"),
-        panel_group(
-          panel_item(
+        teal.devel::panel_group(
+          teal.devel::panel_item(
             "Comparison settings",
             radioButtons(
               ns("pval_method_coxph"),
@@ -806,8 +632,8 @@ ui_g_km <- function(id, ...) {
           )
         )
       ),
-      panel_group(
-        panel_item(
+      teal.devel::panel_group(
+        teal.devel::panel_item(
           "Additional plot settings",
           textInput(
             inputId = ns("xticks"),
@@ -849,7 +675,7 @@ ui_g_km <- function(id, ...) {
             fixed = a$conf_level$fixed
           ),
           textInput(ns("xlab"), "X-axis label", "Time"),
-          data_extract_input(
+          teal.devel::data_extract_input(
             id = ns("time_unit_var"),
             label = "Time Unit Variable",
             data_extract_spec = a$time_unit_var,
@@ -858,12 +684,15 @@ ui_g_km <- function(id, ...) {
         )
       )
     ),
-    forms = get_rcode_ui(ns("rcode")),
+    forms = teal.devel::get_rcode_ui(ns("rcode")),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
 }
 
+is_cdisc_data <- function(datasets) {
+  is(datasets, "CDISCFilteredData")
+}
 
 #' Server for KM Module
 #' @noRd
@@ -887,11 +716,11 @@ srv_g_km <- function(input,
                      plot_width) {
   stopifnot(is_cdisc_data(datasets))
 
-  init_chunks()
+  teal.devel::init_chunks()
 
   # Setup arm variable selection, default reference arms and default
   # comparison arms for encoding panel
-  arm_ref_comp_observer(
+  teal.devel::arm_ref_comp_observer(
     session, input,
     id_ref = "ref_arm", # from UI
     id_comp = "comp_arm", # from UI
@@ -903,7 +732,7 @@ srv_g_km <- function(input,
     on_off = reactive(input$compare_arms)
   )
 
-  anl_merged <- data_merge_module(
+  anl_merged <- teal.devel::data_merge_module(
     datasets = datasets,
     data_extract = list(aval_var, cnsr_var, arm_var, paramcd, strata_var, facet_var, time_unit_var),
     input_id = c("aval_var", "cnsr_var", "arm_var", "paramcd", "strata_var", "facet_var", "time_unit_var"),
@@ -945,7 +774,7 @@ srv_g_km <- function(input,
       validate_args <- append(validate_args, list(ref_arm = input$ref_arm, comp_arm = input$comp_arm))
     }
 
-    do.call(what = "validate_standard_inputs", validate_args)
+    utils.nest::call_with_colon("teal.devel::validate_standard_inputs", unlist_args = validate_args)
 
     # validate xticks
     if (length(input_xticks) == 0) {
@@ -962,8 +791,8 @@ srv_g_km <- function(input,
       "Please choose a confidence level between 0 and 1"
     ))
 
-    validate(need(is_character_single(input_aval_var), "Analysis variable should be a single column."))
-    validate(need(is_character_single(input_cnsr_var), "Censor variable should be a single column."))
+    validate(need(utils.nest::is_character_single(input_aval_var), "Analysis variable should be a single column."))
+    validate(need(utils.nest::is_character_single(input_cnsr_var), "Censor variable should be a single column."))
 
     NULL
   })
@@ -971,13 +800,13 @@ srv_g_km <- function(input,
   call_preparation <- reactive({
     validate_checks()
 
-    chunks_reset()
+    teal.devel::chunks_reset()
     anl_m <- anl_merged()
-    chunks_push_data_merge(anl_m)
-    chunks_push_new_line()
+    teal.devel::chunks_push_data_merge(anl_m)
+    teal.devel::chunks_push_new_line()
 
-    ANL <- chunks_get_var("ANL") # nolint
-    validate_has_data(ANL, 2)
+    ANL <- teal.devel::chunks_get_var("ANL") # nolint
+    teal.devel::validate_has_data(ANL, 2)
 
     input_xticks <- gsub(";", ",", trimws(input$xticks)) %>%
       strsplit(",") %>%
@@ -1016,18 +845,17 @@ srv_g_km <- function(input,
       ci_ribbon = input$show_ci_ribbon,
       title = title
     )
-    mapply(expression = my_calls, chunks_push)
+    mapply(expression = my_calls, teal.devel::chunks_push)
   })
 
   km_plot <- reactive({
     call_preparation()
-    chunks_safe_eval()
+    teal.devel::chunks_safe_eval()
   })
-
 
   # Insert the plot into a plot with settings module from teal.devel
   callModule(
-    plot_with_settings_srv,
+    teal.devel::plot_with_settings_srv,
     id = "myplot",
     plot_r = km_plot,
     height = plot_height,
@@ -1035,10 +863,10 @@ srv_g_km <- function(input,
   )
 
   callModule(
-    get_rcode_srv,
+    teal.devel::get_rcode_srv,
     id = "rcode",
     datasets = datasets,
-    datanames = get_extract_datanames(
+    datanames = teal.devel::get_extract_datanames(
       list(arm_var, paramcd, strata_var, facet_var, aval_var, cnsr_var, time_unit_var)
     ),
     modal_title = label
