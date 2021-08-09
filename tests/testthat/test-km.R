@@ -26,10 +26,10 @@ test_that("h_km_mae_to_adtte function works as expected with default settings", 
 test_that("h_km_mae_to_adtte fails as expected with invalid settings", {
   mae <- hermes::multi_assay_experiment
   adtte <- radtte(cached = TRUE) %>% dplyr::mutate(CNSR = as.logical(CNSR))
-  #example with no matched patient IDs
+  # Example with no matched patient IDs.
   bad_adtte <- adtte
 
-  #make sure patient IDs match some in adtte to test function
+  # Make sure patient IDs match some in adtte to test function.
   experiment_name <- "se2"
   se_test <- mae[[experiment_name]]
   hd_test <- hermes::HermesData(se_test)
@@ -39,10 +39,33 @@ test_that("h_km_mae_to_adtte fails as expected with invalid settings", {
   adtte$USUBJID[1:9] <- se_patients
   good_adtte <- adtte
 
-
-  expect_error(h_km_mae_to_adtte(good_adtte, mae, gene_var = "GeneID:1820", experiment_name = "se4"))
-  expect_error(h_km_mae_to_adtte(good_adtte, mae, gene_var = "GeneID:1820", experiment_name = "se2", assay_name = "foo"))
-  expect_error(h_km_mae_to_adtte(good_adtte, mae, gene_var = "GeneID:1820", experiment_name = 1))
-  expect_error(h_km_mae_to_adtte(good_adtte, mae, gene_var = 1520))
-  expect_error(bad_adtte, mae, gene_var = "GeneID:1820")
+  expect_error(h_km_mae_to_adtte(
+    good_adtte,
+    mae,
+    gene_var = "GeneID:1820",
+    experiment_name = "se4"
+  ))
+  expect_error(h_km_mae_to_adtte(
+    good_adtte,
+    mae,
+    gene_var = "GeneID:1820",
+    experiment_name = "se2",
+    assay_name = "foo"
+  ))
+  expect_error(h_km_mae_to_adtte(
+    good_adtte,
+    mae,
+    gene_var = "GeneID:1820",
+    experiment_name = 1
+  ))
+  expect_error(h_km_mae_to_adtte(
+    good_adtte,
+    mae,
+    gene_var = 1520
+  ))
+  expect_error(h_km_mae_to_adtte(
+    bad_adtte,
+    mae,
+    gene_var = "GeneID:1820"
+  ))
 })

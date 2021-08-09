@@ -51,11 +51,31 @@ test_that("tm_g_scatterplot works as expected in the sample app", {
 
   # Check what happens if genes are the same.
   app$setInputs(
-    "teal-main_ui-modules_ui-root_scatterplot-x_var" = "GeneID:101927746",
-    "teal-main_ui-modules_ui-root_scatterplot-y_var" = "GeneID:101927746"
+    "teal-main_ui-modules_ui-root_scatterplot-x_var" = "GeneID:5205",
+    "teal-main_ui-modules_ui-root_scatterplot-y_var" = "GeneID:5205"
   )
   output <- app$getOutputValue("teal-main_ui-modules_ui-root_scatterplot-plot")
   expect_identical(output$message, "please select different genes for x and y variables")
+
+  # Change the sample filter and confirm that genes are not updated.
+  app$setInputs(
+    "teal-main_ui-filter_panel-add_MAE_filter-se1-col_to_add" = "SEX"
+  )
+  now_x_var <- app$waitForValue("teal-main_ui-modules_ui-root_scatterplot-x_var")
+  expect_identical(now_x_var, "GeneID:5205")
+
+  now_y_var <- app$waitForValue("teal-main_ui-modules_ui-root_scatterplot-y_var")
+  expect_identical(now_y_var, "GeneID:5205")
+
+  # Change the genes filter and confirm that genes are now updated.
+  app$setInputs(
+    "teal-main_ui-filter_panel-add_MAE_filter-se1-row_to_add" = "Chromosome"
+  )
+  now_x_var <- app$waitForValue("teal-main_ui-modules_ui-root_scatterplot-x_var")
+  expect_identical(now_x_var, "GeneID:101927746")
+
+  now_y_var <- app$waitForValue("teal-main_ui-modules_ui-root_scatterplot-y_var")
+  expect_identical(now_y_var, "GeneID:1820")
 
   # Now change the experiment_name and confirm that genes are updated accordingly.
   app$setInputs(

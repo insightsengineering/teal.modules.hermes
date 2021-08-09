@@ -2,19 +2,24 @@
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
-#' A function to help with merging of MAE to ADTTE object for use with `g_km`.
+#' A function to help with merging of MAE to `ADTTE` for use with `g_km`.
 #'
 #' @note We require that each patient only has one sample.
 #'
 #' @inheritParams function_arguments
 #'
-#' @return A data frame containing all columns/rows from adtte and select columns from
+#' @return A data frame containing all columns/rows from `adtte` and select columns from
 #' MAE (assay, Sample IDs) for a given gene(s).
 #'
+#' @export
 #' @examples
+#' library(dplyr)
+#' library(random.cdisc.data)
 #' mae <- hermes::multi_assay_experiment
-#' adtte <- random.cdisc.data::radtte(cached = TRUE) %>% dplyr::mutate(CNSR = as.logical(CNSR))
-#' #make sure patient IDs match some in adtte to test function
+#' adtte <- radtte(cached = TRUE) %>%
+#'   mutate(CNSR = as.logical(CNSR))
+#'
+#' # Make sure patient IDs match some in `adtte` to test the function.
 #' experiment_name <- "se2"
 #' se_test <- mae[[experiment_name]]
 #' hd_test <- hermes::HermesData(se_test)
@@ -25,13 +30,15 @@
 #' gene_var <- c("GeneID:1820", "GeneID:94115")
 #' new_adtte <- h_km_mae_to_adtte(adtte, mae, gene_var = "GeneID:1820", experiment_name = "se2")
 #' new_adtte2 <- h_km_mae_to_adtte(adtte, mae, gene_var = gene_var, experiment_name = "se2")
-h_km_mae_to_adtte <- function (adtte,
-                               mae,
-                               gene_var,
-                               experiment_name = "se1",
-                               assay_name = "counts"){
-
-  assert_choice(assay_name, c("counts", "cpm", "rpkm", "tpm", "voom"))
+h_km_mae_to_adtte <- function(adtte,
+                              mae,
+                              gene_var,
+                              experiment_name = "se1",
+                              assay_name = "counts") {
+  assert_choice(
+    assay_name,
+    c("counts", "cpm", "rpkm", "tpm", "voom")
+  )
   assert_character(gene_var)
   assert_character(experiment_name)
 
