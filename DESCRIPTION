@@ -24,12 +24,16 @@ Imports:
   checkmate,
   hermes,
   lifecycle,
+  MultiAssayExperiment,
   shinyWidgets,
   SummarizedExperiment,
-  teal.devel
+  teal.devel,
+  tern
 Suggests:
+  dplyr,
   globals,
   knitr,
+  random.cdisc.data,
   R6,
   shinytest (>= 1.5.0),
   test.nest (>= 0.2.9),
