@@ -153,7 +153,7 @@ srv_g_volcanoplot <- function(input, output, session, datasets, mae_name) {
     )
 
 
-    autoplot(diff_expr_result, adj_p_val_thresh = adj_p_val_thresh, log2_fc_thresh = log2_fc_thresh)
+    hermes::autoplot(diff_expr_result, adj_p_val_thresh = adj_p_val_thresh, log2_fc_thresh = log2_fc_thresh)
   })
 
 
