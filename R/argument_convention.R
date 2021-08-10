@@ -52,7 +52,7 @@ NULL
 #' The documentation to this function lists all the conventional arguments in
 #' functions.
 #'
-#' @param adtte (`data frame`)\cr an adtte dataset.
+#' @param adtte (`data frame`)\cr an `adtte` dataset.
 #' @param mae (`MultiAssayExperiment`)\cr contains `SummarizedExperiment` objects.
 #' @param gene_var (`character`)\cr a gene(s) of interest.
 #' @param experiment_name (`string`)\cr the desired experiment to use.
