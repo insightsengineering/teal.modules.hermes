@@ -97,17 +97,25 @@ ui_g_quality <- function(id,
         ns = ns,
         selectInput(ns("assay_name"), "Select Assay", choices = ""),
       ),
-      sliderInput(ns("min_cpm"), label = ("Minimum CPM"), min = 1, max = 10, value = 5),
-      sliderInput(ns("min_cpm_prop"), label = ("Minimum CPM Proportion"), min = 0.01, max = 0.99, value = 0.25),
-      sliderInput(ns("min_corr"), label = ("Minimum Correlation"), min = 0.01, max = 0.99, value = 0.5),
-      radioButtons(ns("min_depth"), label = ("Minimum Depth"), choices = c("Default", "Specify"), selected = "Default"),
-      conditionalPanel(
-        condition = "input.min_depth == 'Specify'",
-        ns = ns,
-        sliderInput(ns("min_depth_continuous"), label = NULL, min = 1, max = 10, value = 1)
-      ),
       checkboxGroupInput(ns("filter"), label = ("Filter"), choices = list("Genes" = "genes", "Samples" = "samples"), selected = c("genes", "samples")),
-      optionalSelectInput(ns("annotate"), label = "Required Annotations", choices = "", selected = "", multiple = TRUE)
+      conditionalPanel(
+        condition = "input.filter.includes('genes')",
+        ns = ns,
+        sliderInput(ns("min_cpm"), label = ("Minimum CPM"), min = 1, max = 10, value = 5),
+        sliderInput(ns("min_cpm_prop"), label = ("Minimum CPM Proportion"), min = 0.01, max = 0.99, value = 0.25),
+        optionalSelectInput(ns("annotate"), label = "Required Annotations", choices = "", selected = "", multiple = TRUE)
+      ),
+      conditionalPanel(
+        condition = "input.filter.includes('samples')",
+        ns = ns,
+        sliderInput(ns("min_corr"), label = ("Minimum Correlation"), min = 0.01, max = 0.99, value = 0.5),
+        radioButtons(ns("min_depth"), label = ("Minimum Depth"), choices = c("Default", "Specify"), selected = "Default"),
+        conditionalPanel(
+          condition = "input.min_depth == 'Specify'",
+          ns = ns,
+          sliderInput(ns("min_depth_continuous"), label = NULL, min = 1, max = 10, value = 1)
+        )
+      )
     ),
     output = plotOutput(ns("quality")),
     pre_output = pre_output,
@@ -144,13 +152,23 @@ srv_g_quality <- function(input,
     SummarizedExperiment::assayNames(object)
   })
 
-  # When the chosen experiment changes, recompute the maximum CPM available.
+  # When the chosen experiment changes, recompute the minimum and maximum CPM available.
+  mini_cpm <- eventReactive(input$experiment_name, {
+    object <- experiment_data()
+    floor(min(edgeR::cpm(hermes::counts(object))))
+  })
+
   max_cpm <- eventReactive(input$experiment_name, {
     object <- experiment_data()
     floor(max(edgeR::cpm(hermes::counts(object))))
   })
 
-  # When the chosen experiment changes, recompute the maximum library size (depth) available.
+  # When the chosen experiment changes, recompute the minimum and maximum library size (depth) available.
+  mini_depth <- eventReactive(input$experiment_name, {
+    object <- experiment_data()
+    min(colSums(hermes::counts(object)))
+  })
+
   max_depth <- eventReactive(input$experiment_name, {
     object <- experiment_data()
     max(colSums(hermes::counts(object)))
@@ -179,26 +197,28 @@ srv_g_quality <- function(input,
   })
 
   observeEvent(input$experiment_name, {
+    mini_cpm <- mini_cpm()
     max_cpm <- max_cpm()
 
     updateSliderInput(
       session,
       "min_cpm",
-      min = 1,
+      min = mini_cpm,
       max = max_cpm,
-      value = 1
+      value = mini_cpm
     )
   })
 
   observeEvent(input$experiment_name, {
+    mini_depth <- mini_depth()
     max_depth <- max_depth()
 
     updateSliderInput(
       session,
       "min_depth_continuous",
-      min = 1,
+      min = mini_depth,
       max = max_depth,
-      value = 1
+      value = mini_depth
     )
   })
 
