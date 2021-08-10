@@ -31,7 +31,7 @@ test_that("tm_g_barplot works as expected in the sample app", {
 
   # Check initial state of encodings.
   initial_experiment_name <- app$waitForValue("teal-main_ui-modules_ui-root_barplot-experiment_name")
-  expect_identical(initial_experiment_name, "se1")
+  expect_identical(initial_experiment_name, "hd1")
 
   initial_assay_name <- app$waitForValue("teal-main_ui-modules_ui-root_barplot-assay_name")
   expect_identical(initial_assay_name, "counts")
@@ -48,7 +48,7 @@ test_that("tm_g_barplot works as expected in the sample app", {
 
   # Now change the experiment_name and confirm that genes are updated accordingly.
   app$setInputs(
-    "teal-main_ui-modules_ui-root_barplot-experiment_name" = "se3"
+    "teal-main_ui-modules_ui-root_barplot-experiment_name" = "hd3"
   )
   now_x_var <- app$waitForValue("teal-main_ui-modules_ui-root_barplot-x_var")
   expect_identical(now_x_var, "GeneID:5205")
