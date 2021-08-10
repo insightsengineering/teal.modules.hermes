@@ -12,10 +12,7 @@
 #' @examples
 #' library(hermes)
 #' mae <- hermes::multi_assay_experiment
-#' for (i in seq_along(multi_assay_experiment)) {
-#'   multi_assay_experiment[[i]] <- hermes::HermesData(multi_assay_experiment[[i]])
-#' }
-#' mae_data <- dataset("MAE", multi_assay_experiment)
+#' mae_data <- dataset("MAE", mae)
 #' data <- teal_data(mae_data)
 #' app <- init(
 #'   data = data,
@@ -264,18 +261,18 @@ srv_g_pca <- function(input,
     var_pct <- input$var_pct
     label <- input$label
     label_repel <- input$label_repel
+    experiment_data <- experiment_data()
 
     # Require which states need to be truthy.
     req(
-      assay_name,
       # Note: The following statements are important to make sure the UI inputs have been updated.
-      isTRUE(assay_name %in% SummarizedExperiment::assayNames(experiment_data())),
-      #isTRUE(color_var %in% names(SummarizedExperiment::colData(experiment_data))),
+      isTRUE(assay_name %in% SummarizedExperiment::assayNames(experiment_data)),
+      is.null(color_var) || isTRUE(color_var %in% names(SummarizedExperiment::colData(experiment_data))),
       cancelOutput = FALSE
     )
 
     # Validate and give useful messages to the user. Note: no need to duplicate here req() from above.
-    validate(need(hermes::is_hermes_data(experiment_data()), "please use HermesData() on input experiments"))
+    validate(need(hermes::is_hermes_data(experiment_data), "please use HermesData() on input experiments"))
     validate(need(x_var != y_var, "please select two different principal components"))
 
     hermes::autoplot(
@@ -314,9 +311,6 @@ srv_g_pca <- function(input,
 #' }
 sample_tm_g_pca <- function() {
   mae <- hermes::multi_assay_experiment
-  for (i in seq_along(mae)) {
-    mae[[i]] <- hermes::HermesData(mae[[i]])
-  }
   mae_data <- dataset("MAE", mae)
   data <- teal_data(mae_data)
   app <- init(
