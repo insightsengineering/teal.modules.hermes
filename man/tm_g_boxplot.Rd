@@ -61,10 +61,7 @@ analysis.
 \examples{
 library(hermes)
 mae <- hermes::multi_assay_experiment
-for (i in seq_along(multi_assay_experiment)) {
-  multi_assay_experiment[[i]] <- hermes::HermesData(multi_assay_experiment[[i]])
-}
-mae_data <- dataset("MAE", multi_assay_experiment)
+mae_data <- dataset("MAE", mae)
 data <- teal_data(mae_data)
 app <- init(
   data = data,
