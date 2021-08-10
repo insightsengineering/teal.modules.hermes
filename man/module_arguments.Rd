@@ -17,6 +17,9 @@ the ID used to call the teal module's UI function.}
 \item{mae_name}{(\code{string})\cr
 name of the MAE data used in the teal module.}
 
+\item{exclude_assays}{(\code{character})\cr
+names of the assays which should not be included in choices in the teal module.}
+
 \item{pre_output}{(\code{shiny.tag} or \code{NULL})\cr
 placed before the output to put the output into context (for example a title).}
 

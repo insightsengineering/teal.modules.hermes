@@ -12,9 +12,6 @@
 #' @examples
 #' library(hermes)
 #' mae <- hermes::multi_assay_experiment
-#' for (i in seq_along(mae)) {
-#'   mae[[i]] <- hermes::HermesData(mae[[i]])
-#' }
 #' mae_data <- dataset("MAE", mae)
 #' data <- teal_data(mae_data)
 #' app <- init(
@@ -236,12 +233,6 @@ srv_g_scatterplot <- function(input,
 #' }
 sample_tm_g_scatterplot <- function() {
   mae <- hermes::multi_assay_experiment
-  for (i in seq_along(mae)) {
-    this_experiment <- mae[[i]]
-    this_experiment <- hermes::HermesData(this_experiment)
-    this_experiment <- hermes::normalize(this_experiment)
-    mae[[i]] <- this_experiment
-  }
   mae_data <- dataset("MAE", mae)
   data <- teal_data(mae_data)
   app <- init(

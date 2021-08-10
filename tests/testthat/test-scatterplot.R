@@ -31,10 +31,18 @@ test_that("tm_g_scatterplot works as expected in the sample app", {
 
   # Check initial state of encodings.
   initial_experiment_name <- app$waitForValue("teal-main_ui-modules_ui-root_scatterplot-experiment_name")
-  expect_identical(initial_experiment_name, "se1")
+  expect_identical(initial_experiment_name, "hd1")
+
+  output <- app$getOutputValue("teal-main_ui-modules_ui-root_scatterplot-plot")
+  expect_identical(output$message, "no assays are available for this experiment, please choose another experiment")
+
+  # Choose another experiment.
+  app$setInputs(
+    "teal-main_ui-modules_ui-root_scatterplot-experiment_name" = "hd2"
+  )
 
   initial_assay_name <- app$waitForValue("teal-main_ui-modules_ui-root_scatterplot-assay_name")
-  expect_identical(initial_assay_name, "counts")
+  expect_identical(initial_assay_name, "cpm")
 
   initial_x_var <- app$waitForValue("teal-main_ui-modules_ui-root_scatterplot-x_var")
   expect_identical(initial_x_var, "GeneID:101927746")
@@ -59,7 +67,7 @@ test_that("tm_g_scatterplot works as expected in the sample app", {
 
   # Change the sample filter and confirm that genes are not updated.
   app$setInputs(
-    "teal-main_ui-filter_panel-add_MAE_filter-se1-col_to_add" = "SEX"
+    "teal-main_ui-filter_panel-add_MAE_filter-hd2-col_to_add" = "ARM"
   )
   now_x_var <- app$waitForValue("teal-main_ui-modules_ui-root_scatterplot-x_var")
   expect_identical(now_x_var, "GeneID:5205")
@@ -69,7 +77,7 @@ test_that("tm_g_scatterplot works as expected in the sample app", {
 
   # Change the genes filter and confirm that genes are now updated.
   app$setInputs(
-    "teal-main_ui-filter_panel-add_MAE_filter-se1-row_to_add" = "Chromosome"
+    "teal-main_ui-filter_panel-add_MAE_filter-hd2-row_to_add" = "Chromosome"
   )
   now_x_var <- app$waitForValue("teal-main_ui-modules_ui-root_scatterplot-x_var")
   expect_identical(now_x_var, "GeneID:101927746")
@@ -79,7 +87,7 @@ test_that("tm_g_scatterplot works as expected in the sample app", {
 
   # Now change the experiment_name and confirm that genes are updated accordingly.
   app$setInputs(
-    "teal-main_ui-modules_ui-root_scatterplot-experiment_name" = "se3"
+    "teal-main_ui-modules_ui-root_scatterplot-experiment_name" = "hd3"
   )
   now_x_var <- app$waitForValue("teal-main_ui-modules_ui-root_scatterplot-x_var")
   expect_identical(now_x_var, "GeneID:5205")
@@ -87,13 +95,9 @@ test_that("tm_g_scatterplot works as expected in the sample app", {
   now_y_var <- app$waitForValue("teal-main_ui-modules_ui-root_scatterplot-y_var")
   expect_identical(now_y_var, "GeneID:102723793")
 
-  # Also now the plot exists.
-  final_output <- app$getOutputValue("teal-main_ui-modules_ui-root_scatterplot-plot")
-  expect_identical(final_output$alt, "Plot object")
-  expect_match(final_output$src, "^data:image/png")
-
-  # Change to Loess smoother.
+  # Change back to working experiment and to Loess smoother.
   app$setInputs(
+    "teal-main_ui-modules_ui-root_scatterplot-experiment_name" = "hd2",
     "teal-main_ui-modules_ui-root_scatterplot-smooth_method" = "loess"
   )
 
