@@ -1,25 +1,19 @@
-# To do: add roxygen documentation here
-qc_filter_normalize <- function(object,
-                                min_cpm,
-                                min_cpm_prop,
-                                min_corr,
-                                min_depth,
-                                filter,
-                                annotations) {
-  assert_class(object, "AnyHermesData")
-
-  control <- hermes::control_quality(
-    min_cpm = min_cpm,
-    min_cpm_prop = min_cpm_prop,
-    min_corr = min_corr,
-    min_depth = min_depth
+# To do: roxygen
+top_gene_plot <- function(object, assay_name) {
+  top_gene <- hermes::top_genes(
+    object = object,
+    assay_name = assay_name
   )
+  hermes::autoplot(top_gene)
+}
 
-  result <- hermes::add_quality_flags(object, control = control)
-  result <- hermes::filter(result, what = filter, annotation_required = annotations)
-  result <- hermes::normalize(result)
-
-  result
+# To do: roxygen
+heatmap_plot <- function(object, assay_name) {
+  heatmap <- hermes::correlate(
+    object = object,
+    assay_name = assay_name
+  )
+  hermes::autoplot(heatmap)
 }
 
 #' Teal Module for RNA-seq Quality Control
@@ -97,13 +91,21 @@ ui_g_quality <- function(id,
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
       selectInput(ns("experiment_name"), "Select Experiment", experiment_name_choices),
-      selectInput(ns("assay_name"), "Select Assay", choices = ""),
       selectInput(ns("plot_type"), "Plot Type", choices = c("Histogram", "Q-Q Plot", "Density", "Boxplot", "Top Genes Plot", "Correlation Heatmap")),
+      conditionalPanel(
+        condition = "input.plot_type == 'Top Genes Plot' || input.plot_type == 'Correlation Heatmap'",
+        ns = ns,
+        selectInput(ns("assay_name"), "Select Assay", choices = ""),
+      ),
       sliderInput(ns("min_cpm"), label = ("Minimum CPM"), min = 1, max = 10, value = 5),
       sliderInput(ns("min_cpm_prop"), label = ("Minimum CPM Proportion"), min = 0.01, max = 0.99, value = 0.25),
       sliderInput(ns("min_corr"), label = ("Minimum Correlation"), min = 0.01, max = 0.99, value = 0.5),
       radioButtons(ns("min_depth"), label = ("Minimum Depth"), choices = c("Default", "Specify"), selected = "Default"),
-      conditionalPanel(condition = paste0("input['", ns("min_depth"), "']" , ".includes('Specify')"), sliderInput(ns("min_depth_continuous"), label = NULL, min = 1, max = 10, value = 1)),
+      conditionalPanel(
+        condition = "input.min_depth == 'Specify'",
+        ns = ns,
+        sliderInput(ns("min_depth_continuous"), label = NULL, min = 1, max = 10, value = 1)
+      ),
       checkboxGroupInput(ns("filter"), label = ("Filter"), choices = list("Genes" = "genes", "Samples" = "samples"), selected = c("genes", "samples")),
       optionalSelectInput(ns("annotate"), label = "Required Annotations", choices = "", selected = "", multiple = TRUE)
     ),
@@ -133,7 +135,7 @@ srv_g_quality <- function(input,
   # When the chosen experiment changes, recompute the annotations available.
   annotations <- eventReactive(input$experiment_name, {
     object <- experiment_data()
-    names(SummarizedExperiment::rowData(object))
+    names(hermes::annotation(object))
   })
 
   # When the chosen experiment changes, recompute the assay names.
@@ -211,51 +213,57 @@ srv_g_quality <- function(input,
     }
   })
 
-  object_final <- reactive({
-    object <- experiment_data()
-    assays <- input$assay_name
+  control <- reactive({
     min_cpm <- input$min_cpm
     min_cpm_prop <- input$min_cpm_prop
     min_corr <- input$min_corr
     min_depth_final <- min_depth_final()
-    filter <- input$filter
-    annotations <- input$annotate
 
     req(
-      assays,
       min_cpm,
       min_cpm_prop,
-      min_corr,
-      annotations
-      # Note: The following statements are important to make sure the UI inputs have been updated.
-      # isTRUE(assays %in% SummarizedExperiment::assayNames(experiment_data)),
-      # isTRUE(annotations %in% names(SummarizedExperiment::rowData(experiment_data))),
-      # cancelOutput = FALSE
+      min_corr
     )
 
-    # Validate and give useful messages to the user. Note: no need to duplicate here req() from above.
-    # validate(need(hermes::is_hermes_data(experiment_data), "please use HermesData() on input experiments"))
-
-    qc_filter_normalize(
-      object,
+    hermes::control_quality(
       min_cpm = min_cpm,
       min_cpm_prop = min_cpm_prop,
       min_corr = min_corr,
-      min_depth = min_depth_final,
-      filter = filter,
-      annotations = annotations
+      min_depth = min_depth_final
     )
+  })
+
+  object_flagged <- reactive({
+    control <- control()
+    object <- experiment_data()
+
+    validate(need(hermes::is_hermes_data(object), "please use HermesData() first on experiments"))
+
+    hermes::add_quality_flags(
+      object,
+      control = control
+    )
+  })
+
+  object_final <- reactive({
+    object_flagged <- object_flagged()
+    filter <- input$filter
+    annotate <- input$annotate
+
+    req(!is_blank(annotate))
+
+    result <- hermes::filter(
+      object_flagged,
+      what = filter,
+      annotation_required = annotate
+    )
+    hermes::normalize(result)
   })
 
   output$quality <- renderPlot({
     object_final <- object_final()
     plot_type <- input$plot_type
-    top_gene <- hermes::top_genes(object_final,
-                                  n_top = 10,
-                                  summary_fun = rowMeans)
-    heatmap <- hermes::correlate(object_final,
-                                 assay_name = input$assay_name,
-                                 method = "spearman")
+    assay_name <- input$assay_name
 
     switch(
       plot_type,
@@ -263,8 +271,8 @@ srv_g_quality <- function(input,
       "Density" = hermes::draw_libsize_densities(object_final),
       "Q-Q Plot" = hermes::draw_libsize_qq(object_final),
       "Boxplot" = hermes::draw_nonzero_boxplot(object_final),
-      "Top Genes Plot" = hermes::autoplot(top_gene),
-      "Correlation Heatmap" = hermes::autoplot(heatmap)
+      "Top Genes Plot" = top_gene_plot(object_final, assay_name = assay_name),
+      "Correlation Heatmap" = heatmap_plot(object_final, assay_name = assay_name)
     )
   })
 }
@@ -288,7 +296,7 @@ sample_tm_g_quality <- function() {
     modules = root_modules(
       static = {
         tm_g_quality(
-          label = "Quality Control",
+          label = "quality",
           mae_name = "MAE"
         )
       }
