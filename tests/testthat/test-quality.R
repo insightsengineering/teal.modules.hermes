@@ -22,7 +22,8 @@ test_that("tm_g_quality works as expected in the sample app", {
     "quality/",
     loadTimeout = 1e5,
     debug = "all",
-    phantomTimeout = 1e5
+    phantomTimeout = 1e5,
+    seed = 123
   )
   app$getDebugLog()
   app$snapshotInit("test-app")
@@ -32,14 +33,14 @@ test_that("tm_g_quality works as expected in the sample app", {
   # Note: left hand side name is composed as:
   # prefix: teal-main_ui-modules_ui-root_
   # label: quality-
-  # inputId: assays
+  # inputId: assay_name
 
   # Check initial state of encodings.
   initial_experiment_name <- app$waitForValue("teal-main_ui-modules_ui-root_quality-experiment_name")
   expect_identical(initial_experiment_name, "se1")
 
-  initial_assay_name <- app$waitForValue("teal-main_ui-modules_ui-root_quality-assays")
-  expect_identical(initial_assay_name, "counts")
+  # initial_assay_name <- app$waitForValue("teal-main_ui-modules_ui-root_quality-assay_name")
+  # expect_identical(initial_assay_name, "counts")
 
   # initial_x_var <- app$waitForValue("teal-main_ui-modules_ui-root_boxplot-x_var")
   # expect_identical(initial_x_var, "Filename")

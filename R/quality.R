@@ -97,7 +97,7 @@ ui_g_quality <- function(id,
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
       selectInput(ns("experiment_name"), "Select Experiment", experiment_name_choices),
-      selectInput(ns("assayname"), "Select Assay", choices = ""),
+      selectInput(ns("assay_name"), "Select Assay", choices = ""),
       selectInput(ns("plot_type"), "Plot Type", choices = c("Histogram", "Q-Q Plot", "Density", "Boxplot", "Top Genes Plot", "Correlation Heatmap")),
       sliderInput(ns("min_cpm"), label = ("Minimum CPM"), min = 1, max = 10, value = 5),
       sliderInput(ns("min_cpm_prop"), label = ("Minimum CPM Proportion"), min = 0.01, max = 0.99, value = 0.25),
@@ -170,7 +170,7 @@ srv_g_quality <- function(input,
 
     updateSelectInput(
       session,
-      "assayname",
+      "assay_name",
       choices = assays,
       selected = assays[1]
     )
@@ -213,7 +213,7 @@ srv_g_quality <- function(input,
 
   object_final <- reactive({
     object <- experiment_data()
-    assays <- input$assayname
+    assays <- input$assay_name
     min_cpm <- input$min_cpm
     min_cpm_prop <- input$min_cpm_prop
     min_corr <- input$min_corr
@@ -234,7 +234,7 @@ srv_g_quality <- function(input,
     )
 
     # Validate and give useful messages to the user. Note: no need to duplicate here req() from above.
-    validate(need(hermes::is_hermes_data(experiment_data), "please use HermesData() on input experiments"))
+    # validate(need(hermes::is_hermes_data(experiment_data), "please use HermesData() on input experiments"))
 
     qc_filter_normalize(
       object,
@@ -254,7 +254,7 @@ srv_g_quality <- function(input,
                                   n_top = 10,
                                   summary_fun = rowMeans)
     heatmap <- hermes::correlate(object_final,
-                                 assay_name = input$assayname,
+                                 assay_name = input$assay_name,
                                  method = "spearman")
 
     switch(
