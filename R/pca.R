@@ -231,7 +231,8 @@ srv_g_pca <- function(input,
   # Compute & display correlation matrix if show_matrix is TRUE
   show_matrix_cor <- reactive({
     if (input$show_matrix) {
-      cor_result_df <- as.data.frame(cor_result())
+      as.data.frame(cor_result())
+      #cor_result_df <- as.data.frame(cor_result())
     }
   })
   output$table_cor <- DT::renderDT({
