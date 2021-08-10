@@ -12,10 +12,7 @@
 #' @examples
 #' library(hermes)
 #' mae <- hermes::multi_assay_experiment
-#' for (i in seq_along(multi_assay_experiment)) {
-#'   multi_assay_experiment[[i]] <- hermes::HermesData(multi_assay_experiment[[i]])
-#' }
-#' mae_data <- dataset("MAE", multi_assay_experiment)
+#' mae_data <- dataset("MAE", mae)
 #' data <- teal_data(mae_data)
 #' app <- init(
 #'   data = data,
@@ -227,9 +224,6 @@ srv_g_boxplot <- function(input,
 #' }
 sample_tm_g_boxplot <- function() {
   mae <- hermes::multi_assay_experiment
-  for (i in seq_along(mae)) {
-    mae[[i]] <- hermes::HermesData(mae[[i]])
-  }
   mae_data <- dataset("MAE", mae)
   data <- teal_data(mae_data)
   app <- init(
