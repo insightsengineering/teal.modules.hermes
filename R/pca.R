@@ -71,21 +71,25 @@ ui_g_pca <- function(id,
       helpText("Analysis of MAE:", tags$code(mae_name)),
       selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
       selectInput(ns("assay_name"), "Select assay", choices = ""),
+      br(),
+      tags$h4(HTML(paste(span("PCA Plot Options", style = "color:blue")))),
       optionalSelectInput(ns("color_var"), "Optional color variable"),
-      selectizeInput(ns("x_var"), "PCA Plot: Select Principal Component to Plot on X-axis",
-                     choices = ""),
-      selectizeInput(ns("y_var"), "PCA Plot: Select Principal Component to Plot on Y-axis",
-                     choices = ""),
-      tags$label("PCA Plot: Show Variance Percentage"),
+      selectizeInput(ns("x_var"), "Select Principal Component to Plot on X-axis", choices = ""),
+      selectizeInput(ns("y_var"), "Select Principal Component to Plot on Y-axis", choices = ""),
+      tags$label("Show Variance Percentage"),
       shinyWidgets::switchInput(ns("var_pct"), value = TRUE, size = "mini"),
-      tags$label("PCA Plot: Show Sample Label"),
+      tags$label("Show Sample Label"),
       shinyWidgets::switchInput(ns("label"), value = TRUE, size = "mini"),
-      tags$label("PCA Plot: Repel Sample Label"),
+      tags$label("Repel Sample Label"),
       shinyWidgets::switchInput(ns("label_repel"), value = TRUE, size = "mini"),
-      tags$label("Correlation Plot: Cluster columns for correlation heatmap"),
+      br(),
+      tags$h4(HTML(paste(span("PC & Sample Correlation Heatmap Options", style = "color:blue")))),
+      tags$label("Cluster columns for correlation heatmap"),
       shinyWidgets::switchInput(ns("cluster_columns"), value = FALSE, size = "mini"),
-      tags$label("Show corresponding matrix"),
-      shinyWidgets::switchInput(ns("show_matrix"), value = FALSE, size = "mini")
+      br(),
+      tags$h4(HTML(paste(span("View Matrix", style = "color:blue")))),
+      tags$label("View Corresponding Matrix"),
+      shinyWidgets::switchInput(ns("show_matrix"), value = TRUE, size = "mini")
     ),
     output = tagList(
       tabsetPanel(type = "tabs",
@@ -101,7 +105,7 @@ ui_g_pca <- function(id,
                     )
                   ),
                   tabPanel(
-                    title = "PCA Correlation",
+                    title = "PC and Sample Correlation",
                     column(
                       width = 12,
                       div(style = "height:20px;"),
@@ -112,7 +116,6 @@ ui_g_pca <- function(id,
                     )
                   )
       )
-      #)
     ),
     pre_output = pre_output,
     post_output = post_output
@@ -186,7 +189,7 @@ srv_g_pca <- function(input,
     req(input$experiment_name)
     req(input$assay_name)
     object <- experiment_data()
-    assay_name <- assay_names()
+    assay_name <- input$assay_name
     hermes::calc_pca(object, assay_name)
   })
 
@@ -235,7 +238,7 @@ srv_g_pca <- function(input,
     DT::datatable(show_matrix_cor(),
                   rownames = TRUE,
                   options = list(scrollX = TRUE, pageLength = 30, lengthMenu = c(5, 15, 30, 100)),
-                  caption = "Correlation Matrix")
+                  caption = "PC and Sample Correlation Matrix")
   })
 
   # Turn off label_repel when input$label is off
@@ -253,6 +256,7 @@ srv_g_pca <- function(input,
   output$plot_pca <- renderPlot({
     # Resolve all reactivity.
     pca_result <- pca_result()
+    experiment_data <- experiment_data()
     x_var <- as.numeric(substring(input$x_var, 3))
     y_var <- as.numeric(substring(input$y_var, 3))
     data <- as.data.frame(SummarizedExperiment::colData(experiment_data()))
@@ -261,10 +265,10 @@ srv_g_pca <- function(input,
     var_pct <- input$var_pct
     label <- input$label
     label_repel <- input$label_repel
-    experiment_data <- experiment_data()
 
     # Require which states need to be truthy.
     req(
+      assay_name,
       # Note: The following statements are important to make sure the UI inputs have been updated.
       isTRUE(assay_name %in% SummarizedExperiment::assayNames(experiment_data)),
       is.null(color_var) || isTRUE(color_var %in% names(SummarizedExperiment::colData(experiment_data))),
@@ -326,5 +330,3 @@ sample_tm_g_pca <- function() {
   )
   shinyApp(app$ui, app$server)
 }
-
-sample_tm_g_pca()
