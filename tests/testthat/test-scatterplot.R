@@ -33,8 +33,11 @@ test_that("tm_g_scatterplot works as expected in the sample app", {
   initial_experiment_name <- app$waitForValue("teal-main_ui-modules_ui-root_scatterplot-experiment_name")
   expect_identical(initial_experiment_name, "hd1")
 
-  output <- app$getOutputValue("teal-main_ui-modules_ui-root_scatterplot-plot")
-  expect_identical(output$message, "no assays are available for this experiment, please choose another experiment")
+  plot_message <- app$waitForOutputElement("teal-main_ui-modules_ui-root_scatterplot-plot", "message")
+  expect_identical(
+    plot_message,
+    "no assays are available for this experiment, please choose another experiment"
+  )
 
   # Choose another experiment.
   app$setInputs(
@@ -62,8 +65,8 @@ test_that("tm_g_scatterplot works as expected in the sample app", {
     "teal-main_ui-modules_ui-root_scatterplot-x_var" = "GeneID:5205",
     "teal-main_ui-modules_ui-root_scatterplot-y_var" = "GeneID:5205"
   )
-  output <- app$getOutputValue("teal-main_ui-modules_ui-root_scatterplot-plot")
-  expect_identical(output$message, "please select different genes for x and y variables")
+  plot_message <- app$waitForOutputElement("teal-main_ui-modules_ui-root_scatterplot-plot", "message")
+  expect_identical(plot_message, "please select different genes for x and y variables")
 
   # Change the sample filter and confirm that genes are not updated.
   app$setInputs(

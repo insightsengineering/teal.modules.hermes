@@ -57,8 +57,8 @@ test_that("tm_g_barplot works as expected in the sample app", {
   app$setInputs(
     "teal-main_ui-modules_ui-root_barplot-percentiles" = c(0.2, 0.2)
   )
-  output <- app$getOutputValue("teal-main_ui-modules_ui-root_barplot-plot")
-  expect_match(output$message, "please select two different quantiles")
+  plot_message <- app$waitForOutputElement("teal-main_ui-modules_ui-root_barplot-plot", "message")
+  expect_match(plot_message, "please select two different quantiles")
 
   # Change percentiles to something that works.
   app$setInputs(

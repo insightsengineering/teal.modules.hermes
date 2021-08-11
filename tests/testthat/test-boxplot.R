@@ -66,9 +66,8 @@ test_that("tm_g_boxplot works as expected in the sample app", {
   expect_identical(now_y_var, "GeneID:5205")
 
   # Also now the plot exists.
-  final_output <- app$getOutputValue("teal-main_ui-modules_ui-root_boxplot-plot")
-  expect_identical(final_output$alt, "Plot object")
-  expect_match(final_output$src, "^data:image/png")
+  plot_description <- app$waitForOutputElement("teal-main_ui-modules_ui-root_boxplot-plot", "alt")
+  expect_identical(plot_description, "Plot object")
 
   # Update boxplot with Jitter.
   app$setInputs(
