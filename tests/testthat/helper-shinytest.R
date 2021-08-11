@@ -4,6 +4,7 @@ shinytest::ShinyDriver$set(
   name = "getOutputValue",
   value = function(name) {
     assert_string(name, min.chars = 1L)
+    self$waitForShiny()
     output_res <- self$getAllValues(
       output = name,
       input = FALSE,
