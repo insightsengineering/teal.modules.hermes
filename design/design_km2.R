@@ -7,26 +7,29 @@ gene_var2 <- c("GeneID:1820", "GeneID:94115")
 new_adtte <- h_km_mae_to_adtte(adtte, mae, gene_var = "GeneID:1820", experiment_name = "hd2")
 new_adtte2 <- h_km_mae_to_adtte(adtte, mae, gene_var = gene_var2, experiment_name = "hd2")
 
+# We receive an error I believe related to the colon in GeneIDs. Just to check if we still
+# get the error with a different col name.
+new_adtte$renametest <- new_adtte$`GeneID:1820counts`
 ANL <- new_adtte
 
-mycode <- template_g_km(arm_var = "GeneID:1820counts")
+mycode <- template_g_km(arm_var = "renametest")
 
 mycode
 
 # $preprocessing
 {
-  anl <- ANL %>% dplyr::mutate(`GeneID:1820counts` = tern::cut_quantile_bins(`GeneID:1820counts`,
-                                                                             probs = c(0.33, 0.66)))
+  anl <- ANL %>% dplyr::mutate(renametest = tern::cut_quantile_bins(renametest,
+                                                                    probs = c(0.33, 0.66)))
 }
 
 # $data
 {
-  anl <- anl %>% mutate(`GeneID:1820counts` = droplevels(`GeneID:1820counts`)) %>%
+  anl <- anl %>% mutate(renametest = droplevels(renametest)) %>%
     dplyr::mutate(is_event = CNSR == 0)
 }
 
 # $variables
-variables <- list(tte = "AVAL", is_event = "is_event", arm = "GeneID:1820counts")
+variables <- list(tte = "AVAL", is_event = "is_event", arm = "renametest")
 
 # $graph
 {
@@ -60,6 +63,4 @@ variables <- list(tte = "AVAL", is_event = "is_event", arm = "GeneID:1820counts"
   km_grobs
 }
 
-
-
-# mapply(eval, mycode)
+mapply(eval, mycode)
