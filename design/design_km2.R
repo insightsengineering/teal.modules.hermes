@@ -5,15 +5,9 @@ adtte <- radtte(cached = TRUE) %>%
   mutate(CNSR = as.logical(CNSR))
 
 # Make sure patient IDs match some in `adtte` to test the function.
-experiment_name <- "se2"
-se_test <- mae[[experiment_name]]
-hd_test <- hermes::HermesData(se_test)
-mae_samplemap <- MultiAssayExperiment::sampleMap(mae)
-samplemap_experiment <- mae_samplemap[mae_samplemap$assay == experiment_name, ]
-se_patients <- samplemap_experiment$primary
-adtte$USUBJID[1:9] <- se_patients
+experiment_name <- "hd2"
 gene_var <- c("GeneID:1820", "GeneID:94115")
-new_adtte <- h_km_mae_to_adtte(adtte, mae, gene_var = "GeneID:1820", experiment_name = "se2")
+new_adtte <- h_km_mae_to_adtte(adtte, mae, gene_var = "GeneID:1820", experiment_name = experiment_name)
 new_adtte2 <- h_km_mae_to_adtte(adtte, mae, gene_var = gene_var, experiment_name = "se2")
 
 ANL <- new_adtte
@@ -30,12 +24,12 @@ anl <- ANL %>% dplyr::mutate(`GeneID:1820_counts` = tern::cut_quantile_bins(`Gen
 
 #$data
 
-  anl <- anl %>% mutate(`GeneID:1820_counts` = droplevels(`GeneID:1820_counts`)) %>%
+  anl <- anl %>% mutate(`GeneID:1820\\_counts` = droplevels(`GeneID:1820_counts`)) %>%
     dplyr::mutate(is_event = CNSR == 0)
 
 
 #variables
-variables <- list(tte = "AVAL", is_event = "is_event", arm = "GeneID:1820_counts")
+variables <- list(tte = "AVAL", is_event = "is_event", arm = "GeneID:1820\_counts")
 
 #graph
 
