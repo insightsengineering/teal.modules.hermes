@@ -48,4 +48,3 @@ shinytest::ShinyDriver$set(
   },
   overwrite = TRUE
 )
-
