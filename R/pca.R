@@ -10,7 +10,6 @@
 #' @export
 #'
 #' @examples
-#' library(hermes)
 #' mae <- hermes::multi_assay_experiment
 #' mae_data <- dataset("MAE", mae)
 #' data <- teal_data(mae_data)
@@ -71,50 +70,50 @@ ui_g_pca <- function(id,
       helpText("Analysis of MAE:", tags$code(mae_name)),
       selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
       selectInput(ns("assay_name"), "Select assay", choices = ""),
-      br(),
-      tags$h4(HTML(paste(span("PCA Plot Options", style = "color:blue")))),
-      optionalSelectInput(ns("color_var"), "Optional color variable"),
-      selectizeInput(ns("x_var"), "Select Principal Component to Plot on X-axis", choices = ""),
-      selectizeInput(ns("y_var"), "Select Principal Component to Plot on Y-axis", choices = ""),
-      tags$label("Show Variance Percentage"),
-      shinyWidgets::switchInput(ns("var_pct"), value = TRUE, size = "mini"),
-      tags$label("Show Sample Label"),
-      shinyWidgets::switchInput(ns("label"), value = TRUE, size = "mini"),
-      tags$label("Repel Sample Label"),
-      shinyWidgets::switchInput(ns("label_repel"), value = TRUE, size = "mini"),
-      br(),
-      tags$h4(HTML(paste(span("PC & Sample Correlation Heatmap Options", style = "color:blue")))),
-      tags$label("Cluster columns for correlation heatmap"),
-      shinyWidgets::switchInput(ns("cluster_columns"), value = FALSE, size = "mini"),
-      br(),
-      tags$h4(HTML(paste(span("View Matrix", style = "color:blue")))),
-      tags$label("View Corresponding Matrix"),
+      conditionalPanel(
+        condition = "input.tab_selected == 'PCA'",
+        ns = ns,
+        optionalSelectInput(ns("color_var"), "Optional color variable"),
+        selectizeInput(ns("x_var"), "Select X-axis", choices = ""),
+        selectizeInput(ns("y_var"), "Select Y-axis", choices = ""),
+        tags$label("Show Variance %"),
+        shinyWidgets::switchInput(ns("var_pct"), value = TRUE, size = "mini"),
+        tags$label("Show Label"),
+        shinyWidgets::switchInput(ns("label"), value = TRUE, size = "mini")
+      ),
+      conditionalPanel(
+        condition = "input.tab_selected == 'PC and Sample Correlation'",
+        ns = ns,
+        tags$label("Cluster columns"),
+        shinyWidgets::switchInput(ns("cluster_columns"), value = FALSE, size = "mini")
+      ),
+      tags$label("View Matrix"),
       shinyWidgets::switchInput(ns("show_matrix"), value = TRUE, size = "mini")
     ),
     output = tagList(
-      tabsetPanel(type = "tabs",
-                  tabPanel(
-                    title = "PCA",
-                    column(
-                      width = 12,
-                      div(style = "height:20px;"),
-                      h4("Principal Components Analysis"),
-                      plotOutput(ns("plot_pca")),
-                      br(), br(), br(),
-                      DT::DTOutput(ns("table_pca"))
-                    )
-                  ),
-                  tabPanel(
-                    title = "PC and Sample Correlation",
-                    column(
-                      width = 12,
-                      div(style = "height:20px;"),
-                      h4("Correlation of Principal Components with Sample Variables"),
-                      plotOutput(ns("plot_cor")),
-                      br(), br(), br(),
-                      DT::DTOutput(ns("table_cor"))
-                    )
-                  )
+      tabsetPanel(
+        id = ns("tab_selected"),
+        type = "tabs",
+        tabPanel(
+          title = "PCA",
+          column(
+            width = 12,
+            div(style = "height:20px;"),
+            plotOutput(ns("plot_pca")),
+            br(), br(), br(),
+            DT::DTOutput(ns("table_pca"))
+          )
+        ),
+        tabPanel(
+          title = "PC and Sample Correlation",
+          column(
+            width = 12,
+            div(style = "height:20px;"),
+            plotOutput(ns("plot_cor")),
+            br(), br(), br(),
+            DT::DTOutput(ns("table_cor"))
+          )
+        )
       )
     ),
     pre_output = pre_output,
@@ -184,16 +183,17 @@ srv_g_pca <- function(input,
     )
   })
 
-  # When the chosen experiment or assay name changes, recompute the PC
+  # When the chosen experiment or assay name changes, recompute the PC.
   pca_result <- reactive({
-    req(input$experiment_name)
-    req(input$assay_name)
-    object <- experiment_data()
+    experiment_data <- experiment_data()
     assay_name <- input$assay_name
-    hermes::calc_pca(object, assay_name)
+
+    req(isTRUE(assay_name %in% SummarizedExperiment::assayNames(experiment_data)))
+
+    hermes::calc_pca(experiment_data, assay_name)
   })
 
-  # When experiment or assay name changes, update choices for PCs in x_var and y_var
+  # When experiment or assay name changes, update choices for PCs in x_var and y_var.
   observeEvent(pca_result(), {
     pca_result_x <- pca_result()$x
     pc_choices <- colnames(as.data.frame(pca_result_x))
@@ -209,51 +209,52 @@ srv_g_pca <- function(input,
     }
   })
 
-  # Compute correlatin of PC with sample variables
+  # Compute correlation of PC with sample variables.
   cor_result <- reactive({
-    hermes::correlate(pca_result(), experiment_data())
+    pca_result <- pca_result()
+    experiment_data <- experiment_data()
+
+    hermes::correlate(pca_result, experiment_data)
   })
 
-  # Compute & display pca matrix table if show_matrix is TRUE
+  # Compute & display PCA matrix table if show_matrix is TRUE.
   show_matrix_pca <- reactive({
     if (input$show_matrix) {
       pca_result_x <- pca_result()$x
       as.data.frame(pca_result_x)
+    } else {
+      NULL
     }
   })
   output$table_pca <- DT::renderDT({
-    DT::datatable(show_matrix_pca(),
-                  rownames = TRUE,
-                  options = list(scrollX = TRUE, pageLength = 30, lengthMenu = c(5, 15, 30, 100)),
-                  caption = "PCA Matrix")
+    show_matrix_pca <- show_matrix_pca()
+    DT::datatable(
+      show_matrix_pca,
+      rownames = TRUE,
+      options = list(scrollX = TRUE, pageLength = 30, lengthMenu = c(5, 15, 30, 100)),
+      caption = "PCA Matrix"
+    )
   })
 
   # Compute & display correlation matrix if show_matrix is TRUE
   show_matrix_cor <- reactive({
     if (input$show_matrix) {
       as.data.frame(cor_result())
-      #cor_result_df <- as.data.frame(cor_result())
+    } else {
+      NULL
     }
   })
   output$table_cor <- DT::renderDT({
-    DT::datatable(show_matrix_cor(),
-                  rownames = TRUE,
-                  options = list(scrollX = TRUE, pageLength = 30, lengthMenu = c(5, 15, 30, 100)),
-                  caption = "PC and Sample Correlation Matrix")
+    show_matrix_cor <- show_matrix_cor()
+    DT::datatable(
+      show_matrix_cor,
+      rownames = TRUE,
+      options = list(scrollX = TRUE, pageLength = 30, lengthMenu = c(5, 15, 30, 100)),
+      caption = "PC and Sample Correlation Matrix"
+    )
   })
 
-  # Turn off label_repel when input$label is off
-  observeEvent(input$label, {
-    if (input$label == FALSE) {
-      shinyWidgets::updateSwitchInput(
-        session,
-        inputId = "label_repel",
-        value = FALSE
-      )
-    }
-  })
-
-  # Render plot pca output
+  # Render plot PCA output.
   output$plot_pca <- renderPlot({
     # Resolve all reactivity.
     pca_result <- pca_result()
@@ -265,7 +266,6 @@ srv_g_pca <- function(input,
     assay_name <- input$assay_name
     var_pct <- input$var_pct
     label <- input$label
-    label_repel <- input$label_repel
 
     # Require which states need to be truthy.
     req(
@@ -289,7 +289,7 @@ srv_g_pca <- function(input,
       colour = color_var,
       variance_percentage = var_pct,
       label = label,
-      label.repel = label_repel
+      label.repel = TRUE
     )
   })
 
@@ -323,7 +323,7 @@ sample_tm_g_pca <- function() {
     modules = root_modules(
       static = {
         tm_g_pca(
-          label = "pca plot",
+          label = "pca",
           mae_name = "MAE"
         )
       }
