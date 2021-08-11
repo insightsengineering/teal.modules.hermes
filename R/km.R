@@ -18,22 +18,13 @@
 #' mae <- hermes::multi_assay_experiment
 #' adtte <- radtte(cached = TRUE) %>%
 #'   mutate(CNSR = as.logical(CNSR))
-#'
-#' # Make sure patient IDs match some in `adtte` to test the function.
-#' experiment_name <- "se2"
-#' se_test <- mae[[experiment_name]]
-#' hd_test <- hermes::HermesData(se_test)
-#' mae_samplemap <- MultiAssayExperiment::sampleMap(mae)
-#' samplemap_experiment <- mae_samplemap[mae_samplemap$assay == experiment_name, ]
-#' se_patients <- samplemap_experiment$primary
-#' adtte$USUBJID[1:9] <- se_patients
-#' gene_var <- c("GeneID:1820", "GeneID:94115")
-#' new_adtte <- h_km_mae_to_adtte(adtte, mae, gene_var = "GeneID:1820", experiment_name = "se2")
-#' new_adtte2 <- h_km_mae_to_adtte(adtte, mae, gene_var = gene_var, experiment_name = "se2")
+#' gene_var2 <- c("GeneID:1820", "GeneID:94115")
+#' new_adtte <- h_km_mae_to_adtte(adtte, mae, gene_var = "GeneID:1820", experiment_name = "hd2")
+#' new_adtte2 <- h_km_mae_to_adtte(adtte, mae, gene_var = gene_var2, experiment_name = "hd2")
 h_km_mae_to_adtte <- function(adtte,
                               mae,
                               gene_var,
-                              experiment_name = "se1",
+                              experiment_name = "hd1",
                               assay_name = "counts") {
   assert_choice(
     assay_name,
@@ -52,20 +43,19 @@ h_km_mae_to_adtte <- function(adtte,
   merge_samplemap <- as.data.frame(merge_samplemap)
   colnames(merge_samplemap) <- c("USUBJID", "SampleID")
 
-  se <- mae[[experiment_name]]
-  hd <- hermes::HermesData(se)
+  hd <- mae[[experiment_name]]
 
   num_genes <- length(gene_var)
   gene_assay <- SummarizedExperiment::assay(hd, assay_name)[gene_var,]
   gene_assay <- as.data.frame(gene_assay)
 
   if (num_genes == 1){
-    colnames(gene_assay) <- paste(gene_var, assay_name, sep = "_")
+    colnames(gene_assay) <- paste(gene_var, assay_name)
     gene_assay$SampleID <- rownames(gene_assay)
   }
 
   if (num_genes > 1){
-    rownames(gene_assay) <- paste(rownames(gene_assay), assay_name, sep = "_")
+    rownames(gene_assay) <- paste(rownames(gene_assay), assay_name)
     gene_assay <- data.frame(t(gene_assay), SampleID = colnames(gene_assay))
   }
 

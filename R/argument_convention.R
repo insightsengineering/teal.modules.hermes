@@ -53,7 +53,7 @@ NULL
 #' @param adtte (`data frame`)\cr an `adtte` dataset.
 #' @param mae (`MultiAssayExperiment`)\cr contains `SummarizedExperiment` objects.
 #' @param gene_var (`character`)\cr a gene(s) of interest.
-#' @param experiment_name (`string`)\cr the desired experiment to use.
+#' @param experiment_name (`string`)\cr the desired `HermesData` to use.
 #' @param assay_name (`string`)\cr the assay to define the groups.
 #'
 #' @name function_arguments
