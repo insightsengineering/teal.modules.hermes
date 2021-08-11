@@ -23,8 +23,11 @@ import(ggplot2)
 import(shiny)
 import(teal)
 import(teal.modules.clinical)
+<<<<<<< HEAD
 importFrom(grid,grid.layout)
 importFrom(grid,grid.newpage)
 importFrom(grid,pushViewport)
 importFrom(grid,viewport)
+=======
+>>>>>>> d326ff33f6a6e50ec9451c1cdd7cca0462dc1105
 importFrom(shinyWidgets,switchInput)

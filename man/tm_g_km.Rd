@@ -7,8 +7,13 @@
 tm_g_km(
   label,
   dataname,
+<<<<<<< HEAD
   parentname = ifelse(is(arm_var, "data_extract_spec"),
     teal.devel::datanames_input(arm_var), "ADSL"),
+=======
+  parentname = ifelse(is(arm_var, "data_extract_spec"), datanames_input(arm_var),
+    "ADSL"),
+>>>>>>> d326ff33f6a6e50ec9451c1cdd7cca0462dc1105
   arm_var,
   arm_ref_comp = NULL,
   paramcd,
@@ -47,7 +52,10 @@ ADaM structure.
 \examples{
 
 library(scda)
+<<<<<<< HEAD
 library(dplyr)
+=======
+>>>>>>> d326ff33f6a6e50ec9451c1cdd7cca0462dc1105
 
 ADSL <- synthetic_cdisc_data("latest")$adsl
 ADTTE <- synthetic_cdisc_data("latest")$adtte
