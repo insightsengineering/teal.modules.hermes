@@ -497,7 +497,9 @@ ui_g_km <- function(id, ...) {
 
   a <- list(...)
   is_single_dataset_value <- teal.devel::is_single_dataset(
-    a$arm_var,
+    a$experiment_var,
+    a$assay_var,
+    a$gene_var,
     a$paramcd,
     a$strata_var,
     a$facet_var,
@@ -543,9 +545,21 @@ ui_g_km <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       ),
       teal.devel::data_extract_input(
-        id = ns("arm_var"),
+        id = ns("experiment_var"),
+        label = "Select Experiment",
+        data_extract_spec = a$experiment_var,
+        is_single_dataset = is_single_dataset_value
+      ),
+      teal.devel::data_extract_input(
+        id = ns("assay_var"),
+        label = "Select Assay",
+        data_extract_spec = a$assay_var,
+        is_single_dataset = is_single_dataset_value
+      ),
+      teal.devel::data_extract_input(
+        id = ns("gene_var"),
         label = "Select Treatment Variable",
-        data_extract_spec = a$arm_var,
+        data_extract_spec = a$gene_var,
         is_single_dataset = is_single_dataset_value
       ),
       div(
