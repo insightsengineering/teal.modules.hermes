@@ -50,12 +50,12 @@ h_km_mae_to_adtte <- function(adtte,
   gene_assay <- as.data.frame(gene_assay)
 
   if (num_genes == 1){
-    colnames(gene_assay) <- paste(gene_var, assay_name)
+    colnames(gene_assay) <- paste(gene_var, assay_name, sep = "")
     gene_assay$SampleID <- rownames(gene_assay)
   }
 
   if (num_genes > 1){
-    rownames(gene_assay) <- paste(rownames(gene_assay), assay_name)
+    rownames(gene_assay) <- paste(rownames(gene_assay), assay_name, sep = "")
     gene_assay <- data.frame(t(gene_assay), SampleID = colnames(gene_assay))
   }
 

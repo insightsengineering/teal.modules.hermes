@@ -13,26 +13,23 @@ mycode <- template_g_km(arm_var = "GeneID:1820counts")
 
 mycode
 
-#$preprocessing
+# $preprocessing
+{
+  anl <- ANL %>% dplyr::mutate(`GeneID:1820counts` = tern::cut_quantile_bins(`GeneID:1820counts`,
+                                                                             probs = c(0.33, 0.66)))
+}
 
-anl <- ANL %>% dplyr::mutate(`GeneID:1820_counts` = tern::cut_quantile_bins(`GeneID:1820_counts`,
-                                                                            probs = c(0.33, 0.66)))
-
-
-#$data
-  anl <- anl %>% mutate(`GeneID:1820_counts` = droplevels(`GeneID:1820_counts`)) %>%
+# $data
+{
+  anl <- anl %>% mutate(`GeneID:1820counts` = droplevels(`GeneID:1820counts`)) %>%
     dplyr::mutate(is_event = CNSR == 0)
+}
 
+# $variables
+variables <- list(tte = "AVAL", is_event = "is_event", arm = "GeneID:1820counts")
 
-#variables
-<<<<<<< HEAD
-variables <- list(tte = "AVAL", is_event = "is_event", arm = "GeneID:1820\_counts")
-=======
-variables <- list(tte = "AVAL", is_event = "is_event", arm = "GeneID:1820_counts")
->>>>>>> d326ff33f6a6e50ec9451c1cdd7cca0462dc1105
-
-#graph
-
+# $graph
+{
   grid::grid.newpage()
   lyt <- grid::grid.layout(nrow = nlevels(ANL$SEX), ncol = 1) %>%
     grid::viewport(layout = .) %>% grid::pushViewport()
@@ -61,6 +58,7 @@ variables <- list(tte = "AVAL", is_event = "is_event", arm = "GeneID:1820_counts
                    }, SIMPLIFY = FALSE)
   km_grobs <- tern::stack_grobs(grobs = result)
   km_grobs
+}
 
 
 
