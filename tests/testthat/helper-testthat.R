@@ -15,6 +15,7 @@ expect_snapshot_screenshot <- function(app,
   skip_on_ci()
 
   path <- tempfile()
+  app$waitForShiny()
   app$takeScreenshot(path, id, parent = parent)
   expect_snapshot_file(path, name)
 }

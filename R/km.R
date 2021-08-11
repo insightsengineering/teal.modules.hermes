@@ -18,9 +18,19 @@
 #' mae <- hermes::multi_assay_experiment
 #' adtte <- radtte(cached = TRUE) %>%
 #'   mutate(CNSR = as.logical(CNSR))
-#' gene_var2 <- c("GeneID:1820", "GeneID:94115")
-#' new_adtte <- h_km_mae_to_adtte(adtte, mae, gene_var = "GeneID:1820", experiment_name = "hd2")
-#' new_adtte2 <- h_km_mae_to_adtte(adtte, mae, gene_var = gene_var2, experiment_name = "hd2")
+#'
+#' new_adtte <- h_km_mae_to_adtte(
+#'   adtte,
+#'   mae,
+#'   gene_var = "GeneID:1820",
+#'   experiment_name = "hd2"
+#' )
+#' new_adtte2 <- h_km_mae_to_adtte(
+#'   adtte,
+#'   mae,
+#'   gene_var = c("GeneID:1820", "GeneID:94115"),
+#'   experiment_name = "hd2"
+#' )
 h_km_mae_to_adtte <- function(adtte,
                               mae,
                               gene_var,
@@ -31,7 +41,7 @@ h_km_mae_to_adtte <- function(adtte,
     c("counts", "cpm", "rpkm", "tpm", "voom")
   )
   assert_character(gene_var)
-  assert_character(experiment_name)
+  assert_string(experiment_name)
 
   mae_samplemap <- MultiAssayExperiment::sampleMap(mae)
   samplemap_experiment <- mae_samplemap[mae_samplemap$assay == experiment_name, ]
@@ -44,6 +54,7 @@ h_km_mae_to_adtte <- function(adtte,
   colnames(merge_samplemap) <- c("USUBJID", "SampleID")
 
   hd <- mae[[experiment_name]]
+  assert_class(hd, "AnyHermesData")
 
   num_genes <- length(gene_var)
   gene_assay <- SummarizedExperiment::assay(hd, assay_name)[gene_var,]
@@ -63,7 +74,7 @@ h_km_mae_to_adtte <- function(adtte,
 
   adtte_patients <- unique(adtte$USUBJID)
   se_patients <- merge_se_data$USUBJID
-  assert_false(any(!(se_patients %in% adtte_patients)))
+  assert_true(any(se_patients %in% adtte_patients))
 
   merged_adtte <- merge(adtte, merge_se_data, by = "USUBJID", all.x = TRUE)
   merged_adtte <- tern::df_explicit_na(merged_adtte)
