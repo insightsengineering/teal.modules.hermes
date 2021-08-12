@@ -8,8 +8,9 @@
 #'
 #' @inheritParams function_arguments
 #'
-#' @return A data frame containing all columns/rows from `adtte` and select columns from
-#'   MAE (assay, Sample IDs) for a given gene(s). The attributes `sample_id`
+#' @return A data frame containing all columns/rows from `adtte` that match
+#'   by `USUBJID` with the row names of the MAE and have the gene samples available
+#'   in the given experiment. The attributes `sample_id`
 #'   and `gene_cols` contain the column names for the sample ID and gene columns.
 #'
 #' @note The final gene column names can start with a different string than
@@ -75,13 +76,13 @@ h_km_mae_to_adtte <- function(adtte,
     gene_assay <- data.frame(t(gene_assay), SampleID = colnames(gene_assay))
   }
 
-  merge_se_data <- merge(merge_samplemap, gene_assay, by = "SampleID", all.x = TRUE)
+  merge_se_data <- merge(merge_samplemap, gene_assay, by = "SampleID")
 
   adtte_patients <- unique(adtte$USUBJID)
   se_patients <- merge_se_data$USUBJID
   assert_true(any(se_patients %in% adtte_patients))
 
-  merged_adtte <- merge(adtte, merge_se_data, by = "USUBJID", all.x = TRUE)
+  merged_adtte <- merge(adtte, merge_se_data, by = "USUBJID")
   merged_adtte <- tern::df_explicit_na(merged_adtte)
 
   structure(
