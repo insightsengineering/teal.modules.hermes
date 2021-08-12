@@ -9,7 +9,12 @@
 #' @inheritParams function_arguments
 #'
 #' @return A data frame containing all columns/rows from `adtte` and select columns from
-#' MAE (assay, Sample IDs) for a given gene(s).
+#'   MAE (assay, Sample IDs) for a given gene(s). The attributes `sample_id`
+#'   and `gene_cols` contain the column names for the sample ID and gene columns.
+#'
+#' @note The final gene column names can start with a different string than
+#'   the original gene IDs, in particular white space, dots and colons are removed,
+#'   see [tern::make_names()] for details.
 #'
 #' @export
 #' @examples
@@ -59,14 +64,14 @@ h_km_mae_to_adtte <- function(adtte,
   num_genes <- length(gene_var)
   gene_assay <- SummarizedExperiment::assay(hd, assay_name)[gene_var,]
   gene_assay <- as.data.frame(gene_assay)
+  gene_names <- tern::make_names(gene_var)
+  merged_names <- paste(gene_names, assay_name, sep = "_")
 
   if (num_genes == 1){
-    colnames(gene_assay) <- paste(gene_var, assay_name, sep = "")
+    colnames(gene_assay) <- merged_names
     gene_assay$SampleID <- rownames(gene_assay)
-  }
-
-  if (num_genes > 1){
-    rownames(gene_assay) <- paste(rownames(gene_assay), assay_name, sep = "")
+  } else {
+    rownames(gene_assay) <- merged_names
     gene_assay <- data.frame(t(gene_assay), SampleID = colnames(gene_assay))
   }
 
@@ -79,7 +84,11 @@ h_km_mae_to_adtte <- function(adtte,
   merged_adtte <- merge(adtte, merge_se_data, by = "USUBJID", all.x = TRUE)
   merged_adtte <- tern::df_explicit_na(merged_adtte)
 
-  merged_adtte
+  structure(
+    merged_adtte,
+    sample_id = "SampleID",
+    gene_cols = merged_names
+  )
 }
 
 #' Template: Kaplan-Meier

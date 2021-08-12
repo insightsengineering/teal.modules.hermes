@@ -2,34 +2,33 @@ library(dplyr)
 library(random.cdisc.data)
 mae <- hermes::multi_assay_experiment
 adtte <- radtte(cached = TRUE) %>%
-  mutate(CNSR = as.logical(CNSR))
+  mutate(CNSR = as.logical(CNSR)) %>%
+  dplyr::filter(PARAMCD == "OS")
 gene_var2 <- c("GeneID:1820", "GeneID:94115")
 new_adtte <- h_km_mae_to_adtte(adtte, mae, gene_var = "GeneID:1820", experiment_name = "hd2")
 new_adtte2 <- h_km_mae_to_adtte(adtte, mae, gene_var = gene_var2, experiment_name = "hd2")
 
-# We receive an error I believe related to the colon in GeneIDs. Just to check if we still
-# get the error with a different col name.
-new_adtte$renametest <- new_adtte$`GeneID:1820counts`
 ANL <- new_adtte
-
-mycode <- template_g_km(arm_var = "renametest")
+names(ANL)
+arm_var <- attr(ANL, "gene_cols")
+mycode <- template_g_km(arm_var = arm_var)
 
 mycode
 
 # $preprocessing
 {
-  anl <- ANL %>% dplyr::mutate(renametest = tern::cut_quantile_bins(renametest,
-                                                                    probs = c(0.33, 0.66)))
+  anl <- ANL %>% dplyr::mutate(GeneID1820_counts = tern::cut_quantile_bins(GeneID1820_counts,
+                                                                             probs = c(0.33, 0.66)))
 }
 
 # $data
 {
-  anl <- anl %>% mutate(renametest = droplevels(renametest)) %>%
+  anl <- anl %>% mutate(GeneID1820_counts = droplevels(GeneID1820_counts)) %>%
     dplyr::mutate(is_event = CNSR == 0)
 }
 
 # $variables
-variables <- list(tte = "AVAL", is_event = "is_event", arm = "renametest")
+variables <- list(tte = "AVAL", is_event = "is_event", arm = "GeneID1820_counts")
 
 # $graph
 {
