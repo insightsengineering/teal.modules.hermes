@@ -592,14 +592,14 @@ ui_g_km <- function(id, ...) {
         data_extract_spec = a$facet_var,
         is_single_dataset = is_single_dataset_value
       ),
+      selectInput(ns("experiment_var"), "Select experiment", names(mae)),
+      selectInput(ns("assay_var"), "Select assay", choices = ""),
       teal.devel::data_extract_input(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      selectInput(ns("experiment_var"), "Select experiment", names(mae)),
-      selectInput(ns("assay_var"), "Select assay", choices = SummarizedExperiment::assay(mae[["experiment_var"]])),
       div(
         class = "arm-comp-box",
         tags$label("Compare Treatments"),
