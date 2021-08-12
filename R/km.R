@@ -414,18 +414,20 @@ template_g_km <- function(dataname = "ANL",
 #'   )
 #' )
 #'
-#' app <- init(
-#'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
-#'     cdisc_dataset("ADTTE", ADTTE, code = 'mae <- hermes::multi_assay_experiment
+#'data <- teal_data(
+#'     dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
+#'     dataset("ADTTE", ADTTE, code = 'mae <- hermes::multi_assay_experiment
 #' adtte <- radtte(cached = TRUE) %>%
 #'     mutate(CNSR = as.logical(CNSR)) %>%
 #'     dplyr::filter(PARAMCD == "OS")
 #' new_adtte <- h_km_mae_to_adtte(adtte, mae, gene_var = "GeneID:1820", experiment_name = "hd2")
 #'
 #' ADTTE <- new_adtte'),
-#'     check = TRUE
-#'   ),
+#' dataset("mae", mae)
+#'   )
+#'
+#' app <- init(
+#'   data = data,
 #'   modules = root_modules(
 #'     tm_g_km(
 #'       label = "KM PLOT",
@@ -758,7 +760,7 @@ srv_g_km <- function(input,
                      time_unit_var,
                      plot_height,
                      plot_width) {
-  stopifnot(is_cdisc_data(datasets))
+  # stopifnot(is_cdisc_data(datasets))
 
   teal.devel::init_chunks()
 
