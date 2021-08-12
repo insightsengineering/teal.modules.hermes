@@ -395,7 +395,13 @@ template_g_km <- function(dataname = "ANL",
 #' library(dplyr)
 #'
 #' ADSL <- synthetic_cdisc_data("latest")$adsl
-#' ADTTE <- synthetic_cdisc_data("latest")$adtte
+#' mae <- hermes::multi_assay_experiment
+#' adtte <- radtte(cached = TRUE) %>%
+#'     mutate(CNSR = as.logical(CNSR)) %>%
+#'     dplyr::filter(PARAMCD == "OS")
+#' new_adtte <- h_km_mae_to_adtte(adtte, mae, gene_var = "GeneID:1820", experiment_name = "hd2")
+#'
+#' ADTTE <- new_adtte
 #'
 #' arm_ref_comp = list(
 #'   ACTARMCD = list(
@@ -411,7 +417,13 @@ template_g_km <- function(dataname = "ANL",
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
-#'     cdisc_dataset("ADTTE", ADTTE, code = 'ADTTE <- synthetic_cdisc_data("latest")$adtte'),
+#'     cdisc_dataset("ADTTE", ADTTE, code = 'mae <- hermes::multi_assay_experiment
+#' adtte <- radtte(cached = TRUE) %>%
+#'     mutate(CNSR = as.logical(CNSR)) %>%
+#'     dplyr::filter(PARAMCD == "OS")
+#' new_adtte <- h_km_mae_to_adtte(adtte, mae, gene_var = "GeneID:1820", experiment_name = "hd2")
+#'
+#' ADTTE <- new_adtte'),
 #'     check = TRUE
 #'   ),
 #'   modules = root_modules(
@@ -460,20 +472,20 @@ tm_g_km <- function(label,
                     pre_output = NULL,
                     post_output = NULL) {
 
- # stop_if_not(
- #    is_character_single(label),
- #    is_character_single(dataname),
- #    is_character_single(parentname),
- #    is.choices_selected(conf_level),
- #    list(
- #      is.null(pre_output) || is(pre_output, "shiny.tag"),
- #      "pre_output should be either null or shiny.tag type of object"
- #    ),
- #    list(
- #      is.null(post_output) || is(post_output, "shiny.tag"),
- #      "post_output should be either null or shiny.tag type of object"
- #    )
- #  )
+ utils.nest::stop_if_not(
+   utils.nest::is_character_single(label),
+   utils.nest::is_character_single(dataname),
+   utils.nest::is_character_single(parentname),
+    is.choices_selected(conf_level),
+    list(
+      is.null(pre_output) || is(pre_output, "shiny.tag"),
+      "pre_output should be either null or shiny.tag type of object"
+    ),
+    list(
+      is.null(post_output) || is(post_output, "shiny.tag"),
+      "post_output should be either null or shiny.tag type of object"
+    )
+  )
 
   utils.nest::check_slider_input(plot_height, allow_null = FALSE)
   utils.nest::check_slider_input(plot_width)
@@ -540,7 +552,14 @@ ui_g_km <- function(id, ...) {
     ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      teal.devel::datanames_input(a[c("arm_var", "paramcd", "strata_var", "facet_var", "aval_var", "cnsr_var")]),
+      teal.devel::datanames_input(a[c("experiment_var",
+                                      "assay_var",
+                                      "gene_var",
+                                      "paramcd",
+                                      "strata_var",
+                                      "facet_var",
+                                      "aval_var",
+                                      "cnsr_var")]),
       teal.devel::data_extract_input(
         id = ns("paramcd"),
         label = "Select Endpoint",
