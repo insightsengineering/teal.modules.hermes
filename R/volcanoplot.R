@@ -10,6 +10,7 @@
 #' @export
 #'
 #' @examples
+#' library(DT)
 #' library(hermes)
 #' library(teal)
 #' mae <- hermes::multi_assay_experiment
@@ -69,16 +70,17 @@ ui_g_volcanoplot <- function(id, datasets, mae_name, pre_output, post_output) {
   teal.devel::standard_layout(
     output = div(
       plotOutput(ns("plot")),
-      tableOutput(ns("table"))),
+      DTOutput(ns("table"))),
     pre_output = pre_output,
     post_output = post_output,
     encoding = div(
       selectInput(ns("experiment_name"), "Select experiment", names(mae)),
-      selectInput(ns("facet_var"), "Facet by", choices = factor_2L ),
+      selectInput(ns("compare_groups"), "Compare Groups", choices = factor_2L ),
       selectInput(ns("method"), "Method", choices = c("voom", "deseq2") ),
       sliderInput(ns("log2_fc_thresh"), "Log2 fold change threshold", value = 2.5, min = 0.1, max = 10),
       sliderInput(ns("adj_p_val_thresh"), "Adjusted p-value threshold", value = 0.05, min = 0.001, max = 1),
-      sliderInput(ns("top_gene_number"), "Number of top differential expression genes listed", value = 10, min = 5, max = 50)
+      tags$label("Show Top Differentiated Genes"),
+      shinyWidgets::switchInput(ns("show_top_gene"), value = FALSE, size = "mini")
     )
   )
 }
@@ -126,52 +128,49 @@ srv_g_volcanoplot <- function(input, output, session, datasets, mae_name) {
   # the call that creates the Heremes object for differential expression.
   diff_expr <- reactive({
     object <- experiment_data()
-    facet_var <- input$facet_var
+    compare_groups <- input$compare_groups
     method <- input$method
 
     req(
-      facet_var,
+      compare_groups,
         method
     )
 
-    diff_expression(object, group = facet_var, method = method)
+    diff_expression(object, group = compare_groups, method = method)
   })
 
   output$plot <- renderPlot({
     # Resolve all reactivity.
-
+    object <- experiment_data()
     diff_expr_result <- diff_expr()
     log2_fc_thresh <- input$log2_fc_thresh
     adj_p_val_thresh <- input$adj_p_val_thresh
-    facet_var <- input$facet_var
+    compare_groups <- input$compare_groups
 
     # Require which states need to be truthy.
     req(
       log2_fc_thresh,
       adj_p_val_thresh,
-      facet_var
+      compare_groups
     )
-
 
     hermes::autoplot(diff_expr_result, adj_p_val_thresh = adj_p_val_thresh, log2_fc_thresh = log2_fc_thresh)
   })
 
 
-  output$table <- renderTable({
-    # Resolve all reactivity.
-    diff_expr_result <- diff_expr()
-    top_gene_number <- input$top_gene_number
+  # display top genes if show_top_gene is TRUE
+  show_top_gene_diffexpr <- reactive({
+    if (input$show_top_gene) {
+      diff_expr()
+    }
+  })
 
-    # Require which states need to be truthy
-    req(top_gene_number)
+  output$table <- renderDT({
 
-    output_table <- cbind.data.frame(rownames(diff_expr_result),diff_expr_result)
-    colnames(output_table)[1] <- "gene"
-
-
-
-    output_table[seq_len(top_gene_number), , drop = FALSE]
-
+    DT::datatable(show_top_gene_diffexpr(),
+                  rownames = TRUE,
+                  options = list(scrollX = TRUE, pageLength = 30, lengthMenu = c(5, 15, 30, 100)),
+                  caption = "Top Differentiated Genes")
   })
 }
 
