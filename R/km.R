@@ -393,6 +393,7 @@ template_g_km <- function(dataname = "ANL",
 #'
 #' library(scda)
 #' library(dplyr)
+#' library(random.cdisc.data)
 #'
 #' ADSL <- synthetic_cdisc_data("latest")$adsl
 #' mae <- hermes::multi_assay_experiment
@@ -433,14 +434,13 @@ template_g_km <- function(dataname = "ANL",
 #'       label = "KM PLOT",
 #'       dataname = "ADTTE",
 #'       arm_var = choices_selected(
-#'         variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
-#'         "ARM"
+#'         variable_choices(ADTTE, c("GeneID1820_counts")),
+#'         "GeneID1820_counts"
 #'       ),
 #'       paramcd = choices_selected(
 #'         value_choices(ADTTE, "PARAMCD", "PARAM"),
 #'         "OS"
 #'       ),
-#'       arm_ref_comp = arm_ref_comp,
 #'       strata_var = choices_selected(
 #'         variable_choices(ADSL, c("SEX", "BMRKR2")),
 #'         "SEX"
@@ -532,9 +532,7 @@ ui_g_km <- function(id, ...) {
 
   a <- list(...)
   is_single_dataset_value <- teal.devel::is_single_dataset(
-    a$experiment_var,
-    a$assay_var,
-    a$gene_var,
+    a$arm_var,
     a$paramcd,
     a$strata_var,
     a$facet_var,
@@ -554,14 +552,7 @@ ui_g_km <- function(id, ...) {
     ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      teal.devel::datanames_input(a[c("experiment_var",
-                                      "assay_var",
-                                      "gene_var",
-                                      "paramcd",
-                                      "strata_var",
-                                      "facet_var",
-                                      "aval_var",
-                                      "cnsr_var")]),
+      teal.devel::datanames_input(a[c("arm_var", "paramcd", "strata_var", "facet_var", "aval_var", "cnsr_var")]),
       teal.devel::data_extract_input(
         id = ns("paramcd"),
         label = "Select Endpoint",
@@ -587,21 +578,9 @@ ui_g_km <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       ),
       teal.devel::data_extract_input(
-        id = ns("experiment_var"),
-        label = "Select Experiment",
-        data_extract_spec = a$experiment_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      teal.devel::data_extract_input(
-        id = ns("assay_var"),
-        label = "Select Assay",
-        data_extract_spec = a$assay_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      teal.devel::data_extract_input(
-        id = ns("gene_var"),
+        id = ns("arm_var"),
         label = "Select Treatment Variable",
-        data_extract_spec = a$gene_var,
+        data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
       div(
@@ -734,10 +713,6 @@ ui_g_km <- function(id, ...) {
     pre_output = a$pre_output,
     post_output = a$post_output
   )
-}
-
-is_cdisc_data <- function(datasets) {
-  is(datasets, "CDISCFilteredData")
 }
 
 #' Server for KM Module
@@ -898,6 +873,7 @@ srv_g_km <- function(input,
     call_preparation()
     teal.devel::chunks_safe_eval()
   })
+
 
   # Insert the plot into a plot with settings module from teal.devel
   callModule(
