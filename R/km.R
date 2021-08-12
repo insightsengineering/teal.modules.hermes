@@ -80,7 +80,7 @@ h_km_mae_to_adtte <- function(adtte,
 
   adtte_patients <- unique(adtte$USUBJID)
   se_patients <- merge_se_data$USUBJID
-  assert_true(any(se_patients %in% adtte_patients))
+  assert_false(any(!(se_patients %in% adtte_patients)))
 
   merged_adtte <- merge(adtte, merge_se_data, by = "USUBJID")
   merged_adtte <- tern::df_explicit_na(merged_adtte)
