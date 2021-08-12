@@ -439,6 +439,10 @@ template_g_km <- function(dataname = "ANL",
 #'         variable_choices(ADTTE, c("GeneID1820_counts")),
 #'         "GeneID1820_counts"
 #'       ),
+#'       assay_var = choices_selected(
+#'         variable_choices(ADTTE, c("GeneID1820_counts")),
+#'         "GeneID1820_counts"
+#'       ),
 #'       paramcd = choices_selected(
 #'         value_choices(ADTTE, "PARAMCD", "PARAM"),
 #'         "OS"
@@ -468,6 +472,7 @@ tm_g_km <- function(label,
                     parentname = ifelse(is(arm_var, "data_extract_spec"), teal.devel::datanames_input(arm_var), "ADSL"),
                     arm_var,
                     experiment_var,
+                    assay_var,
                     arm_ref_comp = NULL,
                     paramcd,
                     strata_var,
@@ -542,6 +547,7 @@ ui_g_km <- function(id, ...) {
   is_single_dataset_value <- teal.devel::is_single_dataset(
     a$arm_var,
     a$experiment_var,
+    a$assay_var,
     a$paramcd,
     a$strata_var,
     a$facet_var,
@@ -593,6 +599,7 @@ ui_g_km <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       ),
       selectInput(ns("experiment_var"), "Select experiment", names(mae)),
+      selectInput(ns("assay_var"), "Select assay", choices = SummarizedExperiment::assay(mae[["experiment_var"]])),
       div(
         class = "arm-comp-box",
         tags$label("Compare Treatments"),
