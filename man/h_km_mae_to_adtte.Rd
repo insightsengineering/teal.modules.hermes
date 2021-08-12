@@ -4,13 +4,7 @@
 \alias{h_km_mae_to_adtte}
 \title{Data Preprocessing for KM Module}
 \usage{
-h_km_mae_to_adtte(
-  adtte,
-  mae,
-  gene_var,
-  experiment_name = "se1",
-  assay_name = "counts"
-)
+h_km_mae_to_adtte(adtte, mae, gene_var, experiment_name, assay_name = "counts")
 }
 \arguments{
 \item{adtte}{(\verb{data frame})\cr an \code{adtte} dataset.}
@@ -42,15 +36,16 @@ mae <- hermes::multi_assay_experiment
 adtte <- radtte(cached = TRUE) \%>\%
   mutate(CNSR = as.logical(CNSR))
 
-# Make sure patient IDs match some in `adtte` to test the function.
-experiment_name <- "se2"
-se_test <- mae[[experiment_name]]
-hd_test <- hermes::HermesData(se_test)
-mae_samplemap <- MultiAssayExperiment::sampleMap(mae)
-samplemap_experiment <- mae_samplemap[mae_samplemap$assay == experiment_name, ]
-se_patients <- samplemap_experiment$primary
-adtte$USUBJID[1:9] <- se_patients
-gene_var <- c("GeneID:1820", "GeneID:94115")
-new_adtte <- h_km_mae_to_adtte(adtte, mae, gene_var = "GeneID:1820", experiment_name = "se2")
-new_adtte2 <- h_km_mae_to_adtte(adtte, mae, gene_var = gene_var, experiment_name = "se2")
+new_adtte <- h_km_mae_to_adtte(
+  adtte,
+  mae,
+  gene_var = "GeneID:1820",
+  experiment_name = "hd2"
+)
+new_adtte2 <- h_km_mae_to_adtte(
+  adtte,
+  mae,
+  gene_var = c("GeneID:1820", "GeneID:94115"),
+  experiment_name = "hd2"
+)
 }

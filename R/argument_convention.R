@@ -14,6 +14,8 @@
 #'   the ID used to call the teal module's UI function.
 #' @param mae_name (`string`)\cr
 #'   name of the MAE data used in the teal module.
+#' @param exclude_assays (`character`)\cr
+#'   names of the assays which should not be included in choices in the teal module.
 #' @param pre_output (`shiny.tag` or `NULL`)\cr
 #'   placed before the output to put the output into context (for example a title).
 #' @param post_output (`shiny.tag` or `NULL`)\cr

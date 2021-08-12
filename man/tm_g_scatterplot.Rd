@@ -7,11 +7,17 @@
 \alias{sample_tm_g_scatterplot}
 \title{Teal Module for RNA-seq Scatterplot}
 \usage{
-tm_g_scatterplot(label, mae_name, pre_output = NULL, post_output = NULL)
+tm_g_scatterplot(
+  label,
+  mae_name,
+  exclude_assays = "counts",
+  pre_output = NULL,
+  post_output = NULL
+)
 
 ui_g_scatterplot(id, datasets, mae_name, pre_output, post_output)
 
-srv_g_scatterplot(input, output, session, datasets, mae_name)
+srv_g_scatterplot(input, output, session, datasets, mae_name, exclude_assays)
 
 sample_tm_g_scatterplot()
 }
@@ -21,6 +27,9 @@ menu item label of the module in the teal app.}
 
 \item{mae_name}{(\code{string})\cr
 name of the MAE data used in the teal module.}
+
+\item{exclude_assays}{(\code{character})\cr
+names of the assays which should not be included in choices in the teal module.}
 
 \item{pre_output}{(\code{shiny.tag} or \code{NULL})\cr
 placed before the output to put the output into context (for example a title).}
@@ -59,11 +68,7 @@ analysis.
 }}
 
 \examples{
-library(hermes)
 mae <- hermes::multi_assay_experiment
-for (i in seq_along(mae)) {
-  mae[[i]] <- hermes::HermesData(mae[[i]])
-}
 mae_data <- dataset("MAE", mae)
 data <- teal_data(mae_data)
 app <- init(

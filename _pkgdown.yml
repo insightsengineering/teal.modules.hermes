@@ -7,7 +7,7 @@ template:
 navbar:
   right:
     - icon: fa-github
-      href: https://github.roche.com/NEST/teal.modules.hermes
+      href: https://github.com/insightsengineering/teal.modules.hermes
 
 reference:
   - title: Classes
@@ -15,6 +15,7 @@ reference:
   - title: Utility Functions
     contents:
       - is_blank
+      - h_km_mae_to_adtte
   - title: Internal Helper Functions
     contents:
   - title: Example Data
@@ -22,6 +23,7 @@ reference:
   - title: Teal Module Functions
     contents:
       - tm_g_barplot
+      - tm_g_boxplot
       - tm_g_scatterplot
       - tm_g_boxplot
       - tm_g_pca
