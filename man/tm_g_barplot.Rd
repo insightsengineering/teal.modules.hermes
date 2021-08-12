@@ -59,11 +59,7 @@ analysis. The percentiles are calculated at initialization.
 }}
 
 \examples{
-library(hermes)
 mae <- hermes::multi_assay_experiment
-for (i in seq_along(mae)) {
-  mae[[i]] <- hermes::HermesData(mae[[i]])
-}
 mae_data <- dataset("MAE", mae)
 data <- teal_data(mae_data)
 app <- init(

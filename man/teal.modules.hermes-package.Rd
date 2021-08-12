@@ -12,8 +12,8 @@ teal application.
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.roche.com/NEST/teal.modules.hermes/}
-  \item Report bugs at \url{https://github.roche.com/NEST/teal.modules.hermes/issues}
+  \item \url{https://github.com/insightsengineering/teal.modules.hermes/}
+  \item Report bugs at \url{https://github.com/insightsengineering/teal.modules.hermes/issues}
 }
 
 }

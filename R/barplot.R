@@ -10,11 +10,7 @@
 #' @export
 #'
 #' @examples
-#' library(hermes)
 #' mae <- hermes::multi_assay_experiment
-#' for (i in seq_along(mae)) {
-#'   mae[[i]] <- hermes::HermesData(mae[[i]])
-#' }
 #' mae_data <- dataset("MAE", mae)
 #' data <- teal_data(mae_data)
 #' app <- init(
@@ -221,9 +217,6 @@ srv_g_barplot <- function(input,
 #' }
 sample_tm_g_barplot <- function() {
   mae <- hermes::multi_assay_experiment
-  for (i in seq_along(mae)) {
-    mae[[i]] <- hermes::HermesData(mae[[i]])
-  }
   mae_data <- dataset("MAE", mae)
   data <- teal_data(mae_data)
   app <- init(
