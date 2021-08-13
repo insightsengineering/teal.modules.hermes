@@ -37,7 +37,7 @@ test_that("tm_g_boxplot works as expected in the sample app", {
 
   # Check initial state of encodings.
   initial_experiment_name <- app$waitForValue("teal-main_ui-modules_ui-root_boxplot-experiment_name")
-  expect_identical(initial_experiment_name, "se1")
+  expect_identical(initial_experiment_name, "hd1")
 
   initial_assay_name <- app$waitForValue("teal-main_ui-modules_ui-root_boxplot-assay_name")
   expect_identical(initial_assay_name, "counts")
@@ -57,7 +57,7 @@ test_that("tm_g_boxplot works as expected in the sample app", {
 
   # Now change the experiment_name and confirm that the gene and stratifyin variables are updated accordingly.
   app$setInputs(
-    "teal-main_ui-modules_ui-root_boxplot-experiment_name" = "se3"
+    "teal-main_ui-modules_ui-root_boxplot-experiment_name" = "hd3"
   )
   now_x_var <- app$waitForValue("teal-main_ui-modules_ui-root_boxplot-x_var")
   expect_identical(now_x_var, "Filename")
@@ -66,9 +66,8 @@ test_that("tm_g_boxplot works as expected in the sample app", {
   expect_identical(now_y_var, "GeneID:5205")
 
   # Also now the plot exists.
-  final_output <- app$getOutputValue("teal-main_ui-modules_ui-root_boxplot-plot")
-  expect_identical(final_output$alt, "Plot object")
-  expect_match(final_output$src, "^data:image/png")
+  plot_description <- app$waitForOutputElement("teal-main_ui-modules_ui-root_boxplot-plot", "alt")
+  expect_identical(plot_description, "Plot object")
 
   # Update boxplot with Jitter.
   app$setInputs(

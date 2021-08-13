@@ -17,9 +17,9 @@
                 <div class="form-group shiny-input-container">
                   <label class="control-label" id="testid-experiment_name-label" for="testid-experiment_name">Select experiment</label>
                   <div>
-                    <select id="testid-experiment_name"><option value="se1" selected>se1</option>
-      <option value="se2">se2</option>
-      <option value="se3">se3</option></select>
+                    <select id="testid-experiment_name"><option value="hd1" selected>hd1</option>
+      <option value="hd2">hd2</option>
+      <option value="hd3">hd3</option></select>
                     <script type="application/json" data-for="testid-experiment_name" data-nonempty="">{"plugins":["selectize-plugin-a11y"]}</script>
                   </div>
                 </div>
