@@ -60,7 +60,6 @@ variables.
 }}
 
 \examples{
-library(hermes)
 mae <- hermes::multi_assay_experiment
 mae_data <- dataset("MAE", mae)
 data <- teal_data(mae_data)

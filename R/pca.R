@@ -189,9 +189,16 @@ srv_g_pca <- function(input,
     assay_name <- input$assay_name
 
     req(isTRUE(assay_name %in% SummarizedExperiment::assayNames(experiment_data)))
+    validate(need(
+      !is_blank(assay_name),
+      "no assays are available for this experiment, please choose another experiment"
+    ))
+    validate(need(ncol(SummarizedExperiment::assay(experiment_data)) > 2,
+                  "Sample size is too small. PCA needs more than 2 samples with non constant and non zero values."))
 
     hermes::calc_pca(experiment_data, assay_name)
   })
+  #debug(hermes::calc_pca)
 
   # When experiment or assay name changes, update choices for PCs in x_var and y_var.
   observeEvent(pca_result(), {

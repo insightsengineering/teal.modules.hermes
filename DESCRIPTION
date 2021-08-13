@@ -22,6 +22,7 @@ Depends:
   teal
 Imports:
   checkmate,
+  DT,
   hermes,
   lifecycle,
   MultiAssayExperiment,
