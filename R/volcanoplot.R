@@ -61,13 +61,13 @@ ui_g_volcanoplot <- function(id, datasets, mae_name, pre_output, post_output) {
   ns <- NS(id)
   mae <- datasets$get_data(mae_name, filtered = TRUE)
   object <- hermes::HermesData(mae[[1]])
-  colData(object) <- df_char_to_factor(colData(object))
-  factor_2L <- names(colData(object))[apply(colData(object),2,function(s)nlevels(factor(s))) == 2L]
+  SummarizedExperiment::colData(object) <- hermes::df_char_to_factor(SummarizedExperiment::colData(object))
+  factor_2L <- names(SummarizedExperiment::colData(object))[apply(SummarizedExperiment::colData(object),2,function(s)nlevels(factor(s))) == 2L]
 
   teal.devel::standard_layout(
     output = div(
       plotOutput(ns("plot")),
-      DTOutput(ns("table"))),
+      DT::DTOutput(ns("table"))),
     pre_output = pre_output,
     post_output = post_output,
     encoding = div(
@@ -95,18 +95,18 @@ srv_g_volcanoplot <- function(input, output, session, datasets, mae_name) {
     mae <- datasets$get_data(mae_name, filtered = TRUE)
 
     object <- hermes::HermesData(mae[[input$experiment_name]])
-    colData(object) <- df_char_to_factor(colData(object))
+    SummarizedExperiment::colData(object) <- hermes::df_char_to_factor(SummarizedExperiment::colData(object))
     object
   })
 
-  # When the chosen experiment changes, recompute the colData variables.
-  # We only select the colData variables with 2 levels
+  # When the chosen experiment changes, recompute the SummarizedExperiment::colData variables.
+  # We only select the SummarizedExperiment::colData variables with 2 levels
   col_data_vars <- eventReactive(input$experiment_name, ignoreNULL = TRUE, {
     object <- experiment_data()
-    names(colData(object))[apply(colData(object),2,function(s)nlevels(factor(s))) == 2L]
+    names(SummarizedExperiment::colData(object))[apply(SummarizedExperiment::colData(object),2,function(s)nlevels(factor(s))) == 2L]
   })
 
-  # When the colData variables change, update the choices for compare_groups.
+  # When the SummarizedExperiment::colData variables change, update the choices for compare_groups.
   observeEvent(col_data_vars(), {
     facet_fill_var_choices <- col_data_vars()
 
@@ -137,7 +137,7 @@ srv_g_volcanoplot <- function(input, output, session, datasets, mae_name) {
 
 
 
-    diff_expression(object, group = compare_groups, method = method)
+    hermes::diff_expression(object, group = compare_groups, method = method)
   })
 
 
@@ -170,7 +170,7 @@ srv_g_volcanoplot <- function(input, output, session, datasets, mae_name) {
     }
   })
 
-  output$table <- renderDT({
+  output$table <- DT::renderDT({
 
     DT::datatable(show_top_gene_diffexpr(),
                   rownames = TRUE,
