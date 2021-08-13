@@ -74,8 +74,8 @@ ui_g_pca <- function(id,
         condition = "input.tab_selected == 'PCA'",
         ns = ns,
         optionalSelectInput(ns("color_var"), "Optional color variable"),
-        selectizeInput(ns("x_var"), "Select X-axis", choices = ""),
-        selectizeInput(ns("y_var"), "Select Y-axis", choices = ""),
+        selectizeInput(ns("x_var"), "Select X-axis PC", choices = ""),
+        selectizeInput(ns("y_var"), "Select Y-axis PC", choices = ""),
         tags$label("Show Variance %"),
         shinyWidgets::switchInput(ns("var_pct"), value = TRUE, size = "mini"),
         tags$label("Show Label"),
@@ -95,7 +95,7 @@ ui_g_pca <- function(id,
         id = ns("tab_selected"),
         type = "tabs",
         tabPanel(
-          title = "PCA",
+          "PCA",
           column(
             width = 12,
             div(style = "height:20px;"),
@@ -105,7 +105,7 @@ ui_g_pca <- function(id,
           )
         ),
         tabPanel(
-          title = "PC and Sample Correlation",
+          "PC and Sample Correlation",
           column(
             width = 12,
             div(style = "height:20px;"),
@@ -188,22 +188,20 @@ srv_g_pca <- function(input,
     experiment_data <- experiment_data()
     assay_name <- input$assay_name
 
+    validate(need(hermes::is_hermes_data(experiment_data), "please use HermesData() on input experiments"))
     req(isTRUE(assay_name %in% SummarizedExperiment::assayNames(experiment_data)))
     validate(need(
-      !is_blank(assay_name),
-      "no assays are available for this experiment, please choose another experiment"
+      ncol(SummarizedExperiment::assay(experiment_data)) > 2,
+      "Sample size is too small. PCA needs more than 2 samples."
     ))
-    validate(need(ncol(SummarizedExperiment::assay(experiment_data)) > 2,
-                  "Sample size is too small. PCA needs more than 2 samples with non constant and non zero values."))
 
     hermes::calc_pca(experiment_data, assay_name)
   })
-  #debug(hermes::calc_pca)
 
   # When experiment or assay name changes, update choices for PCs in x_var and y_var.
   observeEvent(pca_result(), {
     pca_result_x <- pca_result()$x
-    pc_choices <- colnames(as.data.frame(pca_result_x))
+    pc_choices <- seq_len(ncol(pca_result_x))
 
     id_names <- c("x_var", "y_var")
     for (i in seq_along(id_names)) {
@@ -228,6 +226,7 @@ srv_g_pca <- function(input,
   show_matrix_pca <- reactive({
     if (input$show_matrix) {
       pca_result_x <- pca_result()$x
+      pca_result_x <- round(pca_result_x, 3)
       as.data.frame(pca_result_x)
     } else {
       NULL
@@ -246,7 +245,9 @@ srv_g_pca <- function(input,
   # Compute & display correlation matrix if show_matrix is TRUE
   show_matrix_cor <- reactive({
     if (input$show_matrix) {
-      as.data.frame(cor_result())
+      cor_result <- cor_result()
+      cor_result <- round(cor_result(), 3)
+      as.data.frame(cor_result)
     } else {
       NULL
     }
@@ -266,8 +267,8 @@ srv_g_pca <- function(input,
     # Resolve all reactivity.
     pca_result <- pca_result()
     experiment_data <- experiment_data()
-    x_var <- as.numeric(substring(input$x_var, 3))
-    y_var <- as.numeric(substring(input$y_var, 3))
+    x_var <- as.numeric(input$x_var)
+    y_var <- as.numeric(input$y_var)
     data <- as.data.frame(SummarizedExperiment::colData(experiment_data()))
     color_var <- input$color_var
     assay_name <- input$assay_name
@@ -284,7 +285,6 @@ srv_g_pca <- function(input,
     )
 
     # Validate and give useful messages to the user. Note: no need to duplicate here req() from above.
-    validate(need(hermes::is_hermes_data(experiment_data), "please use HermesData() on input experiments"))
     validate(need(x_var != y_var, "please select two different principal components"))
 
     hermes::autoplot(

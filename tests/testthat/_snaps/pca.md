@@ -36,14 +36,14 @@
                     <select data-actions-box="false" data-none-selected-text="- Nothing selected -" data-max-options="1" data-show-subtext="true" data-live-search="false" id="testid-color_var" class="selectpicker form-control" multiple="multiple"><option value=""></option></select>
                   </div>
                   <div class="form-group shiny-input-container">
-                    <label class="control-label" id="testid-x_var-label" for="testid-x_var">Select X-axis</label>
+                    <label class="control-label" id="testid-x_var-label" for="testid-x_var">Select X-axis PC</label>
                     <div>
                       <select id="testid-x_var" class="form-control"><option value="" selected></option></select>
                       <script type="application/json" data-for="testid-x_var">{"plugins":["selectize-plugin-a11y"]}</script>
                     </div>
                   </div>
                   <div class="form-group shiny-input-container">
-                    <label class="control-label" id="testid-y_var-label" for="testid-y_var">Select Y-axis</label>
+                    <label class="control-label" id="testid-y_var-label" for="testid-y_var">Select Y-axis PC</label>
                     <div>
                       <select id="testid-y_var" class="form-control"><option value="" selected></option></select>
                       <script type="application/json" data-for="testid-y_var">{"plugins":["selectize-plugin-a11y"]}</script>
@@ -76,16 +76,16 @@
               <div id="pre-output"></div>
               <div id="output">
                 <div class="tabbable">
-                  <ul class="nav nav-tabs shiny-tab-input" id="testid-tab_selected" data-tabsetid="6730">
+                  <ul class="nav nav-tabs shiny-tab-input" id="testid-tab_selected" data-tabsetid="2004">
                     <li class="active">
-                      <a href="#tab-6730-1" data-toggle="tab" data-value="PCA">PCA</a>
+                      <a href="#tab-2004-1" data-toggle="tab" data-value="PCA">PCA</a>
                     </li>
                     <li>
-                      <a href="#tab-6730-2" data-toggle="tab" data-value="PC and Sample Correlation">PC and Sample Correlation</a>
+                      <a href="#tab-2004-2" data-toggle="tab" data-value="PC and Sample Correlation">PC and Sample Correlation</a>
                     </li>
                   </ul>
-                  <div class="tab-content" data-tabsetid="6730">
-                    <div class="tab-pane active" data-value="PCA" id="tab-6730-1">
+                  <div class="tab-content" data-tabsetid="2004">
+                    <div class="tab-pane active" data-value="PCA" id="tab-2004-1">
                       <div class="col-sm-12">
                         <div style="height:20px;"></div>
                         <div id="testid-plot_pca" class="shiny-plot-output" style="width:100%;height:400px;"></div>
@@ -95,7 +95,7 @@
                         <div id="testid-table_pca" style="width:100%; height:auto; " class="datatables html-widget html-widget-output"></div>
                       </div>
                     </div>
-                    <div class="tab-pane" data-value="PC and Sample Correlation" id="tab-6730-2">
+                    <div class="tab-pane" data-value="PC and Sample Correlation" id="tab-2004-2">
                       <div class="col-sm-12">
                         <div style="height:20px;"></div>
                         <div id="testid-plot_cor" class="shiny-plot-output" style="width:100%;height:400px;"></div>
