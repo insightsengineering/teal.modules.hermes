@@ -73,7 +73,7 @@ ui_g_volcanoplot <- function(id,
     post_output = post_output,
     encoding = div(
       selectInput(ns("experiment_name"), "Select experiment", names(mae)),
-      selectInput(ns("compare_groups"), "Compare Groups", choices = ""),
+      selectInput(ns("compare_group"), "Compare Groups", choices = ""),
       selectInput(ns("method"), "Method", choices = c("voom", "deseq2")),
       sliderInput(ns("log2_fc_thresh"), "Log2 fold change threshold", value = 2.5, min = 0.1, max = 10),
       sliderInput(ns("adj_p_val_thresh"), "Adjusted p-value threshold", value = 0.05, min = 0.001, max = 1),
@@ -113,13 +113,13 @@ srv_g_volcanoplot <- function(input,
     names(col_data)[can_be_used]
   })
 
-  # When the group variables change, update the choices for compare_groups.
+  # When the group variables change, update the choices for compare_group.
   observeEvent(group_vars(), {
     group_var_choices <- group_vars()
 
     updateSelectInput(
       session,
-      "compare_groups",
+      "compare_group",
       choices = group_var_choices,
       selected = group_var_choices[1]
     )
@@ -138,7 +138,11 @@ srv_g_volcanoplot <- function(input,
       method
     )
 
-    hermes::diff_expression(object, group = compare_group, method = method)
+    hermes::diff_expression(
+      object,
+      group = compare_group,
+      method = method
+    )
   })
 
   output$plot <- renderPlot({
@@ -146,34 +150,46 @@ srv_g_volcanoplot <- function(input,
     diff_expr_result <- diff_expr()
     log2_fc_thresh <- input$log2_fc_thresh
     adj_p_val_thresh <- input$adj_p_val_thresh
-    compare_group <- input$compare_group
 
     # Require which states need to be truthy.
     req(
       log2_fc_thresh,
-      adj_p_val_thresh,
-      compare_group
+      adj_p_val_thresh
     )
 
-
-
-    hermes::autoplot(diff_expr_result, adj_p_val_thresh = adj_p_val_thresh, log2_fc_thresh = log2_fc_thresh)
+    hermes::autoplot(
+      diff_expr_result,
+      adj_p_val_thresh = adj_p_val_thresh,
+      log2_fc_thresh = log2_fc_thresh
+    )
   })
-
 
   # display top genes if show_top_gene is TRUE
   show_top_gene_diffexpr <- reactive({
     if (input$show_top_gene) {
-      diff_expr()
+      result <- diff_expr()
+      with(
+        result,
+        data.frame(
+          log2_fc = round(log2_fc, 2),
+          stat = round(stat, 2),
+          p_val = format.pval(p_val),
+          adj_p_val = format.pval(adj_p_val),
+          row.names = rownames(result)
+        )
+      )
+    } else {
+      NULL
     }
   })
 
   output$table <- DT::renderDT({
-
-    DT::datatable(show_top_gene_diffexpr(),
-                  rownames = TRUE,
-                  options = list(scrollX = TRUE, pageLength = 30, lengthMenu = c(5, 15, 30, 100)),
-                  caption = "Top Differentiated Genes")
+    DT::datatable(
+      show_top_gene_diffexpr(),
+      rownames = TRUE,
+      options = list(scrollX = TRUE, pageLength = 30, lengthMenu = c(5, 15, 30, 100)),
+      caption = "Top Differentiated Genes"
+    )
   })
 }
 
