@@ -14,9 +14,6 @@
 #' library(hermes)
 #' library(teal)
 #' mae <- hermes::multi_assay_experiment
-#' for (i in seq_along(mae)) {
-#'   mae[[i]] <- hermes::HermesData(mae[[i]])
-#' }
 #' mae_data <- dataset("MAE", mae)
 #' data <- teal_data(mae_data)
 #' app <- init(
@@ -191,9 +188,6 @@ srv_g_volcanoplot <- function(input, output, session, datasets, mae_name) {
 #' }
 sample_tm_g_volcanoplot <- function() {
   mae <- hermes::multi_assay_experiment
-  for (i in seq_along(mae)) {
-    mae[[i]] <- hermes::HermesData(mae[[i]])
-  }
   mae_data <- dataset("MAE", mae)
   data <- teal_data(mae_data)
   app <- init(
