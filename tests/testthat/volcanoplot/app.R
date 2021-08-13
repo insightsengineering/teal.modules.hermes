@@ -25,5 +25,6 @@ library(teal.modules.hermes)
 
 
 library(shiny)
+library(DT)
 
 sample_tm_g_volcanoplot()

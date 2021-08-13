@@ -109,17 +109,17 @@ srv_g_volcanoplot <- function(input, output, session, datasets, mae_name) {
     names(colData(object))[apply(colData(object),2,function(s)nlevels(factor(s))) == 2L]
   })
 
-  # When the colData variables change, update the choices for facet_var.
+  # When the colData variables change, update the choices for compare_groups.
   observeEvent(col_data_vars(), {
     facet_fill_var_choices <- col_data_vars()
 
-    id_names <- c("facet_var")
+    id_names <- c("compare_groups")
     for (i in seq_along(id_names)) {
       updateSelectInput(
         session,
         id_names[i],
         choices = facet_fill_var_choices,
-        selected = character()
+        selected = facet_fill_var_choices[1]
       )
     }
   })
@@ -131,17 +131,23 @@ srv_g_volcanoplot <- function(input, output, session, datasets, mae_name) {
     compare_groups <- input$compare_groups
     method <- input$method
 
+
     req(
       compare_groups,
-        method
+        method,
+      cancelOutput = FALSE
     )
+
+
 
     diff_expression(object, group = compare_groups, method = method)
   })
 
+
+
+
   output$plot <- renderPlot({
     # Resolve all reactivity.
-    object <- experiment_data()
     diff_expr_result <- diff_expr()
     log2_fc_thresh <- input$log2_fc_thresh
     adj_p_val_thresh <- input$adj_p_val_thresh
@@ -153,6 +159,8 @@ srv_g_volcanoplot <- function(input, output, session, datasets, mae_name) {
       adj_p_val_thresh,
       compare_groups
     )
+
+
 
     hermes::autoplot(diff_expr_result, adj_p_val_thresh = adj_p_val_thresh, log2_fc_thresh = log2_fc_thresh)
   })
