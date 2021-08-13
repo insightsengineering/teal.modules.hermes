@@ -398,8 +398,7 @@ template_g_km_mae <- function(dataname = "ANL",
 #' ADSL <- synthetic_cdisc_data("latest")$adsl
 #' mae <- hermes::multi_assay_experiment
 #' adtte <- radtte(cached = TRUE) %>%
-#'     mutate(CNSR = as.logical(CNSR)) %>%
-#'     dplyr::filter(PARAMCD == "OS")
+#'     mutate(CNSR = as.logical(CNSR))
 #' new_adtte <- h_km_mae_to_adtte(adtte, mae, gene_var = "GeneID:1820", experiment_name = "hd2")
 #'
 #' ADTTE <- new_adtte
@@ -419,8 +418,7 @@ template_g_km_mae <- function(dataname = "ANL",
 #'     dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
 #'     dataset("ADTTE", ADTTE, code = 'mae <- hermes::multi_assay_experiment
 #' adtte <- radtte(cached = TRUE) %>%
-#'     mutate(CNSR = as.logical(CNSR)) %>%
-#'     dplyr::filter(PARAMCD == "OS")
+#'     mutate(CNSR = as.logical(CNSR))
 #' new_adtte <- h_km_mae_to_adtte(adtte, mae, gene_var = "GeneID:1820", experiment_name = "hd2")
 #'
 #' ADTTE <- new_adtte'),
@@ -435,16 +433,8 @@ template_g_km_mae <- function(dataname = "ANL",
 #'         variable_choices(ADTTE, c("GeneID1820_counts")),
 #'         "GeneID1820_counts"
 #'       ),
-#'       experiment_var = choices_selected(
-#'         variable_choices(ADTTE, c("GeneID1820_counts")),
-#'         "GeneID1820_counts"
-#'       ),
-#'       assay_var = choices_selected(
-#'         variable_choices(ADTTE, c("GeneID1820_counts")),
-#'         "GeneID1820_counts"
-#'       ),
 #'       paramcd = choices_selected(
-#'         value_choices(ADTTE, "PARAMCD", "PARAM"),
+#'         value_choices(ADTTE, c("PARAMCD")),
 #'         "OS"
 #'       ),
 #'       strata_var = choices_selected(
@@ -471,8 +461,6 @@ tm_g_km <- function(label,
                     dataname,
                     parentname = ifelse(is(arm_var, "data_extract_spec"), teal.devel::datanames_input(arm_var), "ADSL"),
                     arm_var,
-                    experiment_var,
-                    assay_var,
                     arm_ref_comp = NULL,
                     paramcd,
                     strata_var,
@@ -506,8 +494,7 @@ tm_g_km <- function(label,
 
   args <- as.list(environment())
   data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parentname),
-    experiment_var = cs_to_des_select(experiment_var, dataname = dataname),
+    arm_var = cs_to_des_select(arm_var, dataname = dataname),
     paramcd = cs_to_des_filter(paramcd, dataname = dataname),
     strata_var = cs_to_des_select(strata_var, dataname = parentname, multiple = TRUE),
     facet_var = cs_to_des_select(facet_var, dataname = parentname, multiple = FALSE),
@@ -532,6 +519,7 @@ tm_g_km <- function(label,
         plot_width = plot_width
       )
     ),
+    # filters = "all"
     filters = teal.devel::get_extract_datanames(data_extract_list)
   )
 }
@@ -541,13 +529,20 @@ tm_g_km <- function(label,
 #' @noRd
 #'
 #' @importFrom shinyWidgets switchInput
-ui_g_km <- function(id, ...) {
+ui_g_km <- function(id,
+                    datasets,
+                    arm_var,
+                    paramcd,
+                    strata_var,
+                    facet_var,
+                    aval_var,
+                    cnsr_var,
+                    time_unit_var,
+                    ...) {
 
   a <- list(...)
   is_single_dataset_value <- teal.devel::is_single_dataset(
     a$arm_var,
-    a$experiment_var,
-    a$assay_var,
     a$paramcd,
     a$strata_var,
     a$facet_var,
@@ -568,38 +563,49 @@ ui_g_km <- function(id, ...) {
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       teal.devel::datanames_input(a[c("arm_var", "experiment_var", "paramcd", "strata_var", "facet_var", "aval_var", "cnsr_var")]),
-      teal.devel::data_extract_input(
-        id = ns("paramcd"),
-        label = "Select Endpoint",
-        data_extract_spec = a$paramcd,
-        is_single_dataset = is_single_dataset_value
-      ),
-      teal.devel::data_extract_input(
-        id = ns("aval_var"),
-        label = "Analysis Variable",
-        data_extract_spec = a$aval_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      teal.devel::data_extract_input(
-        id = ns("cnsr_var"),
-        label = "Censor Variable",
-        data_extract_spec = a$cnsr_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      teal.devel::data_extract_input(
-        id = ns("facet_var"),
-        label = "Facet Plots by",
-        data_extract_spec = a$facet_var,
-        is_single_dataset = is_single_dataset_value
-      ),
+
       selectInput(ns("experiment_var"), "Select experiment", names(mae)),
       selectInput(ns("assay_var"), "Select assay", choices = ""),
-      teal.devel::data_extract_input(
-        id = ns("arm_var"),
-        label = "Select Treatment Variable",
-        data_extract_spec = a$arm_var,
-        is_single_dataset = is_single_dataset_value
-      ),
+
+      # NOTE data_extract_input only used to filter CDISC datasets! since ADTTE is
+      # no longer "CDISC" let's remove
+      selectInput(ns("arm_var"), "Select Treatment Variable", a$arm_var),
+      # teal.devel::data_extract_input(
+      #   id = ns("arm_var"),
+      #   label = "Select Treatment Variable",
+      #   data_extract_spec = a$arm_var,
+      #   is_single_dataset = is_single_dataset_value
+      # ),
+
+      #Will this change based on experiment chosen?
+      selectInput(ns("paramcd"), "Select Endpoint", a$paramcd),
+      # teal.devel::data_extract_input(
+      #   id = ns("paramcd"),
+      #   label = "Select Endpoint",
+      #   data_extract_spec = a$paramcd,
+      #   is_single_dataset = is_single_dataset_value
+      # ),
+      selectInput(ns("aval_var"), "Analysis Variable", a$aval_var),
+      # teal.devel::data_extract_input(
+      #   id = ns("aval_var"),
+      #   label = "Analysis Variable",
+      #   data_extract_spec = a$aval_var,
+      #   is_single_dataset = is_single_dataset_value
+      # ),
+      selectInput(ns("cnsr_var"), "Censor Variable", a$cnsr_var),
+      # teal.devel::data_extract_input(
+      #   id = ns("cnsr_var"),
+      #   label = "Censor Variable",
+      #   data_extract_spec = a$cnsr_var,
+      #   is_single_dataset = is_single_dataset_value
+      # ),
+      selectInput(ns("facet_var"), "Facet Plots by", a$facet_var),
+      # teal.devel::data_extract_input(
+      #   id = ns("facet_var"),
+      #   label = "Facet Plots by",
+      #   data_extract_spec = a$facet_var,
+      #   is_single_dataset = is_single_dataset_value
+      # ),
       div(
         class = "arm-comp-box",
         tags$label("Compare Treatments"),
@@ -631,12 +637,13 @@ ui_g_km <- function(id, ...) {
               "Combine all comparison groups?",
               value = FALSE
             ),
-            teal.devel::data_extract_input(
-              id = ns("strata_var"),
-              label = "Stratify by",
-              data_extract_spec = a$strata_var,
-              is_single_dataset = is_single_dataset_value
-            )
+            selectInput(ns("strata_var"), "Stratify by", a$strata_var)
+            # teal.devel::data_extract_input(
+            #   id = ns("strata_var"),
+            #   label = "Stratify by",
+            #   data_extract_spec = a$strata_var,
+            #   is_single_dataset = is_single_dataset_value
+            # )
           )
         )
       ),
@@ -717,12 +724,13 @@ ui_g_km <- function(id, ...) {
             fixed = a$conf_level$fixed
           ),
           textInput(ns("xlab"), "X-axis label", "Time"),
-          teal.devel::data_extract_input(
-            id = ns("time_unit_var"),
-            label = "Time Unit Variable",
-            data_extract_spec = a$time_unit_var,
-            is_single_dataset = is_single_dataset_value
-          )
+          selectInput(ns("time_unit_var"), "Time Unit Variable", a$time_unit_var)
+          # teal.devel::data_extract_input(
+          #   id = ns("time_unit_var"),
+          #   label = "Time Unit Variable",
+          #   data_extract_spec = a$time_unit_var,
+          #   is_single_dataset = is_single_dataset_value
+          # )
         )
       )
     ),
@@ -757,13 +765,22 @@ srv_g_km <- function(input,
 
   teal.devel::init_chunks()
 
+  # When the filtered data set of the chosen experiment changes, update the
+  # experiment data object.
+  experiment_var <- reactive({
+    req(input$experiment_var)  # Important to avoid running into NULL here.
+
+    mae <- datasets$get_data(mae, filtered = TRUE)
+    mae[[input$experiment_var]]
+  })
+
   # Setup arm variable selection, default reference arms and default
   # comparison arms for encoding panel
   teal.devel::arm_ref_comp_observer(
     session, input,
     id_ref = "ref_arm", # from UI
     id_comp = "comp_arm", # from UI
-    id_arm_var = extract_input("arm_var", parentname),
+    id_arm_var = extract_input("arm_var", dataname),
     datasets = datasets,
     dataname = parentname,
     arm_ref_comp = arm_ref_comp,
@@ -773,8 +790,8 @@ srv_g_km <- function(input,
 
   anl_merged <- teal.devel::data_merge_module(
     datasets = datasets,
-    data_extract = list(aval_var, experiment_var, cnsr_var, arm_var, paramcd, strata_var, facet_var, time_unit_var),
-    input_id = c("aval_var", "cnsr_var", "arm_var", "experiment_var", "paramcd", "strata_var", "facet_var", "time_unit_var"),
+    data_extract = list(aval_var, cnsr_var, arm_var, paramcd, strata_var, facet_var, time_unit_var),
+    input_id = c("aval_var", "cnsr_var", "arm_var", "paramcd", "strata_var", "facet_var", "time_unit_var"),
     merge_function = "dplyr::inner_join"
   )
 
@@ -861,6 +878,7 @@ srv_g_km <- function(input,
 
     my_calls <- template_g_km_mae(
       dataname = "ANL",
+      # arm_var = input$arm_var,
       arm_var = as.vector(anl_m$columns_source$arm_var),
       ref_arm = input$ref_arm,
       comp_arm = input$comp_arm,
