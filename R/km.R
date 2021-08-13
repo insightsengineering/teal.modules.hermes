@@ -92,7 +92,7 @@ h_km_mae_to_adtte <- function(adtte,
   )
 }
 
-#' Template: Kaplan-Meier
+#' Template: Kaplan-Meier MAE
 #'
 #' @inheritParams template_arguments
 #' @inheritParams tern::g_km
@@ -104,7 +104,7 @@ h_km_mae_to_adtte <- function(adtte,
 #' @seealso [tm_g_km()]
 #'
 #' @importFrom grid grid.newpage grid.layout viewport pushViewport
-template_g_km <- function(dataname = "ANL",
+template_g_km_mae <- function(dataname = "ANL",
                           arm_var = "GENE",
                           quantiles = c(0.33, 0.66),
                           ref_arm = NULL,
@@ -859,7 +859,7 @@ srv_g_km <- function(input,
     input_paramcd <- as.character(unique(anl_m$data()[[as.vector(anl_m$columns_source$paramcd)]]))
     title <- paste("KM Plot of", input_paramcd)
 
-    my_calls <- template_g_km(
+    my_calls <- template_g_km_mae(
       dataname = "ANL",
       arm_var = as.vector(anl_m$columns_source$arm_var),
       ref_arm = input$ref_arm,
