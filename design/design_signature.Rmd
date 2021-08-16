@@ -191,19 +191,40 @@ ui_g_signature <- function(id,
     encoding = div(
       selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
       selectInput(ns("assay_name"), "Select assay", choices = ""),
+
+      actionButton(ns("open_text_input"), span(icon("font fa-border")), title = "Enter list of genes", 
+                     class = "pull-right", style = "padding: 0;
+                                                    margin: 0;
+                                                    border: 0;
+                                                    background: transparent;
+                                                    outline: none;
+                                                    box-shadow: none;"
+                   ),
+      div(
+        class = "pull-right",
+        title = "Lock gene selection",
+        shinyWidgets::prettyToggle(
+          ns("lock"),
+          value = FALSE,
+          label_on = NULL,
+          label_off = NULL,
+          status_on = "default",
+          status_off = "default",
+          outline = FALSE,
+          plain = TRUE,
+          icon_on = icon("lock fa-border"),
+          icon_off = icon("unlock-alt fa-border")
+        )
+      ), 
+
       optionalSelectInput(
         ns("y_vars"), 
-        "Select gene(s) of interest", 
+        label = "Select gene(s) of interest", 
         choices = "", 
         multiple = TRUE
       ),
-      actionButton(ns("open_text_input"), "Enter list of genes"),
-      tags$label("Lock gene selection"),
-      shinyWidgets::switchInput(
-        ns("lock"), 
-        value = FALSE, 
-        size = "mini"
-      ),
+
+
       conditionalPanel(
         condition = "input.y_vars.length > 1", # JavaScript expression
         ns = ns, # namespace in this module
