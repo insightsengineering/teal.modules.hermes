@@ -36,13 +36,20 @@ For the last one we need a little helper.
 ```{r}
 shorten_list <- function(x) {
   n <- length(x)
-  if (n > 4) {
+  if (n > 3) {
     x <- c(x[1:2], "...", x[n])
   }
   paste(x, collapse = ", ")
 }
 shorten_list(letters[1:4])
 shorten_list(letters)
+
+parenthesize <- function(x) {
+  if (is_blank(x)) 
+    ""
+  else
+    paste0("(", x, ")")
+}
 ```
 
 This will make our life easier below.
@@ -52,7 +59,8 @@ draw_signature <- function(object,
                            assay_name, 
                            x_var, 
                            y_vars,
-                           summary_fun = colMeans) 
+                           summary_fun = colMeans,
+                           fun_name = deparse(substitute(summary_fun))) 
 {
     assert_class(object, "AnyHermesData")
     assert_string(assay_name)
@@ -72,8 +80,8 @@ draw_signature <- function(object,
     }
     
     y_label <- if (length(y_vars) > 1L) {
-      summary_fun_name <- deparse(substitute(summary_fun))
-      paste0(summary_fun_name, "(", shorten_list(y_vars), ")")
+      assert_string(fun_name, min.chars = 1L)
+      paste0(fun_name, parenthesize(shorten_list(y_vars)))
     } else {
       y_vars
     }
@@ -183,11 +191,18 @@ ui_g_signature <- function(id,
     encoding = div(
       selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
       selectInput(ns("assay_name"), "Select assay", choices = ""),
-      selectizeInput(
+      optionalSelectInput(
         ns("y_vars"), 
         "Select gene(s) of interest", 
         choices = "", 
         multiple = TRUE
+      ),
+      actionButton(ns("open_text_input"), "Enter list of genes"),
+      tags$label("Lock gene selection"),
+      shinyWidgets::switchInput(
+        ns("lock"), 
+        value = FALSE, 
+        size = "mini"
       ),
       conditionalPanel(
         condition = "input.y_vars.length > 1", # JavaScript expression
@@ -209,6 +224,23 @@ ui_g_signature <- function(id,
 ### Server function
 
 Here we take the `summary_funs` too as we need to look up the function in it.
+
+For the parsing of genes from text input we need another helper function first.
+
+```{r}
+extract_words <- function(x) {
+  assert_string(x, min.chars = 1L)
+  stringr::str_extract_all(
+    x,
+    "[a-zA-Z0-9:\\.]+"
+  )[[1]]
+}
+
+# This seems pretty robust:
+extract_words("a, b, , c, 234; 34562 - GeneID:bla")
+extract_words("GeneID:1820, sdf.393; 32596")
+```
+
 
 ```{r}
 srv_g_signature <- function(input,
@@ -259,18 +291,108 @@ srv_g_signature <- function(input,
     )
   })
 
-  # When the genes are recomputed, update the choice for genes in the UI.
-  observeEvent(genes(), {
-    gene_choices <- genes()
+  # `reactiveValues` object for storing current gene text input.
+  parsed_genes <- reactiveVal(NULL, label = "Parsed genes")
+  
+  # 3) the parsed genes are entered via text
+  observeEvent(parsed_genes(), ignoreNULL = TRUE, {
+    # Resolve reactives.
+    genes <- genes()
+    parsed_genes <- parsed_genes()
 
-    id_names <- c("y_vars")
-      updateSelectizeInput(
+    # Only select the subset of parsed genes included in choices.
+    new_selected <- intersect(parsed_genes, genes)
+    removed <- setdiff(parsed_genes, new_selected)
+    updateOptionalSelectInput(
+      session,
+      "y_vars",
+      choices = genes,
+      selected = new_selected
+    )
+    n_removed <- length(removed)
+    if (n_removed > 0) {
+      showNotification(paste(
+        "Removed", n_removed,
+        ifelse(n_removed > 1, "genes", "gene"),
+        parenthesize(shorten_list(removed))
+      ))
+    }
+  })
+  
+  # When 
+  # 1) the genes are recomputed,
+  # 2) the lock is switched off,
+  # then update the choices and selections for genes in the UI.
+  observeEvent(list(genes(), input$lock), {
+    genes <- genes()
+    lock <- input$lock
+    old_selected <- input$y_vars
+
+    if (!lock) {
+      new_selected <- intersect(old_selected, genes)
+      removed <- setdiff(old_selected, new_selected)
+      updateOptionalSelectInput(
         session,
-        id_names,
-        choices = gene_choices,
-        selected = gene_choices[1],
-        server = TRUE
+        "y_vars",
+        choices = genes,
+        selected = new_selected
       )
+      n_removed <- length(removed)
+      if (n_removed > 0) {
+        showNotification(paste(
+          "Removed", n_removed, 
+          ifelse(n_removed > 1, "genes", "gene"), 
+          parenthesize(shorten_list(removed))
+        ))
+      }
+    }
+  })
+  
+  # Return the UI for a modal dialog with gene text input.
+  dataModal <- function(example_list) {
+    modalDialog(
+      textInput(
+        session$ns("gene_text"), 
+        "Enter list of genes",
+        placeholder = example_list
+      ),
+      span(
+        "Please enter a comma-separated list of gene IDs.",
+        "(Note that genes not included in current choices will be removed)"
+      ),
+      footer = tagList(
+        modalButton("Cancel"),
+        actionButton(session$ns("ok"), "OK")
+      )
+    )
+  }
+  
+  # Show modal when button is clicked.
+  observeEvent(input$open_text_input, {
+    gene_choices <- genes()
+    example_list <- shorten_list(gene_choices)
+    showModal(dataModal(example_list))
+  })
+  
+  # When OK button is pressed, attempt to parse the genes from the text.
+  # Remove the modal and display notification message.
+  observeEvent(input$ok, {
+    gene_text <- input$gene_text
+    
+    if (!nzchar(gene_text)) {
+      showNotification(
+        "Please enter at least one full gene ID.", 
+        type = "error"
+      )
+    } else {
+      parse_result <- extract_words(gene_text)
+      showNotification(paste(
+        "Received", length(parse_result), "genes from text input",
+        parenthesize(shorten_list(parse_result))
+      ))
+      parsed_genes(parse_result) 
+      removeModal()
+    }
   })
 
   output$plot <- renderPlot({
@@ -280,27 +402,41 @@ srv_g_signature <- function(input,
     assay_name <- input$assay_name
     summary_fun_name <- input$summary_fun_name
     
-    validate(need(!is.null(y_vars), "please select at least one gene"))
-
     # Require which states need to be truthy.
     req(
       assay_name,
       # Note: The following statements are important to make sure the UI inputs have been updated.
       isTRUE(assay_name %in% SummarizedExperiment::assayNames(experiment_data)),
-      isTRUE(all(y_vars %in% rownames(experiment_data))),
       cancelOutput = FALSE
     )
+    
+    # Validate and give useful messages to the user. Note: no need to duplicate 
+    # here req() from above.
+    validate(need(
+      hermes::is_hermes_data(experiment_data), 
+      "please use HermesData() on input experiments"
+    ))
+    validate(need(!is.null(y_vars), "please select at least one gene"))
+    y_vars_not_included <- setdiff(y_vars, rownames(experiment_data))
+    n_not_incl <- length(y_vars_not_included)
+    validate(need(
+      identical(n_not_incl, 0L),
+      paste(
+        n_not_incl, 
+        ifelse(n_not_incl > 1, "genes", "gene"),
+        parenthesize(shorten_list(y_vars_not_included)), 
+        "not included, please unlock or change filters"
+      )
+    ))
 
-    # Validate and give useful messages to the user. Note: no need to duplicate here req() from above.
-    validate(need(hermes::is_hermes_data(experiment_data), "please use HermesData() on input experiments"))
-
-    comb <- summary_funs[[summary_fun_name]]
+    # Output.
     draw_signature(
       object = experiment_data,
       assay_name = assay_name,
       x_var = "COUNTRY",
       y_vars = y_vars,
-      summary_fun = comb
+      summary_fun = summary_funs[[summary_fun_name]],
+      fun_name = summary_fun_name
     )
   })
 }
