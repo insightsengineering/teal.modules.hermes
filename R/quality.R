@@ -1,4 +1,17 @@
-# To do: roxygen
+#' Most Expressed Genes Plot
+#'
+#' This function plots the most expressed genes.
+#'
+#' @inheritParams module_arguments
+#'
+#' @return Plot to be displayed in the teal app.
+#'
+#' @export
+#'
+#' @examples
+#' library(hermes)
+#' object <- HermesData(summarized_experiment)
+#' result <- top_gene_plot(object, assay_name = "counts")
 top_gene_plot <- function(object, assay_name) {
   top_gene <- hermes::top_genes(
     object = object,
@@ -7,7 +20,20 @@ top_gene_plot <- function(object, assay_name) {
   hermes::autoplot(top_gene)
 }
 
-# To do: roxygen
+#' Correlation Heatmap Plot
+#'
+#' This function plots the correlation heatmap.
+#'
+#' @inheritParams module_arguments
+#'
+#' @return Plot to be displayed in the teal app.
+#'
+#' @export
+#'
+#' @examples
+#' library(hermes)
+#' object <- HermesData(summarized_experiment)
+#' result <- heatmap_plot(object, assay_name = "counts")
 heatmap_plot <- function(object, assay_name) {
   heatmap <- hermes::correlate(
     object = object,
@@ -155,23 +181,23 @@ srv_g_quality <- function(input,
   })
 
   # When the chosen experiment changes, recompute the minimum and maximum CPM available.
-  mini_cpm <- eventReactive(input$experiment_name, {
+  min_cpm_calc <- eventReactive(input$experiment_name, {
     object <- experiment_data()
     floor(min(edgeR::cpm(hermes::counts(object))))
   })
 
-  max_cpm <- eventReactive(input$experiment_name, {
+  max_cpm_calc <- eventReactive(input$experiment_name, {
     object <- experiment_data()
     floor(max(edgeR::cpm(hermes::counts(object))))
   })
 
   # When the chosen experiment changes, recompute the minimum and maximum library size (depth) available.
-  mini_depth <- eventReactive(input$experiment_name, {
+  min_depth_calc <- eventReactive(input$experiment_name, {
     object <- experiment_data()
     min(colSums(hermes::counts(object)))
   })
 
-  max_depth <- eventReactive(input$experiment_name, {
+  max_depth_calc <- eventReactive(input$experiment_name, {
     object <- experiment_data()
     max(colSums(hermes::counts(object)))
   })
@@ -199,28 +225,28 @@ srv_g_quality <- function(input,
   })
 
   observeEvent(input$experiment_name, {
-    mini_cpm <- mini_cpm()
-    max_cpm <- max_cpm()
+    min_cpm_calc <- min_cpm_calc()
+    max_cpm_calc <- max_cpm_calc()
 
     updateSliderInput(
       session,
       "min_cpm",
-      min = mini_cpm,
-      max = max_cpm,
-      value = mini_cpm
+      min = min_cpm_calc,
+      max = max_cpm_calc,
+      value = min_cpm_calc
     )
   })
 
   observeEvent(input$experiment_name, {
-    mini_depth <- mini_depth()
-    max_depth <- max_depth()
+    min_depth_calc <- min_depth_calc()
+    max_depth_calc <- max_depth_calc()
 
     updateSliderInput(
       session,
       "min_depth_continuous",
-      min = mini_depth,
-      max = max_depth,
-      value = mini_depth
+      min = min_depth_calc,
+      max = max_depth_calc,
+      value = min_depth_calc
     )
   })
 
@@ -261,10 +287,14 @@ srv_g_quality <- function(input,
 
     validate(need(hermes::is_hermes_data(object), "please use HermesData() first on experiments"))
 
-    hermes::add_quality_flags(
-      object,
-      control = control
-    )
+    if (!("control_quality_flags" %in% names(metadata(object)))) {
+      hermes::add_quality_flags(
+        object,
+        control = control
+      )
+    } else {
+      object
+    }
   })
 
   object_final <- reactive({
@@ -286,6 +316,9 @@ srv_g_quality <- function(input,
     object_final <- object_final()
     plot_type <- input$plot_type
     assay_name <- input$assay_name
+
+    validate(need(isTRUE(dim(object_final)[1] >= 2),
+                  "Please decrease the minimum CPM threshold to ensure that there are at least 2 genes"))
 
     switch(
       plot_type,
