@@ -56,11 +56,8 @@ heatmap_plot <- function(object, assay_name) {
 #'
 #' @examples
 #' library(hermes)
-#' utils::data("multi_assay_experiment", package = "hermes")
-#' for (i in seq_along(multi_assay_experiment)) {
-#'   multi_assay_experiment[[i]] <- hermes::HermesData(multi_assay_experiment[[i]])
-#' }
-#' mae_data <- dataset("MAE", multi_assay_experiment)
+#' mae <- hermes::multi_assay_experiment
+#' mae_data <- dataset("MAE", mae)
 #' data <- teal_data(mae_data)
 #' app <- init(
 #'   data = data,
@@ -162,10 +159,21 @@ srv_g_quality <- function(input,
 
   # Reactive function for experiment data since it is used in multiple places below.
   experiment_data <- reactive({
-    req(input$experiment_name)
+    experiment_name <- input$experiment_name
+
+    req(experiment_name)
 
     mae <- datasets$get_data(mae_name, filtered = TRUE)
-    mae[[input$experiment_name]]
+    result <- mae[[experiment_name]]
+
+    validate(need(hermes::is_hermes_data(result), "please use HermesData() first on experiments"))
+    already_added <- ("control_quality_flags" %in% names(hermes::metadata(result)))
+    validate(need(!already_added, "quality flags have already been added to this experiment"))
+    if (any(c("cpm", "rpkm", "tpm", "voom") %in% SummarizedExperiment::assayNames(result))) {
+      showNotification("original normalized assays will be overwritten", type = "warning")
+    }
+
+    result
   })
 
   # When the chosen experiment changes, recompute the annotations available.
@@ -284,17 +292,10 @@ srv_g_quality <- function(input,
   object_flagged <- reactive({
     control <- control()
     object <- experiment_data()
-
-    validate(need(hermes::is_hermes_data(object), "please use HermesData() first on experiments"))
-
-    if (!("control_quality_flags" %in% names(metadata(object)))) {
-      hermes::add_quality_flags(
-        object,
-        control = control
-      )
-    } else {
-      object
-    }
+    hermes::add_quality_flags(
+      object,
+      control = control
+    )
   })
 
   object_final <- reactive({
@@ -309,6 +310,12 @@ srv_g_quality <- function(input,
       what = filter,
       annotation_required = annotate
     )
+
+    validate(need(
+      nrow(result) >= 2,
+      "Please change gene filters to ensure that there are at least 2 genes"
+    ))
+
     hermes::normalize(result)
   })
 
@@ -316,9 +323,6 @@ srv_g_quality <- function(input,
     object_final <- object_final()
     plot_type <- input$plot_type
     assay_name <- input$assay_name
-
-    validate(need(isTRUE(dim(object_final)[1] >= 2),
-                  "Please decrease the minimum CPM threshold to ensure that there are at least 2 genes"))
 
     switch(
       plot_type,
@@ -341,9 +345,7 @@ srv_g_quality <- function(input,
 #' }
 sample_tm_g_quality <- function() {
   mae <- hermes::multi_assay_experiment
-  for (i in seq_along(mae)) {
-    mae[[i]] <- hermes::normalize(hermes::HermesData(mae[[i]]))
-  }
+  mae[[1]] <- hermes::normalize(mae[[1]])
   mae_data <- dataset("MAE", mae)
   data <- teal_data(mae_data)
   app <- init(
