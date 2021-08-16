@@ -142,7 +142,7 @@ ui_g_quality <- function(id,
         )
       )
     ),
-    output = plotOutput(ns("quality")),
+    output = plotOutput(ns("plot")),
     pre_output = pre_output,
     post_output = post_output
   )
@@ -166,11 +166,11 @@ srv_g_quality <- function(input,
     mae <- datasets$get_data(mae_name, filtered = TRUE)
     result <- mae[[experiment_name]]
 
-    validate(need(hermes::is_hermes_data(result), "please use HermesData() first on experiments"))
+    validate(need(hermes::is_hermes_data(result), "Please use HermesData() first on experiments"))
     already_added <- ("control_quality_flags" %in% names(hermes::metadata(result)))
-    validate(need(!already_added, "quality flags have already been added to this experiment"))
+    validate(need(!already_added, "Quality flags have already been added to this experiment"))
     if (any(c("cpm", "rpkm", "tpm", "voom") %in% SummarizedExperiment::assayNames(result))) {
-      showNotification("original normalized assays will be overwritten", type = "warning")
+      showNotification("Original normalized assays will be overwritten", type = "warning")
     }
 
     result
@@ -319,7 +319,7 @@ srv_g_quality <- function(input,
     hermes::normalize(result)
   })
 
-  output$quality <- renderPlot({
+  output$plot <- renderPlot({
     object_final <- object_final()
     plot_type <- input$plot_type
     assay_name <- input$assay_name

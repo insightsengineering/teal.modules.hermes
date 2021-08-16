@@ -42,12 +42,29 @@ test_that("tm_g_quality works as expected in the sample app", {
   initial_plot_type <- app$waitForValue("teal-main_ui-modules_ui-root_quality-plot_type")
   expect_identical(initial_plot_type, "Histogram")
 
-  # # Initial plot.
-  # expect_snapshot_screenshot(
-  #   app,
-  #   id = "teal-main_ui-modules_ui-root_quality-plot",
-  #   name = "initial_plot.png"
-  # )
+  # Check that warning message for at least 2 genes works as expected.
+  app$setInputs(
+    "teal-main_ui-modules_ui-root_quality-min_cpm" = 54356
+  )
+
+  plot_message <- app$waitForOutputElement("teal-main_ui-modules_ui-root_quality-plot", "message")
+  expect_identical(plot_message, "Please change gene filters to ensure that there are at least 2 genes")
+
+  # Initial plot.
+  expect_snapshot_screenshot(
+    app,
+    id = "teal-main_ui-modules_ui-root_quality-plot",
+    name = "initial_plot.png"
+  )
+
+  # Choose another experiment.
+  app$setInputs(
+    "teal-main_ui-modules_ui-root_quality-experiment_name" = "hd2"
+  )
+
+  # Check that warning message about already present quality flags works as expected.
+  plot_message <- app$waitForOutputElement("teal-main_ui-modules_ui-root_quality-plot", "message")
+  expect_identical(plot_message, "Quality flags have already been added to this experiment")
 
   # Choose another experiment.
   app$setInputs(
@@ -58,67 +75,19 @@ test_that("tm_g_quality works as expected in the sample app", {
     "teal-main_ui-modules_ui-root_quality-min_depth" = "Specify"
   )
 
-  initial_assay_name <- app$waitForValue("teal-main_ui-modules_ui-root_quality-assay_name")
-  expect_identical(initial_assay_name, "counts")
+  # Check initial state of encodings again.
+  initial_min_cpm <- app$waitForValue("teal-main_ui-modules_ui-root_quality-min_cpm")
+  expect_identical(initial_min_cpm, 26L)
 
-  #
-  # # Initial plot.
-  # expect_snapshot_screenshot(
-  #   app,
-  #   id = "teal-main_ui-modules_ui-root_quality-plot",
-  #   name = "initial_plot.png"
-  # )
-  #
-  # # Check what happens if genes are the same.
-  # app$setInputs(
-  #   "teal-main_ui-modules_ui-root_quality-x_var" = "GeneID:5205",
-  #   "teal-main_ui-modules_ui-root_quality-y_var" = "GeneID:5205"
-  # )
-  # plot_message <- app$waitForOutputElement("teal-main_ui-modules_ui-root_quality-plot", "message")
-  # expect_identical(plot_message, "please select different genes for x and y variables")
-  #
-  # # Change the sample filter and confirm that genes are not updated.
-  # app$setInputs(
-  #   "teal-main_ui-filter_panel-add_MAE_filter-hd2-col_to_add" = "ARM"
-  # )
-  # now_x_var <- app$waitForValue("teal-main_ui-modules_ui-root_quality-x_var")
-  # expect_identical(now_x_var, "GeneID:5205")
-  #
-  # now_y_var <- app$waitForValue("teal-main_ui-modules_ui-root_quality-y_var")
-  # expect_identical(now_y_var, "GeneID:5205")
-  #
-  # # Change the genes filter and confirm that genes are now updated.
-  # app$setInputs(
-  #   "teal-main_ui-filter_panel-add_MAE_filter-hd2-row_to_add" = "Chromosome"
-  # )
-  # now_x_var <- app$waitForValue("teal-main_ui-modules_ui-root_quality-x_var")
-  # expect_identical(now_x_var, "GeneID:101927746")
-  #
-  # now_y_var <- app$waitForValue("teal-main_ui-modules_ui-root_quality-y_var")
-  # expect_identical(now_y_var, "GeneID:1820")
-  #
-  # # Now change the experiment_name and confirm that genes are updated accordingly.
-  # app$setInputs(
-  #   "teal-main_ui-modules_ui-root_quality-experiment_name" = "hd3"
-  # )
-  # now_x_var <- app$waitForValue("teal-main_ui-modules_ui-root_quality-x_var")
-  # expect_identical(now_x_var, "GeneID:5205")
-  #
-  # now_y_var <- app$waitForValue("teal-main_ui-modules_ui-root_quality-y_var")
-  # expect_identical(now_y_var, "GeneID:102723793")
-  #
-  # # Change back to working experiment and to Loess smoother.
-  # app$setInputs(
-  #   "teal-main_ui-modules_ui-root_quality-experiment_name" = "hd2",
-  #   "teal-main_ui-modules_ui-root_quality-smooth_method" = "loess"
-  # )
-  #
-  # # Final plot.
-  # expect_snapshot_screenshot(
-  #   app,
-  #   id = "teal-main_ui-modules_ui-root_quality-plot",
-  #   name = "final_plot.png"
-  # )
+  initial_min_depth_continuous <- app$waitForValue("teal-main_ui-modules_ui-root_quality-min_depth_continuous")
+  expect_identical(initial_min_depth_continuous, 1777260L)
+
+  # Final plot.
+  expect_snapshot_screenshot(
+    app,
+    id = "teal-main_ui-modules_ui-root_quality-plot",
+    name = "final_plot.png"
+  )
 
   app$stop()
 })
