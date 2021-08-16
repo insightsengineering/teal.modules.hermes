@@ -25,6 +25,9 @@ reference:
       - tm_g_barplot
       - tm_g_boxplot
       - tm_g_scatterplot
+      - tm_g_boxplot
+      - tm_g_pca
+      - tm_g_volcanoplot
   - title: Graphs
     contents:
   - title: Control Functions
