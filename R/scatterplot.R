@@ -79,8 +79,6 @@ ui_g_scatterplot <- function(id,
       helpText("Analysis of MAE:", tags$code(mae_name)),
       selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
       selectInput(ns("assay_name"), "Select assay", choices = ""),
-      optionalSelectInput(ns("color_var"), "Optional color variable"),
-      optionalSelectInput(ns("facet_var"), "Optional facet variable"),
       optionalSelectInput(
         ns("x_var"),
         "Select x gene",
@@ -93,6 +91,8 @@ ui_g_scatterplot <- function(id,
         choices = "",
         multiple = TRUE
       ),
+      optionalSelectInput(ns("color_var"), "Optional color variable"),
+      optionalSelectInput(ns("facet_var"), "Optional facet variable"),
       selectInput(ns("smooth_method"), "Select smoother", smooth_method_choices)
     ),
     output = plotOutput(ns("plot")),
