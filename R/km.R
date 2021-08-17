@@ -504,7 +504,7 @@ tm_g_km_mae <- function(label,
     time_unit_var = cs_to_des_select(time_unit_var, dataname = dataname)
   )
   args <- list(
-    experiment_var = NULL,
+    experiment_name = NULL,
     mae_name = mae_name,
     arm_ref_comp = arm_ref_comp,
     conf_level = conf_level,
@@ -521,6 +521,7 @@ tm_g_km_mae <- function(label,
       data_extract_list,
       list(
         dataname = dataname,
+        mae_name = mae_name,
         label = label,
         parentname = parentname,
         arm_ref_comp = arm_ref_comp,
@@ -548,12 +549,12 @@ ui_g_km_mae <- function(id,
                         aval_var,
                         cnsr_var,
                         time_unit_var,
-                        experiment_var,
+                        experiment_name,
                         arm_ref_comp,
                         conf_level,
                         pre_output,
                         post_output) {
-  browser()
+
   is_single_dataset_value <- teal.devel::is_single_dataset(
     arm_var,
     paramcd,
@@ -562,7 +563,7 @@ ui_g_km_mae <- function(id,
     aval_var,
     cnsr_var,
     time_unit_var,
-    experiment_var
+    experiment_name
   )
 
   ns <- NS(id)
@@ -581,15 +582,15 @@ ui_g_km_mae <- function(id,
       tags$label("Encodings", class = "text-primary"),
       teal.devel::datanames_input(list(
         arm_var,
-        experiment_var,
+        experiment_name,
         paramcd,
         strata_var,
         facet_var,
         aval_var,
         cnsr_var
       )),
-      selectInput(ns("experiment_var"), "Select experiment", experiment_name_choices),
-      selectInput(ns("assay_var"), "Select assay", choices = ""),
+      selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
+      selectInput(ns("assay_name"), "Select assay", choices = ""),
 
       # NOTE data_extract_input only used to filter CDISC datasets! since ADTTE is
       # no longer "CDISC" let's remove
@@ -769,7 +770,7 @@ srv_g_km_mae <- function(input,
                      parentname,
                      paramcd,
                      arm_var,
-                     experiment_var,
+                     experiment_name,
                      arm_ref_comp,
                      strata_var,
                      facet_var,
@@ -785,12 +786,39 @@ srv_g_km_mae <- function(input,
 
   # When the filtered data set of the chosen experiment changes, update the
   # experiment data object.
-  # experiment_var <- reactive({
-  #   req(input$experiment_var)  # Important to avoid running into NULL here.
-  #
-  #   mae <- datasets$get_data(mae, filtered = TRUE)
-  #   mae[[input$experiment_var]]
-  # })
+  experiment_data <- reactive({
+    req(input$experiment_name)  # Important to avoid running into NULL here.
+
+    mae <- datasets$get_data(mae_name, filtered = TRUE)
+    mae[[input$experiment_name]]
+  })
+
+  # When the filtered data set or the chosen experiment changes, update
+  # the call that creates the chosen experiment data object.
+  experiment_call <- reactive({
+    req(input$experiment_name)  # Important to avoid running into NULL here.
+
+    dat <- datasets$get_filtered_datasets(mae_name)
+    dat$get_filter_states(input$experiment_name)$get_call()
+  })
+
+  # When the chosen experiment changes, recompute the assay names.
+  assay_names <- eventReactive(input$experiment_name, ignoreNULL = TRUE, {
+    object <- experiment_data()
+    SummarizedExperiment::assayNames(object)
+  })
+
+  # When the assay names change, update the choices for assay.
+  observeEvent(assay_names(), {
+    assay_name_choices <- assay_names()
+
+    updateSelectInput(
+      session,
+      "assay_name",
+      choices = assay_name_choices,
+      selected = assay_name_choices[1]
+    )
+  })
 
   # Setup arm variable selection, default reference arms and default
   # comparison arms for encoding panel
