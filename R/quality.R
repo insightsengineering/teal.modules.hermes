@@ -1,8 +1,10 @@
 #' Most Expressed Genes Plot
 #'
+#' @description `r lifecycle::badge("experimental")`
+#'
 #' This function plots the most expressed genes.
 #'
-#' @inheritParams module_arguments
+#' @inheritParams function_arguments
 #'
 #' @return Plot to be displayed in the teal app.
 #'
@@ -22,9 +24,11 @@ top_gene_plot <- function(object, assay_name) {
 
 #' Correlation Heatmap Plot
 #'
+#' @description `r lifecycle::badge("experimental")`
+#'
 #' This function plots the correlation heatmap.
 #'
-#' @inheritParams module_arguments
+#' @inheritParams function_arguments
 #'
 #' @return Plot to be displayed in the teal app.
 #'
@@ -44,9 +48,11 @@ heatmap_plot <- function(object, assay_name) {
 
 #' Teal Module for RNA-seq Quality Control
 #'
+#' @description `r lifecycle::badge("experimental")`
+#'
 #' This module adds quality flags, filters by genes and/or samples,
 #' normalizes `AnyHermesData` objects and provides interactive plots
-#' for RNA-seq gene expression analysis.
+#' for RNA-seq gene expression quality control.
 #'
 #' @inheritParams module_arguments
 #'
@@ -55,7 +61,6 @@ heatmap_plot <- function(object, assay_name) {
 #' @export
 #'
 #' @examples
-#' library(hermes)
 #' mae <- hermes::multi_assay_experiment
 #' mae_data <- dataset("MAE", mae)
 #' data <- teal_data(mae_data)
@@ -114,27 +119,54 @@ ui_g_quality <- function(id,
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
       selectInput(ns("experiment_name"), "Select Experiment", experiment_name_choices),
-      selectInput(ns("plot_type"), "Plot Type", choices = c("Histogram", "Q-Q Plot", "Density", "Boxplot", "Top Genes Plot", "Correlation Heatmap")),
+      selectInput(
+        ns("plot_type"),
+        "Plot Type",
+        choices = c(
+          "Histogram",
+          "Q-Q Plot",
+          "Density",
+          "Boxplot",
+          "Top Genes Plot",
+          "Correlation Heatmap"
+        )
+      ),
       conditionalPanel(
         condition = "input.plot_type == 'Top Genes Plot' || input.plot_type == 'Correlation Heatmap'",
         ns = ns,
         selectInput(ns("assay_name"), "Select Assay", choices = ""),
       ),
-      checkboxGroupInput(ns("filter"), label = ("Filter"), choices = list("Genes" = "genes", "Samples" = "samples"), selected = c("genes", "samples")),
+      checkboxGroupInput(
+        ns("filter"),
+        label = "Filter",
+        choices = list("Genes" = "genes", "Samples" = "samples"),
+        selected = c("genes", "samples")
+      ),
       conditionalPanel(
         condition = "input.filter.includes('genes')",
         ns = ns,
         tags$label("Gene Filter Settings", class = "text-primary"),
         sliderInput(ns("min_cpm"), label = ("Minimum CPM"), min = 1, max = 10, value = 5),
         sliderInput(ns("min_cpm_prop"), label = ("Minimum CPM Proportion"), min = 0.01, max = 0.99, value = 0.25),
-        optionalSelectInput(ns("annotate"), label = "Required Annotations", choices = "", selected = "", multiple = TRUE)
+        optionalSelectInput(
+          ns("annotate"),
+          label = "Required Annotations",
+          choices = "",
+          selected = "",
+          multiple = TRUE
+        )
       ),
       conditionalPanel(
         condition = "input.filter.includes('samples')",
         ns = ns,
         tags$label("Sample Filter Settings", class = "text-primary"),
         sliderInput(ns("min_corr"), label = ("Minimum Correlation"), min = 0.01, max = 0.99, value = 0.5),
-        radioButtons(ns("min_depth"), label = ("Minimum Depth"), choices = c("Default", "Specify"), selected = "Default"),
+        radioButtons(
+          ns("min_depth"),
+          label = "Minimum Depth",
+          choices = c("Default", "Specify"),
+          selected = "Default"
+        ),
         conditionalPanel(
           condition = "input.min_depth == 'Specify'",
           ns = ns,

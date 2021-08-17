@@ -46,7 +46,6 @@ test_that("tm_g_quality works as expected in the sample app", {
   app$setInputs(
     "teal-main_ui-modules_ui-root_quality-min_cpm" = 54356
   )
-
   plot_message <- app$waitForOutputElement("teal-main_ui-modules_ui-root_quality-plot", "message")
   expect_identical(plot_message, "Please change gene filters to ensure that there are at least 2 genes")
 
@@ -75,7 +74,7 @@ test_that("tm_g_quality works as expected in the sample app", {
     "teal-main_ui-modules_ui-root_quality-min_depth" = "Specify"
   )
 
-  # Check initial state of encodings again.
+  # Check state of encodings again.
   initial_min_cpm <- app$waitForValue("teal-main_ui-modules_ui-root_quality-min_cpm")
   expect_identical(initial_min_cpm, 26L)
 
