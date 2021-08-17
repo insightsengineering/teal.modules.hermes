@@ -1,0 +1,12 @@
+.pretty {
+  margin-right: 0;
+}
+
+.list-genes {
+  padding: 0;
+  margin: 0 0 0 0.5rem;
+  background: transparent !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border: 0;
+}

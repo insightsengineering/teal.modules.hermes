@@ -192,39 +192,48 @@ ui_g_signature <- function(id,
       selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
       selectInput(ns("assay_name"), "Select assay", choices = ""),
 
-      actionButton(ns("open_text_input"), span(icon("font fa-border")), title = "Enter list of genes", 
-                     class = "pull-right", style = "padding: 0;
-                                                    margin: 0;
-                                                    border: 0;
-                                                    background: transparent;
-                                                    outline: none;
-                                                    box-shadow: none;"
-                   ),
       div(
-        class = "pull-right",
-        title = "Lock gene selection",
-        shinyWidgets::prettyToggle(
-          ns("lock"),
-          value = FALSE,
-          label_on = NULL,
-          label_off = NULL,
-          status_on = "default",
-          status_off = "default",
-          outline = FALSE,
-          plain = TRUE,
-          icon_on = icon("lock fa-border"),
-          icon_off = icon("unlock-alt fa-border")
+        class = "row",
+        div(
+          class = "col-sm-8",
+          tags$label(class = "control-label",
+                     "Select gene(s) of interest")
+        ),
+        
+        div(
+          class = "col-sm-4",
+          actionButton(
+            ns("open_text_input"),
+            span(icon("font fa-border")),
+            title = "Enter list of genes",
+            class = "pull-right list-genes"
+          ),
+          div(
+            class = "pull-right",
+            title = "Lock gene selection",
+            shinyWidgets::prettyToggle(
+              ns("lock"),
+              value = FALSE,
+              label_on = NULL,
+              label_off = NULL,
+              status_on = "default",
+              status_off = "default",
+              outline = FALSE,
+              plain = TRUE,
+              icon_on = icon("lock fa-border"),
+              icon_off = icon("unlock-alt fa-border"),
+              animation = "pulse"
+            )
+          ),
+          include_css_files(pattern = "*")
         )
       ), 
-
       optionalSelectInput(
         ns("y_vars"), 
-        label = "Select gene(s) of interest", 
+        label = NULL, 
         choices = "", 
         multiple = TRUE
       ),
-
-
       conditionalPanel(
         condition = "input.y_vars.length > 1", # JavaScript expression
         ns = ns, # namespace in this module
