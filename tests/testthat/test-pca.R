@@ -1,10 +1,8 @@
 # ui_g_pca ----
 
 test_that("ui_g_pca creates expected HTML", {
-  skip_on_ci()
-
   mae_name <- "MyMAE"
-  set.seed(123)
+  shiny:::withPrivateSeed(set.seed(123))
   datasets <- mock_datasets(list(MyMAE = hermes::multi_assay_experiment))
   expect_snapshot(ui_g_pca(
     id = "testid",

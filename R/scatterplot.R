@@ -1,5 +1,7 @@
 #' Teal Module for RNA-seq Scatterplot
 #'
+#' @description `r lifecycle::badge("experimental")`
+#'
 #' This module provides an interactive scatterplot for RNA-seq gene expression
 #' analysis.
 #'
