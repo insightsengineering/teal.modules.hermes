@@ -6,7 +6,9 @@
 \arguments{
 \item{adtte}{(\verb{data frame})\cr an \code{adtte} dataset.}
 
-\item{mae}{(\code{MultiAssayExperiment})\cr contains \code{SummarizedExperiment} objects.}
+\item{mae}{(\code{MultiAssayExperiment})\cr contains \code{AnyHermesData} objects.}
+
+\item{object}{(\code{AnyHermesData})\cr contains RNA-seq values for one experiment.}
 
 \item{gene_var}{(\code{character})\cr a gene(s) of interest.}
 

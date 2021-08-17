@@ -46,6 +46,8 @@ functions, holding all the data sets provided in the app initialization.}
 Shiny module to be used in the teal app.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
 This module provides an interactive volcano plot for RNA-seq gene expression
 analysis.
 }
@@ -59,9 +61,6 @@ analysis.
 }}
 
 \examples{
-library(DT)
-library(hermes)
-library(teal)
 mae <- hermes::multi_assay_experiment
 mae_data <- dataset("MAE", mae)
 data <- teal_data(mae_data)
