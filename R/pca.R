@@ -1,5 +1,7 @@
 #' Teal Module for PCA Analysis
 #'
+#' @description `r lifecycle::badge("experimental")`
+#'
 #' This module provides an interactive principal components plot and an
 #' interactive heatmap with correlation of principal components with sample
 #' variables.

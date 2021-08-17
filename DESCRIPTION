@@ -24,6 +24,7 @@ Depends:
 Imports:
   checkmate,
   DT,
+  edgeR,
   hermes,
   lifecycle,
   MultiAssayExperiment,
