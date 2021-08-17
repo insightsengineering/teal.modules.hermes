@@ -124,7 +124,7 @@ ui_g_quality <- function(id,
       conditionalPanel(
         condition = "input.filter.includes('genes')",
         ns = ns,
-        h4("Gene Filter Options"),
+        tags$label("Gene Filter Settings", class = "text-primary"),
         sliderInput(ns("min_cpm"), label = ("Minimum CPM"), min = 1, max = 10, value = 5),
         sliderInput(ns("min_cpm_prop"), label = ("Minimum CPM Proportion"), min = 0.01, max = 0.99, value = 0.25),
         optionalSelectInput(ns("annotate"), label = "Required Annotations", choices = "", selected = "", multiple = TRUE)
@@ -132,7 +132,7 @@ ui_g_quality <- function(id,
       conditionalPanel(
         condition = "input.filter.includes('samples')",
         ns = ns,
-        h4("Sample Filter Options"),
+        tags$label("Sample Filter Settings", class = "text-primary"),
         sliderInput(ns("min_corr"), label = ("Minimum Correlation"), min = 0.01, max = 0.99, value = 0.5),
         radioButtons(ns("min_depth"), label = ("Minimum Depth"), choices = c("Default", "Specify"), selected = "Default"),
         conditionalPanel(
