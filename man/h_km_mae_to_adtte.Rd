@@ -9,7 +9,7 @@ h_km_mae_to_adtte(adtte, mae, gene_var, experiment_name, assay_name = "counts")
 \arguments{
 \item{adtte}{(\verb{data frame})\cr an \code{adtte} dataset.}
 
-\item{mae}{(\code{MultiAssayExperiment})\cr contains \code{SummarizedExperiment} objects.}
+\item{mae}{(\code{MultiAssayExperiment})\cr contains \code{AnyHermesData} objects.}
 
 \item{gene_var}{(\code{character})\cr a gene(s) of interest.}
 
