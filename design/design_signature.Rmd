@@ -228,11 +228,14 @@ ui_g_signature <- function(id,
           include_css_files(pattern = "*")
         )
       ), 
-      optionalSelectInput(
-        ns("y_vars"), 
-        label = NULL, 
-        choices = "", 
-        multiple = TRUE
+      div(
+        class = "custom-select-input",
+        optionalSelectInput(
+          ns("y_vars"), 
+          label = NULL, 
+          choices = "", 
+          multiple = TRUE
+        )
       ),
       conditionalPanel(
         condition = "input.y_vars.length > 1", # JavaScript expression

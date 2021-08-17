@@ -10,3 +10,7 @@
   box-shadow: none !important;
   border: 0;
 }
+
+.custom-select-input .bootstrap-select .dropdown-menu {
+  min-width: fit-content;
+}
