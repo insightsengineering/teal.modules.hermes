@@ -136,7 +136,7 @@ srv_g_scatterplot <- function(input,
   genes <- eventReactive(experiment_subset_calls(), ignoreNULL = FALSE, {
     object <- experiment_data()
     gene_ids <- rownames(object)
-    gene_names <- rowData(object)$HGNC
+    gene_names <- SummarizedExperiment::rowData(object)$HGNC
     data.frame(
       gene_id = gene_ids,
       gene_name = gene_names
