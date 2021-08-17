@@ -505,6 +505,7 @@ tm_g_km_mae <- function(label,
   )
   args <- list(
     experiment_var = NULL,
+    mae_name = mae_name,
     arm_ref_comp = arm_ref_comp,
     conf_level = conf_level,
     pre_output = pre_output,
@@ -538,19 +539,21 @@ tm_g_km_mae <- function(label,
 #'
 #' @importFrom shinyWidgets switchInput
 ui_g_km_mae <- function(id,
-                    datasets,
-                    arm_var,
-                    paramcd,
-                    strata_var,
-                    facet_var,
-                    aval_var,
-                    cnsr_var,
-                    time_unit_var,
-                    experiment_var,
-                    arm_ref_comp,
-                    conf_level,
-                    pre_output,
-                    post_output) {
+                        datasets,
+                        mae_name,
+                        arm_var,
+                        paramcd,
+                        strata_var,
+                        facet_var,
+                        aval_var,
+                        cnsr_var,
+                        time_unit_var,
+                        experiment_var,
+                        arm_ref_comp,
+                        conf_level,
+                        pre_output,
+                        post_output) {
+  browser()
   is_single_dataset_value <- teal.devel::is_single_dataset(
     arm_var,
     paramcd,
@@ -563,6 +566,9 @@ ui_g_km_mae <- function(id,
   )
 
   ns <- NS(id)
+
+  mae <- datasets$get_data(mae_name, filtered = FALSE)
+  experiment_name_choices <- names(mae)
 
   teal.devel::standard_layout(
     output = teal.devel::white_small_well(
@@ -582,7 +588,7 @@ ui_g_km_mae <- function(id,
         aval_var,
         cnsr_var
       )),
-      selectInput(ns("experiment_var"), "Select experiment", names(mae)),
+      selectInput(ns("experiment_var"), "Select experiment", experiment_name_choices),
       selectInput(ns("assay_var"), "Select assay", choices = ""),
 
       # NOTE data_extract_input only used to filter CDISC datasets! since ADTTE is
