@@ -76,16 +76,16 @@
               <div id="pre-output"></div>
               <div id="output">
                 <div class="tabbable">
-                  <ul class="nav nav-tabs shiny-tab-input" id="testid-tab_selected" data-tabsetid="2004">
+                  <ul class="nav nav-tabs shiny-tab-input" id="testid-tab_selected" data-tabsetid="3462">
                     <li class="active">
-                      <a href="#tab-2004-1" data-toggle="tab" data-value="PCA">PCA</a>
+                      <a href="#tab-3462-1" data-toggle="tab" data-value="PCA">PCA</a>
                     </li>
                     <li>
-                      <a href="#tab-2004-2" data-toggle="tab" data-value="PC and Sample Correlation">PC and Sample Correlation</a>
+                      <a href="#tab-3462-2" data-toggle="tab" data-value="PC and Sample Correlation">PC and Sample Correlation</a>
                     </li>
                   </ul>
-                  <div class="tab-content" data-tabsetid="2004">
-                    <div class="tab-pane active" data-value="PCA" id="tab-2004-1">
+                  <div class="tab-content" data-tabsetid="3462">
+                    <div class="tab-pane active" data-value="PCA" id="tab-3462-1">
                       <div class="col-sm-12">
                         <div style="height:20px;"></div>
                         <div id="testid-plot_pca" class="shiny-plot-output" style="width:100%;height:400px;"></div>
@@ -95,7 +95,7 @@
                         <div id="testid-table_pca" style="width:100%; height:auto; " class="datatables html-widget html-widget-output"></div>
                       </div>
                     </div>
-                    <div class="tab-pane" data-value="PC and Sample Correlation" id="tab-2004-2">
+                    <div class="tab-pane" data-value="PC and Sample Correlation" id="tab-3462-2">
                       <div class="col-sm-12">
                         <div style="height:20px;"></div>
                         <div id="testid-plot_cor" class="shiny-plot-output" style="width:100%;height:400px;"></div>
