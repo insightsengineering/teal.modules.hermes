@@ -16,3 +16,14 @@
 is_blank <- function(x) {
   identical(x, "")
 }
+
+
+# Don't export, see explanation in `teal::include_css_files`
+#' @inherit teal::include_css_files
+include_css_files <- function(pattern = "*") { # nolint # nousage
+  css_files <- list.files(
+    system.file("css", package = "teal.modules.hermes", mustWork = TRUE),
+    pattern = pattern, full.names = TRUE
+  )
+  return(singleton(lapply(css_files, includeCSS)))
+}
