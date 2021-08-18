@@ -837,6 +837,22 @@ srv_g_km_mae <- function(input,
     )
   })
 
+  # When the gene changes, post process ADTTE.
+  adtte_data <- reactive({
+    req(input$x_var)
+browser()
+    mae <- datasets$get_data(mae_name, filtered = TRUE)
+    adtte <- datasets$get_data(dataname, filtered = TRUE)
+    adtte <- adtte %>% mutate(CNSR = as.logical(CNSR))
+
+    new_adtte <- h_km_mae_to_adtte(adtte,
+                                   mae,
+                                   gene_var = input$x_var,
+                                   experiment_name = input$experiment_name
+                                   )
+    new_adtte
+  })
+
   # Setup arm variable selection, default reference arms and default
   # comparison arms for encoding panel
   teal.devel::arm_ref_comp_observer(
@@ -859,6 +875,9 @@ srv_g_km_mae <- function(input,
   )
 
   validate_checks <- reactive({
+
+    validate(need(hermes::is_hermes_data(experiment_data), "please use HermesData() on input experiments"))
+
 
     adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
     anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
