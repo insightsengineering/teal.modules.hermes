@@ -591,15 +591,13 @@ ui_g_km_mae <- function(id,
       )),
       selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
       selectInput(ns("assay_name"), "Select assay", choices = ""),
-
-      # NOTE data_extract_input only used to filter CDISC datasets! since ADTTE is
-      # no longer "CDISC" let's remove
-      teal.devel::data_extract_input(
-        id = ns("arm_var"),
-        label = "Select Treatment Variable",
-        data_extract_spec = arm_var,
-        is_single_dataset = is_single_dataset_value
-      ),
+      selectizeInput(ns("x_var"), "Select gene", choices = ""),
+      # teal.devel::data_extract_input(
+      #   id = ns("arm_var"),
+      #   label = "Select Gene Variable",
+      #   data_extract_spec = arm_var,
+      #   is_single_dataset = is_single_dataset_value
+      # ),
 
       #Will this change based on experiment chosen?
       teal.devel::data_extract_input(
@@ -817,6 +815,25 @@ srv_g_km_mae <- function(input,
       "assay_name",
       choices = assay_name_choices,
       selected = assay_name_choices[1]
+    )
+  })
+
+  # When the chosen experiment call changes, we recompute gene names.
+  genes <- eventReactive(experiment_call(), ignoreNULL = FALSE, {
+    object <- experiment_data()
+    rownames(object)
+  })
+
+  # When the genes are recomputed, update the choices for genes in the UI.
+  observeEvent(genes(), {
+    gene_choices <- genes()
+
+    updateSelectizeInput(
+      session,
+      "x_var",
+      choices = gene_choices,
+      selected = gene_choices[1],
+      server = TRUE
     )
   })
 
