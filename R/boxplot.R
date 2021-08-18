@@ -205,7 +205,7 @@ srv_g_boxplot <- function(input,
     # Validate and give useful messages to the user. Note: no need to duplicate here req() from above.
     validate(need(hermes::is_hermes_data(experiment_data), "please use HermesData() on input experiments"))
 
-    draw_boxplot(
+    hermes::draw_boxplot(
       object = experiment_data,
       assay_name = assay_name,
       x_var = x_var,
