@@ -81,7 +81,7 @@ test_that("tm_g_scatterplot works as expected in the sample app", {
   # Change the genes filter and confirm that genes are staying the same.
   app$setInputs(
     "teal-main_ui-filter_panel-add_MAE_filter-hd2-row_to_add" = "Chromosome",
-    wait_=FALSE, values_=FALSE
+    wait_ = FALSE, values_ = FALSE
   )
   now_x_var <- app$waitForValue("teal-main_ui-modules_ui-root_scatterplot-x_var", ignore = "")
   expect_identical(now_x_var, "GeneID:5205")
