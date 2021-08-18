@@ -190,13 +190,14 @@ srv_g_boxplot <- function(input,
     jitter <- input$jitter
 
     # Require which states need to be truthy.
+    genes_not_included <- setdiff(genes, rownames(experiment_data))
     req(
       x_var,
       genes,
       assay_name,
       # Note: The following statements are important to make sure the UI inputs have been updated.
       isTRUE(assay_name %in% SummarizedExperiment::assayNames(experiment_data)),
-      isTRUE(genes %in% rownames(experiment_data)),
+      length(genes_not_included) == 0,
       isTRUE(all(c(facet_var, color_var, x_var) %in% names(SummarizedExperiment::colData(experiment_data)))),
       cancelOutput = FALSE
     )
@@ -205,7 +206,6 @@ srv_g_boxplot <- function(input,
     validate(need(hermes::is_hermes_data(experiment_data), "please use HermesData() on input experiments"))
 
     draw_boxplot(
-    #hermes::draw_boxplot(
       object = experiment_data,
       assay_name = assay_name,
       x_var = x_var,
@@ -226,11 +226,11 @@ srv_g_boxplot <- function(input,
 #' }
 sample_tm_g_boxplot <- function() {
   mae <- hermes::multi_assay_experiment
-  mae_data <- teal::dataset("MAE", mae)
-  data <- teal::teal_data(mae_data)
-  app <- teal::init(
+  mae_data <- dataset("MAE", mae)
+  data <- teal_data(mae_data)
+  app <- init(
     data = data,
-    modules = teal::root_modules(
+    modules = root_modules(
       static = {
         tm_g_boxplot(
           label = "boxplot",
