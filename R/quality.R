@@ -377,7 +377,6 @@ srv_g_quality <- function(input,
 #' }
 sample_tm_g_quality <- function() {
   mae <- hermes::multi_assay_experiment
-  mae[[1]] <- hermes::normalize(mae[[1]])
   mae_data <- dataset("MAE", mae)
   data <- teal_data(mae_data)
   app <- init(
