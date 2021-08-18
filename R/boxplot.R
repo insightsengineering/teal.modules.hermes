@@ -74,7 +74,7 @@ ui_g_boxplot <- function(id,
       selectInput(ns("assay_name"), "Select assay", choices = ""),
       optionalSelectInput(ns("color_var"), "Optional color variable"),
       optionalSelectInput(ns("facet_var"), "Optional facet variable"),
-      selectizeInput(ns("y_var"), "Select gene of interest", choices = ""),
+      selectizeInput(ns("genes"), "Select gene(s) of interest", multiple = TRUE, choices = ""),
       selectizeInput(ns("x_var"), "Select stratifying variable", choices = ""),
       tags$label("Jitter"),
       shinyWidgets::switchInput(ns("jitter"), value = FALSE, size = "mini")
@@ -169,7 +169,7 @@ srv_g_boxplot <- function(input,
   observeEvent(genes(), {
     gene_choices <- genes()
 
-    id_names <- c("y_var")
+    id_names <- c("genes")
       updateSelectizeInput(
         session,
         id_names,
@@ -183,7 +183,7 @@ srv_g_boxplot <- function(input,
     # Resolve all reactivity.
     experiment_data <- experiment_data()
     x_var <- input$x_var
-    y_var <- input$y_var
+    genes <- input$genes
     facet_var <- input$facet_var
     color_var <- input$color_var
     assay_name <- input$assay_name
@@ -192,11 +192,11 @@ srv_g_boxplot <- function(input,
     # Require which states need to be truthy.
     req(
       x_var,
-      y_var,
+      genes,
       assay_name,
       # Note: The following statements are important to make sure the UI inputs have been updated.
       isTRUE(assay_name %in% SummarizedExperiment::assayNames(experiment_data)),
-      isTRUE(y_var %in% rownames(experiment_data)),
+      isTRUE(genes %in% rownames(experiment_data)),
       isTRUE(all(c(facet_var, color_var, x_var) %in% names(SummarizedExperiment::colData(experiment_data)))),
       cancelOutput = FALSE
     )
@@ -204,11 +204,12 @@ srv_g_boxplot <- function(input,
     # Validate and give useful messages to the user. Note: no need to duplicate here req() from above.
     validate(need(hermes::is_hermes_data(experiment_data), "please use HermesData() on input experiments"))
 
-    hermes::draw_boxplot(
+    draw_boxplot(
+    #hermes::draw_boxplot(
       object = experiment_data,
       assay_name = assay_name,
       x_var = x_var,
-      y_var = y_var,
+      genes = genes,
       facet_var = facet_var,
       color_var = color_var,
       jitter = jitter
@@ -225,11 +226,11 @@ srv_g_boxplot <- function(input,
 #' }
 sample_tm_g_boxplot <- function() {
   mae <- hermes::multi_assay_experiment
-  mae_data <- dataset("MAE", mae)
-  data <- teal_data(mae_data)
-  app <- init(
+  mae_data <- teal::dataset("MAE", mae)
+  data <- teal::teal_data(mae_data)
+  app <- teal::init(
     data = data,
-    modules = root_modules(
+    modules = teal::root_modules(
       static = {
         tm_g_boxplot(
           label = "boxplot",
