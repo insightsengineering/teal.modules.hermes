@@ -574,9 +574,12 @@ ui_g_km_mae <- function(id,
   teal.devel::standard_layout(
     output = teal.devel::white_small_well(
       verbatimTextOutput(outputId = ns("text")),
-      teal.devel::plot_with_settings_ui(
-        id = ns("myplot")
+      teal.devel::table_with_settings_ui(
+        id = ns("mytable")
       )
+      # teal.devel::plot_with_settings_ui(
+      #   id = ns("myplot")
+      # )
     ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
@@ -839,178 +842,196 @@ srv_g_km_mae <- function(input,
 
   # When the gene changes, post process ADTTE.
   adtte_data <- reactive({
-    req(input$x_var)
-browser()
-    mae <- datasets$get_data(mae_name, filtered = TRUE)
-    adtte <- datasets$get_data(dataname, filtered = TRUE)
-    adtte <- adtte %>% mutate(CNSR = as.logical(CNSR))
-
-    new_adtte <- h_km_mae_to_adtte(adtte,
-                                   mae,
-                                   gene_var = input$x_var,
-                                   experiment_name = input$experiment_name
-                                   )
-    new_adtte
-  })
-
-  # Setup arm variable selection, default reference arms and default
-  # comparison arms for encoding panel
-  teal.devel::arm_ref_comp_observer(
-    session, input,
-    id_ref = "ref_arm", # from UI
-    id_comp = "comp_arm", # from UI
-    id_arm_var = extract_input("arm_var", dataname),
-    datasets = datasets,
-    dataname = parentname,
-    arm_ref_comp = arm_ref_comp,
-    module = "tm_t_tte",
-    on_off = reactive(input$compare_arms)
-  )
-
-  anl_merged <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(aval_var, cnsr_var, arm_var, paramcd, strata_var, facet_var, time_unit_var),
-    input_id = c("aval_var", "cnsr_var", "arm_var", "paramcd", "strata_var", "facet_var", "time_unit_var"),
-    merge_function = "dplyr::inner_join"
-  )
-
-  validate_checks <- reactive({
+    experiment_data <- experiment_data()
+    experiment_name <- input$experiment_name
+    assay_name <- input$assay_name
+    gene_var <- input$x_var
 
     validate(need(hermes::is_hermes_data(experiment_data), "please use HermesData() on input experiments"))
+    req(isTRUE(assay_name %in% SummarizedExperiment::assayNames(experiment_data)))
+    mae_data <- datasets$get_data(mae_name, filtered = TRUE)
+    adtte_data <- datasets$get_data(dataname, filtered = TRUE)
+    adtte_data <- adtte %>% mutate(CNSR = as.logical(CNSR))
 
-
-    adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-    anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
-
-    anl_m <- anl_merged()
-    input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-    input_strata_var <- as.vector(anl_m$columns_source$strata_var)
-    input_facet_var <- as.vector(anl_m$columns_source$facet_var)
-    input_aval_var <- as.vector(anl_m$columns_source$aval_var)
-    input_cnsr_var <- as.vector(anl_m$columns_source$cnsr_var)
-    input_paramcd <- unlist(paramcd$filter)["vars_selected"]
-    input_time_unit_var <- as.vector(anl_m$columns_source$time_unit_var)
-    input_xticks <- gsub(";", ",", trimws(input$xticks)) %>%
-      strsplit(",") %>%
-      unlist() %>%
-      as.numeric()
-
-    # validate inputs
-    validate_args <- list(
-      adsl = adsl_filtered,
-      adslvars = c("USUBJID", "STUDYID", input_arm_var, input_strata_var, input_facet_var),
-      anl = anl_filtered,
-      anlvars = c("USUBJID", "STUDYID", input_paramcd, input_aval_var, input_cnsr_var, input_time_unit_var),
-      arm_var = input_arm_var
-    )
-
-    # validate arm levels
-    if (length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) == 1) {
-      validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
-    }
-    if (input$compare_arms) {
-      validate_args <- append(validate_args, list(ref_arm = input$ref_arm, comp_arm = input$comp_arm))
-    }
-
-    utils.nest::call_with_colon("teal.devel::validate_standard_inputs", unlist_args = validate_args)
-
-    # validate xticks
-    if (length(input_xticks) == 0) {
-      input_xticks <- NULL
-    }
-    else {
-      validate(need(all(!is.na(input_xticks)), "Not all values entered were numeric"))
-      validate(need(all(input_xticks >= 0), "All break intervals for x-axis must be non-negative"))
-      validate(need(any(input_xticks > 0), "At least one break interval for x-axis must be positive"))
-    }
-
-    validate(need(
-      input$conf_level > 0 && input$conf_level < 1,
-      "Please choose a confidence level between 0 and 1"
-    ))
-
-    validate(need(utils.nest::is_character_single(input_aval_var), "Analysis variable should be a single column."))
-    validate(need(utils.nest::is_character_single(input_cnsr_var), "Censor variable should be a single column."))
-
-    NULL
+    h_km_mae_to_adtte(adtte_data,
+                      mae_data,
+                      gene_var = gene_var,
+                      experiment_name = experiment_name,
+                      assay_name = assay_name
+                      )
   })
 
-  call_preparation <- reactive({
-    validate_checks()
-
-    teal.devel::chunks_reset()
-    anl_m <- anl_merged()
-    teal.devel::chunks_push_data_merge(anl_m)
-    teal.devel::chunks_push_new_line()
-
-    ANL <- teal.devel::chunks_get_var("ANL") # nolint
-    teal.devel::validate_has_data(ANL, 2)
-
-    input_xticks <- gsub(";", ",", trimws(input$xticks)) %>%
-      strsplit(",") %>%
-      unlist() %>%
-      as.numeric()
-
-    if (length(input_xticks) == 0) {
-      input_xticks <- NULL
-    }
-
-    input_paramcd <- as.character(unique(anl_m$data()[[as.vector(anl_m$columns_source$paramcd)]]))
-    title <- paste("KM Plot of", input_paramcd)
-
-    my_calls <- template_g_km_mae(
-      dataname = "ANL",
-      # arm_var = input$arm_var,
-      arm_var = as.vector(anl_m$columns_source$arm_var),
-      ref_arm = input$ref_arm,
-      comp_arm = input$comp_arm,
-      compare_arm = input$compare_arms,
-      combine_comp_arms = input$combine_comp_arms,
-      aval_var = as.vector(anl_m$columns_source$aval_var),
-      cnsr_var = as.vector(anl_m$columns_source$cnsr_var),
-      strata_var = as.vector(anl_m$columns_source$strata_var),
-      time_points = NULL,
-      time_unit_var = as.vector(anl_m$columns_source$time_unit_var),
-      facet_var = as.vector(anl_m$columns_source$facet_var),
-      annot_surv_med = input$show_km_table,
-      annot_coxph = input$compare_arms,
-      xticks = input_xticks,
-      font_size = input$font_size,
-      pval_method = input$pval_method_coxph,
-      conf_level = as.numeric(input$conf_level),
-      ties = input$ties_coxph,
-      xlab = input$xlab,
-      yval = ifelse(input$yval == "Survival probability", "Survival", "Failure"),
-      ci_ribbon = input$show_ci_ribbon,
-      title = title
-    )
-    mapply(expression = my_calls, teal.devel::chunks_push)
-  })
-
-  km_plot <- reactive({
-    call_preparation()
-    teal.devel::chunks_safe_eval()
-  })
-
-
-  # Insert the plot into a plot with settings module from teal.devel
-  callModule(
-    teal.devel::plot_with_settings_srv,
-    id = "myplot",
-    plot_r = km_plot,
-    height = plot_height,
-    width = plot_width
+  # Render plot PCA output.
+  output$test <- renderTable(
+    # Resolve all reactivity.
+    # adtte_data <- adtte_data()
+    # experiment_data <- experiment_data()
+    # experiment_name <- input$experiment_name
+    # assay_name <- input$assay_name
+    # gene_var <- input$x_var
+    head(adtte_data())
+    # arm_var <-
+    #
+    # variables <- list(tte = "AVAL", is_event = "CNSR", arm = "gene_factor")
+    # tern::g_km(binned_adtte, variables = variables)
   )
 
-  callModule(
-    teal.devel::get_rcode_srv,
-    id = "rcode",
-    datasets = datasets,
-    datanames = teal.devel::get_extract_datanames(
-      list(arm_var, paramcd, strata_var, facet_var, aval_var, cnsr_var, time_unit_var)
-    ),
-    modal_title = label
-  )
+
+  # # Setup arm variable selection, default reference arms and default
+  # # comparison arms for encoding panel
+  # teal.devel::arm_ref_comp_observer(
+  #   session, input,
+  #   id_ref = "ref_arm", # from UI
+  #   id_comp = "comp_arm", # from UI
+  #   id_arm_var = extract_input("arm_var", dataname),
+  #   datasets = datasets,
+  #   dataname = parentname,
+  #   arm_ref_comp = arm_ref_comp,
+  #   module = "tm_t_tte",
+  #   on_off = reactive(input$compare_arms)
+  # )
+  #
+  # anl_merged <- teal.devel::data_merge_module(
+  #   datasets = datasets,
+  #   data_extract = list(aval_var, cnsr_var, arm_var, paramcd, strata_var, facet_var, time_unit_var),
+  #   input_id = c("aval_var", "cnsr_var", "arm_var", "paramcd", "strata_var", "facet_var", "time_unit_var"),
+  #   merge_function = "dplyr::inner_join"
+  # )
+  #
+  # validate_checks <- reactive({
+  #
+  #   adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
+  #   anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+  #
+  #   anl_m <- anl_merged()
+  #   input_arm_var <- as.vector(anl_m$columns_source$arm_var)
+  #   input_strata_var <- as.vector(anl_m$columns_source$strata_var)
+  #   input_facet_var <- as.vector(anl_m$columns_source$facet_var)
+  #   input_aval_var <- as.vector(anl_m$columns_source$aval_var)
+  #   input_cnsr_var <- as.vector(anl_m$columns_source$cnsr_var)
+  #   input_paramcd <- unlist(paramcd$filter)["vars_selected"]
+  #   input_time_unit_var <- as.vector(anl_m$columns_source$time_unit_var)
+  #   input_xticks <- gsub(";", ",", trimws(input$xticks)) %>%
+  #     strsplit(",") %>%
+  #     unlist() %>%
+  #     as.numeric()
+  #
+  #   # validate inputs
+  #   validate_args <- list(
+  #     adsl = adsl_filtered,
+  #     adslvars = c("USUBJID", "STUDYID", input_arm_var, input_strata_var, input_facet_var),
+  #     anl = anl_filtered,
+  #     anlvars = c("USUBJID", "STUDYID", input_paramcd, input_aval_var, input_cnsr_var, input_time_unit_var),
+  #     arm_var = input_arm_var
+  #   )
+  #
+  #   # validate arm levels
+  #   if (length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) == 1) {
+  #     validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
+  #   }
+  #   if (input$compare_arms) {
+  #     validate_args <- append(validate_args, list(ref_arm = input$ref_arm, comp_arm = input$comp_arm))
+  #   }
+  #
+  #   utils.nest::call_with_colon("teal.devel::validate_standard_inputs", unlist_args = validate_args)
+  #
+  #   # validate xticks
+  #   if (length(input_xticks) == 0) {
+  #     input_xticks <- NULL
+  #   }
+  #   else {
+  #     validate(need(all(!is.na(input_xticks)), "Not all values entered were numeric"))
+  #     validate(need(all(input_xticks >= 0), "All break intervals for x-axis must be non-negative"))
+  #     validate(need(any(input_xticks > 0), "At least one break interval for x-axis must be positive"))
+  #   }
+  #
+  #   validate(need(
+  #     input$conf_level > 0 && input$conf_level < 1,
+  #     "Please choose a confidence level between 0 and 1"
+  #   ))
+  #
+  #   validate(need(utils.nest::is_character_single(input_aval_var), "Analysis variable should be a single column."))
+  #   validate(need(utils.nest::is_character_single(input_cnsr_var), "Censor variable should be a single column."))
+  #
+  #   NULL
+  # })
+  #
+  # call_preparation <- reactive({
+  #   validate_checks()
+  #
+  #   teal.devel::chunks_reset()
+  #   anl_m <- anl_merged()
+  #   teal.devel::chunks_push_data_merge(anl_m)
+  #   teal.devel::chunks_push_new_line()
+  #
+  #   ANL <- teal.devel::chunks_get_var("ANL") # nolint
+  #   teal.devel::validate_has_data(ANL, 2)
+  #
+  #   input_xticks <- gsub(";", ",", trimws(input$xticks)) %>%
+  #     strsplit(",") %>%
+  #     unlist() %>%
+  #     as.numeric()
+  #
+  #   if (length(input_xticks) == 0) {
+  #     input_xticks <- NULL
+  #   }
+  #
+  #   input_paramcd <- as.character(unique(anl_m$data()[[as.vector(anl_m$columns_source$paramcd)]]))
+  #   title <- paste("KM Plot of", input_paramcd)
+  #
+  #   my_calls <- template_g_km_mae(
+  #     dataname = "ANL",
+  #     # arm_var = input$arm_var,
+  #     arm_var = as.vector(anl_m$columns_source$arm_var),
+  #     ref_arm = input$ref_arm,
+  #     comp_arm = input$comp_arm,
+  #     compare_arm = input$compare_arms,
+  #     combine_comp_arms = input$combine_comp_arms,
+  #     aval_var = as.vector(anl_m$columns_source$aval_var),
+  #     cnsr_var = as.vector(anl_m$columns_source$cnsr_var),
+  #     strata_var = as.vector(anl_m$columns_source$strata_var),
+  #     time_points = NULL,
+  #     time_unit_var = as.vector(anl_m$columns_source$time_unit_var),
+  #     facet_var = as.vector(anl_m$columns_source$facet_var),
+  #     annot_surv_med = input$show_km_table,
+  #     annot_coxph = input$compare_arms,
+  #     xticks = input_xticks,
+  #     font_size = input$font_size,
+  #     pval_method = input$pval_method_coxph,
+  #     conf_level = as.numeric(input$conf_level),
+  #     ties = input$ties_coxph,
+  #     xlab = input$xlab,
+  #     yval = ifelse(input$yval == "Survival probability", "Survival", "Failure"),
+  #     ci_ribbon = input$show_ci_ribbon,
+  #     title = title
+  #   )
+  #   mapply(expression = my_calls, teal.devel::chunks_push)
+  # })
+  #
+  # km_plot <- reactive({
+  #   call_preparation()
+  #   teal.devel::chunks_safe_eval()
+  # })
+  #
+  #
+  # # Insert the plot into a plot with settings module from teal.devel
+  # callModule(
+  #   teal.devel::plot_with_settings_srv,
+  #   id = "myplot",
+  #   plot_r = km_plot,
+  #   height = plot_height,
+  #   width = plot_width
+  # )
+  #
+  # callModule(
+  #   teal.devel::get_rcode_srv,
+  #   id = "rcode",
+  #   datasets = datasets,
+  #   datanames = teal.devel::get_extract_datanames(
+  #     list(arm_var, paramcd, strata_var, facet_var, aval_var, cnsr_var, time_unit_var)
+  #   ),
+  #   modal_title = label
+  # )
 }
 
 sample_tm_g_km_mae <- function() {
