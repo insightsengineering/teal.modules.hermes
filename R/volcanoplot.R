@@ -1,5 +1,7 @@
 #' Teal Module for RNA-seq Volcano Plot
 #'
+#' @description `r lifecycle::badge("experimental")`
+#'
 #' This module provides an interactive volcano plot for RNA-seq gene expression
 #' analysis.
 #'
@@ -10,9 +12,6 @@
 #' @export
 #'
 #' @examples
-#' library(DT)
-#' library(hermes)
-#' library(teal)
 #' mae <- hermes::multi_assay_experiment
 #' mae_data <- dataset("MAE", mae)
 #' data <- teal_data(mae_data)

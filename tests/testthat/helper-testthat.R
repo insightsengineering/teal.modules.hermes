@@ -12,10 +12,10 @@ expect_snapshot_screenshot <- function(app,
                                        id = NULL,
                                        name = "screenshot.png",
                                        parent = FALSE) {
-  skip_on_ci()
+  testthat::skip_on_ci()
 
   path <- tempfile()
   app$waitForShiny()
   app$takeScreenshot(path, id, parent = parent)
-  expect_snapshot_file(path, name)
+  testthat::expect_snapshot_file(path, name)
 }

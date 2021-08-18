@@ -1,5 +1,7 @@
 #' Teal Module for RNA-seq Boxplot
 #'
+#' @description `r lifecycle::badge("experimental")`
+#'
 #' This module provides an interactive boxplot for RNA-seq gene expression
 #' analysis.
 #'
