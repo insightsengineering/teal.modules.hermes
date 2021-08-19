@@ -31,14 +31,6 @@
                   </div>
                 </div>
                 <div class="form-group shiny-input-container">
-                  <label class="control-label" for="testid-color_var">Optional color variable</label>
-                  <select data-actions-box="false" data-none-selected-text="- Nothing selected -" data-max-options="1" data-show-subtext="true" data-live-search="false" id="testid-color_var" class="selectpicker form-control" multiple="multiple"><option value=""></option></select>
-                </div>
-                <div class="form-group shiny-input-container">
-                  <label class="control-label" for="testid-facet_var">Optional facet variable</label>
-                  <select data-actions-box="false" data-none-selected-text="- Nothing selected -" data-max-options="1" data-show-subtext="true" data-live-search="false" id="testid-facet_var" class="selectpicker form-control" multiple="multiple"><option value=""></option></select>
-                </div>
-                <div class="form-group shiny-input-container">
                   <label class="control-label" id="testid-genes-label" for="testid-genes">Select gene(s) of interest</label>
                   <div>
                     <select id="testid-genes" class="form-control" multiple="multiple"><option value=""></option></select>
@@ -46,11 +38,16 @@
                   </div>
                 </div>
                 <div class="form-group shiny-input-container">
-                  <label class="control-label" id="testid-x_var-label" for="testid-x_var">Select stratifying variable</label>
-                  <div>
-                    <select id="testid-x_var" class="form-control"><option value="" selected></option></select>
-                    <script type="application/json" data-for="testid-x_var">{"plugins":["selectize-plugin-a11y"]}</script>
-                  </div>
+                  <label class="control-label" for="testid-x_var">Optional stratifying variable</label>
+                  <select data-actions-box="false" data-none-selected-text="- Nothing selected -" data-max-options="1" data-show-subtext="true" data-live-search="false" id="testid-x_var" class="selectpicker form-control" multiple="multiple"><option value=""></option></select>
+                </div>
+                <div class="form-group shiny-input-container">
+                  <label class="control-label" for="testid-color_var">Optional color variable</label>
+                  <select data-actions-box="false" data-none-selected-text="- Nothing selected -" data-max-options="1" data-show-subtext="true" data-live-search="false" id="testid-color_var" class="selectpicker form-control" multiple="multiple"><option value=""></option></select>
+                </div>
+                <div class="form-group shiny-input-container">
+                  <label class="control-label" for="testid-facet_var">Optional facet variable</label>
+                  <select data-actions-box="false" data-none-selected-text="- Nothing selected -" data-max-options="1" data-show-subtext="true" data-live-search="false" id="testid-facet_var" class="selectpicker form-control" multiple="multiple"><option value=""></option></select>
                 </div>
                 <label>Jitter</label>
                 <div class="form-group shiny-input-container">

@@ -42,8 +42,8 @@ test_that("tm_g_boxplot works as expected in the sample app", {
   initial_assay_name <- app$waitForValue("teal-main_ui-modules_ui-root_boxplot-assay_name")
   expect_identical(initial_assay_name, "counts")
 
-  initial_x_var <- app$waitForValue("teal-main_ui-modules_ui-root_boxplot-x_var")
-  expect_identical(initial_x_var, "Filename")
+  initial_x_var <- app$waitForValue("teal-main_ui-modules_ui-root_boxplot-x_var", ignore = "")
+  expect_identical(initial_x_var, NULL)
 
   initial_genes <- app$waitForValue("teal-main_ui-modules_ui-root_boxplot-genes")
   expect_identical(initial_genes, "GeneID:101927746")
@@ -55,35 +55,18 @@ test_that("tm_g_boxplot works as expected in the sample app", {
     name = "initial_plot.png"
   )
 
-  # Now change the experiment_name and confirm that the gene and stratifyin variables are updated accordingly.
+  # Now change the experiment_name and confirm that the gene is updated accordingly.
   app$setInputs(
     "teal-main_ui-modules_ui-root_boxplot-experiment_name" = "hd3"
   )
-  now_x_var <- app$waitForValue("teal-main_ui-modules_ui-root_boxplot-x_var")
-  expect_identical(now_x_var, "Filename")
-
   now_genes <- app$waitForValue("teal-main_ui-modules_ui-root_boxplot-genes")
   expect_identical(now_genes, "GeneID:5205")
 
-  # Also now the plot exists.
-  plot_description <- app$waitForOutputElement("teal-main_ui-modules_ui-root_boxplot-plot", "alt")
-  expect_identical(plot_description, "Plot object")
-
-  # Update boxplot with Jitter.
+  # Update boxplot with Jitter, select multiple genes and x variable.
   app$setInputs(
-    "teal-main_ui-modules_ui-root_boxplot-jitter" = TRUE
-  )
-
-  # Final plot.
-  expect_snapshot_screenshot(
-    app,
-    id = "teal-main_ui-modules_ui-root_boxplot-plot",
-    name = "final_plot.png"
-  )
-
-  # update final plot for selection of multiple genes
-  app$setInputs(
-    "teal-main_ui-modules_ui-root_boxplot-genes" = c("GeneID:101927746", "GeneID:1820"),
+    "teal-main_ui-modules_ui-root_boxplot-jitter" = TRUE,
+    "teal-main_ui-modules_ui-root_boxplot-genes" = c("GeneID:5205", "GeneID:102723793"),
+    "teal-main_ui-modules_ui-root_boxplot-x_var" = "COUNTRY",
     "teal-main_ui-modules_ui-root_boxplot-color_var" = "AGE18",
     "teal-main_ui-modules_ui-root_boxplot-facet_var" = "RACE"
   )
@@ -92,7 +75,7 @@ test_that("tm_g_boxplot works as expected in the sample app", {
   expect_snapshot_screenshot(
     app,
     id = "teal-main_ui-modules_ui-root_boxplot-plot",
-    name = "final_plot_multiple_genes.png"
+    name = "final_plot.png"
   )
   app$stop()
 })
