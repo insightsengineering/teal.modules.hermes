@@ -1,0 +1,322 @@
+---
+title: "Survival forest plot module design" 
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(dplyr)
+library(tern)
+library(teal)
+library(teal.devel)
+library(teal.modules.hermes)
+library(hermes)
+```
+
+## Survival forest plot module design
+
+We want to design a simple survival forest plot teal module.
+
+## Example data
+
+```{r}
+# Example ADTTE data.
+adtte <- ex_adtte %>%
+  df_explicit_na() %>%
+  filter(
+    PARAMCD == "OS"
+  ) %>%
+  mutate(
+    AVAL = day2month(AVAL),
+    AVALU = "Months",
+    is_event = CNSR == 0,
+    ARM_BIN = fct_collapse_only(
+      ARM,
+      CTRL = c("B: Placebo"),
+      TRT = c("A: Drug X", "C: Combination")
+    ),
+  )
+
+# Example MAE data.
+MAE <- multi_assay_experiment
+mae <- dataset("MAE", MAE)
+data <- teal_data(mae)
+
+# Merge ADTTE with counts of specified gene from MAE.
+new_adtte <- h_km_mae_to_adtte(
+  adtte,
+  MAE,
+  gene_var = "GeneID:1820",
+  experiment_name = "hd2"
+)
+
+# Calculate survival forest results.
+tbl <- extract_survival_subgroups(
+  variables = list(
+    tte = "AVAL",
+    is_event = "is_event",
+    arm = "ARM_BIN",
+    subgroups = c("BEP01FL", "BMRKR2")
+  ),
+  label_all = "ITT",
+  data = new_adtte
+)
+
+result <- basic_table() %>%
+  tabulate_survival_subgroups(
+    df = tbl,
+    vars = c("n_tot_events", "n", "n_events", "median", "hr", "ci"),
+    time_unit = NULL
+  )
+```
+
+
+## Plot function
+
+
+```{r}
+is.blank <- function(x) identical(x, "")
+
+library(assertthat)
+draw_surv_forest <- function(adtte_data, object, experiment_name, assayname, geneid, arm, subgroups) {
+  assert_that(
+    is(object, "SummarizedExperiment"),
+    is.string(experiment_name),
+    is.string(assayname),
+    is.string(geneid),
+    is.string(arm)
+    # is.string(subgroups)
+  )
+
+  adtte <- adtte_data %>%
+    df_explicit_na() %>%
+    filter(
+      PARAMCD == "OS"
+    ) %>%
+    mutate(
+      AVAL = day2month(AVAL),
+      AVALU = "Months",
+      is_event = CNSR == 0,
+      ARM_BIN = fct_collapse_only(
+        ARM,
+        CTRL = c("B: Placebo"),
+        TRT = c("A: Drug X", "C: Combination")
+      ),
+    )
+
+  new_adtte <- h_km_mae_to_adtte(
+    adtte,
+    MAE,
+    gene_var = geneid,
+    experiment_name = experiment_name
+  )
+
+  tbl <- extract_survival_subgroups(
+    variables = list(
+      tte = "AVAL",
+      is_event = "is_event",
+      arm = arm,
+      subgroups = subgroups
+    ),
+    label_all = "ITT",
+    data = new_adtte
+  )
+
+  result <- basic_table() %>%
+    tabulate_survival_subgroups(
+      df = tbl,
+      vars = c("n_tot_events", "n", "n_events", "median", "hr", "ci"),
+      time_unit = NULL
+    )
+
+  g_forest(result)
+}
+```
+
+Test it:
+
+```{r}
+adtte <- rtables::ex_adtte
+MAE <- multi_assay_experiment
+object <- MAE[[1]]
+
+draw_surv_forest(
+  adtte,
+  object,
+  experiment_name = "hd1",
+  assayname = "counts",
+  geneid = "GeneID:1820",
+  arm = "ARM_BIN",
+  subgroups = c("BEP01FL", "BMRKR2")
+)
+```
+
+## UI function
+
+
+```{r}
+ui_surv_forest <- function(id, datasets, mae_name, pre_output, post_output) {
+  ns <- NS(id)
+  mae <- datasets$get_data(mae_name, filtered = FALSE)
+  experiment_name_choices <- names(mae)
+  teal.devel::standard_layout(
+    encoding = div(
+      tags$label("Encodings", class = "text-primary"),
+      helpText("Analysis of MAE:", tags$code(mae_name)),
+      selectInput(ns("experiment_name"), "Select Experiment", experiment_name_choices),
+      selectInput(ns("assay_name"), "Select Assay", choices = ""),
+      selectInput(ns("gene_id"), "Gene ID", choices = ""),
+      selectInput(ns("arm"), "Arm", choices = ""),
+      optionalSelectInput(ns("subgroup"), label = "Subgroups", choices = "", selected = "", multiple = TRUE)
+    ),
+    output = plotOutput(ns("plot")),
+    pre_output = pre_output,
+    post_output = post_output
+  )
+}
+```
+
+## Server function
+
+```{r}
+srv_surv_forest <- function(input, output, session, datasets, mae_name) {
+
+  # When the filtered data set of the chosen experiment changes, update the
+  # experiment data object.
+  experiment_data <- reactive({
+    req(input$experiment_name) # Important to avoid running into NULL here.
+
+    mae <- datasets$get_data(mae_name, filtered = TRUE)
+    mae[[input$experiment_name]]
+  })
+
+  # When the filtered data set or the chosen experiment changes, update
+  # the calls that subset the genes of the chosen experiment data object.
+  experiment_subset_calls <- reactive({
+    req(input$experiment_name) # Important to avoid running into NULL here.
+
+    filtered_mae <- datasets$get_filtered_datasets(mae_name)
+    filter_states <- filtered_mae$get_filter_states(input$experiment_name)
+    subset_queue <- filter_states$queue_get("subset")
+    sapply(subset_queue, function(x) x$get_call())
+  })
+
+  # When the chosen gene subset changes, we recompute gene names.
+  genes <- eventReactive(experiment_subset_calls(), ignoreNULL = FALSE, {
+    object <- experiment_data()
+    gene_ids <- rownames(object)
+    gene_names <- SummarizedExperiment::rowData(object)$HGNC
+    data.frame(
+      gene_id = gene_ids,
+      gene_name = gene_names
+    )
+  })
+
+  # When the chosen experiment changes, recompute the assay names.
+  assay_names <- eventReactive(input$experiment_name, ignoreNULL = TRUE, {
+    object <- experiment_data()
+    SummarizedExperiment::assayNames(object)
+  })
+
+  # When the chosen experiment changes, recompute the colData variables.
+  col_data_vars <- eventReactive(input$experiment_name, ignoreNULL = TRUE, {
+    object <- experiment_data()
+    names(SummarizedExperiment::colData(object))
+  })
+
+  # When the assay names change, update the choices for assay.
+  observeEvent(assay_names(), {
+    assay_name_choices <- setdiff(
+      assay_names(),
+      exclude_assays
+    )
+
+    updateSelectInput(
+      session,
+      "assay_name",
+      choices = assay_name_choices
+    )
+  })
+
+  # When the genes are recomputed, update the choices for genes in the UI.
+  observeEvent(genes(), {
+    genes <- genes()
+
+    id_names <- c("x_var", "y_var")
+    for (i in seq_along(id_names)) {
+      updateOptionalSelectInput(
+        session,
+        id_names[i],
+        choices = value_choices(
+          data = genes,
+          var_choices = "gene_id",
+          var_label = "gene_name"
+        ),
+        selected = NULL,
+      )
+    }
+  })
+
+  output$plot <- renderPlot({
+    experiment <- input$experiment
+    object <- experiment_data()
+    assay_name <- input$assay_name
+    geneid <- input$geneid
+    arm <- input$arm
+    subgroup <- input$subgroup
+
+
+    draw_surv_forest(
+      object,
+      assay_name = assay_name,
+      geneid = geneid,
+      arm = arm,
+      subgroup = subgroup
+    )
+  })
+}
+```
+
+## Teal module function
+
+```{r}
+tm_g_surv_forest <- function(label = "Simple MAE module",
+                             mae_name,
+                             pre_output = NULL,
+                             post_output = NULL) {
+  module(
+    label = label,
+    server = srv_surv_forest,
+    ui = ui_surv_forest,
+    ui_args = list(
+      mae_name = mae_name,
+      pre_output = pre_output,
+      post_output = post_output
+    ),
+    filters = "all"
+  )
+}
+```
+
+## Try it out
+
+Now we can try it out.
+
+```{r}
+app <- init(
+  data = data,
+  modules = root_modules(
+    static = {
+      tm_g_surv_forest(
+        label = "forest",
+        dataname = "MAE"
+      )
+    }
+  )
+)
+
+shinyApp(app$ui, app$server)
+```
