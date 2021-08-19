@@ -1022,6 +1022,11 @@ srv_g_km_mae <- function(input,
   #   height = plot_height,
   #   width = plot_width
   # )
+  callModule(
+    teal.devel::table_with_settings_srv,
+    id = "mytable",
+    table_r = test
+  )
   #
   # callModule(
   #   teal.devel::get_rcode_srv,
