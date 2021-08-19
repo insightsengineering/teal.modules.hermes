@@ -68,21 +68,33 @@ ui_g_scatterplot <- function(id,
   ns <- NS(id)
   mae <- datasets$get_data(mae_name, filtered = FALSE)
   experiment_name_choices <- names(mae)
+
   smooth_method_choices <- c(
     Linear = "lm",
     Loess = "loess",
     None = "none"
   )
+
   teal.devel::standard_layout(
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
       selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
       selectInput(ns("assay_name"), "Select assay", choices = ""),
+      optionalSelectInput(
+        ns("x_var"),
+        "Select x gene",
+        choices = "",
+        multiple = TRUE
+      ),
+      optionalSelectInput(
+        ns("y_var"),
+        "Select y gene",
+        choices = "",
+        multiple = TRUE
+      ),
       optionalSelectInput(ns("color_var"), "Optional color variable"),
       optionalSelectInput(ns("facet_var"), "Optional facet variable"),
-      selectizeInput(ns("x_var"), "Select x gene", choices = ""),
-      selectizeInput(ns("y_var"), "Select y gene", choices = ""),
       selectInput(ns("smooth_method"), "Select smoother", smooth_method_choices)
     ),
     output = plotOutput(ns("plot")),
@@ -123,7 +135,12 @@ srv_g_scatterplot <- function(input,
   # When the chosen gene subset changes, we recompute gene names.
   genes <- eventReactive(experiment_subset_calls(), ignoreNULL = FALSE, {
     object <- experiment_data()
-    rownames(object)
+    gene_ids <- rownames(object)
+    gene_names <- SummarizedExperiment::rowData(object)$HGNC
+    data.frame(
+      gene_id = gene_ids,
+      gene_name = gene_names
+    )
   })
 
   # When the chosen experiment changes, recompute the assay names.
@@ -153,6 +170,7 @@ srv_g_scatterplot <- function(input,
   })
 
   # When the colData variables change, update the choices for facet_var and color_var.
+
   observeEvent(col_data_vars(), {
     facet_color_var_choices <- col_data_vars()
 
@@ -169,16 +187,19 @@ srv_g_scatterplot <- function(input,
 
   # When the genes are recomputed, update the choices for genes in the UI.
   observeEvent(genes(), {
-    gene_choices <- genes()
+    genes <- genes()
 
     id_names <- c("x_var", "y_var")
     for (i in seq_along(id_names)) {
-      updateSelectizeInput(
+      updateOptionalSelectInput(
         session,
         id_names[i],
-        choices = gene_choices,
-        selected = gene_choices[i],
-        server = TRUE
+        choices = value_choices(
+          data = genes,
+          var_choices = "gene_id",
+          var_label = "gene_name"
+        ),
+        selected = NULL,
       )
     }
   })
@@ -193,25 +214,29 @@ srv_g_scatterplot <- function(input,
     assay_name <- input$assay_name
     smooth_method <- input$smooth_method
 
+    validate(need(
+      !is_blank(assay_name),
+      "no assays are available for this experiment, please choose another experiment"
+    ))
+    validate(need(!is.null(x_var), "please select x gene"))
+    validate(need(!is.null(y_var), "please select y gene"))
+    validate(need(x_var != y_var, "please select different genes for x and y variables"))
+
     # Require which states need to be truthy.
     req(
       x_var,
       y_var,
       smooth_method,
       # Note: The following statements are important to make sure the UI inputs have been updated.
-      is_blank(assay_name) || isTRUE(assay_name %in% SummarizedExperiment::assayNames(experiment_data)),
+      isTRUE(assay_name %in% SummarizedExperiment::assayNames(experiment_data)),
       isTRUE(all(c(x_var, y_var) %in% rownames(experiment_data))),
-      isTRUE(all(c(facet_var, color_var) %in% names(SummarizedExperiment::colData(experiment_data)))),
+      is.null(facet_var) || isTRUE(facet_var %in% names(SummarizedExperiment::colData(experiment_data))),
+      is.null(color_var) || isTRUE(color_var %in% names(SummarizedExperiment::colData(experiment_data))),
       cancelOutput = FALSE
     )
 
     # Validate and give useful messages to the user. Note: no need to duplicate here req() from above.
     validate(need(hermes::is_hermes_data(experiment_data), "please use HermesData() on input experiments"))
-    validate(need(
-      !is_blank(assay_name),
-      "no assays are available for this experiment, please choose another experiment"
-    ))
-    validate(need(x_var != y_var, "please select different genes for x and y variables"))
 
     hermes::draw_scatterplot(
       object = experiment_data,
@@ -249,3 +274,5 @@ sample_tm_g_scatterplot <- function() {
   )
   shinyApp(app$ui, app$server)
 }
+
+

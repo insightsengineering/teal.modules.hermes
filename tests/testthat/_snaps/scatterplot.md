@@ -31,26 +31,20 @@
                   </div>
                 </div>
                 <div class="form-group shiny-input-container">
+                  <label class="control-label" for="testid-x_var">Select x gene</label>
+                  <select data-actions-box="true" data-none-selected-text="- Nothing selected -" data-max-options="Inf" data-show-subtext="true" data-live-search="false" id="testid-x_var" class="selectpicker form-control" multiple="multiple"><option value=""></option></select>
+                </div>
+                <div class="form-group shiny-input-container">
+                  <label class="control-label" for="testid-y_var">Select y gene</label>
+                  <select data-actions-box="true" data-none-selected-text="- Nothing selected -" data-max-options="Inf" data-show-subtext="true" data-live-search="false" id="testid-y_var" class="selectpicker form-control" multiple="multiple"><option value=""></option></select>
+                </div>
+                <div class="form-group shiny-input-container">
                   <label class="control-label" for="testid-color_var">Optional color variable</label>
                   <select data-actions-box="false" data-none-selected-text="- Nothing selected -" data-max-options="1" data-show-subtext="true" data-live-search="false" id="testid-color_var" class="selectpicker form-control" multiple="multiple"><option value=""></option></select>
                 </div>
                 <div class="form-group shiny-input-container">
                   <label class="control-label" for="testid-facet_var">Optional facet variable</label>
                   <select data-actions-box="false" data-none-selected-text="- Nothing selected -" data-max-options="1" data-show-subtext="true" data-live-search="false" id="testid-facet_var" class="selectpicker form-control" multiple="multiple"><option value=""></option></select>
-                </div>
-                <div class="form-group shiny-input-container">
-                  <label class="control-label" id="testid-x_var-label" for="testid-x_var">Select x gene</label>
-                  <div>
-                    <select id="testid-x_var" class="form-control"><option value="" selected></option></select>
-                    <script type="application/json" data-for="testid-x_var">{"plugins":["selectize-plugin-a11y"]}</script>
-                  </div>
-                </div>
-                <div class="form-group shiny-input-container">
-                  <label class="control-label" id="testid-y_var-label" for="testid-y_var">Select y gene</label>
-                  <div>
-                    <select id="testid-y_var" class="form-control"><option value="" selected></option></select>
-                    <script type="application/json" data-for="testid-y_var">{"plugins":["selectize-plugin-a11y"]}</script>
-                  </div>
                 </div>
                 <div class="form-group shiny-input-container">
                   <label class="control-label" id="testid-smooth_method-label" for="testid-smooth_method">Select smoother</label>
