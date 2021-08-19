@@ -46,7 +46,7 @@ h_km_mae_to_adtte <- function(adtte,
     assay_name,
     c("counts", "cpm", "rpkm", "tpm", "voom")
   )
-  assert_character(gene_var)
+  assert_character(gene_var, min.chars = 1L)
   assert_string(experiment_name)
 
   mae_samplemap <- MultiAssayExperiment::sampleMap(mae)
@@ -80,6 +80,8 @@ h_km_mae_to_adtte <- function(adtte,
 
   adtte_patients <- unique(adtte$USUBJID)
   se_patients <- merge_se_data$USUBJID
+
+  #browser()
   assert_true(all(se_patients %in% adtte_patients))
 
   merged_adtte <- merge(adtte, merge_se_data, by = "USUBJID")
@@ -847,34 +849,45 @@ srv_g_km_mae <- function(input,
     assay_name <- input$assay_name
     gene_var <- input$x_var
 
+    req(gene_var)
     validate(need(hermes::is_hermes_data(experiment_data), "please use HermesData() on input experiments"))
     req(isTRUE(assay_name %in% SummarizedExperiment::assayNames(experiment_data)))
     mae_data <- datasets$get_data(mae_name, filtered = TRUE)
     adtte_data <- datasets$get_data(dataname, filtered = TRUE)
-    adtte_data <- adtte %>% mutate(CNSR = as.logical(CNSR))
+    adtte_data <- adtte_data %>% mutate(CNSR = as.logical(CNSR))
 
-    h_km_mae_to_adtte(adtte_data,
-                      mae_data,
-                      gene_var = gene_var,
-                      experiment_name = experiment_name,
-                      assay_name = assay_name
-                      )
+    h_km_mae_to_adtte(
+      adtte_data,
+      mae_data,
+      gene_var = gene_var,
+      experiment_name = experiment_name,
+      assay_name = assay_name
+    )
   })
 
   # Render plot PCA output.
-  output$test <- renderTable(
+  test <- reactive({
     # Resolve all reactivity.
     # adtte_data <- adtte_data()
     # experiment_data <- experiment_data()
     # experiment_name <- input$experiment_name
     # assay_name <- input$assay_name
     # gene_var <- input$x_var
-    head(adtte_data())
+    adtte_data <- adtte_data()
+
+    l <- basic_table() %>%
+      split_cols_by("ARM") %>%
+      analyze(c("SEX", "AGE"))
+
+    tbl <- build_table(l, adtte_data)
+
+    tbl
+
     # arm_var <-
     #
     # variables <- list(tte = "AVAL", is_event = "CNSR", arm = "gene_factor")
     # tern::g_km(binned_adtte, variables = variables)
-  )
+  })
 
 
   # # Setup arm variable selection, default reference arms and default
@@ -1043,19 +1056,12 @@ sample_tm_g_km_mae <- function() {
   library(scda)
   library(dplyr)
   library(random.cdisc.data)
+  library(rtables)
 
   ADSL <- synthetic_cdisc_data("latest")$adsl
   mae <- hermes::multi_assay_experiment
-  adtte <- radtte(cached = TRUE) %>%
+  ADTTE <- radtte(cached = TRUE) %>%
       mutate(CNSR = as.logical(CNSR))
-  new_adtte <- h_km_mae_to_adtte(
-    adtte,
-    mae,
-    gene_var = "GeneID:1820",
-    experiment_name = "hd2"
-  )
-
-  ADTTE <- new_adtte
 
   arm_ref_comp = list(
     ACTARMCD = list(
@@ -1070,12 +1076,8 @@ sample_tm_g_km_mae <- function() {
 
   data <- teal_data(
       dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
-      dataset("ADTTE", ADTTE, code = 'mae <- hermes::multi_assay_experiment
-  adtte <- radtte(cached = TRUE) %>%
-      mutate(CNSR = as.logical(CNSR))
-  new_adtte <- h_km_mae_to_adtte(adtte, mae, gene_var = "GeneID:1820", experiment_name = "hd2")
-
-  ADTTE <- new_adtte'),
+      dataset("ADTTE", ADTTE, code = 'ADTTE <- radtte(cached = TRUE) %>%
+      mutate(CNSR = as.logical(CNSR))'),
   dataset("mae", mae)
     )
 
@@ -1085,8 +1087,8 @@ sample_tm_g_km_mae <- function() {
         dataname = "ADTTE",
         mae_name = "mae",
         arm_var = choices_selected(
-          variable_choices(ADTTE, c("GeneID1820_counts")),
-          "GeneID1820_counts"
+          variable_choices(ADTTE, c("ARM")),
+          "ARM"
         ),
         paramcd = choices_selected(
           value_choices(ADTTE, c("PARAMCD")),
