@@ -158,17 +158,17 @@ draw_surv_forest(
 
 
 ```{r}
-ui_surv_forest <- function(id, datasets, mae_name, pre_output, post_output) {
+ui_surv_forest <- function(id, datasets, dataname) {
   ns <- NS(id)
-  mae <- datasets$get_data(mae_name, filtered = FALSE)
+  mae <- datasets$get_data(dataname, filtered = TRUE)
   experiment_name_choices <- names(mae)
   teal.devel::standard_layout(
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      helpText("Analysis of MAE:", tags$code(mae_name)),
+      helpText("Analysis of MAE:", tags$code(dataname)),
       selectInput(ns("experiment_name"), "Select Experiment", experiment_name_choices),
       selectInput(ns("assay_name"), "Select Assay", choices = ""),
-      selectInput(ns("gene_id"), "Gene ID", choices = ""),
+      SelectizeInput(ns("gene_id"), "Gene ID", choices = ""),
       selectInput(ns("arm"), "Arm", choices = ""),
       optionalSelectInput(ns("subgroup"), label = "Subgroups", choices = "", selected = "", multiple = TRUE)
     ),
@@ -182,14 +182,16 @@ ui_surv_forest <- function(id, datasets, mae_name, pre_output, post_output) {
 ## Server function
 
 ```{r}
-srv_surv_forest <- function(input, output, session, datasets, mae_name) {
+srv_surv_forest <- function(input, output, session, datasets, dataname) {
+
+  # adtte <- rtables::ex_adtte
 
   # When the filtered data set of the chosen experiment changes, update the
   # experiment data object.
   experiment_data <- reactive({
     req(input$experiment_name) # Important to avoid running into NULL here.
 
-    mae <- datasets$get_data(mae_name, filtered = TRUE)
+    mae <- datasets$get_data(dataname, filtered = TRUE)
     mae[[input$experiment_name]]
   })
 
@@ -198,21 +200,10 @@ srv_surv_forest <- function(input, output, session, datasets, mae_name) {
   experiment_subset_calls <- reactive({
     req(input$experiment_name) # Important to avoid running into NULL here.
 
-    filtered_mae <- datasets$get_filtered_datasets(mae_name)
+    filtered_mae <- datasets$get_filtered_datasets(dataname)
     filter_states <- filtered_mae$get_filter_states(input$experiment_name)
     subset_queue <- filter_states$queue_get("subset")
     sapply(subset_queue, function(x) x$get_call())
-  })
-
-  # When the chosen gene subset changes, we recompute gene names.
-  genes <- eventReactive(experiment_subset_calls(), ignoreNULL = FALSE, {
-    object <- experiment_data()
-    gene_ids <- rownames(object)
-    gene_names <- SummarizedExperiment::rowData(object)$HGNC
-    data.frame(
-      gene_id = gene_ids,
-      gene_name = gene_names
-    )
   })
 
   # When the chosen experiment changes, recompute the assay names.
@@ -221,10 +212,22 @@ srv_surv_forest <- function(input, output, session, datasets, mae_name) {
     SummarizedExperiment::assayNames(object)
   })
 
-  # When the chosen experiment changes, recompute the colData variables.
-  col_data_vars <- eventReactive(input$experiment_name, ignoreNULL = TRUE, {
+  # When the chosen experiment call changes, we recompute gene names.
+  genes <- eventReactive(experiment_call(), ignoreNULL = FALSE, {
     object <- experiment_data()
-    names(SummarizedExperiment::colData(object))
+    rownames(object)
+  })
+
+  # When the chosen experiment changes, recompute the colData available.
+  arm <- eventReactive(input$arm, {
+    object <- experiment_data()
+    names(colData(object))
+  })
+
+  # When the chosen experiment changes, recompute the colData available.
+  subgroup <- eventReactive(input$subgroup, {
+    object <- experiment_data()
+    names(colData(object))
   })
 
   # When the assay names change, update the choices for assay.
@@ -241,28 +244,46 @@ srv_surv_forest <- function(input, output, session, datasets, mae_name) {
     )
   })
 
-  # When the genes are recomputed, update the choices for genes in the UI.
+  # When the genes are recomputed, update the choice for genes in the UI.
   observeEvent(genes(), {
-    genes <- genes()
+    gene_choices <- genes()
 
-    id_names <- c("x_var", "y_var")
-    for (i in seq_along(id_names)) {
-      updateOptionalSelectInput(
-        session,
-        id_names[i],
-        choices = value_choices(
-          data = genes,
-          var_choices = "gene_id",
-          var_label = "gene_name"
-        ),
-        selected = NULL,
-      )
-    }
+    id_names <- c("geneid")
+    updateSelectizeInput(
+      session,
+      id_names,
+      choices = gene_choices,
+      selected = gene_choices[1],
+      server = TRUE
+    )
+  })
+
+  observeEvent(arm(), {
+    arm <- arm()
+
+    updateSelectInput(
+      session,
+      "arm",
+      choices = arm,
+      selected = "ARM"
+    )
+  })
+
+  observeEvent(subgroup(), {
+    subgroup <- subgroup()
+
+    updateOptionalSelectInput(
+      session,
+      "subgroup",
+      choices = subgroup,
+      selected = "BEP01FL"
+    )
   })
 
   output$plot <- renderPlot({
-    experiment <- input$experiment
+    # adtte <- adtte()
     object <- experiment_data()
+    experiment <- input$experiment
     assay_name <- input$assay_name
     geneid <- input$geneid
     arm <- input$arm
@@ -270,7 +291,9 @@ srv_surv_forest <- function(input, output, session, datasets, mae_name) {
 
 
     draw_surv_forest(
+      # adtte,
       object,
+      experiment_name = experiment_name,
       assay_name = assay_name,
       geneid = geneid,
       arm = arm,
@@ -284,18 +307,16 @@ srv_surv_forest <- function(input, output, session, datasets, mae_name) {
 
 ```{r}
 tm_g_surv_forest <- function(label = "Simple MAE module",
-                             mae_name,
+                             info = NULL,
+                             dataname = NULL,
                              pre_output = NULL,
                              post_output = NULL) {
   module(
     label = label,
     server = srv_surv_forest,
     ui = ui_surv_forest,
-    ui_args = list(
-      mae_name = mae_name,
-      pre_output = pre_output,
-      post_output = post_output
-    ),
+    ui_args = list(dataname = dataname),
+    server_args = list(dataname = dataname),
     filters = "all"
   )
 }
