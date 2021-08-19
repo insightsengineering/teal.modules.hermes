@@ -898,10 +898,10 @@ srv_g_km_mae <- function(input,
     new_adtte[, arm_name] <- new_adtte[, arm_name] %>% as.numeric
 
     binned_adtte <- new_adtte %>%
-      dplyr::mutate(gene_factor = tern::cut_quantile_bins(arm_name, probs = .3))
+      mutate(gene_factor = tern::cut_quantile_bins(new_adtte[, arm_name], probs = .3))
 
-    variables <- list(tte = "AVAL", is_event = "CNSR", arm = arm_name)
-    tern::g_km(new_adtte, variables = variables)
+    variables <- list(tte = "AVAL", is_event = "CNSR", arm = "gene_factor")
+    tern::g_km(binned_adtte, variables = variables)
   })
 
 
