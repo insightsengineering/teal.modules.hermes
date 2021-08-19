@@ -81,11 +81,11 @@ h_km_mae_to_adtte <- function(adtte,
   adtte_patients <- unique(adtte$USUBJID)
   se_patients <- merge_se_data$USUBJID
 
-  #browser()
   assert_true(all(se_patients %in% adtte_patients))
 
   merged_adtte <- merge(adtte, merge_se_data, by = "USUBJID")
   merged_adtte <- tern::df_explicit_na(merged_adtte)
+
 
   structure(
     merged_adtte,
@@ -885,8 +885,23 @@ srv_g_km_mae <- function(input,
 
     # arm_var <-
     #
-    # variables <- list(tte = "AVAL", is_event = "CNSR", arm = "gene_factor")
-    # tern::g_km(binned_adtte, variables = variables)
+    # We need the gene counts column name (the selected gene_var/x_var) to add to the 'arm'
+    # variable in the list.
+    # Issue 1. x_var will have ':' while col won't
+    # Issue 2. the unique part is after the ':'
+    # Ideas 1: split the x_var at ':' and save everything after. split the col name after 'D'
+    #          and save everything after. if they match, use that col name.
+    # Ideas 2: convert x_var to the same format as the col, using assay_var. assign that to
+    #          arm_var.
+    gene_names <- tern::make_names(x_var)
+    arm_name <- paste(gene_names, assay_name, sep = "_")
+    new_adtte[, arm_name] <- new_adtte[, arm_name] %>% as.numeric
+
+    binned_adtte <- new_adtte %>%
+      dplyr::mutate(gene_factor = tern::cut_quantile_bins(arm_name, probs = .3))
+
+    variables <- list(tte = "AVAL", is_event = "CNSR", arm = arm_name)
+    tern::g_km(new_adtte, variables = variables)
   })
 
 
