@@ -242,7 +242,7 @@ ui_g_levels <- function(id,
           ns("facet_var"), 
           label = NULL, 
           choices = "", 
-          multiple = TRUE
+          multiple = FALSE
         )
       ),
     ),
@@ -267,7 +267,9 @@ srv_g_levels <- function(input,
     req(input$experiment_name)  # Important to avoid running into NULL here.
 
     mae <- datasets$get_data(mae_name, filtered = TRUE)
-    mae[[input$experiment_name]]
+    object <- mae[[input$experiment_name]]
+    colData(object) <- df_char_to_factor(colData(object))
+    object
   })
 
   # When the chosen experiment changes, recompute the colData variables.
@@ -336,12 +338,15 @@ srv_g_levels <- function(input,
   combModal <- function(facet_levels, 
                         n_max_groups, 
                         selected_groups) {
+    if (is.null(selected_groups)) {
+      selected_groups <- seq_len(n_max_groups)
+    }
     modalDialog(
       shinyRadioMatrix::radioMatrixInput(
         session$ns("comb_assignment"), 
-        rowIDs = seq_along(facet_levels),
-        rowLLabels = facet_levels,
-        choiceNames = seq_len(n_max_groups),
+        rowIDs = facet_levels,
+        rowLLabels = rep("", length = length(facet_levels)),
+        choices = seq_len(n_max_groups),
         selected = selected_groups
       ),
       span(
@@ -354,7 +359,7 @@ srv_g_levels <- function(input,
     )
   }
   
-  # Show modal when button is clicked.
+  # Show modal when button is clicked and the current variable is a factor variable.
   observeEvent(input$open_levels_input, {
     facet_var <- input$facet_var
     experiment_data <- experiment_data()
@@ -362,17 +367,23 @@ srv_g_levels <- function(input,
     
     req(experiment_name, facet_var)
     
-    facet_levels <- levels(colData(experiment_data)[[facet_var]])
+    current_facet_var <- colData(experiment_data)[[facet_var]]
     
-    # Note: here we make sure we load with previous choice so the user
-    # does not constantly need to start from scratch again.
-    selected_groups <- assign_lists[[experiment_name]][[facet_var]]
+    if (is.factor(current_facet_var)) {
+      facet_levels <- levels(current_facet_var)
       
-    showModal(combModal(
-      facet_levels = facet_levels, 
-      n_max_groups = length(facet_levels), 
-      selected_groups = selected_groups
-    ))
+      # Note: here we make sure we load with previous choice so the user
+      # does not constantly need to start from scratch again.
+      selected_groups <- assign_lists[[experiment_name]][[facet_var]]
+      
+      showModal(combModal(
+        facet_levels = facet_levels, 
+        n_max_groups = length(facet_levels), 
+        selected_groups = selected_groups
+      ))
+    } else {
+      showNotification("Can only group levels for factor variables", type = "message")
+    }
   })
   
   # When OK button is pressed, save the settings, and remove the modal.
@@ -456,6 +467,11 @@ We need to think about length of resulting level strings. If we combine many lev
 - We can think about hermes functions wrapping e.g. facet labels - but then this only works for facet, not for coloring or x-axis...
 - or we could have generic factor levels (1, 2, 3 etc) and then we need to have footnotes for the outputs, or just a separate output below the main plot/table that explains the groups?
 
-### Logical variables
+### Special case when we require 2 groups coming out of the levels grouping
 
-Btw: we should also make sure that logical variables are possible to use.
+In that case we need to:
+- validate that facet variable has exactly 2 levels, point the user to grouping functionality
+- only accept clicking OK when exactly 2 levels are selected (instead of just one level)
+- have a workaround for logical variables, they should also work. maybe modify `hermes` function `diff_expression()` accordingly.
+- only provide 2 columns in the radio matrix
+- can default to having first level in first column and the rest in 2nd column
