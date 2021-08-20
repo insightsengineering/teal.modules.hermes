@@ -1,5 +1,5 @@
 ---
-  title: "Combination of factor levels design"
+title: "Combination of factor levels design"
 output: html_document
 editor_options:
   chunk_output_type: console
@@ -76,19 +76,19 @@ draw_boxplot(
 )
 ```
 
-
-## Teal module prototype
+## Material
 
 ### shinyRadioMatrix
 
-Toy example:
+We will use https://github.com/szelepke/shinyRadioMatrix maybe with a bit nicer look.
+Toy example for it:
 
 ```{r}
 library(shiny)
 library(shinyRadioMatrix)
 
 ## Only run examples in interactive R sessions
-if (interactive()) {
+if (FALSE) {
 
   data(exTaxonList)
   data(exPftList)
@@ -112,7 +112,6 @@ if (interactive()) {
   }
     
   shinyApp(ui, server)
-    
 }
 ```
 
@@ -167,7 +166,285 @@ result_list <- h_assign_to_group_list(assign_list)
 assert_true(identical(result_list, objective_list))
 ```
 
-### 
+## Teal module prototype
+
+We will build a prototype `tm_g_levels()` module to illustrate the combination of factor levels.
+
+### Module function
+
+Here we don't have any changes, as we don't need additional arguments for the app developer.
+
+```{r}
+tm_g_levels <- function(label,
+                        mae_name,
+                        pre_output = NULL,
+                        post_output = NULL) {
+  assert_string(label)
+  assert_string(mae_name)
+  assert_tag(pre_output, null.ok = TRUE)
+  assert_tag(post_output, null.ok = TRUE)
+
+  module(
+    label = label,
+    server = srv_g_levels,
+    server_args = list(
+      mae_name = mae_name
+    ),
+    ui = ui_g_levels,
+    ui_args = list(
+      mae_name = mae_name,
+      pre_output = pre_output,
+      post_output = post_output
+    ),
+    filters = "all"
+  )
+}
+```
+
+### UI function
+
+Here we have the additional button next to the variable selection dropdown box to open up the combination of factor levels menu. Note that we cannot really work with conditional panel here as the matrix we need is too large and would not fit in the narrow horizontal encoding space.
+
+```{r}
+ui_g_levels <- function(id,
+                        datasets,
+                        mae_name,
+                        pre_output,
+                        post_output) {
+  ns <- NS(id)
+  mae <- datasets$get_data(mae_name, filtered = FALSE)
+  experiment_name_choices <- names(mae)
+
+  teal.devel::standard_layout(
+    encoding = div(
+      selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
+      div(
+        class = "row",
+        div(
+          class = "col-sm-8",
+          tags$label(class = "control-label",
+                     "Select faceting variable")
+        ),
+        div(
+          class = "col-sm-4",
+          actionButton(
+            ns("open_levels_input"),
+            span(icon("font fa-border")),
+            title = "Combine factor levels",
+            class = "pull-right list-genes"
+          ),
+          include_css_files(pattern = "*")
+        )
+      ), 
+      div(
+        class = "custom-select-input",
+        optionalSelectInput(
+          ns("facet_var"), 
+          label = NULL, 
+          choices = "", 
+          multiple = TRUE
+        )
+      ),
+    ),
+    output = plotOutput(ns("plot")),
+    pre_output = pre_output,
+    post_output = post_output
+  )
+}
+```
+
+### Server function
+
+```{r}
+srv_g_levels <- function(input,
+                         output,
+                         session,
+                         datasets,
+                         mae_name) {
+  # When the filtered data set of the chosen experiment changes, update the
+  # experiment data object.
+  experiment_data <- reactive({
+    req(input$experiment_name)  # Important to avoid running into NULL here.
+
+    mae <- datasets$get_data(mae_name, filtered = TRUE)
+    mae[[input$experiment_name]]
+  })
+
+  # When the chosen experiment changes, recompute the colData variables.
+  col_data_vars <- eventReactive(input$experiment_name, ignoreNULL = TRUE, {
+    object <- experiment_data()
+    names(SummarizedExperiment::colData(object))
+  })
+
+  # When the colData variables change, update the choices for facet_var.
+  observeEvent(col_data_vars(), {
+    col_data_vars <- col_data_vars()
+
+    updateOptionalSelectInput(
+      session,
+      "facet_var",
+      choices = col_data_vars,
+      selected = character()
+    )
+  })
+  
+  # `reactiveValuees` object for storing experiment and colData variable 
+  # specific assignment lists.
+  # Note that this should have experiments at the first level and then colData in the
+  # second level.
+  assign_lists <- reactiveValues()
+
+  # Reactive for the current combination. Takes the assignment list if available
+  # and converts to combination list.
+  current_combination <- reactive({
+    experiment_name <- input$experiment_name
+    facet_var <- input$facet_var
+
+    req(experiment_name, facet_var)
+    
+    assign_list <- assign_lists[[experiment_name]][[facet_var]]
+    if (!is.null(assign_list)) {
+      h_assign_to_group_list(assign_list)
+    } else {
+      NULL
+    }
+  })
+
+  # Here we produce the final object by checking 
+  # if we should combine for this facet var.
+  experiment_data_final <- reactive({
+    facet_var <- input$facet_var
+    experiment_data <- experiment_data()
+    current_combination <- current_combination()
+    
+    req(facet_var)
+    
+    if (!is.null(current_combination)) {
+      colData(experiment_data)[[facet_var]] <- do.call(
+        forcats::fct_collapse,
+        args = c(
+          list(.f = colData(experiment_data)[[facet_var]]),
+          current_combination
+        )
+      )
+    }
+    experiment_data
+  })
+  
+  # Function to return the UI for a modal dialog with matrix input for combination
+  # assignment.
+  combModal <- function(facet_levels, 
+                        n_max_groups, 
+                        selected_groups) {
+    modalDialog(
+      shinyRadioMatrix::radioMatrixInput(
+        session$ns("comb_assignment"), 
+        rowIDs = seq_along(facet_levels),
+        rowLLabels = facet_levels,
+        choiceNames = seq_len(n_max_groups),
+        selected = selected_groups
+      ),
+      span(
+        "Please enter click to group the original factor levels"
+      ),
+      footer = tagList(
+        modalButton("Cancel"),
+        actionButton(session$ns("ok"), "OK")
+      )
+    )
+  }
+  
+  # Show modal when button is clicked.
+  observeEvent(input$open_levels_input, {
+    facet_var <- input$facet_var
+    experiment_data <- experiment_data()
+    experiment_name <- input$experiment_name
+    
+    req(experiment_name, facet_var)
+    
+    facet_levels <- levels(colData(experiment_data)[[facet_var]])
+    
+    # Note: here we make sure we load with previous choice so the user
+    # does not constantly need to start from scratch again.
+    selected_groups <- assign_lists[[experiment_name]][[facet_var]]
+      
+    showModal(combModal(
+      facet_levels = facet_levels, 
+      n_max_groups = length(facet_levels), 
+      selected_groups = selected_groups
+    ))
+  })
+  
+  # When OK button is pressed, save the settings, and remove the modal.
+  observeEvent(input$ok, {
+    experiment_name <- input$experiment_name
+    facet_var <- input$facet_var
+    comb_assignment <- input$comb_assignment
+    
+    req(experiment_name, facet_var, comb_assignment)
+    
+    if (FALSE) {
+      # Here we could do checks on comb_assignment, e.g. check that not just
+      # 1 group was selected.
+      showNotification(
+        "Something went wrong", 
+        type = "error"
+      )
+    } else {
+      assign_lists[[experiment_name]][[facet_var]] <- comb_assignment
+      removeModal()
+    }
+  })
+
+  output$plot <- renderPlot({
+    # Resolve all reactivity.
+    experiment_data_final <- experiment_data_final()
+    facet_var <- input$facet_var
+    
+    # Validate and give useful messages to the user. Note: no need to duplicate 
+    # here req() from above.
+    validate(need(
+      hermes::is_hermes_data(experiment_data_final), 
+      "please use HermesData() on input experiments"
+    ))
+    validate(need(!is.null(facet_var), "please select a faceting variable"))
+    
+    # Output.
+    hermes::draw_boxplot(
+      experiment_data_final, 
+      assay_name = "counts",
+      genes = genes(experiment_data_final)[1],
+      facet_var = facet_var
+    )
+  })
+}
+```
+
+### Sample module
+
+```{r}
+sample_tm_g_levels <- function() {
+  mae <- hermes::multi_assay_experiment
+  mae_data <- dataset("MAE", mae)
+  data <- teal_data(mae_data)
+  app <- init(
+    data = data,
+    modules = root_modules(
+      tm_g_levels(
+        label = "levels",
+        mae_name = "MAE"
+      )
+    )
+  )
+  shinyApp(app$ui, app$server)
+}
+```
+
+### Try out
+
+```{r}
+sample_tm_g_levels()
+```
 
 
 ## For production
