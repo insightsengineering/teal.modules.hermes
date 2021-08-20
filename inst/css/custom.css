@@ -50,12 +50,10 @@ div.shiny-radiomatrix .checkmark {
   transition: 0.5s all ease-in-out;
 }
 
-/* On mouse-over, add a grey background color */
 div.shiny-radiomatrix .radio-parent:hover input ~ .checkmark {
   background-color: #2195f34b;
 }
 
-/* When the radio button is checked, add a blue background */
 div.shiny-radiomatrix .radio-parent input:checked ~ .checkmark {
   background-color: #2196f3;
 }
@@ -81,9 +79,9 @@ div.shiny-radiomatrix td:hover::before,
 div.shiny-radiomatrix th:hover::before {
   background-color: rgba(151, 151, 151, 0.1);
   content: "\00a0";
-  height: 10000px;
+  height: 1000vh;
   left: 0;
   position: absolute;
-  top: -5000px;
+  top: -500vh;
   width: 100%;
 }
