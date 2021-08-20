@@ -350,7 +350,7 @@ srv_g_levels <- function(input,
         selected = selected_groups
       ),
       span(
-        "Please enter click to group the original factor levels"
+        "Please click to group the original factor levels"
       ),
       footer = tagList(
         modalButton("Cancel"),
