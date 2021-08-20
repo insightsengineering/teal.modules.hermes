@@ -94,7 +94,6 @@ if (FALSE) {
   data(exPftList)
 
   ui <- fluidPage(
-        
     radioMatrixInput(inputId = "rmi01", rowIDs = head(exTaxonList$Var), 
                      rowLLabels = head(
                      as.matrix(subset(exTaxonList, select = "VarName"))
@@ -229,7 +228,7 @@ ui_g_levels <- function(id,
           class = "col-sm-4",
           actionButton(
             ns("open_levels_input"),
-            span(icon("font fa-border")),
+            span(icon("font fa-object-ungroup")),
             title = "Combine factor levels",
             class = "pull-right list-genes"
           ),
@@ -244,7 +243,7 @@ ui_g_levels <- function(id,
           choices = "", 
           multiple = FALSE
         )
-      ),
+      )
     ),
     output = plotOutput(ns("plot")),
     pre_output = pre_output,
@@ -355,7 +354,8 @@ srv_g_levels <- function(input,
       footer = tagList(
         modalButton("Cancel"),
         actionButton(session$ns("ok"), "OK")
-      )
+      ),
+      include_js_files("checkbox.js")
     )
   }
   
