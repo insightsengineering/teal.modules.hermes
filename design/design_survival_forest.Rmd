@@ -40,7 +40,7 @@ data <- teal_data(mae, adsl, adtte) %>%
 
 # Merge ADTTE with counts of specified gene from MAE.
 new_adtte <- h_km_mae_to_adtte(
-  adtte,
+  adtte$get_raw_data(),
   MAE,
   gene_var = "GeneID:1820",
   experiment_name = "hd2"
