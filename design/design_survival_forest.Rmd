@@ -23,24 +23,24 @@ We want to design a simple survival forest plot teal module.
 ## Example data
 
 ```{r}
-# Example ADSL data.
+# Example ADSL data converted into a CDISCDataset object.
 adsl <- cdisc_dataset("ADSL", ex_adsl)
 
-# Example ADTTE data.
-adtte <- cdisc_dataset("ADTTE", ex_adtte) %>% 
-  mutate_dataset(
-    " ADTTE$ARM_BIN <- fct_collapse_only(ADTTE$ARM, CTRL = c('B: Placebo'), TRT = c('A: Drug X', 'C: Combination'))"
-  )
+# Example ADTTE data converted into a CDISCDataset object.
+adtte <- cdisc_dataset("ADTTE", ex_adtte)
 
-# Example MAE data.
+# Example MAE data and merge datasets.
 MAE <- multi_assay_experiment
 mae <- dataset("MAE", MAE)
 data <- teal_data(mae, adsl, adtte) %>%
   mutate_join_keys("MAE", "MAE", c("STUDYID", "USUBJID"))
 
+# Get raw ADTTE and mutate required variables.
+adtte_raw <- get_raw_data(adtte)
+
 # Merge ADTTE with counts of specified gene from MAE.
-new_adtte <- h_km_mae_to_adtte(
-  adtte$get_raw_data(),
+adtte_final <- h_km_mae_to_adtte(
+  ex_adtte,
   MAE,
   gene_var = "GeneID:1820",
   experiment_name = "hd2"
@@ -55,7 +55,7 @@ tbl <- extract_survival_subgroups(
     subgroups = c("BEP01FL", "BMRKR2")
   ),
   label_all = "ITT",
-  data = new_adtte
+  data = adtte_final
 )
 
 result <- basic_table() %>%
@@ -174,16 +174,15 @@ ui_surv_forest <- function(id, datasets, dataname) {
 
 ```{r}
 srv_surv_forest <- function(input, output, session, datasets, dataname) {
-  
   adsl <- get_raw_data(adsl)
-  
+
   adtte <- get_raw_data(adtte)
-  
+
   # When the filtered data set of the chosen experiment changes, update the
   # experiment data object.
   experiment_data <- reactive({
     experiment_name <- input$experiment_name
-    req(input$experiment_name)  # Important to avoid running into NULL here.
+    req(input$experiment_name) # Important to avoid running into NULL here.
 
     mae <- datasets$get_data(dataname, filtered = TRUE)
     mae[[input$experiment_name]]
