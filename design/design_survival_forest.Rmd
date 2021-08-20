@@ -14,13 +14,15 @@ library(teal)
 library(teal.devel)
 library(teal.modules.hermes)
 library(hermes)
+library(assertthat)
+library(checkmate)
 ```
 
 ## Survival forest plot module design
 
 We want to design a simple survival forest plot teal module.
 
-## Example data
+## General module workflow
 
 ```{r}
 # Example ADSL data converted into a CDISCDataset object.
@@ -35,35 +37,55 @@ mae <- dataset("MAE", MAE)
 data <- teal_data(mae, adsl, adtte) %>%
   mutate_join_keys("MAE", "MAE", c("STUDYID", "USUBJID"))
 
-# Get raw ADTTE and mutate required variables.
+# Get raw ADTTE.
 adtte_raw <- get_raw_data(adtte)
 
 # Merge ADTTE with counts of specified gene from MAE.
+# Copied helper function (h_km_mae_to_adtte) from Lyndsee's (30_km_mod) feature branch for now for this to work
 adtte_final <- h_km_mae_to_adtte(
-  ex_adtte,
+  adtte_raw,
   MAE,
   gene_var = "GeneID:1820",
   experiment_name = "hd2"
 )
+
+# Create new gene bin variable in the ADTTE.
+geneid <- "GeneID:1820"
+assay_name <- "counts"
+colname <- paste(tern::make_names(geneid), assay_name, sep = "_")
+probs <- 0.5
+
+adtte_final <- adtte_final %>%
+  df_explicit_na() %>%
+  mutate(
+    AVAL = day2month(AVAL),
+    AVALU = "Months",
+    is_event = CNSR == 0,
+    gene_bin = cut_quantile_bins(adtte_final[[colname]], probs = probs, labels = c("Low", "High"))
+  )
 
 # Calculate survival forest results.
 tbl <- extract_survival_subgroups(
   variables = list(
     tte = "AVAL",
     is_event = "is_event",
-    arm = "ARM_BIN",
+    arm = "gene_bin",
     subgroups = c("BEP01FL", "BMRKR2")
   ),
-  label_all = "ITT",
+  label_all = "All Patients",
   data = adtte_final
 )
 
+# Tabulate results.
 result <- basic_table() %>%
   tabulate_survival_subgroups(
     df = tbl,
     vars = c("n_tot_events", "n", "n_events", "median", "hr", "ci"),
-    time_unit = NULL
+    time_unit = adtte_final$AVALU[1]
   )
+
+# Plot result.
+g_forest(result)
 ```
 
 
@@ -71,58 +93,47 @@ result <- basic_table() %>%
 
 
 ```{r}
-is.blank <- function(x) identical(x, "")
-
-library(assertthat)
-draw_surv_forest <- function(adtte_data, object, experiment_name, assay_name, geneid, arm, subgroups) {
+draw_surv_forest <- function(adtte_data, mae, experiment_name, assay_name, geneid, probs, subgroups) {
   assert_that(
-    is(object, "SummarizedExperiment"),
     is.string(experiment_name),
     is.string(assay_name)
-    # is.string(geneid),
-    # is.string(arm)
-    # is.string(subgroups)
+  )
+  
+  adtte <- h_km_mae_to_adtte(
+    adtte_data,
+    mae,
+    gene_var = geneid,
+    experiment_name = experiment_name,
+    assay_name = assay_name
   )
 
-  adtte <- adtte_data %>%
+  colname <- paste(tern::make_names(geneid), assay_name, sep = "_")
+
+  adtte_final <- adtte %>%
     df_explicit_na() %>%
-    filter(
-      PARAMCD == "OS"
-    ) %>%
     mutate(
       AVAL = day2month(AVAL),
       AVALU = "Months",
       is_event = CNSR == 0,
-      ARM_BIN = fct_collapse_only(
-        ARM,
-        CTRL = c("B: Placebo"),
-        TRT = c("A: Drug X", "C: Combination")
-      ),
+      gene_bin = cut_quantile_bins(adtte_final[[colname]], probs = probs, labels = c("Low", "High"))
     )
-
-  new_adtte <- h_km_mae_to_adtte(
-    adtte,
-    MAE,
-    gene_var = geneid,
-    experiment_name = experiment_name
-  )
 
   tbl <- extract_survival_subgroups(
     variables = list(
       tte = "AVAL",
       is_event = "is_event",
-      arm = arm,
+      arm = "gene_bin",
       subgroups = subgroups
     ),
-    label_all = "ITT",
-    data = new_adtte
+    label_all = "All Patients",
+    data = adtte_final
   )
 
   result <- basic_table() %>%
     tabulate_survival_subgroups(
       df = tbl,
       vars = c("n_tot_events", "n", "n_events", "median", "hr", "ci"),
-      time_unit = NULL
+      time_unit = adtte_final$AVALU[1]
     )
 
   g_forest(result)
@@ -132,17 +143,16 @@ draw_surv_forest <- function(adtte_data, object, experiment_name, assay_name, ge
 Test it:
 
 ```{r}
-adtte <- rtables::ex_adtte
+adtte_test <- rtables::ex_adtte
 MAE <- multi_assay_experiment
-object <- MAE[[1]]
 
 draw_surv_forest(
-  adtte,
-  object,
-  experiment_name = "hd1",
+  adtte_test,
+  MAE,
+  experiment_name = "hd2",
   assay_name = "counts",
   geneid = "GeneID:1820",
-  arm = "ARM_BIN",
+  probs = 0.5,
   subgroups = c("BEP01FL", "BMRKR2")
 )
 ```
@@ -162,8 +172,8 @@ ui_surv_forest <- function(id, datasets, dataname) {
       selectInput(ns("experiment_name"), "Select Experiment", experiment_name_choices),
       selectInput(ns("assay_name"), "Select Assay", choices = ""),
       selectizeInput(ns("geneid"), "Gene ID", choices = ""),
-      selectInput(ns("arm"), "Arm", choices = ""),
-      optionalSelectInput(ns("subgroup"), label = "Subgroups", choices = "", selected = "", multiple = TRUE)
+      sliderInput(ns("probs"), label = ("Probability Cutoff"), min = 0.01, max = 0.99, value = 0.5),
+      optionalSelectInput(ns("subgroups"), label = "Subgroups", choices = "", selected = "", multiple = TRUE)
     ),
     output = plotOutput(ns("plot"))
   )
@@ -174,10 +184,11 @@ ui_surv_forest <- function(id, datasets, dataname) {
 
 ```{r}
 srv_surv_forest <- function(input, output, session, datasets, dataname) {
+  
   adsl <- get_raw_data(adsl)
 
   adtte <- get_raw_data(adtte)
-
+  
   # When the filtered data set of the chosen experiment changes, update the
   # experiment data object.
   experiment_data <- reactive({
@@ -188,28 +199,23 @@ srv_surv_forest <- function(input, output, session, datasets, dataname) {
     mae[[input$experiment_name]]
   })
 
-  # When the chosen experiment changes, recompute the assay names.
-  assay_names <- eventReactive(input$experiment_name, ignoreNULL = TRUE, {
+  # When the chosen experiment changes, recompute the available assay.
+  assay_names <- eventReactive(input$experiment_name, ignoreNULL = FALSE, {
     object <- experiment_data()
     SummarizedExperiment::assayNames(object)
   })
 
-  # When the chosen experiment call changes, we recompute gene names.
+  # When the chosen experiment changes, recompute the available genes.
   genes <- eventReactive(input$experiment_name, ignoreNULL = FALSE, {
     object <- experiment_data()
     rownames(object)
   })
-
-  # When the chosen experiment changes, recompute the colData available.
-  arm <- eventReactive(input$experiment_name, {
+  # When the chosen experiment changes, recompute the available colData.
+  subgroups <- eventReactive(input$experiment_name, {
+  # subgroups <- reactive({
     colnames(adtte)
   })
-
-  # When the chosen experiment changes, recompute the colData available.
-  subgroup <- eventReactive(input$experiment_name, {
-    colnames(adtte)
-  })
-
+  
   # When the assay names change, update the choices for assay.
   observeEvent(assay_names(), {
     assay_name_choices <- assay_names()
@@ -221,7 +227,7 @@ srv_surv_forest <- function(input, output, session, datasets, dataname) {
       selected = assay_name_choices[1]
     )
   })
-
+  
   # When the genes are recomputed, update the choice for genes in the UI.
   observeEvent(genes(), {
     gene_choices <- genes()
@@ -235,45 +241,36 @@ srv_surv_forest <- function(input, output, session, datasets, dataname) {
     )
   })
 
-  observeEvent(arm(), {
-    arm_choices <- arm()
-
-    updateSelectInput(
-      session,
-      "arm",
-      choices = arm_choices,
-      selected = "ARM_BIN"
-    )
-  })
-
-  observeEvent(subgroup(), {
-    subgroup_choices <- subgroup()
+  observeEvent(subgroups(), {
+    subgroup_choices <- subgroups()
 
     updateOptionalSelectInput(
       session,
-      "subgroup",
+      "subgroups",
       choices = subgroup_choices,
-      selected = "BEP01FL"
+      selected = subgroup_choices[1]
     )
   })
-
+  
   output$plot <- renderPlot({
     object <- experiment_data()
     experiment_name <- input$experiment_name
     assay_name <- input$assay_name
     geneid <- input$geneid
-    arm <- input$arm
-    subgroup <- input$subgroup
-
-    draw_surv_forest(
-      adtte,
-      object,
-      experiment_name = experiment_name,
-      assay_name = assay_name,
-      geneid = geneid,
-      arm = arm,
-      subgroup = subgroup
-    )
+    probs <- input$probs
+    subgroups <- input$subgroups
+    
+    browser()
+    
+    # draw_surv_forest(
+    #   adtte_data = adtte,
+    #   mae = mae,
+    #   experiment_name = experiment_name,
+    #   assay_name = assay_name,
+    #   geneid = geneid,
+    #   probs = probs,
+    #   subgroups = subgroups
+    # )
   })
 }
 ```
