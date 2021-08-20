@@ -1,0 +1,184 @@
+---
+  title: "Combination of factor levels design"
+output: html_document
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(teal)
+library(teal.devel)
+library(teal.modules.hermes)
+library(hermes)
+library(checkmate)
+library(forcats)
+```
+
+## Objectives
+
+- for the differential expression module, but also for stratification variables, we want to offer the user the option to combine factor levels of `colData` variables.
+- general combinations should be possible, e.g. A + B vs. C vs. D + E when original factor levels were just A, B, C, D, E.
+
+## Initial brainstorming
+
+See https://docs.google.com/presentation/d/1aIwXXYPtfErHKXY7mzE-ugKpoocNfWIHUjd7rDMBAtQ 
+
+## Hermes interface
+
+Here we can actually the teal module server function modify the `colData` factor variable such that it contains the requested factor levels, and then use that in the downstream `hermes` functions. 
+
+### Example
+
+First what we will have as starting point:
+
+```{r}
+object <- HermesData(summarized_experiment)
+
+colData(object) <- df_char_to_factor(colData(object))
+
+var_selected <- "RACE"
+colData(object)[[var_selected]]
+levels(colData(object)[[var_selected]])
+
+# this will come out of the user input, see below:
+comb_list <- list(
+  "ASIAN/BLACK OR AFRICAN AMERICAN" = c("ASIAN", "BLACK OR AFRICAN AMERICAN"),
+  "MULTIPLE/UNKNOWN" = c("MULTIPLE", "UNKNOWN"),
+  "WHITE" = "WHITE"
+)
+```
+
+Now we just need one call for the in place modification of the factor variable:
+
+```{r}
+colData(object)[[var_selected]] <- do.call(
+  forcats::fct_collapse,
+  args = c(
+    list(.f = colData(object)[[var_selected]]),
+    comb_list
+  )
+)
+
+# and voila:
+colData(object)[[var_selected]] 
+```
+
+And then we can use that downstream as usual in `hermes` e.g.:
+
+```{r}
+draw_boxplot(
+  object,
+  assay_name = "counts",
+  genes = genes(object)[2], 
+  facet_var = var_selected
+)
+```
+
+
+## Teal module prototype
+
+### shinyRadioMatrix
+
+Toy example:
+
+```{r}
+library(shiny)
+library(shinyRadioMatrix)
+
+## Only run examples in interactive R sessions
+if (interactive()) {
+
+  data(exTaxonList)
+  data(exPftList)
+
+  ui <- fluidPage(
+        
+    radioMatrixInput(inputId = "rmi01", rowIDs = head(exTaxonList$Var), 
+                     rowLLabels = head(
+                     as.matrix(subset(exTaxonList, select = "VarName"))
+                     ), 
+                     choices = exPftList$ID, 
+                     selected = head(exTaxonList$DefPFT)), 
+    verbatimTextOutput('debug01')
+  )
+    
+  server <- function(input, output, session) { 
+    output$debug01 <- renderPrint({
+      rmi01 <- input$rmi01
+      teal.devel::as.global(rmi01)
+    })
+  }
+    
+  shinyApp(ui, server)
+    
+}
+```
+
+So here we see that the value is a list assigning each row to a column:
+
+```{r}
+list(
+  `1` = "bec|ctc", 
+  `32` = "ts|bs|aa", 
+  `95` = "bs|aa", 
+  `119` = "ec",
+  `137` = "bec", 
+  `148` = "ctc1"
+)
+```
+
+### Wrangling of assignment list into combination list
+
+```{r}
+# this will come out of the radioMatrixInput, see above:
+assign_list <- list(
+  "ASIAN" = "1",
+  "BLACK OR AFRICAN AMERICAN" = "1",
+  "MULTIPLE" = "2",
+  "UNKNOWN" = "2",
+  "WHITE" = "4"
+)
+
+# now we want this in the following format:
+objective_list <- list(
+  "ASIAN/BLACK OR AFRICAN AMERICAN" = c("ASIAN", "BLACK OR AFRICAN AMERICAN"),
+  "MULTIPLE/UNKNOWN" = c("MULTIPLE", "UNKNOWN"),
+  "WHITE" = "WHITE"
+)
+
+# let's write a helper function for that:
+h_assign_to_group_list <- function(x) {
+  assert_list(
+    x,
+    types = "character",
+    any.missing = FALSE,
+    names = "unique",
+    unique = FALSE
+  )
+  x_vec <- unlist(x)
+  x_split <- split(names(x_vec), x_vec)
+  new_levels <- sapply(x_split, paste, collapse = "/")
+  setNames(x_split, new_levels)
+}
+
+result_list <- h_assign_to_group_list(assign_list)
+assert_true(identical(result_list, objective_list))
+```
+
+### 
+
+
+## For production
+
+### Length of factor level strings
+
+We need to think about length of resulting level strings. If we combine many levels things can easily get too long.
+- We can consider `shorten_list()` from signature design just with " / " as separator.
+- We can think about hermes functions wrapping e.g. facet labels - but then this only works for facet, not for coloring or x-axis...
+- or we could have generic factor levels (1, 2, 3 etc) and then we need to have footnotes for the outputs, or just a separate output below the main plot/table that explains the groups?
+
+### Logical variables
+
+Btw: we should also make sure that logical variables are possible to use.
