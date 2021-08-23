@@ -4,7 +4,13 @@
 \alias{h_km_mae_to_adtte}
 \title{Data Preprocessing for KM Module}
 \usage{
-h_km_mae_to_adtte(adtte, mae, gene_var, experiment_name, assay_name = "counts")
+h_km_mae_to_adtte(
+  adtte,
+  mae,
+  gene_var,
+  experiment_name = "hd1",
+  assay_name = "counts"
+)
 }
 \arguments{
 \item{adtte}{(\verb{data frame})\cr an \code{adtte} dataset.}
@@ -18,8 +24,10 @@ h_km_mae_to_adtte(adtte, mae, gene_var, experiment_name, assay_name = "counts")
 \item{assay_name}{(\code{string})\cr the assay to define the groups.}
 }
 \value{
-A data frame containing all columns/rows from \code{adtte} and select columns from
-MAE (assay, Sample IDs) for a given gene(s).
+A data frame containing all columns/rows from \code{adtte} that match
+by \code{USUBJID} with the row names of the MAE and have the gene samples available
+in the given experiment. The attributes \code{sample_id}
+and \code{gene_cols} contain the column names for the sample ID and gene columns.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
@@ -28,6 +36,10 @@ A function to help with merging of MAE to \code{ADTTE} for use with \code{g_km}.
 }
 \note{
 We require that each patient only has one sample.
+
+The final gene column names can start with a different string than
+the original gene IDs, in particular white space, dots and colons are removed,
+see \code{\link[tern:make_names]{tern::make_names()}} for details.
 }
 \examples{
 library(dplyr)
