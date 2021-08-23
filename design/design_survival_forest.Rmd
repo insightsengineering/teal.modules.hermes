@@ -189,8 +189,7 @@ ui_surv_forest <- function(id, datasets, dataname) {
 
 ```{r}
 srv_surv_forest <- function(input, output, session, datasets, dataname) {
-  adtte <- datasets$get_data("ADTTE", filtered = TRUE)
-
+  
   # When the filtered data set of the chosen experiment changes, update the
   # experiment data object.
   experiment_data <- reactive({
@@ -256,6 +255,8 @@ srv_surv_forest <- function(input, output, session, datasets, dataname) {
   })
 
   adtte_counts <- reactive({
+    mae <- datasets$get_data(dataname, filtered = TRUE)
+    adtte <- datasets$get_data("ADTTE", filtered = TRUE)
     geneid <- input$geneid
     experiment_name <- input$experiment_name
     assay_name <- input$assay_name
@@ -271,7 +272,6 @@ srv_surv_forest <- function(input, output, session, datasets, dataname) {
     )
   })
 
-  browser()
   adtte_final <- reactive({
     adtte_counts <- adtte_counts()
     probs <- input$probs
@@ -314,7 +314,7 @@ srv_surv_forest <- function(input, output, session, datasets, dataname) {
       tern::tabulate_survival_subgroups(
         df = tbl,
         vars = c("n_tot_events", "n", "n_events", "median", "hr", "ci"),
-        time_unit = adtte_final$AVALU[1]
+        time_unit = adtte_final()$AVALU[1]
       )
   })
 
