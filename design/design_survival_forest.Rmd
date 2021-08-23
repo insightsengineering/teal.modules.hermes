@@ -60,8 +60,8 @@ adtte_final <- adtte_final %>%
     AVALU = "Months",
     is_event = CNSR == 0,
     gene_bin = tern::cut_quantile_bins(
-      adtte_final[[colname]], 
-      probs = probs, 
+      adtte_final[[colname]],
+      probs = probs,
       labels = c("Low", "High")
     )
   )
@@ -100,7 +100,7 @@ draw_surv_forest <- function(adtte_data, mae, experiment_name, assay_name, genei
     is.string(experiment_name),
     is.string(assay_name)
   )
-  
+
   adtte <- h_km_mae_to_adtte(
     adtte_data,
     mae,
@@ -117,8 +117,8 @@ draw_surv_forest <- function(adtte_data, mae, experiment_name, assay_name, genei
       AVALU = "Months",
       is_event = CNSR == 0,
       gene_bin = cut_quantile_bins(
-        adtte[[colname]], 
-        probs = probs, 
+        adtte[[colname]],
+        probs = probs,
         labels = c("Low", "High")
       )
     )
@@ -189,7 +189,8 @@ ui_surv_forest <- function(id, datasets, dataname) {
 
 ```{r}
 srv_surv_forest <- function(input, output, session, datasets, dataname) {
-  
+  adtte <- datasets$get_data("ADTTE", filtered = TRUE)
+
   # When the filtered data set of the chosen experiment changes, update the
   # experiment data object.
   experiment_data <- reactive({
@@ -211,13 +212,13 @@ srv_surv_forest <- function(input, output, session, datasets, dataname) {
     object <- experiment_data()
     rownames(object)
   })
-  
+
   # When the chosen experiment changes, recompute the available colData.
   subgroups <- eventReactive(input$experiment_name, {
     adtte <- datasets$get_data("ADTTE", filtered = TRUE)
     colnames(adtte)
   })
-  
+
   # When the assay names change, update the choices for assay.
   observeEvent(assay_names(), {
     assay_name_choices <- assay_names()
@@ -229,7 +230,7 @@ srv_surv_forest <- function(input, output, session, datasets, dataname) {
       selected = assay_name_choices[1]
     )
   })
-  
+
   # When the genes are recomputed, update the choice for genes in the UI.
   observeEvent(genes(), {
     gene_choices <- genes()
@@ -253,30 +254,73 @@ srv_surv_forest <- function(input, output, session, datasets, dataname) {
       selected = subgroup_choices[1]
     )
   })
-  
-  output$plot <- renderPlot({
-    mae <- datasets$get_data(dataname, filtered = TRUE)
-    adtte <- datasets$get_data("ADTTE", filtered = TRUE)
-    
+
+  adtte_counts <- reactive({
+    geneid <- input$geneid
     experiment_name <- input$experiment_name
     assay_name <- input$assay_name
-    geneid <- input$geneid
-    probs <- input$probs
-    subgroups <- input$subgroups
-    
-    req(geneid, assay_name, experiment_name, subgroups)
-    #browser()
-    
-    
-    draw_surv_forest(
-      adtte_data = adtte,
-      mae = mae,
+
+    req(geneid, experiment_name, assay_name)
+
+    h_km_mae_to_adtte(
+      adtte,
+      mae,
+      gene_var = geneid,
       experiment_name = experiment_name,
-      assay_name = assay_name,
-      geneid = geneid,
-      probs = probs,
-      subgroups = subgroups
+      assay_name = assay_name
     )
+  })
+
+  browser()
+  adtte_final <- reactive({
+    adtte_counts <- adtte_counts()
+    probs <- input$probs
+    colname <- attr(adtte_counts, "gene_cols")
+
+    adtte_counts %>%
+      df_explicit_na() %>%
+      mutate(
+        AVAL = day2month(AVAL),
+        AVALU = "Months",
+        is_event = CNSR == 0,
+        gene_bin = tern::cut_quantile_bins(
+          adtte_counts[[colname]],
+          probs = probs,
+          labels = c("Low", "High")
+        )
+      )
+  })
+
+  tbl <- reactive({
+    adtte_final <- adtte_final()
+    subgroups <- input$subgroups
+
+    tern::extract_survival_subgroups(
+      variables = list(
+        tte = "AVAL",
+        is_event = "is_event",
+        arm = "gene_bin",
+        subgroups = subgroups
+      ),
+      label_all = "All Patients",
+      data = adtte_final
+    )
+  })
+
+  result <- reactive({
+    tbl <- tbl()
+
+    rtables::basic_table() %>%
+      tern::tabulate_survival_subgroups(
+        df = tbl,
+        vars = c("n_tot_events", "n", "n_events", "median", "hr", "ci"),
+        time_unit = adtte_final$AVALU[1]
+      )
+  })
+
+  output$plot <- renderPlot({
+    result <- result()
+    tern::g_forest(result)
   })
 }
 ```
