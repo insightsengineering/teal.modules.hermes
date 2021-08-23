@@ -80,8 +80,6 @@ h_km_mae_to_adtte <- function(adtte,
 
   adtte_patients <- unique(adtte$USUBJID)
   se_patients <- merge_se_data$USUBJID
-
-  #browser()
   assert_true(all(se_patients %in% adtte_patients))
 
   merged_adtte <- merge(adtte, merge_se_data, by = "USUBJID")
