@@ -308,7 +308,7 @@ geneSpecServer <- function(id,
       removed <- setdiff(parsed_genes, new_selected)
       updateOptionalSelectInput(
         session,
-        inputId = id,
+        inputId = "genes",
         choices = genes,
         selected = new_selected
       )
@@ -336,7 +336,7 @@ geneSpecServer <- function(id,
         removed <- setdiff(old_selected, new_selected)
         updateOptionalSelectInput(
           session,
-          inputId = id,
+          inputId = "genes",
           choices = genes,
           selected = new_selected
         )
