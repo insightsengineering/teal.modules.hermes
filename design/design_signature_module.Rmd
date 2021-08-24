@@ -74,46 +74,56 @@ GeneSpec <- R6::R6Class(
     initialize = function(genes,
                           summary_fun = NULL,
                           summary_name = deparse(substitute(summary_fun))) {
-      assert_character(genes, min.chars = 1L, min.len = 1L, any.missing = FALSE, unique = TRUE)
+      assert_character(genes, any.missing = FALSE, unique = TRUE, null.ok = TRUE)
       assert_function(summary_fun, null.ok = TRUE)
       assert_string(summary_name, min.chars = 1L)
       
-      private$genes <- genes
-      private$summary_fun <- summary_fun
-      private$summary_name <- summary_name
-      private$vector_valued <- identical(length(genes), 1L) || is.function(summary_fun)
+      self$genes <- genes
+      self$summary_fun <- summary_fun
+      self$summary_name <- summary_name
     },
     get_genes = function() {
-      private$genes
+      self$genes
     },
     returns_vector = function() {
-      private$vector_valued
+      identical(length(self$genes), 1L) || is.function(self$summary_fun)
     },
     get_label = function() {
-      assert_true(private$vector_valued) # only makes sense if vector valued
-      if (length(private$genes) > 1) {
-        paste0(private$summary_name, parenthesize(shorten_list(private$genes)))
+      assert_true(self$returns_vector()) # only makes sense if vector valued
+      if (length(self$genes) > 1) {
+        paste0(self$summary_name, parenthesize(shorten_list(self$genes)))
       } else {
-        private$genes  
+        self$genes  
       }
     },
     extract = function(assay) {
-      assert_names(rownames(assay), must.include = private$genes)    
-      assay_cols <- assay[private$genes, , drop = TRUE]
-      if (length(private$genes) > 1 && is.function(private$summary_fun)) {
-        summary_res <- private$summary_fun(assay_cols)
+      assert_names(rownames(assay), must.include = self$genes)    
+      assay_cols <- assay[self$genes, , drop = TRUE]
+      if (length(self$genes) > 1 && is.function(self$summary_fun)) {
+        summary_res <- self$summary_fun(assay_cols)
         assert_numeric(summary_res, len = ncol(assay_cols))
         summary_res
       } else {
         assay_cols
       }
-    }
-  ),
-  private = list(
+    },
+    validate = function(all_genes) {
+      validate(need(!is.null(self$genes), "please select at least one gene"))
+      genes_not_included <- setdiff(self$genes, all_genes)
+      n_not_incl <- length(genes_not_included)
+      validate(need(
+        identical(n_not_incl, 0L),
+        paste(
+          n_not_incl, 
+          ifelse(n_not_incl > 1, "genes", "gene"),
+          parenthesize(shorten_list(genes_not_included)), 
+          "not included, please unlock or change filters"
+        )
+      ))
+    },
     genes = NULL,
     summary_fun = NULL,
-    summary_name = NULL,
-    vector_valued = NULL
+    summary_name = NULL
   )
 )
 ```
@@ -194,6 +204,7 @@ In this case we just do input, no output, so we can name the module UI function 
 
 ```{r}
 geneSpecInput <- function(id,
+                          axis,
                           summary_funs) {
   ns <- NS(id)
   tagList(
@@ -203,7 +214,7 @@ geneSpecInput <- function(id,
         class = "col-sm-8",
         tags$label(
           class = "control-label",
-          "Select gene(s) of interest"
+          paste("Select", axis, "gene(s)")
         )
       ),
       div(
@@ -272,18 +283,129 @@ assert_reactive <- function(x) {
 }
 ```
 
-
 Here we take the `summary_funs` too as we need to look up the function in it.
-
-
 
 ```{r}
 geneSpecServer <- function(id, 
-                           summary_funs) {
+                           summary_funs,
+                           genes) {
   assert_static(summary_funs)
   assert_list(summary_funs)
+  assert_reactive(genes)
+
   moduleServer(id, function(input, output, session) {
+    # `reactiveValues` object for storing current gene text input.
+    parsed_genes <- reactiveVal(NULL, label = "Parsed genes")
     
+    # 3) the parsed genes are entered via text
+    observeEvent(parsed_genes(), ignoreNULL = TRUE, {
+      # Resolve reactives.
+      genes <- genes()
+      parsed_genes <- parsed_genes()
+      
+      # Only select the subset of parsed genes included in choices.
+      new_selected <- intersect(parsed_genes, genes)
+      removed <- setdiff(parsed_genes, new_selected)
+      updateOptionalSelectInput(
+        session,
+        inputId = id,
+        choices = genes,
+        selected = new_selected
+      )
+      n_removed <- length(removed)
+      if (n_removed > 0) {
+        showNotification(paste(
+          "Removed", n_removed,
+          ifelse(n_removed > 1, "genes", "gene"),
+          parenthesize(shorten_list(removed))
+        ))
+      }
+    })
+    
+    # When 
+    # 1) the genes are recomputed,
+    # 2) the lock is switched off,
+    # then update the choices and selections for genes in the UI.
+    observeEvent(list(genes(), input$lock), {
+      genes <- genes()
+      lock <- input$lock
+      old_selected <- input$genes
+      
+      if (!lock) {
+        new_selected <- intersect(old_selected, genes)
+        removed <- setdiff(old_selected, new_selected)
+        updateOptionalSelectInput(
+          session,
+          inputId = id,
+          choices = genes,
+          selected = new_selected
+        )
+        n_removed <- length(removed)
+        if (n_removed > 0) {
+          showNotification(paste(
+            "Removed", n_removed, 
+            ifelse(n_removed > 1, "genes", "gene"), 
+            parenthesize(shorten_list(removed))
+          ))
+        }
+      }
+    })
+    
+    # Return the UI for a modal dialog with gene text input.
+    dataModal <- function(example_list) {
+      modalDialog(
+        textInput(
+          session$ns("gene_text"), 
+          "Enter list of genes",
+          placeholder = example_list
+        ),
+        span(
+          "Please enter a comma-separated list of gene IDs.",
+          "(Note that genes not included in current choices will be removed)"
+        ),
+        footer = tagList(
+          modalButton("Cancel"),
+          actionButton(session$ns("ok"), "OK")
+        )
+      )
+    }
+    
+    # Show modal when button is clicked.
+    observeEvent(input$open_text_input, {
+      gene_choices <- genes()
+      example_list <- shorten_list(gene_choices)
+      showModal(dataModal(example_list))
+    })
+    
+    # When OK button is pressed, attempt to parse the genes from the text.
+    # Remove the modal and display notification message.
+    observeEvent(input$ok, {
+      gene_text <- input$gene_text
+      
+      if (!nzchar(gene_text)) {
+        showNotification(
+          "Please enter at least one full gene ID.", 
+          type = "error"
+        )
+      } else {
+        parse_result <- extract_words(gene_text)
+        showNotification(paste(
+          "Received", length(parse_result), "genes from text input",
+          parenthesize(shorten_list(parse_result))
+        ))
+        parsed_genes(parse_result) 
+        removeModal()
+      }
+    })
+    
+    # return the GeneSpec
+    reactive({
+      GeneSpec$new(
+        input$genes,
+        summary_fun = summary_funs[[input$summary_fun_name]],
+        summary_name = input$summary_fun_name
+      )
+    })
   })
 }
 ```
@@ -354,61 +476,8 @@ ui_g_signature <- function(id,
     encoding = div(
       selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
       selectInput(ns("assay_name"), "Select assay", choices = ""),
-
-      div(
-        class = "row",
-        div(
-          class = "col-sm-8",
-          tags$label(class = "control-label",
-                     "Select gene(s) of interest")
-        ),
-        
-        div(
-          class = "col-sm-4",
-          actionButton(
-            ns("open_text_input"),
-            span(icon("font fa-border")),
-            title = "Enter list of genes",
-            class = "pull-right list-genes"
-          ),
-          div(
-            class = "pull-right",
-            title = "Lock gene selection",
-            shinyWidgets::prettyToggle(
-              ns("lock"),
-              value = FALSE,
-              label_on = NULL,
-              label_off = NULL,
-              status_on = "default",
-              status_off = "default",
-              outline = FALSE,
-              plain = TRUE,
-              icon_on = icon("lock fa-border"),
-              icon_off = icon("unlock-alt fa-border"),
-              animation = "pulse"
-            )
-          ),
-          include_css_files(pattern = "*")
-        )
-      ), 
-      div(
-        class = "custom-select-input",
-        optionalSelectInput(
-          ns("y_vars"), 
-          label = NULL, 
-          choices = "", 
-          multiple = TRUE
-        )
-      ),
-      conditionalPanel(
-        condition = "input.y_vars.length > 1", # JavaScript expression
-        ns = ns, # namespace in this module
-        selectInput(
-          ns("summary_fun_name"),
-          "Select gene summary",
-          names(summary_funs)
-        )
-      )
+      geneSpecInput(ns("x_spec"), "x", summary_funs),
+      geneSpecInput(ns("y_spec"), "y", summary_funs)
     ),
     output = plotOutput(ns("plot")),
     pre_output = pre_output,
@@ -468,116 +537,15 @@ srv_g_signature <- function(input,
     )
   })
 
-  # `reactiveValues` object for storing current gene text input.
-  parsed_genes <- reactiveVal(NULL, label = "Parsed genes")
-  
-  # 3) the parsed genes are entered via text
-  observeEvent(parsed_genes(), ignoreNULL = TRUE, {
-    # Resolve reactives.
-    genes <- genes()
-    parsed_genes <- parsed_genes()
-
-    # Only select the subset of parsed genes included in choices.
-    new_selected <- intersect(parsed_genes, genes)
-    removed <- setdiff(parsed_genes, new_selected)
-    updateOptionalSelectInput(
-      session,
-      "y_vars",
-      choices = genes,
-      selected = new_selected
-    )
-    n_removed <- length(removed)
-    if (n_removed > 0) {
-      showNotification(paste(
-        "Removed", n_removed,
-        ifelse(n_removed > 1, "genes", "gene"),
-        parenthesize(shorten_list(removed))
-      ))
-    }
-  })
-  
-  # When 
-  # 1) the genes are recomputed,
-  # 2) the lock is switched off,
-  # then update the choices and selections for genes in the UI.
-  observeEvent(list(genes(), input$lock), {
-    genes <- genes()
-    lock <- input$lock
-    old_selected <- input$y_vars
-
-    if (!lock) {
-      new_selected <- intersect(old_selected, genes)
-      removed <- setdiff(old_selected, new_selected)
-      updateOptionalSelectInput(
-        session,
-        "y_vars",
-        choices = genes,
-        selected = new_selected
-      )
-      n_removed <- length(removed)
-      if (n_removed > 0) {
-        showNotification(paste(
-          "Removed", n_removed, 
-          ifelse(n_removed > 1, "genes", "gene"), 
-          parenthesize(shorten_list(removed))
-        ))
-      }
-    }
-  })
-  
-  # Return the UI for a modal dialog with gene text input.
-  dataModal <- function(example_list) {
-    modalDialog(
-      textInput(
-        session$ns("gene_text"), 
-        "Enter list of genes",
-        placeholder = example_list
-      ),
-      span(
-        "Please enter a comma-separated list of gene IDs.",
-        "(Note that genes not included in current choices will be removed)"
-      ),
-      footer = tagList(
-        modalButton("Cancel"),
-        actionButton(session$ns("ok"), "OK")
-      )
-    )
-  }
-  
-  # Show modal when button is clicked.
-  observeEvent(input$open_text_input, {
-    gene_choices <- genes()
-    example_list <- shorten_list(gene_choices)
-    showModal(dataModal(example_list))
-  })
-  
-  # When OK button is pressed, attempt to parse the genes from the text.
-  # Remove the modal and display notification message.
-  observeEvent(input$ok, {
-    gene_text <- input$gene_text
-    
-    if (!nzchar(gene_text)) {
-      showNotification(
-        "Please enter at least one full gene ID.", 
-        type = "error"
-      )
-    } else {
-      parse_result <- extract_words(gene_text)
-      showNotification(paste(
-        "Received", length(parse_result), "genes from text input",
-        parenthesize(shorten_list(parse_result))
-      ))
-      parsed_genes(parse_result) 
-      removeModal()
-    }
-  })
+  x_spec <- geneSpecServer("x_spec", summary_funs, genes)
+  y_spec <- geneSpecServer("y_spec", summary_funs, genes)
 
   output$plot <- renderPlot({
     # Resolve all reactivity.
     experiment_data <- experiment_data()
-    y_vars <- input$y_vars
     assay_name <- input$assay_name
-    summary_fun_name <- input$summary_fun_name
+    x_spec <- x_spec()
+    y_spec <- y_spec()
     
     # Require which states need to be truthy.
     req(
@@ -593,27 +561,17 @@ srv_g_signature <- function(input,
       hermes::is_hermes_data(experiment_data), 
       "please use HermesData() on input experiments"
     ))
-    validate(need(!is.null(y_vars), "please select at least one gene"))
-    y_vars_not_included <- setdiff(y_vars, rownames(experiment_data))
-    n_not_incl <- length(y_vars_not_included)
-    validate(need(
-      identical(n_not_incl, 0L),
-      paste(
-        n_not_incl, 
-        ifelse(n_not_incl > 1, "genes", "gene"),
-        parenthesize(shorten_list(y_vars_not_included)), 
-        "not included, please unlock or change filters"
-      )
-    ))
-
+    # Need to think about whether an object method is the best here or a separate
+    # validation function that takes spec and genes.
+    x_spec$validate(rownames(experiment_data))
+    y_spec$validate(rownames(experiment_data))
+    
     # Output.
-    draw_signature(
+    draw_scatterplot2(
       object = experiment_data,
       assay_name = assay_name,
-      x_var = "COUNTRY",
-      y_vars = y_vars,
-      summary_fun = summary_funs[[summary_fun_name]],
-      fun_name = summary_fun_name
+      x_spec = x_spec,
+      y_spec = y_spec
     )
   })
 }
@@ -629,12 +587,10 @@ sample_tm_g_signature <- function() {
   app <- init(
     data = data,
     modules = root_modules(
-      static = {
-        tm_g_signature(
-          label = "signature",
-          mae_name = "MAE"
-        )
-      }
+      tm_g_signature(
+        label = "signature",
+        mae_name = "MAE"
+      )
     )
   )
   shinyApp(app$ui, app$server)
@@ -680,6 +636,8 @@ calc_PC1 <- function(x) {
 }
 ```
 
+### Additional features
 
-
-
+- make searchable for the symbol
+- symbol first, then gene ID
+- order alphabetically by symbol
