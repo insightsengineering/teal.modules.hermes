@@ -11,6 +11,6 @@ new_adtte2 <- h_km_mae_to_adtte(adtte, mae, gene_var = gene_var2, experiment_nam
 ANL <- new_adtte
 names(ANL)
 arm_var <- attr(ANL, "gene_cols")
-mycode <- template_g_km(arm_var = arm_var)
+mycode <- template_g_km_mae(arm_var = arm_var)
 mycode
 mapply(eval, mycode)

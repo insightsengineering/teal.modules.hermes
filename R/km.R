@@ -108,29 +108,29 @@ h_km_mae_to_adtte <- function(adtte,
 #'
 #' @importFrom grid grid.newpage grid.layout viewport pushViewport
 template_g_km_mae <- function(dataname = "ANL",
-                          arm_var = "GENE",
-                          quantiles = c(0.33, 0.66),
-                          ref_arm = NULL,
-                          comp_arm = NULL,
-                          compare_arm = FALSE,
-                          combine_comp_arms = FALSE,
-                          aval_var = "AVAL",
-                          cnsr_var = "CNSR",
-                          xticks = NULL,
-                          strata_var = NULL,
-                          time_points = NULL,
-                          facet_var = "SEX",
-                          font_size = 8,
-                          conf_level = 0.95,
-                          ties = "efron",
-                          xlab = "Survival time",
-                          time_unit_var = "AVALU",
-                          yval = "Survival",
-                          pval_method = "log-rank",
-                          annot_surv_med = TRUE,
-                          annot_coxph = TRUE,
-                          ci_ribbon = FALSE,
-                          title = "KM Plot") {
+                              arm_var = "GENE",
+                              quantiles = c(0.33, 0.66),
+                              ref_arm = NULL,
+                              comp_arm = NULL,
+                              compare_arm = FALSE,
+                              combine_comp_arms = FALSE,
+                              aval_var = "AVAL",
+                              cnsr_var = "CNSR",
+                              xticks = NULL,
+                              strata_var = NULL,
+                              time_points = NULL,
+                              facet_var = "SEX",
+                              font_size = 8,
+                              conf_level = 0.95,
+                              ties = "efron",
+                              xlab = "Survival time",
+                              time_unit_var = "AVALU",
+                              yval = "Survival",
+                              pval_method = "log-rank",
+                              annot_surv_med = TRUE,
+                              annot_coxph = TRUE,
+                              ci_ribbon = FALSE,
+                              title = "KM Plot") {
   assertthat::assert_that(
     assertthat::is.string(dataname),
     assertthat::is.string(arm_var),
@@ -891,8 +891,7 @@ srv_g_km_mae <- function(input,
     #          and save everything after. if they match, use that col name.
     # Ideas 2: convert x_var to the same format as the col, using assay_var. assign that to
     #          arm_var.
-    gene_names <- tern::make_names(gene_var)
-    arm_name <- paste(gene_names, assay_name, sep = "_")
+    arm_name <- attr(adtte_data, "gene_cols")
     adtte_data[, arm_name] <- adtte_data[, arm_name] %>% as.numeric
 
     binned_adtte <- adtte_data %>%
