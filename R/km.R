@@ -80,10 +80,8 @@ h_km_mae_to_adtte <- function(adtte,
 
   adtte_patients <- unique(adtte$USUBJID)
   se_patients <- merge_se_data$USUBJID
-<<<<<<< HEAD
 
-=======
->>>>>>> 0b20d1e1667d525981bd7795bd4e323d7e255cd5
+
   assert_true(all(se_patients %in% adtte_patients))
 
   merged_adtte <- merge(adtte, merge_se_data, by = "USUBJID")
@@ -579,12 +577,12 @@ ui_g_km_mae <- function(id,
   teal.devel::standard_layout(
     output = teal.devel::white_small_well(
       verbatimTextOutput(outputId = ns("text")),
-      teal.devel::table_with_settings_ui(
-        id = ns("mytable")
-      )
-      # teal.devel::plot_with_settings_ui(
-      #   id = ns("myplot")
+      # teal.devel::table_with_settings_ui(
+      #   id = ns("mytable")
       # )
+      teal.devel::plot_with_settings_ui(
+        id = ns("myplot")
+      )
     ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
@@ -871,22 +869,19 @@ srv_g_km_mae <- function(input,
   # Render plot PCA output.
   test <- reactive({
     # Resolve all reactivity.
-    # adtte_data <- adtte_data()
-    # experiment_data <- experiment_data()
-    # experiment_name <- input$experiment_name
-    # assay_name <- input$assay_name
-    # gene_var <- input$x_var
+    experiment_name <- input$experiment_name
+    assay_name <- input$assay_name
+    gene_var <- input$x_var
     adtte_data <- adtte_data()
 
-    l <- basic_table() %>%
-      split_cols_by("ARM") %>%
-      analyze(c("SEX", "AGE"))
+    # l <- basic_table() %>%
+    #   split_cols_by("ARM") %>%
+    #   analyze(c("SEX", "AGE"))
+    #
+    # tbl <- build_table(l, adtte_data)
+    #
+    # tbl
 
-    tbl <- build_table(l, adtte_data)
-
-    tbl
-
-    # arm_var <-
     #
     # We need the gene counts column name (the selected gene_var/x_var) to add to the 'arm'
     # variable in the list.
@@ -896,12 +891,12 @@ srv_g_km_mae <- function(input,
     #          and save everything after. if they match, use that col name.
     # Ideas 2: convert x_var to the same format as the col, using assay_var. assign that to
     #          arm_var.
-    gene_names <- tern::make_names(x_var)
+    gene_names <- tern::make_names(gene_var)
     arm_name <- paste(gene_names, assay_name, sep = "_")
-    new_adtte[, arm_name] <- new_adtte[, arm_name] %>% as.numeric
+    adtte_data[, arm_name] <- adtte_data[, arm_name] %>% as.numeric
 
-    binned_adtte <- new_adtte %>%
-      mutate(gene_factor = tern::cut_quantile_bins(new_adtte[, arm_name], probs = .3))
+    binned_adtte <- adtte_data %>%
+      mutate(gene_factor = tern::cut_quantile_bins(adtte_data[, arm_name], probs = .3))
 
     variables <- list(tte = "AVAL", is_event = "CNSR", arm = "gene_factor")
     tern::g_km(binned_adtte, variables = variables)
@@ -1046,18 +1041,18 @@ srv_g_km_mae <- function(input,
   #
   #
   # # Insert the plot into a plot with settings module from teal.devel
-  # callModule(
-  #   teal.devel::plot_with_settings_srv,
-  #   id = "myplot",
-  #   plot_r = km_plot,
-  #   height = plot_height,
-  #   width = plot_width
-  # )
   callModule(
-    teal.devel::table_with_settings_srv,
-    id = "mytable",
-    table_r = test
+    teal.devel::plot_with_settings_srv,
+    id = "myplot",
+    plot_r = test,
+    height = plot_height,
+    width = plot_width
   )
+  # callModule(
+  #   teal.devel::table_with_settings_srv,
+  #   id = "mytable",
+  #   table_r = test
+  # )
   #
   # callModule(
   #   teal.devel::get_rcode_srv,
