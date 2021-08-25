@@ -131,6 +131,7 @@ template_g_km_mae <- function(dataname = "ANL",
                               annot_coxph = TRUE,
                               ci_ribbon = FALSE,
                               title = "KM Plot") {
+  browser()
   assertthat::assert_that(
     assertthat::is.string(dataname),
     assertthat::is.string(arm_var),
@@ -463,8 +464,7 @@ template_g_km_mae <- function(dataname = "ANL",
 tm_g_km_mae <- function(label,
                     dataname,
                     mae_name,
-                    parentname = ifelse(is(arm_var, "data_extract_spec"), teal.devel::datanames_input(arm_var), "ADSL"),
-                    arm_var,
+                    parentname = "ADSL",
                     arm_ref_comp = NULL,
                     paramcd,
                     strata_var,
@@ -498,7 +498,6 @@ tm_g_km_mae <- function(label,
   utils.nest::check_slider_input(plot_width)
 
   data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = dataname),
     paramcd = cs_to_des_filter(paramcd, dataname = dataname),
     strata_var = cs_to_des_select(strata_var, dataname = parentname, multiple = TRUE),
     facet_var = cs_to_des_select(facet_var, dataname = parentname, multiple = FALSE),
@@ -545,7 +544,6 @@ tm_g_km_mae <- function(label,
 ui_g_km_mae <- function(id,
                         datasets,
                         mae_name,
-                        arm_var,
                         paramcd,
                         strata_var,
                         facet_var,
@@ -559,7 +557,6 @@ ui_g_km_mae <- function(id,
                         post_output) {
 
   is_single_dataset_value <- teal.devel::is_single_dataset(
-    arm_var,
     paramcd,
     strata_var,
     facet_var,
@@ -587,7 +584,6 @@ ui_g_km_mae <- function(id,
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       teal.devel::datanames_input(list(
-        arm_var,
         experiment_name,
         paramcd,
         strata_var,
@@ -598,14 +594,8 @@ ui_g_km_mae <- function(id,
       selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
       selectInput(ns("assay_name"), "Select assay", choices = ""),
       selectizeInput(ns("x_var"), "Select gene", choices = ""),
-      # teal.devel::data_extract_input(
-      #   id = ns("arm_var"),
-      #   label = "Select Gene Variable",
-      #   data_extract_spec = arm_var,
-      #   is_single_dataset = is_single_dataset_value
-      # ),
-
-      #Will this change based on experiment chosen?
+      # todo: Will this change based on experiment chosen? probably not?
+      # maybe to avoid selecting a PARAMCD where nobody has values
       teal.devel::data_extract_input(
         id = ns("paramcd"),
         label = "Select Endpoint",
@@ -644,7 +634,7 @@ ui_g_km_mae <- function(id,
             selectInput(
               ns("ref_arm"),
               "Reference Group",
-              choices = NULL,
+              choices = c("[0%,33%]", "(33%,66%]", "(66%,100%]"),
               selected = NULL,
               multiple = TRUE
             ),
@@ -652,7 +642,7 @@ ui_g_km_mae <- function(id,
             selectInput(
               ns("comp_arm"),
               "Comparison Group",
-              choices = NULL,
+              choices = c("[0%,33%]", "(33%,66%]", "(66%,100%]"),
               selected = NULL,
               multiple = TRUE
             ),
@@ -773,7 +763,6 @@ srv_g_km_mae <- function(input,
                      mae_name,
                      parentname,
                      paramcd,
-                     arm_var,
                      experiment_name,
                      arm_ref_comp,
                      strata_var,
@@ -866,46 +855,49 @@ srv_g_km_mae <- function(input,
     )
   })
 
-  # Render plot PCA output.
-  test <- reactive({
-    # Resolve all reactivity.
-    experiment_name <- input$experiment_name
-    assay_name <- input$assay_name
-    gene_var <- input$x_var
-    adtte_data <- adtte_data()
+  # todo: remove this later
+  # # Render plot PCA output.
+  # test <- reactive({
+  #   # Resolve all reactivity.
+  #   experiment_name <- input$experiment_name
+  #   assay_name <- input$assay_name
+  #   gene_var <- input$x_var
+  #   adtte_data <- adtte_data()
+  #
+  #   # l <- basic_table() %>%
+  #   #   split_cols_by("ARM") %>%
+  #   #   analyze(c("SEX", "AGE"))
+  #   #
+  #   # tbl <- build_table(l, adtte_data)
+  #   #
+  #   # tbl
+  #
+  #   #
+  #   # We need the gene counts column name (the selected gene_var/x_var) to add to the 'arm'
+  #   # variable in the list.
+  #   # Issue 1. x_var will have ':' while col won't
+  #   # Issue 2. the unique part is after the ':'
+  #   # Ideas 1: split the x_var at ':' and save everything after. split the col name after 'D'
+  #   #          and save everything after. if they match, use that col name.
+  #   # Ideas 2: convert x_var to the same format as the col, using assay_var. assign that to
+  #   #          arm_var.
+  #   arm_name <- attr(adtte_data, "gene_cols")
+  #   adtte_data[, arm_name] <- adtte_data[, arm_name] %>% as.numeric
+  #
+  #   binned_adtte <- adtte_data %>%
+  #     mutate(gene_factor = tern::cut_quantile_bins(adtte_data[, arm_name], probs = .3))
+  #
+  #   variables <- list(tte = "AVAL", is_event = "CNSR", arm = "gene_factor")
+  #   tern::g_km(binned_adtte, variables = variables)
+  # })
 
-    # l <- basic_table() %>%
-    #   split_cols_by("ARM") %>%
-    #   analyze(c("SEX", "AGE"))
-    #
-    # tbl <- build_table(l, adtte_data)
-    #
-    # tbl
-
-    #
-    # We need the gene counts column name (the selected gene_var/x_var) to add to the 'arm'
-    # variable in the list.
-    # Issue 1. x_var will have ':' while col won't
-    # Issue 2. the unique part is after the ':'
-    # Ideas 1: split the x_var at ':' and save everything after. split the col name after 'D'
-    #          and save everything after. if they match, use that col name.
-    # Ideas 2: convert x_var to the same format as the col, using assay_var. assign that to
-    #          arm_var.
-    arm_name <- attr(adtte_data, "gene_cols")
-    adtte_data[, arm_name] <- adtte_data[, arm_name] %>% as.numeric
-
-    binned_adtte <- adtte_data %>%
-      mutate(gene_factor = tern::cut_quantile_bins(adtte_data[, arm_name], probs = .3))
-
-    variables <- list(tte = "AVAL", is_event = "CNSR", arm = "gene_factor")
-    tern::g_km(binned_adtte, variables = variables)
-  })
-
-
+  # todo: replace with something completely different that updates
+  # ref/comp arm choices
   # # Setup arm variable selection, default reference arms and default
   # # comparison arms for encoding panel
   # teal.devel::arm_ref_comp_observer(
-  #   session, input,
+  #   session,
+  #   input,
   #   id_ref = "ref_arm", # from UI
   #   id_comp = "comp_arm", # from UI
   #   id_arm_var = extract_input("arm_var", dataname),
@@ -915,13 +907,13 @@ srv_g_km_mae <- function(input,
   #   module = "tm_t_tte",
   #   on_off = reactive(input$compare_arms)
   # )
-  #
-  # anl_merged <- teal.devel::data_merge_module(
-  #   datasets = datasets,
-  #   data_extract = list(aval_var, cnsr_var, arm_var, paramcd, strata_var, facet_var, time_unit_var),
-  #   input_id = c("aval_var", "cnsr_var", "arm_var", "paramcd", "strata_var", "facet_var", "time_unit_var"),
-  #   merge_function = "dplyr::inner_join"
-  # )
+
+  anl_merged <- teal.devel::data_merge_module(
+    datasets = datasets,
+    data_extract = list(aval_var, cnsr_var, paramcd, strata_var, facet_var, time_unit_var),
+    input_id = c("aval_var", "cnsr_var", "paramcd", "strata_var", "facet_var", "time_unit_var"),
+    merge_function = "dplyr::inner_join"
+  )
   #
   # validate_checks <- reactive({
   #
@@ -981,69 +973,78 @@ srv_g_km_mae <- function(input,
   #   NULL
   # })
   #
-  # call_preparation <- reactive({
-  #   validate_checks()
-  #
-  #   teal.devel::chunks_reset()
-  #   anl_m <- anl_merged()
-  #   teal.devel::chunks_push_data_merge(anl_m)
-  #   teal.devel::chunks_push_new_line()
-  #
-  #   ANL <- teal.devel::chunks_get_var("ANL") # nolint
-  #   teal.devel::validate_has_data(ANL, 2)
-  #
-  #   input_xticks <- gsub(";", ",", trimws(input$xticks)) %>%
-  #     strsplit(",") %>%
-  #     unlist() %>%
-  #     as.numeric()
-  #
-  #   if (length(input_xticks) == 0) {
-  #     input_xticks <- NULL
-  #   }
-  #
-  #   input_paramcd <- as.character(unique(anl_m$data()[[as.vector(anl_m$columns_source$paramcd)]]))
-  #   title <- paste("KM Plot of", input_paramcd)
-  #
-  #   my_calls <- template_g_km_mae(
-  #     dataname = "ANL",
-  #     # arm_var = input$arm_var,
-  #     arm_var = as.vector(anl_m$columns_source$arm_var),
-  #     ref_arm = input$ref_arm,
-  #     comp_arm = input$comp_arm,
-  #     compare_arm = input$compare_arms,
-  #     combine_comp_arms = input$combine_comp_arms,
-  #     aval_var = as.vector(anl_m$columns_source$aval_var),
-  #     cnsr_var = as.vector(anl_m$columns_source$cnsr_var),
-  #     strata_var = as.vector(anl_m$columns_source$strata_var),
-  #     time_points = NULL,
-  #     time_unit_var = as.vector(anl_m$columns_source$time_unit_var),
-  #     facet_var = as.vector(anl_m$columns_source$facet_var),
-  #     annot_surv_med = input$show_km_table,
-  #     annot_coxph = input$compare_arms,
-  #     xticks = input_xticks,
-  #     font_size = input$font_size,
-  #     pval_method = input$pval_method_coxph,
-  #     conf_level = as.numeric(input$conf_level),
-  #     ties = input$ties_coxph,
-  #     xlab = input$xlab,
-  #     yval = ifelse(input$yval == "Survival probability", "Survival", "Failure"),
-  #     ci_ribbon = input$show_ci_ribbon,
-  #     title = title
-  #   )
-  #   mapply(expression = my_calls, teal.devel::chunks_push)
-  # })
-  #
-  # km_plot <- reactive({
-  #   call_preparation()
-  #   teal.devel::chunks_safe_eval()
-  # })
+
+  # call_preparation ----
+  call_preparation <- reactive({
+    # todo: enable again
+    # validate_checks()
+    validate(need(input$x_var, "please select a gene"))
+
+    # todo: we have to do this differently
+    teal.devel::chunks_reset()
+    anl_m <- anl_merged()
+    teal.devel::chunks_push_data_merge(anl_m)
+    teal.devel::chunks_push_new_line()
+
+    # ANL <- teal.devel::chunks_get_var("ANL") # nolint
+
+    ANL <- adtte_data()
+    teal.devel::chunks_push(quote(ANL <- adtte_data()))
+
+    teal.devel::validate_has_data(ANL, 2)
+
+    input_xticks <- gsub(";", ",", trimws(input$xticks)) %>%
+      strsplit(",") %>%
+      unlist() %>%
+      as.numeric()
+
+    if (length(input_xticks) == 0) {
+      input_xticks <- NULL
+    }
+
+    input_paramcd <- as.character(unique(anl_m$data()[[as.vector(anl_m$columns_source$paramcd)]]))
+    title <- paste("KM Plot of", input_paramcd)
+
+    my_calls <- template_g_km_mae(
+      dataname = "ANL",
+      arm_var = attr(ANL, "gene_cols"),
+      # to do: quantiles
+      ref_arm = input$ref_arm,
+      comp_arm = input$comp_arm,
+      compare_arm = input$compare_arms,
+      combine_comp_arms = input$combine_comp_arms,
+      aval_var = as.vector(anl_m$columns_source$aval_var),
+      cnsr_var = as.vector(anl_m$columns_source$cnsr_var),
+      strata_var = as.vector(anl_m$columns_source$strata_var),
+      time_points = NULL,
+      time_unit_var = as.vector(anl_m$columns_source$time_unit_var),
+      facet_var = as.vector(anl_m$columns_source$facet_var),
+      annot_surv_med = input$show_km_table,
+      annot_coxph = input$compare_arms,
+      xticks = input_xticks,
+      font_size = input$font_size,
+      pval_method = input$pval_method_coxph,
+      conf_level = as.numeric(input$conf_level),
+      ties = input$ties_coxph,
+      xlab = input$xlab,
+      yval = ifelse(input$yval == "Survival probability", "Survival", "Failure"),
+      ci_ribbon = input$show_ci_ribbon,
+      title = title
+    )
+    mapply(expression = my_calls, teal.devel::chunks_push)
+  })
+
+  km_plot <- reactive({
+    call_preparation()
+    teal.devel::chunks_safe_eval()
+  })
   #
   #
   # # Insert the plot into a plot with settings module from teal.devel
   callModule(
     teal.devel::plot_with_settings_srv,
     id = "myplot",
-    plot_r = test,
+    plot_r = km_plot,
     height = plot_height,
     width = plot_width
   )
@@ -1075,20 +1076,9 @@ sample_tm_g_km_mae <- function() {
   ADTTE <- radtte(cached = TRUE) %>%
       mutate(CNSR = as.logical(CNSR))
 
-  arm_ref_comp = list(
-    ACTARMCD = list(
-      ref = "ARM B",
-      comp = c("ARM A", "ARM C")
-    ),
-    ARM = list(
-      ref = "B: Placebo",
-      comp = c("A: Drug X", "C: Combination")
-    )
-  )
-
   data <- teal_data(
-      dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
-      dataset("ADTTE", ADTTE, code = 'ADTTE <- radtte(cached = TRUE) %>%
+      cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
+      cdisc_dataset("ADTTE", ADTTE, code = 'ADTTE <- radtte(cached = TRUE) %>%
       mutate(CNSR = as.logical(CNSR))'),
   dataset("mae", mae)
     )
@@ -1098,10 +1088,6 @@ sample_tm_g_km_mae <- function() {
         label = "KM PLOT",
         dataname = "ADTTE",
         mae_name = "mae",
-        arm_var = choices_selected(
-          variable_choices(ADTTE, c("ARM")),
-          "ARM"
-        ),
         paramcd = choices_selected(
           value_choices(ADTTE, c("PARAMCD")),
           "OS"
