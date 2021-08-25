@@ -190,6 +190,13 @@ draw_scatterplot2(
   x_spec = GeneSpec$new(genes(hd)[2]),
   y_spec = GeneSpec$new(genes(hd)[3:10], summary_fun = colMeans)
 )
+
+# draw_scatterplot2(
+#   hd,
+#   assay_name = "counts",
+#   x_spec = gene_spec(genes(hd)[2]),
+#   y_spec = gene_spec(genes(hd)[3:10], summary_fun = colMeans)
+# )
 ```
 
 So this works quite nicely and makes the `hermes` drawing functions light again.
@@ -297,7 +304,7 @@ geneSpecServer <- function(id,
     # `reactiveValues` object for storing current gene text input.
     parsed_genes <- reactiveVal(NULL, label = "Parsed genes")
     
-    # 3) the parsed genes are entered via text
+    # the parsed genes are entered via text
     observeEvent(parsed_genes(), ignoreNULL = TRUE, {
       # Resolve reactives.
       genes <- genes()
@@ -605,6 +612,11 @@ sample_tm_g_signature()
 
 ## For Production
 
+### hermes interface
+
+we can add a constructor function e.g. `gene_spec` or `control_gene_spec` that avoids the
+use of R6 syntax, see above commented code.
+
 ### Additional summary functions
 
 Taken from https://github.roche.com/EDISNHL/dashdis/blob/581cf558b62b3c615a4267e19bf07aea4ccb64fc/R/utils.R#L434 as example here.
@@ -636,8 +648,10 @@ calc_PC1 <- function(x) {
 }
 ```
 
-### Additional features
+### Additional features for module
 
 - make searchable for the symbol
 - symbol first, then gene ID
 - order alphabetically by symbol
+
+
