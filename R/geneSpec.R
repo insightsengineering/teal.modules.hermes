@@ -13,6 +13,7 @@
 #' @param label_lock_button (`string`)\cr label for the lock button.
 #'
 #' @return The UI part.
+#' @seealso [geneSpecServer()] for the module server and a complete example.
 #' @export
 #'
 #' @examples
@@ -118,33 +119,9 @@ h_update_gene_selection <- function(session,
   if (n_removed > 0) {
     showNotification(paste(
       "Removed", n_removed, ifelse(n_removed > 1, "genes", "gene"),
-      hermes::parens(hermes::h_short_list(removed))
+      hermes::h_parens(hermes::h_short_list(removed))
     ))
   }
-}
-
-#' Helper Function to Extract Words
-#'
-#' @description `r lifecycle::badge("experimental")`
-#'
-#' This helper function extracts words from a string. Here words are defined
-#' as containing lower or upper case letters, colons and dots. All other
-#' characters are considered separators.
-#'
-#' @param x (`string`)\cr input.
-#'
-#' @return Character vector with the extracted words.
-#' @export
-#'
-#' @examples
-#' h_extract_words("a, b, , c, 234; 34562 - GeneID:bla")
-#' h_extract_words("GeneID:1820, sdf.393; 32596")
-h_extract_words <- function(x) {
-  assert_string(x, min.chars = 1L)
-  stringr::str_extract_all(
-    x,
-    "[a-zA-Z0-9:\\.]+"
-  )[[1]]
 }
 
 #' Module Server for Gene Signature Specification
@@ -161,32 +138,71 @@ h_extract_words <- function(x) {
 #'
 #' @return Reactive [`hermes::GeneSpec`] which can be used as input for the relevant
 #'   `hermes` functions.
+#' @seealso [geneSpecInput()] for the module UI.
+#'
 #' @export
 #'
 #' @examples
-#' funs <- list(mean = colMeans)
-#' ui <- sidebarLayout(
-#'   sidebarPanel(geneSpecInput(
-#'     "my_genes",
-#'     funs = funs,
-#'     label_funs = "Please select function"
-#'   )),
-#'   mainPanel(textOutput("result"))
-#' )
-#' server <- function(input, output, session) {
-#'   gene_choices <- reactive({letters})
+#' ui <- function(id,
+#'                datasets,
+#'                funs) {
+#'   ns <- NS(id)
+#'   teal.devel::standard_layout(
+#'     encoding = div(
+#'       geneSpecInput(
+#'         ns("my_genes"),
+#'         funs = funs,
+#'         label_funs = "Please select function"
+#'       )
+#'     ),
+#'     output = textOutput(ns("result"))
+#'   )
+#' }
+#' server <- function(input,
+#'                    output,
+#'                    session,
+#'                    datasets,
+#'                    funs) {
+#'   gene_choices <- reactive({
+#'     mae <- datasets$get_data("MAE", filtered = TRUE)
+#'     rownames(mae[[1]])
+#'   })
 #'   gene_spec <- geneSpecServer(
 #'     "my_genes",
 #'     funs = funs,
 #'     gene_choices = gene_choices
 #'   )
 #'   output$result <- renderText({
+#'     validate_gene_spec(
+#'       gene_spec(),
+#'       gene_choices()
+#'     )
 #'     gene_spec <- gene_spec()
 #'     gene_spec$get_label()
 #'   })
 #' }
+#' funs <- list(mean = colMeans)
+#' my_app <- function() {
+#'   mae <- hermes::multi_assay_experiment
+#'   mae_data <- dataset("MAE", mae)
+#'   data <- teal_data(mae_data)
+#'   app <- init(
+#'     data = data,
+#'     modules = root_modules(
+#'       module(
+#'         label = "GeneSpec example",
+#'         server = server,
+#'         server_args = list(funs = funs),
+#'         ui = ui,
+#'         ui_args = list(funs = funs),
+#'         filters = "all"
+#'       )
+#'     )
+#'   )
+#'   shinyApp(app$ui, app$server)
+#' }
 #' if (interactive()) {
-#'   shinyApp(ui, server)
+#'   my_app()
 #' }
 geneSpecServer <- function(inputId,
                            funs,
@@ -228,7 +244,7 @@ geneSpecServer <- function(inputId,
       lock_button <- input$lock_button
       old_selected <- input$genes
 
-      if (!lock_button) {
+      if (isFALSE(lock_button)) {
         h_update_gene_selection(
           session,
           inputId = "genes",
