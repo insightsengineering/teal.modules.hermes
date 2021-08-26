@@ -95,360 +95,37 @@ h_km_mae_to_adtte <- function(adtte,
   )
 }
 
-#' Template: Kaplan-Meier MAE
+#' Teal Module for Biomarker Kaplan-Meier Plot
 #'
-#' @inheritParams template_arguments
-#' @inheritParams tern::g_km
-#' @inheritParams tern::control_coxreg
-#' @param facet_var (`character`)\cr
-#'   object with all available choices and preselected option
-#'   for variable names that can be used for facet plotting.
-#'
-#' @seealso [tm_g_km()]
-#'
-#' @importFrom grid grid.newpage grid.layout viewport pushViewport
-template_g_km_mae <- function(dataname = "ANL",
-                              arm_var = "GENE",
-                              quantiles = c(0.33, 0.66),
-                              ref_arm = NULL,
-                              comp_arm = NULL,
-                              compare_arm = FALSE,
-                              combine_comp_arms = FALSE,
-                              aval_var = "AVAL",
-                              cnsr_var = "CNSR",
-                              xticks = NULL,
-                              strata_var = NULL,
-                              time_points = NULL,
-                              facet_var = "SEX",
-                              font_size = 8,
-                              conf_level = 0.95,
-                              ties = "efron",
-                              xlab = "Survival time",
-                              time_unit_var = "AVALU",
-                              yval = "Survival",
-                              pval_method = "log-rank",
-                              annot_surv_med = TRUE,
-                              annot_coxph = TRUE,
-                              ci_ribbon = FALSE,
-                              title = "KM Plot") {
-  browser()
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(arm_var),
-    tern::is_proportion_vector(quantiles, include_boundaries = TRUE),
-    assertthat::is.string(aval_var),
-    assertthat::is.string(cnsr_var),
-    assertthat::is.string(time_unit_var),
-    assertthat::is.flag(compare_arm),
-    assertthat::is.flag(combine_comp_arms),
-    is.null(xticks) | is.numeric(xticks),
-    assertthat::is.string(title)
-  )
-
-  ref_arm_val <- paste(ref_arm, collapse = "/")
-  y <- list()
-
-  preprocessing_list <- list()
-
-  preprocessing_list <- add_expr(
-    preprocessing_list,
-    substitute(
-      expr = dataname,
-      env = list(dataname = as.name(dataname))
-    )
-  )
-
-  preprocessing_list <- add_expr(
-    preprocessing_list,
-    utils.nest::substitute_names(
-      expr = dplyr::mutate(arm_var = tern::cut_quantile_bins(arm_var, probs = quantiles)),
-      names = list(arm_var = as.name(arm_var)),
-      others = list(quantiles = quantiles)
-    )
-  )
-
-  y$preprocessing <- substitute(
-    expr = {
-      anl <- preprocessing_pipe
-    },
-    env = list(
-      preprocessing_pipe = pipe_expr(preprocessing_list)
-    )
-  )
-
-  data_list <- list()
-
-  data_list <- add_expr(
-    data_list,
-    prepare_arm(
-      dataname = "anl",
-      arm_var = arm_var,
-      ref_arm = ref_arm,
-      comp_arm = comp_arm,
-      compare_arm = compare_arm,
-      ref_arm_val = ref_arm_val
-    )
-  )
-
-  data_list <- add_expr(
-    data_list,
-    substitute(
-      expr = dplyr::mutate(
-        is_event = cnsr_var == 0
-      ),
-      env = list(
-        anl = as.name(dataname),
-        cnsr_var = as.name(cnsr_var)
-      )
-    )
-  )
-
-  if (compare_arm && combine_comp_arms) {
-    comp_arm_val <- paste(comp_arm, collapse = "/")
-    data_list <- add_expr(
-      data_list,
-      utils.nest::substitute_names(
-        expr = dplyr::mutate(arm_var = tern::combine_levels(arm_var, levels = comp_arm, new_level = comp_arm_val)),
-        names = list(arm_var = as.name(arm_var)),
-        others = list(comp_arm = comp_arm, comp_arm_val = comp_arm_val)
-      )
-    )
-  }
-
-  y$data <- substitute(
-    expr = {
-      anl <- data_pipe
-    },
-    env = list(
-      data_pipe = pipe_expr(data_list)
-    )
-  )
-
-  y$variables <- if (!is.null(strata_var) && length(strata_var) != 0) {
-    substitute(
-      expr = variables <- list(tte = tte, is_event = "is_event", arm = arm, strat = strata_var),
-      env = list(tte = aval_var, arm = arm_var, strata_var = strata_var)
-    )
-  } else {
-    substitute(
-      expr = variables <- list(tte = tte, is_event = "is_event", arm = arm),
-      env = list(tte = aval_var, arm = arm_var)
-    )
-  }
-  graph_list <- list()
-
-  if (!is.null(facet_var) && length(facet_var) != 0) {
-    graph_list <- add_expr(
-      graph_list,
-      quote(grid::grid.newpage())
-    )
-    graph_list <- add_expr(
-      graph_list,
-      substitute(
-        expr = lyt <- grid::grid.layout(nrow = nlevels(df$facet_var), ncol = 1) %>%
-          grid::viewport(layout = .) %>%
-          grid::pushViewport(),
-        env = list(
-          df = as.name(dataname),
-          facet_var = as.name(facet_var)
-        )
-      )
-    )
-
-    graph_list <- add_expr(
-      graph_list,
-      substitute(
-        expr = {
-          result <- mapply(
-            df = split(anl, f = anl$facet_var), nrow = seq_along(levels(anl$facet_var)),
-            FUN = function(df_i, nrow_i) {
-              if (nrow(df_i) == 0) {
-                grid::grid.text(
-                  "No data found for a given facet value.",
-                  x = 0.5,
-                  y = 0.5,
-                  vp = grid::viewport(layout.pos.row = nrow_i, layout.pos.col = 1)
-                )
-              } else {
-                tern::g_km(
-                  df = df_i,
-                  variables = variables,
-                  font_size = font_size,
-                  xlab = paste0(
-                    xlab,
-                    " (",
-                    gsub(
-                      "(^|[[:space:]])([[:alpha:]])",
-                      "\\1\\U\\2",
-                      tolower(anl$time_unit_var[1]),
-                      perl = TRUE
-                    ),
-                    ")"
-                  ),
-                  yval = yval,
-                  xticks = xticks,
-                  newpage = FALSE,
-                  title = paste(
-                    title, ",", quote(facet_var),
-                    "=", as.character(unique(df_i$facet_var))
-                  ),
-                  ggtheme = theme_minimal(),
-                  annot_surv_med = annot_surv_med,
-                  annot_coxph = annot_coxph,
-                  control_surv = tern::control_surv_timepoint(conf_level = conf_level),
-                  control_coxph_pw = tern::control_coxph(conf_level = conf_level, pval_method = pval_method, ties = ties),
-                  ci_ribbon = ci_ribbon,
-                  vp = grid::viewport(layout.pos.row = nrow_i, layout.pos.col = 1),
-                  draw = TRUE
-                )
-              }
-            },
-            SIMPLIFY = FALSE
-          )
-          km_grobs <- tern::stack_grobs(grobs = result)
-          km_grobs
-        },
-        env = list(
-          font_size = font_size,
-          facet_var = as.name(facet_var),
-          xticks = xticks,
-          xlab = xlab,
-          time_unit_var = as.name(time_unit_var),
-          yval = yval,
-          conf_level = conf_level,
-          pval_method = pval_method,
-          annot_surv_med = annot_surv_med,
-          annot_coxph = annot_coxph,
-          ties = ties,
-          ci_ribbon = ci_ribbon,
-          title = title
-        )
-      )
-    )
-  } else {
-    graph_list <- add_expr(
-      graph_list,
-      substitute(
-        expr = {
-          result <- tern::g_km(
-            df = anl,
-            variables = variables,
-            font_size = font_size,
-            xlab = paste0(
-              xlab,
-              " (",
-              gsub(
-                "(^|[[:space:]])([[:alpha:]])",
-                "\\1\\U\\2",
-                tolower(anl$time_unit_var[1]),
-                perl = TRUE
-              ),
-              ")"
-            ),
-            yval = yval,
-            xticks = xticks,
-            newpage = TRUE,
-            ggtheme = theme_minimal(),
-            control_surv = tern::control_surv_timepoint(conf_level = conf_level),
-            control_coxph_pw = tern::control_coxph(conf_level = conf_level, pval_method = pval_method, ties = ties),
-            annot_surv_med = annot_surv_med,
-            annot_coxph = annot_coxph,
-            ci_ribbon = ci_ribbon,
-            title = title,
-          )
-          result
-        },
-        env = list(
-          font_size = font_size,
-          xticks = xticks,
-          xlab = xlab,
-          time_unit_var = as.name(time_unit_var),
-          yval = yval,
-          conf_level = conf_level,
-          pval_method = pval_method,
-          annot_surv_med = annot_surv_med,
-          annot_coxph = annot_coxph,
-          ties = ties,
-          ci_ribbon = ci_ribbon,
-          title = title
-        )
-      )
-    )
-  }
-
-  y$graph <- bracket_expr(graph_list)
-
-  y
-}
-
-#' Teal Module: Kaplan-Meier
+#' @description `r lifecycle::badge("experimental")`
 #'
 #' This teal module produces a grid style Kaplan-Meier plot for data with
 #' ADaM structure.
 #'
 #' @inheritParams module_arguments
-#' @param facet_var ([teal::choices_selected()] or [teal::data_extract_spec()])\cr
-#'   object with all available choices and preselected option
-#'   for variable names that can be used for facet plotting.
 #'
 #' @export
 #'
 #' @examples
-#'
-#' library(scda)
 #' library(dplyr)
 #' library(random.cdisc.data)
 #'
-#' ADSL <- synthetic_cdisc_data("latest")$adsl
 #' mae <- hermes::multi_assay_experiment
 #' adtte <- radtte(cached = TRUE) %>%
 #'     mutate(CNSR = as.logical(CNSR))
-#' new_adtte <- h_km_mae_to_adtte(adtte, mae, gene_var = "GeneID:1820", experiment_name = "hd2")
-#'
-#' ADTTE <- new_adtte
-#'
-#' arm_ref_comp = list(
-#'   ACTARMCD = list(
-#'     ref = "ARM B",
-#'     comp = c("ARM A", "ARM C")
-#'   ),
-#'   ARM = list(
-#'     ref = "B: Placebo",
-#'     comp = c("A: Drug X", "C: Combination")
-#'   )
-#' )
 #'
 #'data <- teal_data(
-#'     dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
-#'     dataset("ADTTE", ADTTE, code = 'mae <- hermes::multi_assay_experiment
-#' adtte <- radtte(cached = TRUE) %>%
-#'     mutate(CNSR = as.logical(CNSR))
-#' new_adtte <- h_km_mae_to_adtte(adtte, mae, gene_var = "GeneID:1820", experiment_name = "hd2")
-#'
-#' ADTTE <- new_adtte'),
+#'     cdisc_dataset("ADTTE", ADTTE, code = 'adtte <- radtte(cached = TRUE) %>%
+#'     mutate(CNSR = as.logical(CNSR))'),
 #' dataset("mae", mae)
 #'   )
 #'
 #' modules <- root_modules(
 #'     tm_g_km_mae(
 #'       label = "KM PLOT",
-#'       dataname = "ADTTE",
-#'       arm_var = choices_selected(
-#'         variable_choices(ADTTE, c("GeneID1820_counts")),
-#'         "GeneID1820_counts"
-#'       ),
-#'       paramcd = choices_selected(
-#'         value_choices(ADTTE, c("PARAMCD")),
-#'         "OS"
-#'       ),
-#'       strata_var = choices_selected(
-#'         variable_choices(ADSL, c("SEX", "BMRKR2")),
-#'         "SEX"
-#'       ),
-#'       facet_var = choices_selected(
-#'         variable_choices(ADSL, c("SEX", "BMRKR2")),
-#'         NULL
-#'       )
+#'       adtte_name = "ADTTE",
+#'       mae_name = "mae",
+#'       paramcd = "OS",
 #'     )
 #'   )
 #'
@@ -462,77 +139,41 @@ template_g_km_mae <- function(dataname = "ANL",
 #' }
 #'
 tm_g_km_mae <- function(label,
-                    dataname,
-                    mae_name,
-                    parentname = "ADSL",
-                    arm_ref_comp = NULL,
-                    paramcd,
-                    strata_var,
-                    facet_var,
-                    time_unit_var = choices_selected(variable_choices(dataname, "AVALU"), "AVALU", fixed = TRUE),
-                    aval_var = choices_selected(variable_choices(dataname, "AVAL"), "AVAL", fixed = TRUE),
-                    cnsr_var = choices_selected(variable_choices(dataname, "CNSR"), "CNSR", fixed = TRUE),
-                    conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
-                    plot_height = c(1200L, 400L, 5000L),
-                    plot_width = NULL,
-                    pre_output = NULL,
-                    post_output = NULL) {
+                        adtte_name,
+                        mae_name,
+                        paramcd,
+                        # strata_var,
+                        # time_unit_var = "AVALU",
+                        # aval_var = "AVAL",
+                        # cnsr_var = "CNSR",
+                        # conf_level = 0.95,
+                        pre_output = NULL,
+                        post_output = NULL) {
 
- utils.nest::stop_if_not(
-   utils.nest::is_character_single(label),
-   utils.nest::is_character_single(dataname),
-   utils.nest::is_character_single(mae_name),
-   utils.nest::is_character_single(parentname),
-    is.choices_selected(conf_level),
-    list(
-      is.null(pre_output) || is(pre_output, "shiny.tag"),
-      "pre_output should be either null or shiny.tag type of object"
-    ),
-    list(
-      is.null(post_output) || is(post_output, "shiny.tag"),
-      "post_output should be either null or shiny.tag type of object"
-    )
-  )
-
-  utils.nest::check_slider_input(plot_height, allow_null = FALSE)
-  utils.nest::check_slider_input(plot_width)
-
-  data_extract_list <- list(
-    paramcd = cs_to_des_filter(paramcd, dataname = dataname),
-    strata_var = cs_to_des_select(strata_var, dataname = parentname, multiple = TRUE),
-    facet_var = cs_to_des_select(facet_var, dataname = parentname, multiple = FALSE),
-    aval_var = cs_to_des_select(aval_var, dataname = dataname),
-    cnsr_var = cs_to_des_select(cnsr_var, dataname = dataname),
-    time_unit_var = cs_to_des_select(time_unit_var, dataname = dataname)
-  )
-  args <- list(
-    experiment_name = NULL,
-    mae_name = mae_name,
-    arm_ref_comp = arm_ref_comp,
-    conf_level = conf_level,
-    pre_output = pre_output,
-    post_output = post_output
-  )
+  assert_string(label)
+  assert_string(adtte_name)
+  assert_string(mae_name)
+  assert_string(paramcd)
+  assert_tag(pre_output, null.ok = TRUE)
+  assert_tag(post_output, null.ok = TRUE)
 
   module(
     label = label,
     server = srv_g_km_mae,
+    server_args = list(
+      adtte_name = adtte_name,
+      mae_name = mae_name,
+      paramcd = paramcd
+    ),
     ui = ui_g_km_mae,
-    ui_args = c(data_extract_list, args),
-    server_args = c(
-      data_extract_list,
-      list(
-        dataname = dataname,
-        mae_name = mae_name,
-        label = label,
-        parentname = parentname,
-        arm_ref_comp = arm_ref_comp,
-        plot_height = plot_height,
-        plot_width = plot_width
-      )
+    ui_args = list(
+      adtte_name = adtte_name,
+      mae_name = mae_name,
+      paramcd = paramcd,
+      pre_output = pre_output,
+      post_output = post_output
     ),
     filters = "all"
-    # filters = teal.devel::get_extract_datanames(data_extract_list)
   )
 }
 
