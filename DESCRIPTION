@@ -30,6 +30,7 @@ Imports:
   lifecycle,
   MultiAssayExperiment,
   shinyWidgets,
+  stringr,
   SummarizedExperiment,
   teal.devel,
   tern

@@ -12,6 +12,8 @@
 #'   menu item label of the module in the teal app.
 #' @param id (`string`)\cr
 #'   the ID used to call the teal module's UI function.
+#' @param inputId (`string`)\cr
+#'   the ID used to call the module input.
 #' @param mae_name (`string`)\cr
 #'   name of the MAE data used in the teal module.
 #' @param exclude_assays (`character`)\cr
