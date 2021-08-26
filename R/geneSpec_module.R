@@ -90,11 +90,11 @@ geneSpecInput <- function(inputId,
   )
 }
 
-#' Helper Function to Update Gene Selection
+#' Helper Module to Update Gene Selection
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
-#' This helper function takes the intersection of `selected` and
+#' This helper module takes the intersection of `selected` and
 #' `choices` for genes and updates the `inputId` accordingly. It then
 #' shows a notification if not all `selected` genes were available.
 #'
@@ -102,24 +102,26 @@ geneSpecInput <- function(inputId,
 #' @inheritParams teal::updateOptionalSelectInput
 #'
 #' @export
-h_update_gene_selection <- function(inputId,
-                                    selected,
-                                    choices) {
-  new_selected <- intersect(selected, choices)
-  removed <- setdiff(selected, new_selected)
-  updateOptionalSelectInput(
-    session,
-    inputId = inputId,
-    choices = choices,
-    selected = new_selected
-  )
-  n_removed <- length(removed)
-  if (n_removed > 0) {
-    showNotification(paste(
-      "Removed", n_removed, ifelse(n_removed > 1, "genes", "gene"),
-      hermes::parens(hermes::h_short_list(removed))
-    ))
-  }
+updateGeneSpecServer <- function(inputId,
+                                 selected,
+                                 choices) {
+  moduleServer(inputId, function(input, output, session) {
+    new_selected <- intersect(selected, choices)
+    removed <- setdiff(selected, new_selected)
+    updateOptionalSelectInput(
+      session,
+      inputId = inputId,
+      choices = choices,
+      selected = new_selected
+    )
+    n_removed <- length(removed)
+    if (n_removed > 0) {
+      showNotification(paste(
+        "Removed", n_removed, ifelse(n_removed > 1, "genes", "gene"),
+        hermes::parens(hermes::h_short_list(removed))
+      ))
+    }
+  })
 }
 
 #' Helper Function to Extract Words
@@ -163,7 +165,30 @@ h_extract_words <- function(x) {
 #' @export
 #'
 #' @examples
-#' # todo
+#' funs <- list(mean = colMeans)
+#' ui <- fluidPage(
+#'   geneSpecInput(
+#'     "my_genes",
+#'     funs = funs,
+#'     label_funs = "Please select function"
+#'   ),
+#'   textOutput("result")
+#' )
+#' server <- function(input, output, session) {
+#'   gene_choices <- reactive({letters})
+#'   gene_spec <- geneSpecServer(
+#'     "my_genes",
+#'     funs = funs,
+#'     gene_choices = gene_choices
+#'   )
+#'   output$result <- renderText({
+#'     gene_spec <- gene_spec()
+#'     gene_spec$label()
+#'   })
+#' }
+#' if (interactive()) {
+#'   shinyApp(ui, server)
+#' }
 geneSpecServer <- function(inputId,
                            funs,
                            gene_choices,
@@ -187,7 +212,7 @@ geneSpecServer <- function(inputId,
       gene_choices <- gene_choices()
       parsed_genes <- parsed_genes()
 
-      h_update_gene_selection(
+      updateGeneSpecServer(
         inputId = "genes",
         selected = parsed_genes,
         choices = gene_choices
@@ -204,7 +229,7 @@ geneSpecServer <- function(inputId,
       old_selected <- input$genes
 
       if (!lock_button) {
-        h_update_gene_selection(
+        updateGeneSpecServer(
           inputId = "genes",
           selected = old_selected,
           choices = gene_choices
@@ -266,4 +291,35 @@ geneSpecServer <- function(inputId,
   })
 }
 
-# todo: add validation function
+#' Validation of Gene Specification
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' This validation function checks that a given [`hermes::GeneSpec`] has at least
+#' one gene selected and that all genes are included in possible choices.
+#'
+#' @param gene_spec (`GeneSpec`)\cr gene specification.
+#' @param gene_choices (`character`)\cr all possible gene choices.
+#'
+#' @export
+validate_gene_spec <- function(gene_spec,
+                               gene_choices) {
+  assert_r6(gene_spec, "GeneSpec")
+  assert_character(gene_choices)
+
+  validate(need(
+    !is.null(gene_spec$get_genes()),
+    "please select at least one gene"
+  ))
+  genes_not_included <- setdiff(gene_spec$get_genes(), gene_choices)
+  n_not_incl <- length(genes_not_included)
+  validate(need(
+    identical(n_not_incl, 0L),
+    paste(
+      n_not_incl,
+      ifelse(n_not_incl > 1, "genes", "gene"),
+      hermes::h_parens(hermes::h_short_list(genes_not_included)),
+      "not included, please unlock or change filters"
+    )
+  ))
+}
