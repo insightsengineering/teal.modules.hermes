@@ -15,6 +15,8 @@ test_that("ui_g_scatterplot creates expected HTML", {
 # tm_g_scatterplot ----
 
 test_that("tm_g_scatterplot works as expected in the sample app", {
+  test.nest::skip_if_too_deep(5)
+
   skip_if_covr()
 
   library(shinytest)
