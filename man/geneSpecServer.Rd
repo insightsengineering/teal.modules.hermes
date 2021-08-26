@@ -14,11 +14,18 @@ geneSpecServer(
 )
 }
 \arguments{
+\item{inputId}{(\code{string})\cr
+the ID used to call the module input.}
+
 \item{funs}{(static named \code{list})\cr names of this list will be used for the function
 selection drop down menu.}
 
 \item{gene_choices}{(reactive \code{character})\cr returns the possible gene choices to
 populate in the UI.}
+
+\item{label_modal_title}{(\code{string})\cr title for the dialog that asks for the text input.}
+
+\item{label_modal_footer}{(\code{character})\cr lines of text to use for the footer of the dialog.}
 }
 \value{
 Reactive \code{\link[hermes:GeneSpec]{hermes::GeneSpec}} which can be used as input for the relevant

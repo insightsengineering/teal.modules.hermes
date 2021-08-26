@@ -4,7 +4,7 @@
 #'
 #' This defines the input for the gene signature specification.
 #'
-#' @inheritParams argument_convention
+#' @inheritParams module_arguments
 #' @param funs (named `list`)\cr names of this list will be used for the function
 #'   selection drop down menu.
 #' @param label_genes (`string`)\cr label for the gene selection.
@@ -99,7 +99,7 @@ geneSpecInput <- function(inputId,
 #' `choices` for genes and updates the `inputId` accordingly. It then
 #' shows a notification if not all `selected` genes were available.
 #'
-#' @inheritParams argument_convention
+#' @inheritParams module_arguments
 #' @inheritParams teal::updateOptionalSelectInput
 #'
 #' @export
@@ -130,11 +130,13 @@ h_update_gene_selection <- function(session,
 #'
 #' This defines the server part for the gene signature specification.
 #'
-#' @inheritParams argument_convention
+#' @inheritParams module_arguments
 #' @param funs (static named `list`)\cr names of this list will be used for the function
 #'   selection drop down menu.
 #' @param gene_choices (reactive `character`)\cr returns the possible gene choices to
 #'   populate in the UI.
+#' @param label_modal_title (`string`)\cr title for the dialog that asks for the text input.
+#' @param label_modal_footer (`character`)\cr lines of text to use for the footer of the dialog.
 #'
 #' @return Reactive [`hermes::GeneSpec`] which can be used as input for the relevant
 #'   `hermes` functions.

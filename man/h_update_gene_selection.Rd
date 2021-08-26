@@ -7,9 +7,10 @@
 h_update_gene_selection(session, inputId, selected, choices)
 }
 \arguments{
-\item{session}{The session object passed to function given to shinyServer.}
+\item{session}{(\code{ShinySession})\cr the session object.}
 
-\item{inputId}{The id of the input object.}
+\item{inputId}{(\code{string})\cr
+the ID used to call the module input.}
 
 \item{selected}{The new selected value (or multiple values if \code{multiple = TRUE}).
 To reset selected value, in case of multiple picker, use \code{character(0)}.}

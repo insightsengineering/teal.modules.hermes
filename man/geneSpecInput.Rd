@@ -14,6 +14,9 @@ geneSpecInput(
 )
 }
 \arguments{
+\item{inputId}{(\code{string})\cr
+the ID used to call the module input.}
+
 \item{funs}{(named \code{list})\cr names of this list will be used for the function
 selection drop down menu.}
 
