@@ -90,11 +90,11 @@ geneSpecInput <- function(inputId,
   )
 }
 
-#' Helper Module to Update Gene Selection
+#' Helper Function to Update Gene Selection
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
-#' This helper module takes the intersection of `selected` and
+#' This helper function takes the intersection of `selected` and
 #' `choices` for genes and updates the `inputId` accordingly. It then
 #' shows a notification if not all `selected` genes were available.
 #'
@@ -102,26 +102,25 @@ geneSpecInput <- function(inputId,
 #' @inheritParams teal::updateOptionalSelectInput
 #'
 #' @export
-updateGeneSpecServer <- function(inputId,
-                                 selected,
-                                 choices) {
-  moduleServer(inputId, function(input, output, session) {
-    new_selected <- intersect(selected, choices)
-    removed <- setdiff(selected, new_selected)
-    updateOptionalSelectInput(
-      session,
-      inputId = inputId,
-      choices = choices,
-      selected = new_selected
-    )
-    n_removed <- length(removed)
-    if (n_removed > 0) {
-      showNotification(paste(
-        "Removed", n_removed, ifelse(n_removed > 1, "genes", "gene"),
-        hermes::parens(hermes::h_short_list(removed))
-      ))
-    }
-  })
+h_update_gene_selection <- function(session,
+                                    inputId,
+                                    selected,
+                                    choices) {
+  new_selected <- intersect(selected, choices)
+  removed <- setdiff(selected, new_selected)
+  updateOptionalSelectInput(
+    session,
+    inputId = inputId,
+    selected = new_selected,
+    choices = choices
+  )
+  n_removed <- length(removed)
+  if (n_removed > 0) {
+    showNotification(paste(
+      "Removed", n_removed, ifelse(n_removed > 1, "genes", "gene"),
+      hermes::parens(hermes::h_short_list(removed))
+    ))
+  }
 }
 
 #' Helper Function to Extract Words
@@ -212,7 +211,8 @@ geneSpecServer <- function(inputId,
       gene_choices <- gene_choices()
       parsed_genes <- parsed_genes()
 
-      updateGeneSpecServer(
+      h_update_gene_selection(
+        session,
         inputId = "genes",
         selected = parsed_genes,
         choices = gene_choices
@@ -229,7 +229,8 @@ geneSpecServer <- function(inputId,
       old_selected <- input$genes
 
       if (!lock_button) {
-        updateGeneSpecServer(
+        h_update_gene_selection(
+          session,
           inputId = "genes",
           selected = old_selected,
           choices = gene_choices
