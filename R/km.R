@@ -184,28 +184,16 @@ tm_g_km_mae <- function(label,
 #' @importFrom shinyWidgets switchInput
 ui_g_km_mae <- function(id,
                         datasets,
+                        adtte_name,
                         mae_name,
                         paramcd,
-                        strata_var,
-                        facet_var,
-                        aval_var,
-                        cnsr_var,
-                        time_unit_var,
-                        experiment_name,
-                        arm_ref_comp,
-                        conf_level,
+                        # strata_var,
+                        # aval_var,
+                        # cnsr_var,
+                        # time_unit_var,
+                        # conf_level,
                         pre_output,
                         post_output) {
-
-  is_single_dataset_value <- teal.devel::is_single_dataset(
-    paramcd,
-    strata_var,
-    facet_var,
-    aval_var,
-    cnsr_var,
-    time_unit_var,
-    experiment_name
-  )
 
   ns <- NS(id)
 
@@ -213,181 +201,16 @@ ui_g_km_mae <- function(id,
   experiment_name_choices <- names(mae)
 
   teal.devel::standard_layout(
-    output = teal.devel::white_small_well(
-      verbatimTextOutput(outputId = ns("text")),
-      # teal.devel::table_with_settings_ui(
-      #   id = ns("mytable")
-      # )
-      teal.devel::plot_with_settings_ui(
-        id = ns("myplot")
-      )
-    ),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
-      teal.devel::datanames_input(list(
-        experiment_name,
-        paramcd,
-        strata_var,
-        facet_var,
-        aval_var,
-        cnsr_var
-      )),
       selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
       selectInput(ns("assay_name"), "Select assay", choices = ""),
       selectizeInput(ns("x_var"), "Select gene", choices = ""),
-      # todo: Will this change based on experiment chosen? probably not?
+      # todo: Will this change based on experiment chosen?
       # maybe to avoid selecting a PARAMCD where nobody has values
-      teal.devel::data_extract_input(
-        id = ns("paramcd"),
-        label = "Select Endpoint",
-        data_extract_spec = paramcd,
-        is_single_dataset = is_single_dataset_value
+      selectizeInput(ns("paramcd"), "Select endpoint", choices = ""),
       ),
-      teal.devel::data_extract_input(
-        id = ns("aval_var"),
-        label = "Analysis Variable",
-        data_extract_spec = aval_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      teal.devel::data_extract_input(
-        id = ns("cnsr_var"),
-        label = "Censor Variable",
-        data_extract_spec = cnsr_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      teal.devel::data_extract_input(
-        id = ns("facet_var"),
-        label = "Facet Plots by",
-        data_extract_spec = facet_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      div(
-        class = "arm-comp-box",
-        tags$label("Compare Treatments"),
-        shinyWidgets::switchInput(
-          inputId = ns("compare_arms"),
-          value = !is.null(arm_ref_comp),
-          size = "mini"
-        ),
-        conditionalPanel(
-          condition = paste0("input['", ns("compare_arms"), "']"),
-          div(
-            selectInput(
-              ns("ref_arm"),
-              "Reference Group",
-              choices = c("[0%,33%]", "(33%,66%]", "(66%,100%]"),
-              selected = NULL,
-              multiple = TRUE
-            ),
-            helpText("Multiple reference groups are automatically combined into a single group."),
-            selectInput(
-              ns("comp_arm"),
-              "Comparison Group",
-              choices = c("[0%,33%]", "(33%,66%]", "(66%,100%]"),
-              selected = NULL,
-              multiple = TRUE
-            ),
-            checkboxInput(
-              ns("combine_comp_arms"),
-              "Combine all comparison groups?",
-              value = FALSE
-            ),
-            teal.devel::data_extract_input(
-              id = ns("strata_var"),
-              label = "Stratify by",
-              data_extract_spec = strata_var,
-              is_single_dataset = is_single_dataset_value
-            )
-          )
-        )
-      ),
-      conditionalPanel(
-        condition = paste0("input['", ns("compare_arms"), "']"),
-        teal.devel::panel_group(
-          teal.devel::panel_item(
-            "Comparison settings",
-            radioButtons(
-              ns("pval_method_coxph"),
-              label = HTML(
-                paste(
-                  "p-value method for ",
-                  tags$span(style = "color:darkblue", "Coxph"), # nolint
-                  " (Hazard Ratio)",
-                  sep = ""
-                )
-              ),
-              choices = c("wald", "log-rank", "likelihood"),
-              selected = "log-rank"
-            ),
-            radioButtons(
-              ns("ties_coxph"),
-              label = HTML(
-                paste(
-                  "Ties for ",
-                  tags$span(style = "color:darkblue", "Coxph"), # nolint
-                  " (Hazard Ratio)",
-                  sep = ""
-                )
-              ),
-              choices = c("exact", "breslow", "efron"),
-              selected = "exact"
-            )
-          )
-        )
-      ),
-      teal.devel::panel_group(
-        teal.devel::panel_item(
-          "Additional plot settings",
-          textInput(
-            inputId = ns("xticks"),
-            label = "Specify break intervals for x-axis e.g. 0 ; 500"
-          ),
-          radioButtons(
-            ns("yval"),
-            tags$label("Value on y-axis", class = "text-primary"),
-            choices = c("Survival probability", "Failure probability"),
-            selected = c("Survival probability"),
-          ),
-          numericInput(
-            inputId = ns("font_size"),
-            label = "Plot tables font size",
-            value = 8,
-            min = 5,
-            max = 15,
-            step = 1,
-            width = "100%"
-          ),
-          checkboxInput(
-            inputId = ns("show_ci_ribbon"),
-            label = "Show CI ribbon",
-            value = FALSE,
-            width = "100%"
-          ),
-          checkboxInput(
-            inputId = ns("show_km_table"),
-            label = "Show KM table",
-            value = TRUE,
-            width = "100%"
-          ),
-          optionalSelectInput(
-            ns("conf_level"),
-            "Level of Confidence",
-            conf_level$choices,
-            conf_level$selected,
-            multiple = FALSE,
-            fixed = conf_level$fixed
-          ),
-          textInput(ns("xlab"), "X-axis label", "Time"),
-          teal.devel::data_extract_input(
-            id = ns("time_unit_var"),
-            label = "Time Unit Variable",
-            data_extract_spec = time_unit_var,
-            is_single_dataset = is_single_dataset_value
-          )
-        )
-      )
-    ),
-    forms = teal.devel::get_rcode_ui(ns("rcode")),
+    output = plotOutput(ns("plot")),
     pre_output = pre_output,
     post_output = post_output
   )
@@ -397,26 +220,12 @@ ui_g_km_mae <- function(id,
 #' @noRd
 #'
 srv_g_km_mae <- function(input,
-                     output,
-                     session,
-                     datasets,
-                     dataname,
-                     mae_name,
-                     parentname,
-                     paramcd,
-                     experiment_name,
-                     arm_ref_comp,
-                     strata_var,
-                     facet_var,
-                     aval_var,
-                     cnsr_var,
-                     label,
-                     time_unit_var,
-                     plot_height,
-                     plot_width) {
-  # stopifnot(is_cdisc_data(datasets))
-
-  teal.devel::init_chunks()
+                         output,
+                         session,
+                         datasets,
+                         adtte_name,
+                         mae_name,
+                         paramcd) {
 
   # When the filtered data set of the chosen experiment changes, update the
   # experiment data object.
@@ -497,7 +306,6 @@ srv_g_km_mae <- function(input,
   })
 
   # todo: remove this later
-  # # Render plot PCA output.
   # test <- reactive({
   #   # Resolve all reactivity.
   #   experiment_name <- input$experiment_name
@@ -505,15 +313,6 @@ srv_g_km_mae <- function(input,
   #   gene_var <- input$x_var
   #   adtte_data <- adtte_data()
   #
-  #   # l <- basic_table() %>%
-  #   #   split_cols_by("ARM") %>%
-  #   #   analyze(c("SEX", "AGE"))
-  #   #
-  #   # tbl <- build_table(l, adtte_data)
-  #   #
-  #   # tbl
-  #
-  #   #
   #   # We need the gene counts column name (the selected gene_var/x_var) to add to the 'arm'
   #   # variable in the list.
   #   # Issue 1. x_var will have ':' while col won't
@@ -531,30 +330,6 @@ srv_g_km_mae <- function(input,
   #   variables <- list(tte = "AVAL", is_event = "CNSR", arm = "gene_factor")
   #   tern::g_km(binned_adtte, variables = variables)
   # })
-
-  # todo: replace with something completely different that updates
-  # ref/comp arm choices
-  # # Setup arm variable selection, default reference arms and default
-  # # comparison arms for encoding panel
-  # teal.devel::arm_ref_comp_observer(
-  #   session,
-  #   input,
-  #   id_ref = "ref_arm", # from UI
-  #   id_comp = "comp_arm", # from UI
-  #   id_arm_var = extract_input("arm_var", dataname),
-  #   datasets = datasets,
-  #   dataname = parentname,
-  #   arm_ref_comp = arm_ref_comp,
-  #   module = "tm_t_tte",
-  #   on_off = reactive(input$compare_arms)
-  # )
-
-  anl_merged <- teal.devel::data_merge_module(
-    datasets = datasets,
-    data_extract = list(aval_var, cnsr_var, paramcd, strata_var, facet_var, time_unit_var),
-    input_id = c("aval_var", "cnsr_var", "paramcd", "strata_var", "facet_var", "time_unit_var"),
-    merge_function = "dplyr::inner_join"
-  )
   #
   # validate_checks <- reactive({
   #
@@ -615,139 +390,125 @@ srv_g_km_mae <- function(input,
   # })
   #
 
-  # call_preparation ----
-  call_preparation <- reactive({
-    # todo: enable again
-    # validate_checks()
-    validate(need(input$x_var, "please select a gene"))
-
-    # todo: we have to do this differently
-    teal.devel::chunks_reset()
-    anl_m <- anl_merged()
-    teal.devel::chunks_push_data_merge(anl_m)
-    teal.devel::chunks_push_new_line()
-
-    # ANL <- teal.devel::chunks_get_var("ANL") # nolint
-
-    ANL <- adtte_data()
-    teal.devel::chunks_push(quote(ANL <- adtte_data()))
-
-    teal.devel::validate_has_data(ANL, 2)
-
-    input_xticks <- gsub(";", ",", trimws(input$xticks)) %>%
-      strsplit(",") %>%
-      unlist() %>%
-      as.numeric()
-
-    if (length(input_xticks) == 0) {
-      input_xticks <- NULL
-    }
-
-    input_paramcd <- as.character(unique(anl_m$data()[[as.vector(anl_m$columns_source$paramcd)]]))
-    title <- paste("KM Plot of", input_paramcd)
-
-    my_calls <- template_g_km_mae(
-      dataname = "ANL",
-      arm_var = attr(ANL, "gene_cols"),
-      # to do: quantiles
-      ref_arm = input$ref_arm,
-      comp_arm = input$comp_arm,
-      compare_arm = input$compare_arms,
-      combine_comp_arms = input$combine_comp_arms,
-      aval_var = as.vector(anl_m$columns_source$aval_var),
-      cnsr_var = as.vector(anl_m$columns_source$cnsr_var),
-      strata_var = as.vector(anl_m$columns_source$strata_var),
-      time_points = NULL,
-      time_unit_var = as.vector(anl_m$columns_source$time_unit_var),
-      facet_var = as.vector(anl_m$columns_source$facet_var),
-      annot_surv_med = input$show_km_table,
-      annot_coxph = input$compare_arms,
-      xticks = input_xticks,
-      font_size = input$font_size,
-      pval_method = input$pval_method_coxph,
-      conf_level = as.numeric(input$conf_level),
-      ties = input$ties_coxph,
-      xlab = input$xlab,
-      yval = ifelse(input$yval == "Survival probability", "Survival", "Failure"),
-      ci_ribbon = input$show_ci_ribbon,
-      title = title
-    )
-    mapply(expression = my_calls, teal.devel::chunks_push)
-  })
-
-  km_plot <- reactive({
-    call_preparation()
-    teal.devel::chunks_safe_eval()
-  })
+  # # call_preparation ----
+  # call_preparation <- reactive({
+  #   # todo: enable again
+  #   # validate_checks()
+  #   validate(need(input$x_var, "please select a gene"))
   #
+  #   # todo: we have to do this differently
+  #   teal.devel::chunks_reset()
+  #   anl_m <- anl_merged()
+  #   teal.devel::chunks_push_data_merge(anl_m)
+  #   teal.devel::chunks_push_new_line()
   #
-  # # Insert the plot into a plot with settings module from teal.devel
-  callModule(
-    teal.devel::plot_with_settings_srv,
-    id = "myplot",
-    plot_r = km_plot,
-    height = plot_height,
-    width = plot_width
-  )
+  #   # ANL <- teal.devel::chunks_get_var("ANL") # nolint
+  #
+  #   ANL <- adtte_data()
+  #   teal.devel::chunks_push(quote(ANL <- adtte_data()))
+  #
+  #   teal.devel::validate_has_data(ANL, 2)
+  #
+  #   input_xticks <- gsub(";", ",", trimws(input$xticks)) %>%
+  #     strsplit(",") %>%
+  #     unlist() %>%
+  #     as.numeric()
+  #
+  #   if (length(input_xticks) == 0) {
+  #     input_xticks <- NULL
+  #   }
+  #
+  #   input_paramcd <- as.character(unique(anl_m$data()[[as.vector(anl_m$columns_source$paramcd)]]))
+  #   title <- paste("KM Plot of", input_paramcd)
+  #
+  #   my_calls <- template_g_km_mae(
+  #     dataname = "ANL",
+  #     arm_var = attr(ANL, "gene_cols"),
+  #     # to do: quantiles
+  #     ref_arm = input$ref_arm,
+  #     comp_arm = input$comp_arm,
+  #     compare_arm = input$compare_arms,
+  #     combine_comp_arms = input$combine_comp_arms,
+  #     aval_var = as.vector(anl_m$columns_source$aval_var),
+  #     cnsr_var = as.vector(anl_m$columns_source$cnsr_var),
+  #     strata_var = as.vector(anl_m$columns_source$strata_var),
+  #     time_points = NULL,
+  #     time_unit_var = as.vector(anl_m$columns_source$time_unit_var),
+  #     facet_var = as.vector(anl_m$columns_source$facet_var),
+  #     annot_surv_med = input$show_km_table,
+  #     annot_coxph = input$compare_arms,
+  #     xticks = input_xticks,
+  #     font_size = input$font_size,
+  #     pval_method = input$pval_method_coxph,
+  #     conf_level = as.numeric(input$conf_level),
+  #     ties = input$ties_coxph,
+  #     xlab = input$xlab,
+  #     yval = ifelse(input$yval == "Survival probability", "Survival", "Failure"),
+  #     ci_ribbon = input$show_ci_ribbon,
+  #     title = title
+  #   )
+  #   mapply(expression = my_calls, teal.devel::chunks_push)
+  # })
+  #
+  # km_plot <- reactive({
+  #   call_preparation()
+  #   teal.devel::chunks_safe_eval()
+  # })
+  # #
+  # #
+  # # # Insert the plot into a plot with settings module from teal.devel
   # callModule(
-  #   teal.devel::table_with_settings_srv,
-  #   id = "mytable",
-  #   table_r = test
+  #   teal.devel::plot_with_settings_srv,
+  #   id = "myplot",
+  #   plot_r = km_plot,
+  #   height = plot_height,
+  #   width = plot_width
   # )
-  #
-  # callModule(
-  #   teal.devel::get_rcode_srv,
-  #   id = "rcode",
-  #   datasets = datasets,
-  #   datanames = teal.devel::get_extract_datanames(
-  #     list(arm_var, paramcd, strata_var, facet_var, aval_var, cnsr_var, time_unit_var)
-  #   ),
-  #   modal_title = label
-  # )
+  # # callModule(
+  # #   teal.devel::table_with_settings_srv,
+  # #   id = "mytable",
+  # #   table_r = test
+  # # )
+  # #
+  # # callModule(
+  # #   teal.devel::get_rcode_srv,
+  # #   id = "rcode",
+  # #   datasets = datasets,
+  # #   datanames = teal.devel::get_extract_datanames(
+  # #     list(arm_var, paramcd, strata_var, facet_var, aval_var, cnsr_var, time_unit_var)
+  # #   ),
+  # #   modal_title = label
+  # # )
 }
 
 sample_tm_g_km_mae <- function() {
-  library(scda)
-  library(dplyr)
-  library(random.cdisc.data)
-  library(rtables)
 
-  ADSL <- synthetic_cdisc_data("latest")$adsl
-  mae <- hermes::multi_assay_experiment
-  ADTTE <- radtte(cached = TRUE) %>%
-      mutate(CNSR = as.logical(CNSR))
+   library(dplyr)
+   library(random.cdisc.data)
 
-  data <- teal_data(
-      cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
-      cdisc_dataset("ADTTE", ADTTE, code = 'ADTTE <- radtte(cached = TRUE) %>%
-      mutate(CNSR = as.logical(CNSR))'),
-  dataset("mae", mae)
-    )
+   mae <- hermes::multi_assay_experiment
+   adtte <- radtte(cached = TRUE) %>%
+       mutate(CNSR = as.logical(CNSR))
 
-  modules <- root_modules(
-      tm_g_km_mae(
-        label = "KM PLOT",
-        dataname = "ADTTE",
-        mae_name = "mae",
-        paramcd = choices_selected(
-          value_choices(ADTTE, c("PARAMCD")),
-          "OS"
-        ),
-        strata_var = choices_selected(
-          variable_choices(ADSL, c("SEX", "BMRKR2")),
-          "SEX"
-        ),
-        facet_var = choices_selected(
-          variable_choices(ADSL, c("SEX", "BMRKR2")),
-          NULL
-        )
-      )
-    )
+   data <- teal_data(
+       cdisc_dataset("ADTTE", adtte, code = 'adtte <- radtte(cached = TRUE) %>%
+       mutate(CNSR = as.logical(CNSR))'),
+       dataset("mae", mae)
+       )
 
-  app <- init(
-    data = data,
-    modules = modules
-  )
+   modules <- root_modules(
+       tm_g_km_mae(
+         label = "KM PLOT",
+         adtte_name = "ADTTE",
+         mae_name = "mae",
+         paramcd = "OS",
+       )
+     )
 
-  shinyApp(ui = app$ui, server = app$server)
+   app <- init(
+     data = data,
+     modules = modules
+     )
+
+   shinyApp(ui = app$ui, server = app$server)
 }
