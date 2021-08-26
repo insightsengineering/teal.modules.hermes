@@ -166,13 +166,13 @@ h_extract_words <- function(x) {
 #'
 #' @examples
 #' funs <- list(mean = colMeans)
-#' ui <- fluidPage(
-#'   geneSpecInput(
+#' ui <- sidebarLayout(
+#'   sidebarPanel(geneSpecInput(
 #'     "my_genes",
 #'     funs = funs,
 #'     label_funs = "Please select function"
-#'   ),
-#'   textOutput("result")
+#'   )),
+#'   mainPanel(textOutput("result"))
 #' )
 #' server <- function(input, output, session) {
 #'   gene_choices <- reactive({letters})
@@ -183,7 +183,7 @@ h_extract_words <- function(x) {
 #'   )
 #'   output$result <- renderText({
 #'     gene_spec <- gene_spec()
-#'     gene_spec$label()
+#'     gene_spec$get_label()
 #'   })
 #' }
 #' if (interactive()) {
