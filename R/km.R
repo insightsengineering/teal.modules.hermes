@@ -115,7 +115,7 @@ h_km_mae_to_adtte <- function(adtte,
 #'     mutate(CNSR = as.logical(CNSR))
 #'
 #'data <- teal_data(
-#'     cdisc_dataset("ADTTE", ADTTE, code = 'adtte <- radtte(cached = TRUE) %>%
+#'     cdisc_dataset("ADTTE", adtte, code = 'adtte <- radtte(cached = TRUE) %>%
 #'     mutate(CNSR = as.logical(CNSR))'),
 #' dataset("mae", mae)
 #'   )
@@ -267,6 +267,48 @@ srv_g_km_mae <- function(input,
   genes <- eventReactive(experiment_call(), ignoreNULL = FALSE, {
     object <- experiment_data()
     rownames(object)
+  })
+
+  # When the genes are recomputed, update the choices for genes in the UI.
+  observeEvent(genes(), {
+    gene_choices <- genes()
+
+    updateSelectizeInput(
+      session,
+      "x_var",
+      choices = gene_choices,
+      selected = gene_choices[1],
+      server = TRUE
+    )
+  })
+
+  # When the gene call changes, we recompute endpoints.
+  endpoints <- eventReactive(genes(), ignoreNULL = FALSE, {
+    gene_list <- genes()
+    object <- experiment_data()
+
+    mae_data <- datasets$get_data(mae_name, filtered = TRUE)
+    adtte_data <- datasets$get_data(dataname, filtered = TRUE)
+    adtte_data <- adtte_data %>% mutate(CNSR = as.logical(CNSR))
+
+    #returns the sample IDs
+    gene_list <- "GeneID:101927746"
+    object <- "hd1"
+    gene_data <- SummarizedExperiment::assay(object)[gene_list,]
+    samples <- names(gene_data)
+
+    #get patient IDs
+    samplemap_hd1 <- MultiAssayExperiment::sampleMap(mae) %>% as.data.frame
+    samplemap_hd1 <- filter(samplemap_hd1, assay == object)
+    patients <- samplemap_hd1$primary
+
+    #subset adtte for those patients
+    adtte <- filter(adtte, USUBJID %in% patients)
+    all(patients %in% adtte$USUBJID) #no need to assert this as it's done in the helper
+
+    #get the endpoints observed of the subsetted patients
+    endpoints <- unique(adtte$PARAMCD)
+
   })
 
   # When the genes are recomputed, update the choices for genes in the UI.
