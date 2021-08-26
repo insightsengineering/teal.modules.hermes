@@ -12,93 +12,94 @@ test_that("geneSpecInput creates expected HTML", {
 
 test_that("geneSpec module works as expected in the test app", {
   skip_if_covr()
+  test.nest::skip_if_too_deep(5)
 
   library(shinytest)
-  app <- ShinyDriver$new("scatterplot/", loadTimeout = 1e5, debug = "all", phantomTimeout = 1e5)
+  app <- ShinyDriver$new("geneSpec/", loadTimeout = 1e5, debug = "all", phantomTimeout = 1e5)
   app$getDebugLog()
   app$snapshotInit("test-app")
 
   # nolint start
 
-  # Note: left hand side name is composed as:
-  # prefix: teal-main_ui-modules_ui-root_
-  # label: scatterplot-
-  # inputId: assay_name
+  ns <- NS("teal-main_ui-modules_ui-root_GeneSpec_example")
 
-  # Check initial state of encodings.
-  initial_experiment_name <- app$waitForValue("teal-main_ui-modules_ui-root_scatterplot-experiment_name")
-  expect_identical(initial_experiment_name, "hd1")
+  # Initially no genes are selected.
+  initial_genes <- app$waitForValue(ns("my_genes"), ignore = "")
+  expect_identical(initial_genes, NULL)
 
-  plot_message <- app$waitForOutputElement("teal-main_ui-modules_ui-root_scatterplot-plot", "message")
+  # Validation message points towards gene selection.
+  output_message <- app$waitForOutputElement(ns("result"), "message")
+  expect_identical(output_message, "please select at least one gene")
+
+  # Set genes manually.
+  selected_genes <- c(
+    "GeneID:101927746", "GeneID:1820", "GeneID:101929818", "GeneID:94115", "GeneID:25959",
+    "GeneID:140459", "GeneID:6618", "GeneID:51264", "GeneID:127254", "GeneID:139604",
+    "GeneID:102724552", "GeneID:356", "GeneID:101928458", "GeneID:2576", "GeneID:84651",
+    "GeneID:3423", "GeneID:5810", "GeneID:9302", "GeneID:285847", "GeneID:9166", "GeneID:101927628",
+    "GeneID:1499", "GeneID:6098", "GeneID:83858", "GeneID:100303749", "GeneID:4608"
+  )
+  app$setValue(ns("my_genes-genes"), selected_genes)
+
+  # We see that now the first function is selected.
+  fun_name <- app$waitForValue(ns("my_genes-fun_name"))
+  expect_identical(fun_name, "mean")
+
+  # Then we get the expected result.
+  output_text <- app$waitForValue(ns("result"), iotype = "output")
+  expect_identical(output_text, "mean(GeneID:101927746, GeneID:1820, ..., GeneID:4608)")
+
+  # Now we add chromosome filters for the first experiment.
+  ns2 <- NS("teal-main_ui-filter_panel-add_MAE_filter-hd1")
+  app$setValue(
+    ns2("row_to_add"),
+    "Chromosome"
+  )
+
+  # Now we lock the gene selection.
+  app$setValue(ns("my_genes-lock_button"), TRUE)
+
+  # Now we just select a small subset of chromosomes.
+  app$setValue(
+    ns2("389cac31b9a16404f4da7eccf5f5643e-content-selection"),
+    c("X", "Y")
+  )
+
+  # Confirm that gene selection was not changed.
+  genes_while_locked <- app$waitForValue(ns("my_genes-genes"))
+  expect_identical(genes_while_locked, selected_genes)
+
+  # Check validation message.
+  output_message <- app$waitForOutputElement(ns("result"), "message")
   expect_identical(
-    plot_message,
-    "no assays are available for this experiment, please choose another experiment"
+    output_message,
+    "23 genes (GeneID:101927746, GeneID:1820, ..., GeneID:4608) not included, please unlock or change filters"
   )
 
-  # Choose another experiment.
-  app$setInputs(
-    "teal-main_ui-modules_ui-root_scatterplot-experiment_name" = "hd2"
-  )
+  # Now we unlock.
+  app$setValue(ns("my_genes-lock_button"), FALSE)
 
-  initial_assay_name <- app$waitForValue("teal-main_ui-modules_ui-root_scatterplot-assay_name")
-  expect_identical(initial_assay_name, "cpm")
+  # Check that gene selection was reduced accordingly.
+  genes_after_unlock <- app$waitForValue(ns("my_genes-genes"))
+  expect_identical(genes_after_unlock, c("GeneID:139604", "GeneID:2576", "GeneID:3423"))
+  expect_true(all(genes_after_unlock %in% selected_genes))
+  expect_length(setdiff(selected_genes, genes_after_unlock), 23L)
 
-  initial_x_var <- app$waitForValue("teal-main_ui-modules_ui-root_scatterplot-x_var", ignore = "")
-  expect_identical(initial_x_var, NULL)
+  # Then we get the expected result.
+  output_text <- app$waitForValue(ns("result"), iotype = "output")
+  expect_identical(output_text, "mean(GeneID:139604, GeneID:2576, GeneID:3423)")
 
-  initial_y_var <- app$waitForValue("teal-main_ui-modules_ui-root_scatterplot-y_var", ignore = "")
-  expect_identical(initial_y_var, NULL)
+  # Now we remove the filter.
+  app$click(ns2("389cac31b9a16404f4da7eccf5f5643e-remove"))
 
-  # Initially there is no plot.
-  plot_message <- app$waitForOutputElement("teal-main_ui-modules_ui-root_scatterplot-plot", "message")
-  expect_identical(
-    plot_message,
-    "please select x gene"
-  )
+  # We select a gene via text input.
+  app$click(ns("my_genes-text_button"))
+  app$setValue(ns("my_genes-gene_text"), "GeneID:100303749; GeneID:4608")
+  app$click(ns("my_genes-ok_button"))
 
-  # Check what happens if genes are the same.
-  app$setInputs(
-    "teal-main_ui-modules_ui-root_scatterplot-x_var" = "GeneID:5205",
-    "teal-main_ui-modules_ui-root_scatterplot-y_var" = "GeneID:5205"
-  )
-  plot_message <- app$waitForOutputElement("teal-main_ui-modules_ui-root_scatterplot-plot", "message")
-  expect_identical(plot_message, "please select different genes for x and y variables")
-
-  # Change the sample filter and confirm that genes are not updated.
-  app$setInputs(
-    "teal-main_ui-filter_panel-add_MAE_filter-hd2-col_to_add" = "ARM"
-  )
-  now_x_var <- app$waitForValue("teal-main_ui-modules_ui-root_scatterplot-x_var")
-  expect_identical(now_x_var, "GeneID:5205")
-
-  now_y_var <- app$waitForValue("teal-main_ui-modules_ui-root_scatterplot-y_var")
-  expect_identical(now_y_var, "GeneID:5205")
-
-  # Change the genes filter and confirm that genes are staying the same.
-  app$setInputs(
-    "teal-main_ui-filter_panel-add_MAE_filter-hd2-row_to_add" = "Chromosome",
-    wait_ = FALSE, values_ = FALSE
-  )
-  now_x_var <- app$waitForValue("teal-main_ui-modules_ui-root_scatterplot-x_var", ignore = "")
-  expect_identical(now_x_var, "GeneID:5205")
-
-  now_y_var <- app$waitForValue("teal-main_ui-modules_ui-root_scatterplot-y_var", ignore = "")
-  expect_identical(now_y_var, "GeneID:5205")
-
-  # Now change the experiment_name, genes, method.
-  app$setInputs(
-    "teal-main_ui-modules_ui-root_scatterplot-experiment_name" = "hd2",
-    "teal-main_ui-modules_ui-root_scatterplot-x_var" = "GeneID:5205",
-    "teal-main_ui-modules_ui-root_scatterplot-y_var" = "GeneID:102723793",
-    "teal-main_ui-modules_ui-root_scatterplot-smooth_method" = "loess"
-  )
-
-  # Final plot.
-  expect_snapshot_screenshot(
-    app,
-    id = "teal-main_ui-modules_ui-root_scatterplot-plot",
-    name = "final_plot.png"
-  )
+  # Confirm that they are now selected.
+  genes_after_text <- app$waitForValue(ns("my_genes-genes"))
+  expect_identical(genes_after_text, c("GeneID:100303749", "GeneID:4608"))
 
   app$stop()
 })
