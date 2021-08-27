@@ -59,7 +59,9 @@ server <- function(input,
                    funs) {
   gene_choices <- reactive({
     mae <- datasets$get_data("MAE", filtered = TRUE)
-    rownames(mae[[1]])
+    object <- mae[[1]]
+    gene_ids <- rownames(object)
+    sort(gene_ids)
   })
   gene_spec <- geneSpecServer(
     "my_genes",

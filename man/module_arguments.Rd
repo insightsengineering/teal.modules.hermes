@@ -23,6 +23,10 @@ name of the MAE data used in the teal module.}
 \item{exclude_assays}{(\code{character})\cr
 names of the assays which should not be included in choices in the teal module.}
 
+\item{summary_funs}{(named \code{list} of functions or \code{NULL})\cr functions which can be used
+in the the gene signatures. For modules that support also multiple genes without
+summary, \code{NULL} can be included to not summarize the genes but provide all of them.}
+
 \item{pre_output}{(\code{shiny.tag} or \code{NULL})\cr
 placed before the output to put the output into context (for example a title).}
 
