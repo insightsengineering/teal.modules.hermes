@@ -126,6 +126,7 @@ h_km_mae_to_adtte <- function(adtte,
 #'       adtte_name = "ADTTE",
 #'       mae_name = "mae",
 #'       paramcd = "OS",
+#'       strata_var = c("SEX", "STRATA1")
 #'     )
 #'   )
 #'
@@ -142,7 +143,7 @@ tm_g_km_mae <- function(label,
                         adtte_name,
                         mae_name,
                         paramcd,
-                        # strata_var,
+                        strata_var = NULL,
                         # time_unit_var = "AVALU",
                         # aval_var = "AVAL",
                         # cnsr_var = "CNSR",
@@ -154,6 +155,7 @@ tm_g_km_mae <- function(label,
   assert_string(adtte_name)
   assert_string(mae_name)
   assert_string(paramcd)
+  assert_character(strata_var, null.ok = TRUE)
   assert_tag(pre_output, null.ok = TRUE)
   assert_tag(post_output, null.ok = TRUE)
 
@@ -163,13 +165,15 @@ tm_g_km_mae <- function(label,
     server_args = list(
       adtte_name = adtte_name,
       mae_name = mae_name,
-      paramcd = paramcd
+      paramcd = paramcd,
+      strata_var = strata_var
     ),
     ui = ui_g_km_mae,
     ui_args = list(
       adtte_name = adtte_name,
       mae_name = mae_name,
       paramcd = paramcd,
+      strata_var = strata_var,
       pre_output = pre_output,
       post_output = post_output
     ),
@@ -187,7 +191,7 @@ ui_g_km_mae <- function(id,
                         adtte_name,
                         mae_name,
                         paramcd,
-                        # strata_var,
+                        strata_var,
                         # aval_var,
                         # cnsr_var,
                         # time_unit_var,
@@ -211,6 +215,7 @@ ui_g_km_mae <- function(id,
       # todo: Will this change based on experiment chosen?
       # maybe to avoid selecting a PARAMCD where nobody has values
       selectizeInput(ns("paramcd"), "Select endpoint", choices = paramcd_choices),
+      selectizeInput(ns("strata_var"), "Select strata", choices = strata_var, multiple = TRUE),
       sliderInput(
         ns("percentiles"),
         "Select quantiles to be displayed",
@@ -234,6 +239,7 @@ srv_g_km_mae <- function(input,
                          datasets,
                          adtte_name,
                          mae_name,
+                         strata_var,
                          paramcd) {
 
   # When the filtered data set of the chosen experiment changes, update the
@@ -366,6 +372,7 @@ srv_g_km_mae <- function(input,
     assay_name <- input$assay_name
     gene_var <- input$x_var
     endpoint <- input$paramcd
+    strata_var <- input$strata_var
     percentiles <- input$percentiles
     adtte_data <- adtte_data()
 
@@ -380,8 +387,8 @@ srv_g_km_mae <- function(input,
     binned_adtte <- adtte_data %>%
       mutate(gene_factor = tern::cut_quantile_bins(adtte_data[, arm_name], probs = percentiles_without_borders))
 
-    variables <- list(tte = "AVAL", is_event = "CNSR", arm = "gene_factor")
-    tern::g_km(binned_adtte, variables = variables)
+    variables <- list(tte = "AVAL", is_event = "CNSR", arm = "gene_factor", strat = strata_var)
+    tern::g_km(binned_adtte, variables = variables, annot_coxph = TRUE)
   })
 }
 
@@ -406,6 +413,7 @@ sample_tm_g_km_mae <- function() {
          adtte_name = "ADTTE",
          mae_name = "mae",
          paramcd = "OS",
+         strata_var = c("SEX", "STRATA1")
        )
      )
 
