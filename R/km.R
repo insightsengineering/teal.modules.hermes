@@ -216,7 +216,7 @@ ui_g_km_mae <- function(id,
         "Select quantiles to be displayed",
         min = 0,
         max = 1,
-        value = 0.5
+        value = c(0, 0.5)
         )
       ),
     output = plotOutput(ns("km_plot")),
@@ -375,8 +375,10 @@ srv_g_km_mae <- function(input,
     adtte_data[, arm_name] <- adtte_data[, arm_name] %>% as.numeric
     adtte_data <- filter(adtte_data, PARAMCD == endpoint) %>% droplevels
 
+    percentiles_without_borders <- setdiff(percentiles, c(0, 1))
+
     binned_adtte <- adtte_data %>%
-      mutate(gene_factor = tern::cut_quantile_bins(adtte_data[, arm_name], probs = percentiles))
+      mutate(gene_factor = tern::cut_quantile_bins(adtte_data[, arm_name], probs = percentiles_without_borders))
 
     variables <- list(tte = "AVAL", is_event = "CNSR", arm = "gene_factor")
     tern::g_km(binned_adtte, variables = variables)
