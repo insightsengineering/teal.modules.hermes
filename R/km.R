@@ -199,6 +199,8 @@ ui_g_km_mae <- function(id,
 
   mae <- datasets$get_data(mae_name, filtered = FALSE)
   experiment_name_choices <- names(mae)
+  adtte <- datasets$get_data(adtte_name, filtered = FALSE)
+  paramcd_choices <- unique(adtte$PARAMCD)
 
   teal.devel::standard_layout(
     encoding = div(
@@ -208,9 +210,9 @@ ui_g_km_mae <- function(id,
       selectizeInput(ns("x_var"), "Select gene", choices = ""),
       # todo: Will this change based on experiment chosen?
       # maybe to avoid selecting a PARAMCD where nobody has values
-      selectizeInput(ns("paramcd"), "Select endpoint", choices = ""),
+      selectizeInput(ns("paramcd"), "Select endpoint", choices = paramcd_choices),
       ),
-    output = plotOutput(ns("plot")),
+    output = plotOutput(ns("km_plot")),
     pre_output = pre_output,
     post_output = post_output
   )
@@ -282,50 +284,54 @@ srv_g_km_mae <- function(input,
     )
   })
 
-  # When the gene call changes, we recompute endpoints.
-  endpoints <- eventReactive(genes(), ignoreNULL = FALSE, {
-    gene_list <- genes()
-    object <- experiment_data()
+#   # When the gene call changes, we recompute endpoints.
+#   endpoints <- eventReactive(genes(), ignoreNULL = FALSE, {
+#
+#     # Resolve reactivity
+#     experiment_name <- input$experiment_name
+#     req(input$x_var)
+#     gene_list <- input$x_var
+#     object <- experiment_data()
+#     mae_data <- datasets$get_data(mae_name, filtered = TRUE)
+#     adtte_data <- datasets$get_data(adtte_name, filtered = FALSE)
+#     adtte_data <- adtte_data %>% mutate(CNSR = as.logical(CNSR))
+#
+#     #returns the sample IDs
+#     # gene_list <- "GeneID:101927746"
+#     # object <- "hd1"
+#     gene_data <- SummarizedExperiment::assay(object)[gene_list,]
+#     samples <- colnames(gene_data)
+#
+#     #get patient IDs
+#     samplemap_hd <- MultiAssayExperiment::sampleMap(mae_data) %>% as.data.frame
+#     samplemap_hd <- filter(samplemap_hd, assay == experiment_name)
+#     patients <- samplemap_hd$primary
+#
+#     #subset adtte for those patients
+#     adtte <- filter(adtte_data, USUBJID %in% patients)
+# browser()
+#     #get the endpoints observed of the subsetted patients
+#     unique(adtte$PARAMCD)
+#
+#   })
+#
+#   # When the endpoints are recomputed, update the choices for endpoints in the UI.
+#   observeEvent(endpoints(), {
+#     endpoint_choices <- endpoints()
+#
+#     updateSelectizeInput(
+#       session,
+#       "paramcd",
+#       choices = endpoint_choices,
+#       selected = endpoint_choices[1],
+#       server = TRUE
+#     )
+#   })
 
-    mae_data <- datasets$get_data(mae_name, filtered = TRUE)
-    adtte_data <- datasets$get_data(dataname, filtered = TRUE)
-    adtte_data <- adtte_data %>% mutate(CNSR = as.logical(CNSR))
-
-    #returns the sample IDs
-    gene_list <- "GeneID:101927746"
-    object <- "hd1"
-    gene_data <- SummarizedExperiment::assay(object)[gene_list,]
-    samples <- names(gene_data)
-
-    #get patient IDs
-    samplemap_hd1 <- MultiAssayExperiment::sampleMap(mae) %>% as.data.frame
-    samplemap_hd1 <- filter(samplemap_hd1, assay == object)
-    patients <- samplemap_hd1$primary
-
-    #subset adtte for those patients
-    adtte <- filter(adtte, USUBJID %in% patients)
-    all(patients %in% adtte$USUBJID) #no need to assert this as it's done in the helper
-
-    #get the endpoints observed of the subsetted patients
-    endpoints <- unique(adtte$PARAMCD)
-
-  })
-
-  # When the genes are recomputed, update the choices for genes in the UI.
-  observeEvent(genes(), {
-    gene_choices <- genes()
-
-    updateSelectizeInput(
-      session,
-      "x_var",
-      choices = gene_choices,
-      selected = gene_choices[1],
-      server = TRUE
-    )
-  })
 
   # When the gene changes, post process ADTTE.
   adtte_data <- reactive({
+    # Resolve all reactivity
     experiment_data <- experiment_data()
     experiment_name <- input$experiment_name
     assay_name <- input$assay_name
@@ -335,7 +341,7 @@ srv_g_km_mae <- function(input,
     validate(need(hermes::is_hermes_data(experiment_data), "please use HermesData() on input experiments"))
     req(isTRUE(assay_name %in% SummarizedExperiment::assayNames(experiment_data)))
     mae_data <- datasets$get_data(mae_name, filtered = TRUE)
-    adtte_data <- datasets$get_data(dataname, filtered = TRUE)
+    adtte_data <- datasets$get_data(adtte_name, filtered = TRUE)
     adtte_data <- adtte_data %>% mutate(CNSR = as.logical(CNSR))
 
     h_km_mae_to_adtte(
@@ -347,180 +353,24 @@ srv_g_km_mae <- function(input,
     )
   })
 
-  # todo: remove this later
-  # test <- reactive({
-  #   # Resolve all reactivity.
-  #   experiment_name <- input$experiment_name
-  #   assay_name <- input$assay_name
-  #   gene_var <- input$x_var
-  #   adtte_data <- adtte_data()
-  #
-  #   # We need the gene counts column name (the selected gene_var/x_var) to add to the 'arm'
-  #   # variable in the list.
-  #   # Issue 1. x_var will have ':' while col won't
-  #   # Issue 2. the unique part is after the ':'
-  #   # Ideas 1: split the x_var at ':' and save everything after. split the col name after 'D'
-  #   #          and save everything after. if they match, use that col name.
-  #   # Ideas 2: convert x_var to the same format as the col, using assay_var. assign that to
-  #   #          arm_var.
-  #   arm_name <- attr(adtte_data, "gene_cols")
-  #   adtte_data[, arm_name] <- adtte_data[, arm_name] %>% as.numeric
-  #
-  #   binned_adtte <- adtte_data %>%
-  #     mutate(gene_factor = tern::cut_quantile_bins(adtte_data[, arm_name], probs = .3))
-  #
-  #   variables <- list(tte = "AVAL", is_event = "CNSR", arm = "gene_factor")
-  #   tern::g_km(binned_adtte, variables = variables)
-  # })
-  #
-  # validate_checks <- reactive({
-  #
-  #   adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-  #   anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
-  #
-  #   anl_m <- anl_merged()
-  #   input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-  #   input_strata_var <- as.vector(anl_m$columns_source$strata_var)
-  #   input_facet_var <- as.vector(anl_m$columns_source$facet_var)
-  #   input_aval_var <- as.vector(anl_m$columns_source$aval_var)
-  #   input_cnsr_var <- as.vector(anl_m$columns_source$cnsr_var)
-  #   input_paramcd <- unlist(paramcd$filter)["vars_selected"]
-  #   input_time_unit_var <- as.vector(anl_m$columns_source$time_unit_var)
-  #   input_xticks <- gsub(";", ",", trimws(input$xticks)) %>%
-  #     strsplit(",") %>%
-  #     unlist() %>%
-  #     as.numeric()
-  #
-  #   # validate inputs
-  #   validate_args <- list(
-  #     adsl = adsl_filtered,
-  #     adslvars = c("USUBJID", "STUDYID", input_arm_var, input_strata_var, input_facet_var),
-  #     anl = anl_filtered,
-  #     anlvars = c("USUBJID", "STUDYID", input_paramcd, input_aval_var, input_cnsr_var, input_time_unit_var),
-  #     arm_var = input_arm_var
-  #   )
-  #
-  #   # validate arm levels
-  #   if (length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) == 1) {
-  #     validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
-  #   }
-  #   if (input$compare_arms) {
-  #     validate_args <- append(validate_args, list(ref_arm = input$ref_arm, comp_arm = input$comp_arm))
-  #   }
-  #
-  #   utils.nest::call_with_colon("teal.devel::validate_standard_inputs", unlist_args = validate_args)
-  #
-  #   # validate xticks
-  #   if (length(input_xticks) == 0) {
-  #     input_xticks <- NULL
-  #   }
-  #   else {
-  #     validate(need(all(!is.na(input_xticks)), "Not all values entered were numeric"))
-  #     validate(need(all(input_xticks >= 0), "All break intervals for x-axis must be non-negative"))
-  #     validate(need(any(input_xticks > 0), "At least one break interval for x-axis must be positive"))
-  #   }
-  #
-  #   validate(need(
-  #     input$conf_level > 0 && input$conf_level < 1,
-  #     "Please choose a confidence level between 0 and 1"
-  #   ))
-  #
-  #   validate(need(utils.nest::is_character_single(input_aval_var), "Analysis variable should be a single column."))
-  #   validate(need(utils.nest::is_character_single(input_cnsr_var), "Censor variable should be a single column."))
-  #
-  #   NULL
-  # })
-  #
+  output$km_plot <- renderPlot({
+    # Resolve all reactivity.
+    experiment_name <- input$experiment_name
+    assay_name <- input$assay_name
+    gene_var <- input$x_var
+    adtte_data <- adtte_data()
 
-  # # call_preparation ----
-  # call_preparation <- reactive({
-  #   # todo: enable again
-  #   # validate_checks()
-  #   validate(need(input$x_var, "please select a gene"))
-  #
-  #   # todo: we have to do this differently
-  #   teal.devel::chunks_reset()
-  #   anl_m <- anl_merged()
-  #   teal.devel::chunks_push_data_merge(anl_m)
-  #   teal.devel::chunks_push_new_line()
-  #
-  #   # ANL <- teal.devel::chunks_get_var("ANL") # nolint
-  #
-  #   ANL <- adtte_data()
-  #   teal.devel::chunks_push(quote(ANL <- adtte_data()))
-  #
-  #   teal.devel::validate_has_data(ANL, 2)
-  #
-  #   input_xticks <- gsub(";", ",", trimws(input$xticks)) %>%
-  #     strsplit(",") %>%
-  #     unlist() %>%
-  #     as.numeric()
-  #
-  #   if (length(input_xticks) == 0) {
-  #     input_xticks <- NULL
-  #   }
-  #
-  #   input_paramcd <- as.character(unique(anl_m$data()[[as.vector(anl_m$columns_source$paramcd)]]))
-  #   title <- paste("KM Plot of", input_paramcd)
-  #
-  #   my_calls <- template_g_km_mae(
-  #     dataname = "ANL",
-  #     arm_var = attr(ANL, "gene_cols"),
-  #     # to do: quantiles
-  #     ref_arm = input$ref_arm,
-  #     comp_arm = input$comp_arm,
-  #     compare_arm = input$compare_arms,
-  #     combine_comp_arms = input$combine_comp_arms,
-  #     aval_var = as.vector(anl_m$columns_source$aval_var),
-  #     cnsr_var = as.vector(anl_m$columns_source$cnsr_var),
-  #     strata_var = as.vector(anl_m$columns_source$strata_var),
-  #     time_points = NULL,
-  #     time_unit_var = as.vector(anl_m$columns_source$time_unit_var),
-  #     facet_var = as.vector(anl_m$columns_source$facet_var),
-  #     annot_surv_med = input$show_km_table,
-  #     annot_coxph = input$compare_arms,
-  #     xticks = input_xticks,
-  #     font_size = input$font_size,
-  #     pval_method = input$pval_method_coxph,
-  #     conf_level = as.numeric(input$conf_level),
-  #     ties = input$ties_coxph,
-  #     xlab = input$xlab,
-  #     yval = ifelse(input$yval == "Survival probability", "Survival", "Failure"),
-  #     ci_ribbon = input$show_ci_ribbon,
-  #     title = title
-  #   )
-  #   mapply(expression = my_calls, teal.devel::chunks_push)
-  # })
-  #
-  # km_plot <- reactive({
-  #   call_preparation()
-  #   teal.devel::chunks_safe_eval()
-  # })
-  # #
-  # #
-  # # # Insert the plot into a plot with settings module from teal.devel
-  # callModule(
-  #   teal.devel::plot_with_settings_srv,
-  #   id = "myplot",
-  #   plot_r = km_plot,
-  #   height = plot_height,
-  #   width = plot_width
-  # )
-  # # callModule(
-  # #   teal.devel::table_with_settings_srv,
-  # #   id = "mytable",
-  # #   table_r = test
-  # # )
-  # #
-  # # callModule(
-  # #   teal.devel::get_rcode_srv,
-  # #   id = "rcode",
-  # #   datasets = datasets,
-  # #   datanames = teal.devel::get_extract_datanames(
-  # #     list(arm_var, paramcd, strata_var, facet_var, aval_var, cnsr_var, time_unit_var)
-  # #   ),
-  # #   modal_title = label
-  # # )
+    # We need the gene counts column name (the selected gene_var/x_var) to add to the 'arm'
+    # variable in the list.
+    arm_name <- attr(adtte_data, "gene_cols")
+    adtte_data[, arm_name] <- adtte_data[, arm_name] %>% as.numeric
+
+    binned_adtte <- adtte_data %>%
+      mutate(gene_factor = tern::cut_quantile_bins(adtte_data[, arm_name], probs = .3))
+
+    variables <- list(tte = "AVAL", is_event = "CNSR", arm = "gene_factor")
+    tern::g_km(binned_adtte, variables = variables)
+  })
 }
 
 sample_tm_g_km_mae <- function() {
@@ -533,7 +383,7 @@ sample_tm_g_km_mae <- function() {
        mutate(CNSR = as.logical(CNSR))
 
    data <- teal_data(
-       cdisc_dataset("ADTTE", adtte, code = 'adtte <- radtte(cached = TRUE) %>%
+       dataset("ADTTE", adtte, code = 'adtte <- radtte(cached = TRUE) %>%
        mutate(CNSR = as.logical(CNSR))'),
        dataset("mae", mae)
        )
