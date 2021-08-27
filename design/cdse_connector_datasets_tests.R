@@ -77,7 +77,7 @@ app <- init(
       label = "Demographic Table",
       dataname = "ADSL",
       arm_var = choices_selected(c("ACTARM", "ACTARMCD", "ARM"), "ACTARMCD"),
-      summarize_vars = choices_selected(c("SAFFL", "BAGE"), c("SAFFL")),
+      summarize_vars = choices_selected(c("SAFFL", "AGE"), c("SAFFL")),
       add_total = TRUE,
       useNA = c("ifany"),
       na_level = "<Missing>",
@@ -91,21 +91,6 @@ app <- init(
 
 shinyApp(app$ui, app$server)
 
-data <- cdse_data(
-  connection = cdse_connection("prod"),
-  cdse_dataset_connector(
-    dataname = "MAE",
-    cid = "cid6740669461545926658"
-  ) #%>% mutate_dataset("MAE[[1]] <- HermesData(MAE[[1]])")
-)
-app <- init(
-  data = teal_data(data),
-  root_modules(
-    teal.modules.hermes::tm_g_barplot("barplot", "MAE")
-  )
-)
-
-shinyApp(app$ui, app$server)
 
 # Test on CDSE MAE data from https://cdse.roche.com/details/cid6740627690476584961
 
