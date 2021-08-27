@@ -38,6 +38,7 @@ Suggests:
   dplyr,
   globals,
   knitr,
+  matrixStats,
   random.cdisc.data,
   R6,
   shinytest (>= 1.5.0),
