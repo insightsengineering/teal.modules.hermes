@@ -7,6 +7,9 @@ test_that("ui_g_scatterplot creates expected HTML", {
     id = "testid",
     datasets = datasets,
     mae_name = mae_name,
+    summary_funs = list(
+      Mean = colMeans
+    ),
     pre_output = NULL,
     post_output = NULL
   ))
