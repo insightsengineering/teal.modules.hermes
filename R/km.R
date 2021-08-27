@@ -115,7 +115,7 @@ h_km_mae_to_adtte <- function(adtte,
 #'     mutate(CNSR = as.logical(CNSR))
 #'
 #'data <- teal_data(
-#'     cdisc_dataset("ADTTE", adtte, code = 'adtte <- radtte(cached = TRUE) %>%
+#'     dataset("ADTTE", adtte, code = 'adtte <- radtte(cached = TRUE) %>%
 #'     mutate(CNSR = as.logical(CNSR))'),
 #' dataset("mae", mae)
 #'   )
@@ -211,6 +211,13 @@ ui_g_km_mae <- function(id,
       # todo: Will this change based on experiment chosen?
       # maybe to avoid selecting a PARAMCD where nobody has values
       selectizeInput(ns("paramcd"), "Select endpoint", choices = paramcd_choices),
+      sliderInput(
+        ns("percentiles"),
+        "Select quantiles to be displayed",
+        min = 0,
+        max = 1,
+        value = 0.5
+        )
       ),
     output = plotOutput(ns("km_plot")),
     pre_output = pre_output,
@@ -359,6 +366,7 @@ srv_g_km_mae <- function(input,
     assay_name <- input$assay_name
     gene_var <- input$x_var
     endpoint <- input$paramcd
+    percentiles <- input$percentiles
     adtte_data <- adtte_data()
 
     # We need the gene counts column name (the selected gene_var/x_var) to add to the 'arm'
@@ -368,7 +376,7 @@ srv_g_km_mae <- function(input,
     adtte_data <- filter(adtte_data, PARAMCD == endpoint) %>% droplevels
 
     binned_adtte <- adtte_data %>%
-      mutate(gene_factor = tern::cut_quantile_bins(adtte_data[, arm_name], probs = .3))
+      mutate(gene_factor = tern::cut_quantile_bins(adtte_data[, arm_name], probs = percentiles))
 
     variables <- list(tte = "AVAL", is_event = "CNSR", arm = "gene_factor")
     tern::g_km(binned_adtte, variables = variables)
