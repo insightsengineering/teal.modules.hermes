@@ -10,7 +10,7 @@ data <- cdse_data(
   cdse_dataset_connector(
     dataname = "MAE",
     cid = "cid6828341065561714688"
-  ) %>% mutate_dataset("MAE[[1]] <- HermesData(MAE[[1]])")
+  ) #%>% mutate_dataset("MAE[[1]] <- HermesData(MAE[[1]])")
 )
 
 app <- init(
@@ -28,13 +28,11 @@ shinyApp(app$ui, app$server)
 library(teal)
 library(teal.modules.hermes)
 library(teal.modules.clinical)
-
-# See the github link above for accessing CDSE datasets / log in to account
+library(hermes)
 library(CDSE)
 cdse_login()
 cdse_tokens()
 cdse_get_environment()
-cdse_list_environment()
 cdse_set_environment("prod")
 
 # Using Asthma Data Pilot -- Pooled Integrated Datasets -- ADAM ADSL from https://cdse.roche.com/details/cid6736608260612358144
@@ -108,3 +106,23 @@ app <- init(
 )
 
 shinyApp(app$ui, app$server)
+
+# Test on CDSE MAE data from https://cdse.roche.com/details/cid6740627690476584961
+
+data <- cdse_data(
+  connection = cdse_connection("prod"),
+  cdse_dataset_connector(
+    dataname = "MAE",
+    cid = "cid6740627690476584961"
+  ) %>% mutate_dataset("MAE[[1]] <- HermesData(MAE[[1]])")
+)
+
+app <- init(
+  data = teal_data(data),
+  root_modules(
+    teal.modules.hermes::tm_g_barplot("barplot", "MAE")
+  )
+)
+
+shinyApp(app$ui, app$server)
+
