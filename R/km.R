@@ -358,12 +358,14 @@ srv_g_km_mae <- function(input,
     experiment_name <- input$experiment_name
     assay_name <- input$assay_name
     gene_var <- input$x_var
+    endpoint <- input$paramcd
     adtte_data <- adtte_data()
 
     # We need the gene counts column name (the selected gene_var/x_var) to add to the 'arm'
     # variable in the list.
     arm_name <- attr(adtte_data, "gene_cols")
     adtte_data[, arm_name] <- adtte_data[, arm_name] %>% as.numeric
+    adtte_data <- filter(adtte_data, PARAMCD == endpoint) %>% droplevels
 
     binned_adtte <- adtte_data %>%
       mutate(gene_factor = tern::cut_quantile_bins(adtte_data[, arm_name], probs = .3))
