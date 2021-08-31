@@ -362,8 +362,9 @@ srv_g_km <- function(input,
     strata_var <- input$strata_var
     percentiles <- input$percentiles
     adtte_data <- adtte_data()
-    # todo: validate that adtte_data is not empty
 
+    # validate that adtte_data is not empty
+    validate(need(nrow(adtte_data) > 0, message = "ADTTE is empty - please relax the filter criteria"))
 
     # We need the gene counts column name (the selected gene_var/x_var) to add to the 'arm'
     # variable in the list.
