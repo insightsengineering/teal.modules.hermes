@@ -19,7 +19,7 @@
 #' @import checkmate
 NULL
 
-# check_tag ----
+# assert_tag ----
 
 #' Check for Shiny Tag
 #'
@@ -51,3 +51,32 @@ assert_tag <- makeAssertionFunction(check_tag)
 #' @rdname check_tag
 #' @export
 test_tag <- makeTestFunction(check_tag)
+
+# assert_reactive ----
+
+#' Check for Reactive Input
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Check whether `x` is a reactive input.
+#'
+#' @inheritParams assertion_arguments
+#' @seealso [`assertions`] for more details.
+#'
+#' @export
+#'
+#' @examples
+#' check_reactive("bla")
+#' check_reactive(reactive("bla"))
+check_reactive <- function(x) {
+  inherits(x, "reactive")
+}
+
+#' @rdname check_reactive
+#' @inheritParams assertion_arguments
+#' @export
+assert_reactive <- makeAssertionFunction(check_reactive)
+
+#' @rdname check_reactive
+#' @export
+test_reactive <- makeTestFunction(check_reactive)

@@ -11,13 +11,23 @@ tm_g_scatterplot(
   label,
   mae_name,
   exclude_assays = "counts",
+  summary_funs = list(Mean = colMeans, Median = matrixStats::colMedians, Max =
+    matrixStats::colMaxs),
   pre_output = NULL,
   post_output = NULL
 )
 
-ui_g_scatterplot(id, datasets, mae_name, pre_output, post_output)
+ui_g_scatterplot(id, datasets, mae_name, summary_funs, pre_output, post_output)
 
-srv_g_scatterplot(input, output, session, datasets, mae_name, exclude_assays)
+srv_g_scatterplot(
+  input,
+  output,
+  session,
+  datasets,
+  mae_name,
+  exclude_assays,
+  summary_funs
+)
 
 sample_tm_g_scatterplot()
 }
@@ -30,6 +40,10 @@ name of the MAE data used in the teal module.}
 
 \item{exclude_assays}{(\code{character})\cr
 names of the assays which should not be included in choices in the teal module.}
+
+\item{summary_funs}{(named \code{list} of functions or \code{NULL})\cr functions which can be used
+in the the gene signatures. For modules that support also multiple genes without
+summary, \code{NULL} can be included to not summarize the genes but provide all of them.}
 
 \item{pre_output}{(\code{shiny.tag} or \code{NULL})\cr
 placed before the output to put the output into context (for example a title).}
@@ -76,12 +90,10 @@ data <- teal_data(mae_data)
 app <- init(
   data = data,
   modules = root_modules(
-    static = {
-      tm_g_scatterplot(
-        label = "scatterplot",
-        mae_name = "MAE"
-      )
-    }
+    tm_g_scatterplot(
+      label = "scatterplot",
+      mae_name = "MAE"
+    )
   )
 )
 \dontrun{
