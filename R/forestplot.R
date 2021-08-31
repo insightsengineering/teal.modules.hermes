@@ -32,8 +32,8 @@ tm_g_forest_tte <- function(label,
                          mae_name,
                          pre_output = NULL,
                          post_output = NULL,
-                         plot_height = c(700L, 200L, 2000L),
-                         plot_width = c(980L, 500L, 2000L)) {
+                         plot_height = c(600L, 200L, 2000L),
+                         plot_width = c(1360L, 500L, 2000L)) {
   assert_string(label)
   assert_string(mae_name)
   assert_tag(pre_output, null.ok = TRUE)
@@ -72,14 +72,7 @@ ui_g_forest_tte <- function(id, datasets, mae_name,pre_output, post_output) {
       selectInput(ns("assay_name"), "Select Assay", choices = ""),
       selectizeInput(ns("geneid"), "Gene ID", choices = ""),
       sliderInput(ns("probs"), label = ("Probability Cutoff"), min = 0.01, max = 0.99, value = 0.5),
-      optionalSelectInput(ns("subgroups"), label = "Subgroups", choices = "", selected = "", multiple = TRUE),
-      sliderInput(
-        ns("percentiles"),
-        "Select quantiles to be displayed",
-        min = 0,
-        max = 1,
-        value = c(0.2, 0.8)
-      )
+      optionalSelectInput(ns("subgroups"), label = "Subgroups", choices = "", selected = "", multiple = TRUE)
     ),
     output = teal.devel::plot_with_settings_ui(ns("plot")),
     pre_output = pre_output,
