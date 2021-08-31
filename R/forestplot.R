@@ -31,7 +31,9 @@
 tm_g_forest_tte <- function(label,
                          mae_name,
                          pre_output = NULL,
-                         post_output = NULL) {
+                         post_output = NULL,
+                         plot_height = c(700L, 200L, 2000L),
+                         plot_width = c(980L, 500L, 2000L)) {
   assert_string(label)
   assert_string(mae_name)
   assert_tag(pre_output, null.ok = TRUE)
@@ -41,7 +43,9 @@ tm_g_forest_tte <- function(label,
     label = label,
     server = srv_g_forest_tte,
     server_args = list(
-      mae_name = mae_name
+      mae_name = mae_name,
+      plot_height = plot_height,
+      plot_width = plot_width
     ),
     ui = ui_g_forest_tte,
     ui_args = list(
@@ -77,7 +81,7 @@ ui_g_forest_tte <- function(id, datasets, mae_name,pre_output, post_output) {
         value = c(0.2, 0.8)
       )
     ),
-    output = plotOutput(ns("plot")),
+    output = teal.devel::plot_with_settings_ui(ns("plot")),
     pre_output = pre_output,
     post_output = post_output
   )
@@ -86,7 +90,13 @@ ui_g_forest_tte <- function(id, datasets, mae_name,pre_output, post_output) {
 #' @describeIn tm_g_forest_tee sets up the server with reactive graph.
 #' @inheritParams module_arguments
 #' @export
-srv_g_forest_tte <- function(input, output, session, datasets, mae_name) {
+srv_g_forest_tte <- function(input,
+                             output,
+                             session,
+                             datasets,
+                             mae_name,
+                             plot_height,
+                             plot_width) {
 
   # When the filtered data set of the chosen experiment changes, update the
   # experiment data object.
@@ -176,9 +186,9 @@ srv_g_forest_tte <- function(input, output, session, datasets, mae_name) {
     colname <- attr(adtte_counts, "gene_cols")
 
     adtte_counts %>%
-      df_explicit_na() %>%
-      mutate(
-        AVAL = day2month(AVAL),
+      tern::df_explicit_na() %>%
+      dplyr::mutate(
+        AVAL = tern::day2month(AVAL),
         AVALU = "Months",
         is_event = CNSR == 0,
         gene_bin = tern::cut_quantile_bins(
@@ -216,10 +226,18 @@ srv_g_forest_tte <- function(input, output, session, datasets, mae_name) {
       )
   })
 
-  output$plot <- renderPlot({
+  forest_plot <- reactive({
     result <- result()
     tern::g_forest(result)
   })
+
+  callModule(
+    teal.devel::plot_with_settings_srv,
+    id = "plot",
+    plot_r = forest_plot,
+    height = plot_height,
+    width = plot_width
+  )
 }
 
 #' @describeIn tm_g_forest_tte sample module function.
