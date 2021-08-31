@@ -219,8 +219,6 @@ ui_g_km <- function(id,
       selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
       selectInput(ns("assay_name"), "Select assay", choices = ""),
       selectizeInput(ns("x_var"), "Select gene", choices = ""),
-      # todo: Will this change based on experiment chosen?
-      # maybe to avoid selecting a PARAMCD where nobody has values
       selectizeInput(ns("paramcd"), "Select endpoint", choices = ""),
       selectizeInput(ns("strata_var"), "Select strata", choices = strata_var, multiple = TRUE),
       sliderInput(
@@ -303,8 +301,6 @@ srv_g_km <- function(input,
     )
   })
 
-
-
   # When the gene changes, post process ADTTE.
   adtte_data <- reactive({
     # Resolve all reactivity
@@ -374,6 +370,7 @@ srv_g_km <- function(input,
 
     percentiles_without_borders <- setdiff(percentiles, c(0, 1))
 
+    # todo: theory - need a way to validate that all patients would fall into more than one bin.
     binned_adtte <- adtte_data %>%
       mutate(gene_factor = tern::cut_quantile_bins(adtte_data[, arm_name], probs = percentiles_without_borders))
 
