@@ -84,8 +84,8 @@ h_km_mae_to_adtte <- function(adtte,
   patients_not_in_adtte <- setdiff(se_patients, adtte_patients)
   if (length(patients_not_in_adtte) > 0) {
     showNotification(
-      paste("patients", paste(patients_not_in_adtte, collapse = ", "),
-            "removed from MAE because not contained in ADTTE"),
+      paste("Patients", paste(patients_not_in_adtte, collapse = ", "),
+            "removed from MAE because not contained in ADTTE."),
       type = "warning"
     )
   }
@@ -110,6 +110,8 @@ h_km_mae_to_adtte <- function(adtte,
 #'
 #' @inheritParams module_arguments
 #'
+#' @return Shiny module to be used in the teal app.
+#'
 #' @export
 #'
 #' @examples
@@ -127,7 +129,7 @@ h_km_mae_to_adtte <- function(adtte,
 #'   )
 #'
 #' modules <- root_modules(
-#'     tm_g_km_mae(
+#'     tm_g_km(
 #'       label = "KM PLOT",
 #'       adtte_name = "ADTTE",
 #'       mae_name = "mae",
@@ -145,40 +147,40 @@ h_km_mae_to_adtte <- function(adtte,
 #' shinyApp(ui = app$ui, server = app$server)
 #' }
 #'
-tm_g_km_mae <- function(label,
-                        adtte_name,
-                        mae_name,
-                        paramcd,
-                        strata_var = NULL,
-                        # time_unit_var = "AVALU",
-                        # aval_var = "AVAL",
-                        # cnsr_var = "CNSR",
-                        # conf_level = 0.95,
-                        pre_output = NULL,
-                        post_output = NULL) {
+tm_g_km <- function(label,
+                    adtte_name,
+                    mae_name,
+                    # paramcd,
+                    strata_var = NULL,
+                  # time_unit_var = "AVALU",
+                  # aval_var = "AVAL",
+                  # cnsr_var = "CNSR",
+                  # conf_level = 0.95,
+                    pre_output = NULL,
+                    post_output = NULL) {
 
   assert_string(label)
   assert_string(adtte_name)
   assert_string(mae_name)
-  assert_string(paramcd)
+  # assert_string(paramcd)
   assert_character(strata_var, null.ok = TRUE)
   assert_tag(pre_output, null.ok = TRUE)
   assert_tag(post_output, null.ok = TRUE)
 
   module(
     label = label,
-    server = srv_g_km_mae,
+    server = srv_g_km,
     server_args = list(
       adtte_name = adtte_name,
       mae_name = mae_name,
-      paramcd = paramcd,
+      # paramcd = paramcd,
       strata_var = strata_var
     ),
-    ui = ui_g_km_mae,
+    ui = ui_g_km,
     ui_args = list(
       adtte_name = adtte_name,
       mae_name = mae_name,
-      paramcd = paramcd,
+      # paramcd = paramcd,
       strata_var = strata_var,
       pre_output = pre_output,
       post_output = post_output
@@ -188,22 +190,21 @@ tm_g_km_mae <- function(label,
 }
 
 
-#' User Interface for KM Module
-#' @noRd
-#'
-#' @importFrom shinyWidgets switchInput
-ui_g_km_mae <- function(id,
-                        datasets,
-                        adtte_name,
-                        mae_name,
-                        paramcd,
-                        strata_var,
-                        # aval_var,
-                        # cnsr_var,
-                        # time_unit_var,
-                        # conf_level,
-                        pre_output,
-                        post_output) {
+#' @describeIn tm_g_km sets up the user interface.
+#' @inheritParams module_arguments
+#' @export
+ui_g_km <- function(id,
+                    datasets,
+                    adtte_name,
+                    mae_name,
+                    # paramcd,
+                    strata_var,
+                  # aval_var,
+                  # cnsr_var,
+                  # time_unit_var,
+                  # conf_level,
+                    pre_output,
+                    post_output) {
 
   ns <- NS(id)
 
@@ -220,7 +221,7 @@ ui_g_km_mae <- function(id,
       selectizeInput(ns("x_var"), "Select gene", choices = ""),
       # todo: Will this change based on experiment chosen?
       # maybe to avoid selecting a PARAMCD where nobody has values
-      selectizeInput(ns("paramcd"), "Select endpoint", choices = paramcd_choices),
+      selectizeInput(ns("paramcd"), "Select endpoint", choices = ""),
       selectizeInput(ns("strata_var"), "Select strata", choices = strata_var, multiple = TRUE),
       sliderInput(
         ns("percentiles"),
@@ -236,17 +237,16 @@ ui_g_km_mae <- function(id,
   )
 }
 
-#' Server for KM Module
-#' @noRd
-#'
-srv_g_km_mae <- function(input,
-                         output,
-                         session,
-                         datasets,
-                         adtte_name,
-                         mae_name,
-                         strata_var,
-                         paramcd) {
+#' @describeIn tm_g_km sets up the user interface.
+#' @inheritParams module_arguments
+#' @export
+srv_g_km <- function(input,
+                     output,
+                     session,
+                     datasets,
+                     adtte_name,
+                     mae_name,
+                     strata_var) {
 
   # When the filtered data set of the chosen experiment changes, update the
   # experiment data object.
@@ -303,49 +303,6 @@ srv_g_km_mae <- function(input,
     )
   })
 
-#   # When the gene call changes, we recompute endpoints.
-#   endpoints <- eventReactive(genes(), ignoreNULL = FALSE, {
-#
-#     # Resolve reactivity
-#     experiment_name <- input$experiment_name
-#     req(input$x_var)
-#     gene_list <- input$x_var
-#     object <- experiment_data()
-#     mae_data <- datasets$get_data(mae_name, filtered = TRUE)
-#     adtte_data <- datasets$get_data(adtte_name, filtered = FALSE)
-#     adtte_data <- adtte_data %>% mutate(CNSR = as.logical(CNSR))
-#
-#     #returns the sample IDs
-#     # gene_list <- "GeneID:101927746"
-#     # object <- "hd1"
-#     gene_data <- SummarizedExperiment::assay(object)[gene_list,]
-#     samples <- colnames(gene_data)
-#
-#     #get patient IDs
-#     samplemap_hd <- MultiAssayExperiment::sampleMap(mae_data) %>% as.data.frame
-#     samplemap_hd <- filter(samplemap_hd, assay == experiment_name)
-#     patients <- samplemap_hd$primary
-#
-#     #subset adtte for those patients
-#     adtte <- filter(adtte_data, USUBJID %in% patients)
-# browser()
-#     #get the endpoints observed of the subsetted patients
-#     unique(adtte$PARAMCD)
-#
-#   })
-#
-#   # When the endpoints are recomputed, update the choices for endpoints in the UI.
-#   observeEvent(endpoints(), {
-#     endpoint_choices <- endpoints()
-#
-#     updateSelectizeInput(
-#       session,
-#       "paramcd",
-#       choices = endpoint_choices,
-#       selected = endpoint_choices[1],
-#       server = TRUE
-#     )
-#   })
 
 
   # When the gene changes, post process ADTTE.
@@ -372,6 +329,30 @@ srv_g_km_mae <- function(input,
     )
   })
 
+  # After post processing ADTTE, we recompute endpoints.
+  endpoints <- eventReactive(input$x_var, ignoreNULL = TRUE, {
+
+    # Resolve reactivity
+    adtte_data <- adtte_data()
+
+    # Get the endpoints from post processed ADTTE
+    unique(adtte_data$PARAMCD)
+
+  })
+
+  # When the endpoints are recomputed, update the choices for endpoints in the UI.
+  observeEvent(endpoints(), {
+    endpoint_choices <- endpoints()
+
+    updateSelectizeInput(
+      session,
+      "paramcd",
+      choices = endpoint_choices,
+      selected = endpoint_choices[1],
+      server = TRUE
+    )
+  })
+
   output$km_plot <- renderPlot({
     # Resolve all reactivity.
     experiment_name <- input$experiment_name
@@ -382,6 +363,7 @@ srv_g_km_mae <- function(input,
     percentiles <- input$percentiles
     adtte_data <- adtte_data()
     # todo: validate that adtte_data is not empty
+
 
     # We need the gene counts column name (the selected gene_var/x_var) to add to the 'arm'
     # variable in the list.
@@ -399,7 +381,14 @@ srv_g_km_mae <- function(input,
   })
 }
 
-sample_tm_g_km_mae <- function() {
+#' @describeIn tm_g_km sample module function.
+#' @export
+#' @examples
+#' \dontrun{
+#' # Alternatively you can run the sample module with this function call:
+#' sample_tm_g_km()
+#' }
+sample_tm_g_km <- function() {
 
    library(dplyr)
    library(random.cdisc.data)
@@ -415,11 +404,11 @@ sample_tm_g_km_mae <- function() {
        )
 
    modules <- root_modules(
-       tm_g_km_mae(
+       tm_g_km(
          label = "KM PLOT",
          adtte_name = "ADTTE",
          mae_name = "mae",
-         paramcd = "OS",
+         # paramcd = "OS",
          strata_var = c("SEX", "STRATA1")
        )
      )
