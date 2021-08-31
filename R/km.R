@@ -81,12 +81,18 @@ h_km_mae_to_adtte <- function(adtte,
   adtte_patients <- unique(adtte$USUBJID)
   se_patients <- merge_se_data$USUBJID
 
+  patients_not_in_adtte <- setdiff(se_patients, adtte_patients)
+  if (length(patients_not_in_adtte) > 0) {
+    showNotification(
+      paste("patients", paste(patients_not_in_adtte, collapse = ", "),
+            "removed from MAE because not contained in ADTTE"),
+      type = "warning"
+    )
+  }
 
-  assert_true(all(se_patients %in% adtte_patients))
-
+  # Now do the inner join.
   merged_adtte <- merge(adtte, merge_se_data, by = "USUBJID")
   merged_adtte <- tern::df_explicit_na(merged_adtte)
-
 
   structure(
     merged_adtte,
@@ -375,6 +381,7 @@ srv_g_km_mae <- function(input,
     strata_var <- input$strata_var
     percentiles <- input$percentiles
     adtte_data <- adtte_data()
+    # todo: validate that adtte_data is not empty
 
     # We need the gene counts column name (the selected gene_var/x_var) to add to the 'arm'
     # variable in the list.
