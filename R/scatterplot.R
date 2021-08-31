@@ -98,8 +98,10 @@ ui_g_scatterplot <- function(id,
       geneSpecInput(ns("x_spec"), summary_funs, label_genes = "Select x gene(s)"),
       geneSpecInput(ns("y_spec"), summary_funs, label_genes = "Select y gene(s)"),
       teal.devel::panel_group(
+        input_id = "settings_group",
         teal.devel::panel_item(
-          "Additional Settings",
+          input_id = "settings_item",
+          title = "Additional Settings",
           optionalSelectInput(ns("color_var"), "Optional color variable"),
           optionalSelectInput(ns("facet_var"), "Optional facet variable"),
           selectInput(ns("smooth_method"), "Select smoother", smooth_method_choices)
