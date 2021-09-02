@@ -7,7 +7,7 @@ Authors@R: c(
   person("NEST", email = "nestcicd@roche.com", role = c("aut", "cre"))
   )
 Description: RNA-seq analysis teal modules based on the `hermes` package.
-License: file LICENSE
+License: Apache License 2.0 | file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
@@ -30,6 +30,7 @@ Imports:
   lifecycle,
   MultiAssayExperiment,
   shinyWidgets,
+  stringr,
   SummarizedExperiment,
   teal.devel,
   teal.modules.clinical,
@@ -38,6 +39,7 @@ Suggests:
   dplyr,
   globals,
   knitr,
+  matrixStats,
   random.cdisc.data,
   R6,
   shinytest (>= 1.5.0),
