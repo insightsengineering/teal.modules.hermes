@@ -370,9 +370,19 @@ srv_g_km <- function(input,
 
     percentiles_without_borders <- setdiff(percentiles, c(0, 1))
 
-    # todo: theory - need a way to validate that all patients would fall into more than one bin.
-    binned_adtte <- adtte_data %>%
-      mutate(gene_factor = tern::cut_quantile_bins(adtte_data[, arm_name], probs = percentiles_without_borders))
+    binned_adtte <- tryCatch({
+      dplyr::mutate(
+        adtte_data,
+        gene_factor = tern::cut_quantile_bins(adtte_data[, arm_name], probs = percentiles_without_borders)
+      )},
+      error = function(e) {
+        if (grepl("Duplicate quantiles produced", e)) {
+          validate("please select (slightly) different quantiles to avoid duplicate quantiles")
+        } else {
+          stop(e)
+        }
+      }
+    )
 
     variables <- list(tte = "AVAL", is_event = "CNSR", arm = "gene_factor", strat = strata_var)
     tern::g_km(binned_adtte, variables = variables, annot_coxph = TRUE)
