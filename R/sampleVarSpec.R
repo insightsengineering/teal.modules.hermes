@@ -55,6 +55,48 @@ sampleVarSpecInput <- function(inputId,
   )
 }
 
+#' Helper Function For Group List Creation
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' This helper function takes an assignment list and converts it to a
+#' group list.
+#'
+#' @param x (named `list` of `character`)\cr input assignment list.
+#' @return A combination list.
+#'
+#' @export
+#'
+#' @examples
+#' assign_list <- list(
+#'   "ASIAN" = "1",
+#'   "BLACK OR AFRICAN AMERICAN" = "1",
+#'   "MULTIPLE" = "2",
+#'   "UNKNOWN" = "2",
+#'   "WHITE" = "4"
+#' )
+#' objective_list <- list(
+#'   "ASIAN/BLACK OR AFRICAN AMERICAN" = c("ASIAN", "BLACK OR AFRICAN AMERICAN"),
+#'   "MULTIPLE/UNKNOWN" = c("MULTIPLE", "UNKNOWN"),
+#'   "WHITE" = "WHITE"
+#' )
+#' result_list <- h_assign_to_group_list(assign_list)
+#' stopifnot(identical(result_list, objective_list))
+h_assign_to_group_list <- function(x) {
+  assert_list(
+    x,
+    types = "character",
+    any.missing = FALSE,
+    names = "unique",
+    unique = FALSE
+  )
+  x_vec <- unlist(x)
+  x_split <- split(names(x_vec), x_vec)
+  new_levels <- sapply(x_split, hermes::h_short_list, sep = "/")
+  setNames(x_split, new_levels)
+}
+
+
 #' Module Server for Sample Variable Specification
 #'
 #' @description `r lifecycle::badge("experimental")`
@@ -62,9 +104,12 @@ sampleVarSpecInput <- function(inputId,
 #' This defines the server part for the sample variable specification.
 #'
 #' @inheritParams module_arguments
-#' @param object (reactive `SummarizedExperiment`)\cr input experiment where the
+#' @param experiment_name (reactive `string`)\cr name of the input experiment.
+#' @param experiment_data (reactive `SummarizedExperiment`)\cr input experiment where the
 #'   sample variables extracted via [SummarizedExperiment::colData()] should be eligible for
 #'   selection.
+#' @param num_levels (`count` or `NULL`)\cr required number of levels after combining original levels.
+#'   If `NULL` then all numbers of levels are allowed.
 #' @param label_modal_title (`string`)\cr title for the dialog that asks for the text input.
 #'
 #' @return Reactive [`SummarizedExperiment::SummarizedExperiment`] which can be used as
@@ -74,27 +119,98 @@ sampleVarSpecInput <- function(inputId,
 #' @export
 #'
 #' @examples
-#' todo
-
+#' ui <- function(id,
+#'                datasets) {
+#'   ns <- NS(id)
+#'   mae <- datasets$get_data("MAE", filtered = FALSE)
+#'   experiment_name_choices <- names(mae)
+#'   teal.devel::standard_layout(
+#'     encoding = div(
+#'       selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
+#'       sampleVarSpecInput(ns("facet_var"), "Select faceting variable")
+#'     ),
+#'     output = plotOutput(ns("plot"))
+#'   )
+#' }
+#' server <- function(input,
+#'                    output,
+#'                    session,
+#'                    datasets) {
+#'   experiment_data <- reactive({
+#'     req(input$experiment_name)
+#'     mae <- datasets$get_data("MAE", filtered = TRUE)
+#'     object <- mae[[input$experiment_name]]
+#'     SummarizedExperiment::colData(object) <- hermes::df_char_to_factor(SummarizedExperiment::colData(object))
+#'     object
+#'   })
+#'   facet_var_spec <- sampleVarSpecServer(
+#'     "facet_var",
+#'     experiment_name = reactive({input$experiment_name}),
+#'     experiment_data = experiment_data
+#'   )
+#'   output$plot <- renderPlot({
+#'     experiment_data_final <- facet_var_spec$experiment_data()
+#'     facet_var <- facet_var_spec$sample_var()
+#'     hermes::draw_boxplot(
+#'       experiment_data_final,
+#'       assay_name = "counts",
+#'       genes = hermes::genes(experiment_data_final)[1],
+#'       facet_var = facet_var
+#'     )
+#'   })
+#' }
+#' my_app <- function() {
+#'   mae <- hermes::multi_assay_experiment
+#'   mae_data <- dataset("MAE", mae)
+#'   data <- teal_data(mae_data)
+#'   app <- init(
+#'     data = data,
+#'     modules = root_modules(
+#'       module(
+#'         label = "sampleVarSpec example",
+#'         server = server,
+#'         ui = ui,
+#'         filters = "all"
+#'       )
+#'     )
+#'   )
+#'   shinyApp(app$ui, app$server)
+#' }
+#' if (interactive()) {
+#'   my_app()
+#' }
 sampleVarSpecServer <- function(inputId,
-                                object,
+                                experiment_name,
+                                experiment_data,
+                                num_levels = NULL,
                                 label_modal_title = "Please click to group the original factor levels") {
   assert_string(inputId)
-  assert_reactive(object)
+  assert_reactive(experiment_name)
+  assert_reactive(experiment_data)
+  assert_int(num_levels, null.ok = TRUE)
   assert_string(label_modal_title)
 
   moduleServer(inputId, function(input, output, session) {
-    # When the chosen experiment changes, recompute the colData variables.
-    col_data_vars <- eventReactive(input$experiment_name, ignoreNULL = TRUE, {
+
+    # The colData variables to choose the sample variable from.
+    # if num_levels is specified then only take factors.
+    col_data_vars <- eventReactive(experiment_name(), {
       object <- experiment_data()
-      names(SummarizedExperiment::colData(object))
+      col_data <- SummarizedExperiment::colData(object)
+      if (is.null(num_levels)) {
+        names(col_data)
+      } else {
+        can_be_used <- sapply(col_data, is.factor)
+        names(col_data)[can_be_used]
+      }
     })
-    # When the colData variables change, update the choices for facet_var.
+
+    # When the colData variables change, update the choices for sample_var.
     observeEvent(col_data_vars(), {
       col_data_vars <- col_data_vars()
       updateOptionalSelectInput(
         session,
-        "facet_var",
+        "sample_var",
         choices = col_data_vars,
         selected = character()
       )
@@ -105,54 +221,69 @@ sampleVarSpecServer <- function(inputId,
     # Note that this should have experiments at the first level and then colData in the
     # second level.
     assign_lists <- reactiveValues()
+
     # Reactive for the current combination. Takes the assignment list if available
     # and converts to combination list.
     current_combination <- reactive({
-      experiment_name <- input$experiment_name
-      facet_var <- input$facet_var
-      req(experiment_name, facet_var)
+      experiment_name <- experiment_name()
+      sample_var <- input$sample_var
+      req(experiment_name, sample_var)
 
-      assign_list <- assign_lists[[experiment_name]][[facet_var]]
+      assign_list <- assign_lists[[experiment_name]][[sample_var]]
       if (!is.null(assign_list)) {
         h_assign_to_group_list(assign_list)
       } else {
         NULL
       }
     })
+
     # Here we produce the final object by checking
-    # if we should combine for this facet var.
+    # if we should combine for this sample var.
     experiment_data_final <- reactive({
-      facet_var <- input$facet_var
+      sample_var <- input$sample_var
       experiment_data <- experiment_data()
       current_combination <- current_combination()
 
-      req(facet_var)
+      req(sample_var)
 
       if (!is.null(current_combination)) {
-        colData(experiment_data)[[facet_var]] <- do.call(
+        combined_sample_var <- do.call(
           forcats::fct_collapse,
           args = c(
-            list(.f = colData(experiment_data)[[facet_var]]),
+            list(.f = SummarizedExperiment::colData(experiment_data)[[sample_var]]),
             current_combination
           )
         )
+        combined_sample_var <- factor(combined_sample_var, levels = names(current_combination))
+        SummarizedExperiment::colData(experiment_data)[[sample_var]] <- combined_sample_var
       }
+
+      if (!is.null(num_levels)) {
+        validate(need(
+          identical(num_levels, nlevels(SummarizedExperiment::colData(experiment_data)[[sample_var]])),
+          paste("please combine the original levels of", sample_var, "into", num_levels)
+        ))
+      }
+
       experiment_data
     })
 
     # Function to return the UI for a modal dialog with matrix input for combination
     # assignment.
-    combModal <- function(facet_levels,
+    combModal <- function(sample_var_levels,
                           n_max_groups,
                           selected_groups) {
       if (is.null(selected_groups)) {
-        selected_groups <- seq_len(n_max_groups)
+        selected_groups <- pmin(
+          seq_along(sample_var_levels),
+          n_max_groups
+        )
       }
       modalDialog(
         shinyRadioMatrix::radioMatrixInput(
           session$ns("comb_assignment"),
-          rowIDs = facet_levels,
-          rowLLabels = rep("", length = length(facet_levels)),
+          rowIDs = sample_var_levels,
+          rowLLabels = rep("", length = length(sample_var_levels)),
           choices = seq_len(n_max_groups),
           selected = selected_groups
         ),
@@ -168,25 +299,25 @@ sampleVarSpecServer <- function(inputId,
     }
 
     # Show modal when button is clicked and the current variable is a factor variable.
-    observeEvent(input$open_levels_input, {
-      facet_var <- input$facet_var
+    observeEvent(input$levels_button, {
+      sample_var <- input$sample_var
       experiment_data <- experiment_data()
-      experiment_name <- input$experiment_name
+      experiment_name <- experiment_name()
 
-      req(experiment_name, facet_var)
+      req(experiment_name, sample_var)
 
-      current_facet_var <- colData(experiment_data)[[facet_var]]
+      current_sample_var <- SummarizedExperiment::colData(experiment_data)[[sample_var]]
 
-      if (is.factor(current_facet_var)) {
-        facet_levels <- levels(current_facet_var)
+      if (is.factor(current_sample_var)) {
+        sample_var_levels <- levels(current_sample_var)
 
         # Note: here we make sure we load with previous choice so the user
         # does not constantly need to start from scratch again.
-        selected_groups <- assign_lists[[experiment_name]][[facet_var]]
+        selected_groups <- assign_lists[[experiment_name]][[sample_var]]
 
         showModal(combModal(
-          facet_levels = facet_levels,
-          n_max_groups = length(facet_levels),
+          sample_var_levels = sample_var_levels,
+          n_max_groups = utils.nest::if_null(num_levels, length(sample_var_levels)),
           selected_groups = selected_groups
         ))
       } else {
@@ -196,23 +327,27 @@ sampleVarSpecServer <- function(inputId,
 
     # When OK button is pressed, save the settings, and remove the modal.
     observeEvent(input$ok, {
-      experiment_name <- input$experiment_name
-      facet_var <- input$facet_var
+      experiment_name <- experiment_name()
+      sample_var <- input$sample_var
       comb_assignment <- input$comb_assignment
 
-      req(experiment_name, facet_var, comb_assignment)
+      req(experiment_name, sample_var, comb_assignment)
 
-      if (FALSE) {
-        # Here we could do checks on comb_assignment, e.g. check that not just
-        # 1 group was selected.
+      if (!is.null(num_levels) && !identical(length(unique(unlist(comb_assignment))), num_levels)) {
         showNotification(
-          "Something went wrong",
+          paste("Please group the original levels in exactly", num_levels, "levels"),
           type = "error"
         )
       } else {
-        assign_lists[[experiment_name]][[facet_var]] <- comb_assignment
+        assign_lists[[experiment_name]][[sample_var]] <- comb_assignment
         removeModal()
       }
     })
+
+    # Return both the reactives with the experiment data as well as the sample variable.
+    list(
+      experiment_data = experiment_data_final,
+      sample_var = reactive({input$sample_var})
+    )
   })
 }
