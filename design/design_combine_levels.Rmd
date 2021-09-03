@@ -475,3 +475,82 @@ In that case we need to:
 - have a workaround for logical variables, they should also work. maybe modify `hermes` function `diff_expression()` accordingly.
 - only provide 2 columns in the radio matrix
 - can default to having first level in first column and the rest in 2nd column
+
+## Example using the new module
+
+```{r}
+ui_example <- function(id,
+                       datasets,
+                       mae_name,
+                       pre_output,
+                       post_output) {
+  ns <- NS(id)
+  mae <- datasets$get_data(mae_name, filtered = FALSE)
+  experiment_name_choices <- names(mae)
+  teal.devel::standard_layout(
+    encoding = div(
+      selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
+      sampleVarSpecInput(ns("facet_var"), "Select faceting variable")
+    ),
+    output = plotOutput(ns("plot")),
+    pre_output = pre_output,
+    post_output = post_output
+  )
+}
+
+srv_example <- function(input,
+                        output,
+                        session,
+                        datasets,
+                        mae_name) {
+  experiment_data <- reactive({
+    req(input$experiment_name)  # Important to avoid running into NULL here.
+    mae <- datasets$get_data(mae_name, filtered = TRUE)
+    object <- mae[[input$experiment_name]]
+    colData(object) <- df_char_to_factor(colData(object))
+    object
+  })
+  
+  experiment_data2 <- sampleVarSpecServer("facet_var", object = experiment_data)
+  
+  output$plot <- renderPlot({
+    experiment_data_final <- experiment_data2()
+    facet_var <- input$facet_var
+    
+    validate(need(
+      hermes::is_hermes_data(experiment_data2), 
+      "please use HermesData() on input experiments"
+    ))
+    validate(need(!is.null(facet_var), "please select a faceting variable"))
+    
+    # Output.
+    hermes::draw_boxplot(
+      experiment_data_final, 
+      assay_name = "counts",
+      genes = genes(experiment_data_final)[1],
+      facet_var = facet_var
+    )
+  })
+}
+  
+sample_app <- function() {
+  mae <- hermes::multi_assay_experiment
+  mae_data <- dataset("MAE", mae)
+  data <- teal_data(mae_data)
+  app <- init(
+    data = data,
+    modules = root_modules(
+      tm_g_levels(
+        label = "levels",
+        mae_name = "MAE"
+      )
+    )
+  )
+  shinyApp(app$ui, app$server)
+}
+
+if (interactive()) {
+  sample_app()
+}
+```
+
