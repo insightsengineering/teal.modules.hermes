@@ -96,9 +96,38 @@ h_assign_to_group_list <- function(x) {
   setNames(x_split, new_levels)
 }
 
+#' Helper Function for Collapsing of Factor Levels
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Given a group list and a factor, this helper function collapses the
+#' levels in the factor accordingly and also ensures that the resulting
+#' levels are in the order given in the group list.
+#'
+#' @param x (`factor`)\cr original factor.
+#' @param group_list (named `list` of `character`)\cr includes the collapsing
+#'   specification.
+#'
+#' @return The transformed factor `x` with new levels.
+#' @export
+#'
+#' @examples
+#' set.seed(123)
+#' x <- factor(sample(
+#'   c("ASIAN", "BLACK OR AFRICAN AMERICAN", "MULTIPLE", "UNKNOWN", "WHITE"),
+#'   size = 30L,
+#'   replace = TRUE
+#' ))
+#' group_list <- list(
+#'   "ASIAN/BLACK OR AFRICAN AMERICAN" = c("ASIAN", "BLACK OR AFRICAN AMERICAN"),
+#'   "MULTIPLE/UNKNOWN" = c("MULTIPLE", "UNKNOWN"),
+#'   "WHITE" = "WHITE"
+#' )
+#' x_collapsed <- h_collapse_levels(x, group_list)
+#' stopifnot(identical(levels(x_collapsed), names(group_list)))
 h_collapse_levels <- function(x, group_list) {
   assert_factor(x)
-  assert_list(group_list, names = "unique", null.ok = TRUE)
+  assert_list(group_list, names = "unique", null.ok = TRUE, types = "character")
   if (is.null(group_list)) {
     return(x)
   }
@@ -112,7 +141,25 @@ h_collapse_levels <- function(x, group_list) {
   factor(x_collapsed, levels = names(group_list))
 }
 
+#' Validation of Number of Levels
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' This validation function checks that a given vector `x` is a factor with
+#' the specified number of levels.
+#'
+#' @param x (`factor`)\cr factor to validate.
+#' @param name (`string`)\cr name of `x` in the app.
+#' @param n_levels (`count`)\cr required number of factor levels in `x`.
+#'
+#' @export
 validate_n_levels <- function(x, name, n_levels) {
+  assert_string(name, min.chars = 1L)
+  assert_count(n_levels, positive = TRUE)
+  validate(need(
+    is.factor(x),
+    paste("Variable", name, "is not a factor but a", class(x))
+  ))
   if (!is.null(n_levels)) {
     validate(need(
       identical(n_levels, nlevels(x)),
@@ -222,7 +269,7 @@ sampleVarSpecServer <- function(inputId,
   assert_reactive(original_data)
   assert_reactive(transformed_data)
   assert_class(assign_lists, "reactivevalues")
-  assert_int(num_levels, null.ok = TRUE)
+  assert_count(num_levels, null.ok = TRUE, positive = TRUE)
   assert_string(label_modal_title)
 
   moduleServer(inputId, function(input, output, session) {
@@ -380,6 +427,39 @@ sampleVarSpecServer <- function(inputId,
   })
 }
 
+#' Module Server for Specification of Multiple Sample Variables
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' When multiple sample variables are used in a given module, then this
+#' wrapper makes it much easier to specify in the server function.
+#'
+#' @param inputIds (`character`)\cr multiple input IDs corresponding to the
+#'   different sample variables specified in the UI function.
+#' @inheritParams sampleVarSpecServer
+#' @param ... additional arguments as documented in [sampleVarSpecServer()],
+#'   namely the mandatory `experiment_name` and the optional `num_levels` and
+#'   `label_modal_title`. `transformed_data` and `assign_lists` should not be
+#'   specified as they are already specified internally here.
+#'
+#' @return List with the final transformed `experiment_data` reactive and a
+#'   list `vars` which contains the selected sample variables as reactives
+#'   under their input ID.
+#'
+#' @export
+#' @examples
+#' \dontrun{
+#' # In the server use:
+#' sample_var_specs <- multiSampleVarSpecServer(
+#'   inputIds = c("facet_var", "color_var"),
+#'   experiment_name = reactive({input$experiment_name}),
+#'   original_data = experiment_data
+#' )
+#' # Then can extract the transformed data and selected variables later:
+#' experiment_data <- sample_var_specs$experiment_data()
+#' facet_var <- sample_var_specs$vars$facet_var()
+#' color_var <- sample_var_specs$vars$color_var()
+#' }
 multiSampleVarSpecServer <- function(inputIds,
                                      original_data,
                                      ...) {
