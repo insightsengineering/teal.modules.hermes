@@ -96,6 +96,33 @@ h_assign_to_group_list <- function(x) {
   setNames(x_split, new_levels)
 }
 
+h_collapse_levels <- function(x, group_list) {
+  assert_factor(x)
+  assert_list(group_list, names = "unique", null.ok = TRUE)
+  if (is.null(group_list)) {
+    return(x)
+  }
+  x_collapsed <- do.call(
+    forcats::fct_collapse,
+    args = c(
+      list(.f = x),
+      group_list
+    )
+  )
+  factor(x_collapsed, levels = names(group_list))
+}
+
+validate_n_levels <- function(x, name, n_levels) {
+  if (!is.null(n_levels)) {
+    validate(need(
+      identical(n_levels, nlevels(x)),
+      paste(
+        "Please combine the original levels of", name,
+        "into exactly", n_levels, "levels"
+      )
+    ))
+  }
+}
 
 #' Module Server for Sample Variable Specification
 #'
@@ -246,27 +273,13 @@ sampleVarSpecServer <- function(inputId,
 
       req(sample_var)
 
-      if (!is.null(current_combination)) {
-        combined_sample_var <- do.call(
-          forcats::fct_collapse,
-          args = c(
-            list(.f = SummarizedExperiment::colData(experiment_data)[[sample_var]]),
-            current_combination
-          )
-        )
-        combined_sample_var <- factor(combined_sample_var, levels = names(current_combination))
-        SummarizedExperiment::colData(experiment_data)[[sample_var]] <- combined_sample_var
-      }
-
-      if (!is.null(num_levels)) {
-        validate(need(
-          identical(num_levels, nlevels(SummarizedExperiment::colData(experiment_data)[[sample_var]])),
-          paste(
-            "Please combine the original levels of", sample_var,
-            "into exactly", num_levels, "levels"
-          )
-        ))
-      }
+      sample_var_vector <- SummarizedExperiment::colData(experiment_data)[[sample_var]]
+      sample_var_vector <- h_collapse_levels(
+        sample_var_vector,
+        current_combination
+      )
+      validate_n_levels(sample_var_vector, sample_var, num_levels)
+      SummarizedExperiment::colData(experiment_data)[[sample_var]] <- sample_var_vector
 
       experiment_data
     })
