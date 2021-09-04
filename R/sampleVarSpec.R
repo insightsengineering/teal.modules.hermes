@@ -209,11 +209,13 @@ validate_n_levels <- function(x, name, n_levels) {
 sampleVarSpecServer <- function(inputId,
                                 experiment_name,
                                 experiment_data,
+                                assign_lists = reactiveValues(),
                                 num_levels = NULL,
                                 label_modal_title = "Please click to group the original factor levels") {
   assert_string(inputId)
   assert_reactive(experiment_name)
   assert_reactive(experiment_data)
+  assert_class(assign_lists, "reactivevalues")
   assert_int(num_levels, null.ok = TRUE)
   assert_string(label_modal_title)
 
@@ -247,7 +249,7 @@ sampleVarSpecServer <- function(inputId,
     # specific assignment lists.
     # Note that this should have experiments at the first level and then colData in the
     # second level.
-    assign_lists <- reactiveValues()
+    # assign_lists <- reactiveValues()
 
     # Reactive for the current combination. Takes the assignment list if available
     # and converts to combination list.
