@@ -131,7 +131,9 @@ srv_g_scatterplot <- function(input,
     req(input$experiment_name)  # Important to avoid running into NULL here.
 
     mae <- datasets$get_data(mae_name, filtered = TRUE)
-    mae[[input$experiment_name]]
+    object <- mae[[input$experiment_name]]
+    SummarizedExperiment::colData(object) <- hermes::df_char_to_factor(SummarizedExperiment::colData(object))
+    object
   })
 
   # When the filtered data set or the chosen experiment changes, update
