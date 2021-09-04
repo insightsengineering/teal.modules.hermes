@@ -29,6 +29,7 @@ Imports:
   hermes,
   lifecycle,
   MultiAssayExperiment,
+  shinyRadioMatrix,
   shinyWidgets,
   stringr,
   SummarizedExperiment,
