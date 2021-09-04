@@ -514,7 +514,7 @@ srv_example <- function(input,
   facet_var_spec <- sampleVarSpecServer(
     "facet_var", 
     experiment_name = reactive({input$experiment_name}),
-    experiment_data = experiment_data,
+    original_data = experiment_data,
     num_levels = 2L
   )
   
