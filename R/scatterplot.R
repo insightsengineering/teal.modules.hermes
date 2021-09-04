@@ -174,16 +174,10 @@ srv_g_scatterplot <- function(input,
     )
   })
 
-  facet_var_spec <- sampleVarSpecServer(
-    "facet_var",
-    experiment_name = reactive({input$experiment_name}),
-    experiment_data = experiment_data
-  )
-  color_var_spec <- sampleVarSpecServer(
-    "color_var",
-    experiment_name = reactive({input$experiment_name}),
-    experiment_data = facet_var_spec$experiment_data  # Note the starting point here.
-  )
+  exp_name <- reactive({input$experiment_name})
+  facet_var_spec <- sampleVarSpecServer("facet_var", exp_name, experiment_data)
+  # Note the starting point for the experiment_data modification needs to come from facet_var_spec below.
+  color_var_spec <- sampleVarSpecServer("color_var", exp_name, facet_var_spec$experiment_data)
   x_spec <- geneSpecServer("x_spec", summary_funs, genes)
   y_spec <- geneSpecServer("y_spec", summary_funs, genes)
 
