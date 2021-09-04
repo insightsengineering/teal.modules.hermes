@@ -174,31 +174,21 @@ srv_g_scatterplot <- function(input,
     )
   })
 
-  exp_name <- reactive({input$experiment_name})
-  assign_lists <- reactiveValues()
-  facet_var_spec <- sampleVarSpecServer(
-    "facet_var",
-    experiment_name = exp_name,
-    original_data = experiment_data,
-    assign_lists = assign_lists
-  )
-  color_var_spec <- sampleVarSpecServer(
-    "color_var",
-    experiment_name = exp_name,
-    original_data = experiment_data,
-    transformed_data = facet_var_spec$experiment_data,  # Start from facet_var transformation.
-    assign_lists = assign_lists
+  sample_var_specs <- multiSampleVarSpecServer(
+    inputIds = c("facet_var", "color_var"),
+    experiment_name = reactive({input$experiment_name}),
+    original_data = experiment_data
   )
   x_spec <- geneSpecServer("x_spec", summary_funs, genes)
   y_spec <- geneSpecServer("y_spec", summary_funs, genes)
 
   output$plot <- renderPlot({
     # Resolve all reactivity.
-    experiment_data <- color_var_spec$experiment_data()  # Take this from the last sample_var.
+    experiment_data <- sample_var_specs$experiment_data()
     x_spec <- x_spec()
     y_spec <- y_spec()
-    facet_var <- facet_var_spec$sample_var()
-    color_var <- color_var_spec$sample_var()
+    facet_var <- sample_var_specs$vars$facet_var()
+    color_var <- sample_var_specs$vars$color_var()
     assay_name <- input$assay_name
     smooth_method <- input$smooth_method
 

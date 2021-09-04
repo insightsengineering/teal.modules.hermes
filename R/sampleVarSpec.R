@@ -379,3 +379,26 @@ sampleVarSpecServer <- function(inputId,
     )
   })
 }
+
+multiSampleVarSpecServer <- function(inputIds,
+                                     original_data,
+                                     ...) {
+  assert_character(inputIds, any.missing = FALSE, unique = TRUE)
+  assign_lists <- reactiveValues()
+  spec_list <- list()
+  transformed_data <- original_data
+  for (id in inputIds) {
+    spec_list[[id]] <- sampleVarSpecServer(
+      inputId = id,
+      original_data = original_data,
+      transformed_data = transformed_data,
+      assign_lists = assign_lists,
+      ...
+    )
+    transformed_data <- spec_list[[id]]$experiment_data
+  }
+  list(
+    experiment_data = transformed_data,
+    vars = lapply(spec_list, "[[", "sample_var")
+  )
+}
