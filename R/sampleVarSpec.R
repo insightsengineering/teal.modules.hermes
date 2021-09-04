@@ -254,13 +254,15 @@ sampleVarSpecServer <- function(inputId,
     current_combination <- reactive({
       experiment_name <- experiment_name()
       sample_var <- input$sample_var
-      req(experiment_name, sample_var)
+      req(experiment_name)
 
-      assign_list <- assign_lists[[experiment_name]][[sample_var]]
-      if (!is.null(assign_list)) {
-        h_assign_to_group_list(assign_list)
-      } else {
-        NULL
+      if (!is.null(sample_var)) {
+        assign_list <- assign_lists[[experiment_name]][[sample_var]]
+        if (!is.null(assign_list)) {
+          h_assign_to_group_list(assign_list)
+        } else {
+          NULL
+        }
       }
     })
 
@@ -271,15 +273,15 @@ sampleVarSpecServer <- function(inputId,
       experiment_data <- experiment_data()
       current_combination <- current_combination()
 
-      req(sample_var)
-
-      sample_var_vector <- SummarizedExperiment::colData(experiment_data)[[sample_var]]
-      sample_var_vector <- h_collapse_levels(
-        sample_var_vector,
-        current_combination
-      )
-      validate_n_levels(sample_var_vector, sample_var, num_levels)
-      SummarizedExperiment::colData(experiment_data)[[sample_var]] <- sample_var_vector
+      if (!is.null(sample_var)) {
+        sample_var_vector <- SummarizedExperiment::colData(experiment_data)[[sample_var]]
+        sample_var_vector <- h_collapse_levels(
+          sample_var_vector,
+          current_combination
+        )
+        validate_n_levels(sample_var_vector, sample_var, num_levels)
+        SummarizedExperiment::colData(experiment_data)[[sample_var]] <- sample_var_vector
+      }
 
       experiment_data
     })
@@ -319,24 +321,26 @@ sampleVarSpecServer <- function(inputId,
       experiment_data <- experiment_data()
       experiment_name <- experiment_name()
 
-      req(experiment_name, sample_var)
+      req(experiment_name)
 
-      current_sample_var <- SummarizedExperiment::colData(experiment_data)[[sample_var]]
+      if (!is.null(sample_var)) {
+        current_sample_var <- SummarizedExperiment::colData(experiment_data)[[sample_var]]
 
-      if (is.factor(current_sample_var)) {
-        sample_var_levels <- levels(current_sample_var)
+        if (is.factor(current_sample_var)) {
+          sample_var_levels <- levels(current_sample_var)
 
-        # Note: here we make sure we load with previous choice so the user
-        # does not constantly need to start from scratch again.
-        selected_groups <- assign_lists[[experiment_name]][[sample_var]]
+          # Note: here we make sure we load with previous choice so the user
+          # does not constantly need to start from scratch again.
+          selected_groups <- assign_lists[[experiment_name]][[sample_var]]
 
-        showModal(combModal(
-          sample_var_levels = sample_var_levels,
-          n_max_groups = utils.nest::if_null(num_levels, length(sample_var_levels)),
-          selected_groups = selected_groups
-        ))
-      } else {
-        showNotification("Can only group levels for factor variables", type = "message")
+          showModal(combModal(
+            sample_var_levels = sample_var_levels,
+            n_max_groups = utils.nest::if_null(num_levels, length(sample_var_levels)),
+            selected_groups = selected_groups
+          ))
+        } else {
+          showNotification("Can only group levels for factor variables", type = "message")
+        }
       }
     })
 

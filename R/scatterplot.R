@@ -101,6 +101,7 @@ ui_g_scatterplot <- function(id,
         input_id = "settings_group",
         teal.devel::panel_item(
           input_id = "settings_item",
+          collapsed = TRUE,
           title = "Additional Settings",
           sampleVarSpecInput(ns("color_var"), "Optional color variable"),
           sampleVarSpecInput(ns("facet_var"), "Optional facet variable"),
