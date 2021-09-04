@@ -126,11 +126,11 @@ h_assign_to_group_list <- function(x) {
 #' x_collapsed <- h_collapse_levels(x, group_list)
 #' stopifnot(identical(levels(x_collapsed), names(group_list)))
 h_collapse_levels <- function(x, group_list) {
-  assert_factor(x)
   assert_list(group_list, names = "unique", null.ok = TRUE, types = "character")
   if (is.null(group_list)) {
     return(x)
   }
+  assert_factor(x)
   x_collapsed <- do.call(
     forcats::fct_collapse,
     args = c(
@@ -154,13 +154,13 @@ h_collapse_levels <- function(x, group_list) {
 #'
 #' @export
 validate_n_levels <- function(x, name, n_levels) {
-  assert_string(name, min.chars = 1L)
-  assert_count(n_levels, positive = TRUE)
-  validate(need(
-    is.factor(x),
-    paste("Variable", name, "is not a factor but a", class(x))
-  ))
   if (!is.null(n_levels)) {
+    validate(need(
+      is.factor(x),
+      paste("Variable", name, "is not a factor but a", class(x))
+    ))
+    assert_string(name, min.chars = 1L)
+    assert_count(n_levels, positive = TRUE)
     validate(need(
       identical(n_levels, nlevels(x)),
       paste(
@@ -224,7 +224,7 @@ validate_n_levels <- function(x, name, n_levels) {
 #'   facet_var_spec <- sampleVarSpecServer(
 #'     "facet_var",
 #'     experiment_name = reactive({input$experiment_name}),
-#'     experiment_data = experiment_data
+#'     original_data = experiment_data
 #'   )
 #'   output$plot <- renderPlot({
 #'     experiment_data_final <- facet_var_spec$experiment_data()
