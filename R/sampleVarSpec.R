@@ -132,9 +132,13 @@ validate_n_levels <- function(x, name, n_levels) {
 #'
 #' @inheritParams module_arguments
 #' @param experiment_name (reactive `string`)\cr name of the input experiment.
-#' @param experiment_data (reactive `SummarizedExperiment`)\cr input experiment where the
+#' @param original_data (reactive `SummarizedExperiment`)\cr input experiment where the
 #'   sample variables extracted via [SummarizedExperiment::colData()] should be eligible for
 #'   selection.
+#' @param transformed_data (reactive `SummarizedExperiment`)\cr used when multiple sample
+#'   variables can be selected in the app. In that case, pass here the pre-transformed data.
+#' @param assign_lists (`reactivevalues`)\cr object to share factor level groupings across multiple
+#'   sample variables.
 #' @param num_levels (`count` or `NULL`)\cr required number of levels after combining original levels.
 #'   If `NULL` then all numbers of levels are allowed.
 #' @param label_modal_title (`string`)\cr title for the dialog that asks for the text input.
@@ -208,13 +212,15 @@ validate_n_levels <- function(x, name, n_levels) {
 #' }
 sampleVarSpecServer <- function(inputId,
                                 experiment_name,
-                                experiment_data,
+                                original_data,
+                                transformed_data = original_data,
                                 assign_lists = reactiveValues(),
                                 num_levels = NULL,
                                 label_modal_title = "Please click to group the original factor levels") {
   assert_string(inputId)
   assert_reactive(experiment_name)
-  assert_reactive(experiment_data)
+  assert_reactive(original_data)
+  assert_reactive(transformed_data)
   assert_class(assign_lists, "reactivevalues")
   assert_int(num_levels, null.ok = TRUE)
   assert_string(label_modal_title)
@@ -224,7 +230,7 @@ sampleVarSpecServer <- function(inputId,
     # The colData variables to choose the sample variable from.
     # if num_levels is specified then only take factors.
     col_data_vars <- eventReactive(experiment_name(), {
-      object <- experiment_data()
+      object <- original_data()
       col_data <- SummarizedExperiment::colData(object)
       if (is.null(num_levels)) {
         names(col_data)
@@ -270,22 +276,23 @@ sampleVarSpecServer <- function(inputId,
 
     # Here we produce the final object by checking
     # if we should combine for this sample var.
-    experiment_data_final <- reactive({
+    final_data <- reactive({
       sample_var <- input$sample_var
-      experiment_data <- experiment_data()
+      original_data <- original_data()
+      transformed_data <- transformed_data()
       current_combination <- current_combination()
 
       if (!is.null(sample_var)) {
-        sample_var_vector <- SummarizedExperiment::colData(experiment_data)[[sample_var]]
+        sample_var_vector <- SummarizedExperiment::colData(original_data)[[sample_var]]
         sample_var_vector <- h_collapse_levels(
           sample_var_vector,
           current_combination
         )
         validate_n_levels(sample_var_vector, sample_var, num_levels)
-        SummarizedExperiment::colData(experiment_data)[[sample_var]] <- sample_var_vector
+        SummarizedExperiment::colData(transformed_data)[[sample_var]] <- sample_var_vector
       }
 
-      experiment_data
+      transformed_data
     })
 
     # Function to return the UI for a modal dialog with matrix input for combination
@@ -320,13 +327,13 @@ sampleVarSpecServer <- function(inputId,
     # Show modal when button is clicked and the current variable is a factor variable.
     observeEvent(input$levels_button, {
       sample_var <- input$sample_var
-      experiment_data <- experiment_data()
+      original_data <- original_data()
       experiment_name <- experiment_name()
 
       req(experiment_name)
 
       if (!is.null(sample_var)) {
-        current_sample_var <- SummarizedExperiment::colData(experiment_data)[[sample_var]]
+        current_sample_var <- SummarizedExperiment::colData(original_data)[[sample_var]]
 
         if (is.factor(current_sample_var)) {
           sample_var_levels <- levels(current_sample_var)
@@ -367,7 +374,7 @@ sampleVarSpecServer <- function(inputId,
 
     # Return both the reactives with the experiment data as well as the sample variable.
     list(
-      experiment_data = experiment_data_final,
+      experiment_data = final_data,
       sample_var = reactive({input$sample_var})
     )
   })
