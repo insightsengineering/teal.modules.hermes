@@ -261,7 +261,10 @@ sampleVarSpecServer <- function(inputId,
       if (!is.null(num_levels)) {
         validate(need(
           identical(num_levels, nlevels(SummarizedExperiment::colData(experiment_data)[[sample_var]])),
-          paste("please combine the original levels of", sample_var, "into", num_levels)
+          paste(
+            "Please combine the original levels of", sample_var,
+            "into exactly", num_levels, "levels"
+          )
         ))
       }
 
@@ -283,13 +286,12 @@ sampleVarSpecServer <- function(inputId,
         shinyRadioMatrix::radioMatrixInput(
           session$ns("comb_assignment"),
           rowIDs = sample_var_levels,
+          rowIDsName = "Original levels",
           rowLLabels = rep("", length = length(sample_var_levels)),
           choices = seq_len(n_max_groups),
           selected = selected_groups
         ),
-        span(
-          "Please click to group the original factor levels"
-        ),
+        span(label_modal_title),
         footer = tagList(
           modalButton("Cancel"),
           actionButton(session$ns("ok"), "OK")
@@ -335,7 +337,7 @@ sampleVarSpecServer <- function(inputId,
 
       if (!is.null(num_levels) && !identical(length(unique(unlist(comb_assignment))), num_levels)) {
         showNotification(
-          paste("Please group the original levels in exactly", num_levels, "levels"),
+          paste("Please group the original levels into exactly", num_levels, "levels"),
           type = "error"
         )
       } else {
