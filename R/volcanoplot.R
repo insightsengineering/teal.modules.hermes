@@ -119,11 +119,8 @@ srv_g_volcanoplot <- function(input,
     compare_group <- group_spec$sample_var()
     method <- input$method
 
-    req(
-      object,
-      compare_group,
-      method
-    )
+    req(object, method)
+    validate(need(!is.null(compare_group), "Please select a group variable"))
 
     hermes::diff_expression(
       object,
