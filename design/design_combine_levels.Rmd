@@ -62,7 +62,7 @@ colData(object)[[var_selected]] <- do.call(
 )
 
 # and voila:
-colData(object)[[var_selected]] 
+colData(object)[[var_selected]]
 ```
 
 And then we can use that downstream as usual in `hermes` e.g.:
@@ -71,7 +71,7 @@ And then we can use that downstream as usual in `hermes` e.g.:
 draw_boxplot(
   object,
   assay_name = "counts",
-  genes = genes(object)[2], 
+  genes = genes(object)[2],
   facet_var = var_selected
 )
 ```
@@ -89,27 +89,28 @@ library(shinyRadioMatrix)
 
 ## Only run examples in interactive R sessions
 if (FALSE) {
-
   data(exTaxonList)
   data(exPftList)
 
   ui <- fluidPage(
-    radioMatrixInput(inputId = "rmi01", rowIDs = head(exTaxonList$Var), 
-                     rowLLabels = head(
-                     as.matrix(subset(exTaxonList, select = "VarName"))
-                     ), 
-                     choices = exPftList$ID, 
-                     selected = head(exTaxonList$DefPFT)), 
-    verbatimTextOutput('debug01')
+    radioMatrixInput(
+      inputId = "rmi01", rowIDs = head(exTaxonList$Var),
+      rowLLabels = head(
+        as.matrix(subset(exTaxonList, select = "VarName"))
+      ),
+      choices = exPftList$ID,
+      selected = head(exTaxonList$DefPFT)
+    ),
+    verbatimTextOutput("debug01")
   )
-    
-  server <- function(input, output, session) { 
+
+  server <- function(input, output, session) {
     output$debug01 <- renderPrint({
       rmi01 <- input$rmi01
       teal.devel::as.global(rmi01)
     })
   }
-    
+
   shinyApp(ui, server)
 }
 ```
@@ -118,11 +119,11 @@ So here we see that the value is a list assigning each row to a column:
 
 ```{r}
 list(
-  `1` = "bec|ctc", 
-  `32` = "ts|bs|aa", 
-  `95` = "bs|aa", 
+  `1` = "bec|ctc",
+  `32` = "ts|bs|aa",
+  `95` = "bs|aa",
   `119` = "ec",
-  `137` = "bec", 
+  `137` = "bec",
   `148` = "ctc1"
 )
 ```
@@ -221,8 +222,10 @@ ui_g_levels <- function(id,
         class = "row",
         div(
           class = "col-sm-8",
-          tags$label(class = "control-label",
-                     "Select faceting variable")
+          tags$label(
+            class = "control-label",
+            "Select faceting variable"
+          )
         ),
         div(
           class = "col-sm-4",
@@ -234,13 +237,13 @@ ui_g_levels <- function(id,
           ),
           include_css_files(pattern = "*")
         )
-      ), 
+      ),
       div(
         class = "custom-select-input",
         optionalSelectInput(
-          ns("facet_var"), 
-          label = NULL, 
-          choices = "", 
+          ns("facet_var"),
+          label = NULL,
+          choices = "",
           multiple = FALSE
         )
       )
@@ -263,7 +266,7 @@ srv_g_levels <- function(input,
   # When the filtered data set of the chosen experiment changes, update the
   # experiment data object.
   experiment_data <- reactive({
-    req(input$experiment_name)  # Important to avoid running into NULL here.
+    req(input$experiment_name) # Important to avoid running into NULL here.
 
     mae <- datasets$get_data(mae_name, filtered = TRUE)
     object <- mae[[input$experiment_name]]
@@ -288,8 +291,8 @@ srv_g_levels <- function(input,
       selected = character()
     )
   })
-  
-  # `reactiveValuees` object for storing experiment and colData variable 
+
+  # `reactiveValuees` object for storing experiment and colData variable
   # specific assignment lists.
   # Note that this should have experiments at the first level and then colData in the
   # second level.
@@ -302,7 +305,7 @@ srv_g_levels <- function(input,
     facet_var <- input$facet_var
 
     req(experiment_name, facet_var)
-    
+
     assign_list <- assign_lists[[experiment_name]][[facet_var]]
     if (!is.null(assign_list)) {
       h_assign_to_group_list(assign_list)
@@ -311,15 +314,15 @@ srv_g_levels <- function(input,
     }
   })
 
-  # Here we produce the final object by checking 
+  # Here we produce the final object by checking
   # if we should combine for this facet var.
   experiment_data_final <- reactive({
     facet_var <- input$facet_var
     experiment_data <- experiment_data()
     current_combination <- current_combination()
-    
+
     req(facet_var)
-    
+
     if (!is.null(current_combination)) {
       colData(experiment_data)[[facet_var]] <- do.call(
         forcats::fct_collapse,
@@ -331,18 +334,18 @@ srv_g_levels <- function(input,
     }
     experiment_data
   })
-  
+
   # Function to return the UI for a modal dialog with matrix input for combination
   # assignment.
-  combModal <- function(facet_levels, 
-                        n_max_groups, 
+  combModal <- function(facet_levels, # nolint
+                        n_max_groups,
                         selected_groups) {
     if (is.null(selected_groups)) {
       selected_groups <- seq_len(n_max_groups)
     }
     modalDialog(
       shinyRadioMatrix::radioMatrixInput(
-        session$ns("comb_assignment"), 
+        session$ns("comb_assignment"),
         rowIDs = facet_levels,
         rowLLabels = rep("", length = length(facet_levels)),
         choices = seq_len(n_max_groups),
@@ -358,47 +361,47 @@ srv_g_levels <- function(input,
       include_js_files("checkbox.js")
     )
   }
-  
+
   # Show modal when button is clicked and the current variable is a factor variable.
   observeEvent(input$open_levels_input, {
     facet_var <- input$facet_var
     experiment_data <- experiment_data()
     experiment_name <- input$experiment_name
-    
+
     req(experiment_name, facet_var)
-    
+
     current_facet_var <- colData(experiment_data)[[facet_var]]
-    
+
     if (is.factor(current_facet_var)) {
       facet_levels <- levels(current_facet_var)
-      
+
       # Note: here we make sure we load with previous choice so the user
       # does not constantly need to start from scratch again.
       selected_groups <- assign_lists[[experiment_name]][[facet_var]]
-      
+
       showModal(combModal(
-        facet_levels = facet_levels, 
-        n_max_groups = length(facet_levels), 
+        facet_levels = facet_levels,
+        n_max_groups = length(facet_levels),
         selected_groups = selected_groups
       ))
     } else {
       showNotification("Can only group levels for factor variables", type = "message")
     }
   })
-  
+
   # When OK button is pressed, save the settings, and remove the modal.
   observeEvent(input$ok, {
     experiment_name <- input$experiment_name
     facet_var <- input$facet_var
     comb_assignment <- input$comb_assignment
-    
+
     req(experiment_name, facet_var, comb_assignment)
-    
+
     if (FALSE) {
       # Here we could do checks on comb_assignment, e.g. check that not just
       # 1 group was selected.
       showNotification(
-        "Something went wrong", 
+        "Something went wrong",
         type = "error"
       )
     } else {
@@ -411,18 +414,18 @@ srv_g_levels <- function(input,
     # Resolve all reactivity.
     experiment_data_final <- experiment_data_final()
     facet_var <- input$facet_var
-    
-    # Validate and give useful messages to the user. Note: no need to duplicate 
+
+    # Validate and give useful messages to the user. Note: no need to duplicate
     # here req() from above.
     validate(need(
-      hermes::is_hermes_data(experiment_data_final), 
+      hermes::is_hermes_data(experiment_data_final),
       "please use HermesData() on input experiments"
     ))
     validate(need(!is.null(facet_var), "please select a faceting variable"))
-    
+
     # Output.
     hermes::draw_boxplot(
-      experiment_data_final, 
+      experiment_data_final,
       assay_name = "counts",
       genes = genes(experiment_data_final)[1],
       facet_var = facet_var
@@ -504,40 +507,42 @@ srv_example <- function(input,
                         datasets,
                         mae_name) {
   experiment_data <- reactive({
-    req(input$experiment_name)  # Important to avoid running into NULL here.
+    req(input$experiment_name) # Important to avoid running into NULL here.
     mae <- datasets$get_data(mae_name, filtered = TRUE)
     object <- mae[[input$experiment_name]]
     SummarizedExperiment::colData(object) <- hermes::df_char_to_factor(SummarizedExperiment::colData(object))
     object
   })
-  
+
   facet_var_spec <- sampleVarSpecServer(
-    "facet_var", 
-    experiment_name = reactive({input$experiment_name}),
+    "facet_var",
+    experiment_name = reactive({
+      input$experiment_name
+    }),
     original_data = experiment_data,
     num_levels = 2L
   )
-  
+
   output$plot <- renderPlot({
     experiment_data_final <- facet_var_spec$experiment_data()
     facet_var <- facet_var_spec$sample_var()
-    
+
     validate(need(
-      hermes::is_hermes_data(experiment_data_final), 
+      hermes::is_hermes_data(experiment_data_final),
       "please use HermesData() on input experiments"
     ))
     validate(need(!is.null(facet_var), "please select a faceting variable"))
-    
+
     # Output.
     hermes::draw_boxplot(
-      experiment_data_final, 
+      experiment_data_final,
       assay_name = "counts",
       genes = hermes::genes(experiment_data_final)[1],
       facet_var = facet_var
     )
   })
 }
-  
+
 tm_g_example <- function(label,
                          mae_name,
                          pre_output = NULL,
@@ -582,4 +587,3 @@ if (interactive()) {
   sample_app()
 }
 ```
-
