@@ -165,8 +165,8 @@ srv_g_scatterplot <- function(input,
     }
   })
 
-  x_spec <- geneSpecServer("x_spec", summary_funs, genes)
-  y_spec <- geneSpecServer("y_spec", summary_funs, genes)
+  x_spec <- geneSpecServer("x_spec", summary_funs, experiment$genes)
+  y_spec <- geneSpecServer("y_spec", summary_funs, experiment$genes)
 
   output$plot <- renderPlot({
     # Resolve all reactivity.

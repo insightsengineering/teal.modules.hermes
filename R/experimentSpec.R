@@ -15,7 +15,7 @@ experimentSpecInput <- function(inputId,
                                 mae_name,
                                 label_experiments = "Select experiment") {
   assert_string(inputId)
-  assert_r6(datasets, "Datasets")
+  assert_r6(datasets)
   assert_string(mae_name, min.chars = 1L)
   assert_string(label_experiments, min.chars = 1L)
 
@@ -59,7 +59,7 @@ experimentSpecServer <- function(inputId,
                                  sample_vars_as_factors = TRUE,
                                  with_mae_col_data = TRUE) {
   assert_string(inputId)
-  assert_r6(datasets, "Datasets")
+  assert_r6(datasets)
   assert_string(mae_name, min.chars = 1L)
   assert_flag(sample_vars_as_factors)
   assert_flag(with_mae_col_data)
@@ -79,7 +79,7 @@ experimentSpecServer <- function(inputId,
         mae[[name]]
       }
       validate(need(
-        hermes::is_hermes_data(result),
+        hermes::is_hermes_data(object),
         "Please first convert your experiment to HermesData class"
       ))
       if (sample_vars_as_factors) {
