@@ -60,6 +60,7 @@ test_that("geneSpec module works as expected in the test app", {
   app$setValue(ns("my_genes-lock_button"), TRUE)
 
   # Now we just select a small subset of chromosomes.
+  app$waitForValue(ns2("rowData_var_Chromosome-content-selection"))
   app$setValue(
     ns2("rowData_var_Chromosome-content-selection"),
     c("X", "Y")

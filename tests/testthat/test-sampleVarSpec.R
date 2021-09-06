@@ -135,6 +135,7 @@ test_that("sampleVarSpec module works as expected in the test app", {
   # Now click on the levels button, set combination and click ok.
   app$click(ns("facet_var-levels_button"))
   first_combination <- list("< 18" = "2", ">= 18" = "2")  # Click on second column in both rows.
+  app$waitForValue(ns("facet_var-comb_assignment"))
   app$setValue(ns("facet_var-comb_assignment"), first_combination)
   app$waitForValue(ns("facet_var-comb_assignment"))
   app$click(ns("facet_var-ok"))
