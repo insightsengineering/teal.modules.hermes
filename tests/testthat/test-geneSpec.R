@@ -61,7 +61,7 @@ test_that("geneSpec module works as expected in the test app", {
 
   # Now we just select a small subset of chromosomes.
   app$setValue(
-    ns2("389cac31b9a16404f4da7eccf5f5643e-content-selection"),
+    ns2("rowData_var_Chromosome-content-selection"),
     c("X", "Y")
   )
 
@@ -90,7 +90,7 @@ test_that("geneSpec module works as expected in the test app", {
   expect_identical(output_text, "mean(GeneID:139604, GeneID:2576, GeneID:3423)")
 
   # Now we remove the filter.
-  app$click(ns2("389cac31b9a16404f4da7eccf5f5643e-remove"))
+  app$click(ns2("rowData_var_Chromosome-remove"))
 
   # We select a gene via text input.
   app$click(ns("my_genes-text_button"))
