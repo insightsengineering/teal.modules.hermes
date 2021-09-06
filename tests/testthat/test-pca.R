@@ -87,7 +87,8 @@ test_that("tm_g_pca works as expected in the sample app", {
   expect_snapshot_screenshot(
     app,
     id = ns("plot_cor"),
-    name = "initial_cor_plot.png"
+    name = "initial_cor_plot.png",
+    wait_for_plot = TRUE
   )
 
   expect_snapshot_screenshot(
@@ -97,7 +98,6 @@ test_that("tm_g_pca works as expected in the sample app", {
   )
 
   # Now update experiment name, assay name, cluster & matrix option on correlation tab.
-  app$setValue(ns("tab_selected"), "PC and Sample Correlation")
   app$setValue(ns("experiment_name"), "hd2")
   app$setValue(ns("assay_name"), "voom")
   app$setValue(ns("cluster_columns"), TRUE)
@@ -106,7 +106,8 @@ test_that("tm_g_pca works as expected in the sample app", {
   expect_snapshot_screenshot(
     app,
     id = ns("plot_cor"),
-    name = "update1_cor_plot.png"
+    name = "update1_cor_plot.png",
+    wait_for_plot = TRUE
   )
 
   expect_snapshot_screenshot(
@@ -118,7 +119,6 @@ test_that("tm_g_pca works as expected in the sample app", {
   # Now go back to pca tab and update experiment, assay name, variance % option,
   # label option and matrix option.
   app$setValue(ns("tab_selected"), "PCA")
-  app$setValue(ns("experiment_name"), "hd2")
   app$setValue(ns("assay_name"), "rpkm")
   app$setValue(ns("x_var"), "3")
   app$setValue(ns("y_var"), "4")
@@ -129,7 +129,8 @@ test_that("tm_g_pca works as expected in the sample app", {
   expect_snapshot_screenshot(
     app,
     id = ns("plot_pca"),
-    name = "update2_pca_plot.png"
+    name = "update2_pca_plot.png",
+    wait_for_plot = TRUE
   )
 
   expect_snapshot_screenshot(
@@ -140,7 +141,6 @@ test_that("tm_g_pca works as expected in the sample app", {
 
   # Update experiment / assay (ensure xvar and yvar revert back to PC1 and PC2, assay to counts)
   # and add color_var for pca.
-  app$setValue(ns("tab_selected"), "PCA")
   app$setValue(ns("experiment_name"), "hd1")
   app$setValue(ns("color_var"), "AGE18")
 
@@ -165,7 +165,8 @@ test_that("tm_g_pca works as expected in the sample app", {
   expect_snapshot_screenshot(
     app,
     id = ns("plot_pca"),
-    name = "update3_pca_plot.png"
+    name = "update3_pca_plot.png",
+    wait_for_plot = TRUE
   )
 
   expect_snapshot_screenshot(
@@ -196,6 +197,8 @@ test_that("tm_g_pca works as expected in the sample app", {
 
   ns2 <- NS("teal-main_ui-filter_panel-add_MAE_filter")
   app$setValue(ns2("subjects-var_to_add"), "sex")
+  # Before selecting, it seems we need to wait a bit for the initial state.
+  app$waitForValue(ns2("subjects-var_sex-content-selection"))
   app$setValue(ns2("subjects-var_sex-content-selection"), "M")
 
   # Ensure xvar and yvar get resetted to pc1 and pc2.
@@ -208,7 +211,8 @@ test_that("tm_g_pca works as expected in the sample app", {
   expect_snapshot_screenshot(
     app,
     id = ns("plot_pca"),
-    name = "update5_pca_plot.png"
+    name = "update5_pca_plot.png",
+    wait_for_plot = TRUE
   )
 
   expect_snapshot_screenshot(
@@ -220,11 +224,9 @@ test_that("tm_g_pca works as expected in the sample app", {
   # Update to cor tab.
   app$setValue(ns("tab_selected"), "PC and Sample Correlation")
 
-  expect_snapshot_screenshot(
-    app,
-    id = ns("plot_cor"),
-    name = "update5_cor_plot.png"
-  )
+  # Check that correct validation message is displayed.
+  plot_message <- app$waitForOutputElement(ns("plot_cor"), "message")
+  expect_identical(plot_message, "Obtained NA results in the correlation matrix, therefore no plot can be produced")
 
   expect_snapshot_screenshot(
     app,
@@ -232,7 +234,7 @@ test_that("tm_g_pca works as expected in the sample app", {
     name = "update5_cor_table.png"
   )
 
-  # Update filter to F to get a validate msg.
+  # Update filter to F, look at PCA plot, to get another validate msg.
   app$setValue(ns("tab_selected"), "PCA")
   app$setValue(ns2("subjects-var_sex-content-selection"), "F")
 

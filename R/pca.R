@@ -298,7 +298,7 @@ srv_g_pca <- function(input,
       colour = color_var,
       variance_percentage = var_pct,
       label = label,
-      label.repel = TRUE
+      label.repel = label
     )
   })
 
@@ -308,12 +308,15 @@ srv_g_pca <- function(input,
     cor_result <- cor_result()
     cluster_columns <- input$cluster_columns
 
+    validate(need(
+      !any(is.na(cor_result)),
+      "Obtained NA results in the correlation matrix, therefore no plot can be produced"
+    ))
     hermes::autoplot(
       object = cor_result,
       cluster_columns = cluster_columns
     )
   })
-
 }
 
 #' @describeIn tm_g_pca sample module function.
