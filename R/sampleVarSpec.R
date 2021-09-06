@@ -93,7 +93,7 @@ h_assign_to_group_list <- function(x) {
   x_vec <- unlist(x)
   x_split <- split(names(x_vec), x_vec)
   new_levels <- sapply(x_split, hermes::h_short_list, sep = "/")
-  setNames(x_split, new_levels)
+  stats::setNames(x_split, new_levels)
 }
 
 #' Helper Function for Collapsing of Factor Levels

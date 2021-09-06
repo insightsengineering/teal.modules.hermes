@@ -32,10 +32,12 @@ Imports:
   MultiAssayExperiment,
   shinyRadioMatrix,
   shinyWidgets,
+  stats,
   stringr,
   SummarizedExperiment,
   teal.devel,
-  tern
+  tern,
+  utils.nest
 Suggests:
   dplyr,
   globals,
