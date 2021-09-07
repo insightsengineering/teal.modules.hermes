@@ -29,11 +29,11 @@
 #' shinyApp(app$ui, app$server)
 #' }
 tm_g_forest_tte <- function(label,
-                         mae_name,
-                         pre_output = NULL,
-                         post_output = NULL,
-                         plot_height = c(600L, 200L, 2000L),
-                         plot_width = c(1360L, 500L, 2000L)) {
+                            mae_name,
+                            pre_output = NULL,
+                            post_output = NULL,
+                            plot_height = c(600L, 200L, 2000L),
+                            plot_width = c(1360L, 500L, 2000L)) {
   assert_string(label)
   assert_string(mae_name)
   assert_tag(pre_output, null.ok = TRUE)
@@ -80,7 +80,7 @@ ui_g_forest_tte <- function(id, datasets, mae_name,pre_output, post_output) {
   )
 }
 
-#' @describeIn tm_g_forest_tee sets up the server with reactive graph.
+#' @describeIn tm_g_forest_tte sets up the server with reactive graph.
 #' @inheritParams module_arguments
 #' @export
 srv_g_forest_tte <- function(input,
@@ -178,18 +178,18 @@ srv_g_forest_tte <- function(input,
     probs <- input$probs
     colname <- attr(adtte_counts, "gene_cols")
 
-    adtte_counts %>%
-      tern::df_explicit_na() %>%
-      dplyr::mutate(
-        AVAL = tern::day2month(AVAL),
-        AVALU = "Months",
-        is_event = CNSR == 0,
-        gene_bin = tern::cut_quantile_bins(
-          adtte_counts[[colname]],
-          probs = probs,
-          labels = c("Low", "High")
-        )
+    adtte_counts <- tern::df_explicit_na(adtte_counts)
+    adtte_counts <- dplyr::mutate(
+      adtte_counts,
+      AVAL = tern::day2month(.data$AVAL),
+      AVALU = "Months",
+      is_event = .data$CNSR == 0,
+      gene_bin = tern::cut_quantile_bins(
+        adtte_counts[[colname]],
+        probs = probs,
+        labels = c("Low", "High")
       )
+    )
   })
 
   tbl <- reactive({
@@ -210,13 +210,13 @@ srv_g_forest_tte <- function(input,
 
   result <- reactive({
     tbl <- tbl()
-
-    rtables::basic_table() %>%
-      tern::tabulate_survival_subgroups(
-        df = tbl,
-        vars = c("n_tot_events", "n", "n_events", "median", "hr", "ci"),
-        time_unit = adtte_final()$AVALU[1]
-      )
+    lyt <- rtables::basic_table()
+    tern::tabulate_survival_subgroups(
+      lyt = lyt,
+      df = tbl,
+      vars = c("n_tot_events", "n", "n_events", "median", "hr", "ci"),
+      time_unit = adtte_final()$AVALU[1]
+    )
   })
 
   forest_plot <- reactive({
@@ -240,13 +240,13 @@ srv_g_forest_tte <- function(input,
 #' # Alternatively you can run the sample module with this function call:
 #' sample_tm_g_forest_tte()
 #' }
-sample_tm_g_forest_tte <- function() {
+sample_tm_g_forest_tte <- function() { # nolint # nousage
   mae <- hermes::multi_assay_experiment
   mae_data <- dataset("MAE", mae)
   adsl <- cdisc_dataset("ADSL", rtables::ex_adsl)
   adtte <- cdisc_dataset("ADTTE", rtables::ex_adtte)
-  data <- teal_data(mae_data, adsl, adtte) %>%
-    mutate_join_keys("MAE", "MAE", c("STUDYID", "USUBJID"))
+  data <- teal_data(mae_data, adsl, adtte)
+  data <- mutate_join_keys(data, "MAE", "MAE", c("STUDYID", "USUBJID"))
   app <- init(
     data = data,
     modules = root_modules(
