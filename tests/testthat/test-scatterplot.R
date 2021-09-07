@@ -84,11 +84,12 @@ test_that("tm_g_scatterplot works as expected in the sample app", {
   now_y_var <- app$waitForValue(ns("y_spec-genes"))
   expect_identical(now_y_var, "GeneID:1820")
 
-  # Now change the experiment_name, genes, method.
+  # Now change the experiment_name, genes, method, color.
   app$setValue(ns("experiment_name"), "hd2")
   app$setValue(ns("x_spec-genes"), "GeneID:5205")
   app$setValue(ns("y_spec-genes"), "GeneID:102723793")
   app$setValue(ns("smooth_method"), "loess")
+  app$setValue(ns("facet_var-sample_var"), "AGE18")
 
   # Final plot.
   expect_snapshot_screenshot(
