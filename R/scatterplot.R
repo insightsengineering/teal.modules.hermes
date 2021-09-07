@@ -101,9 +101,10 @@ ui_g_scatterplot <- function(id,
         input_id = "settings_group",
         teal.devel::panel_item(
           input_id = "settings_item",
+          collapsed = TRUE,
           title = "Additional Settings",
-          optionalSelectInput(ns("color_var"), "Optional color variable"),
-          optionalSelectInput(ns("facet_var"), "Optional facet variable"),
+          sampleVarSpecInput(ns("color_var"), "Optional color variable"),
+          sampleVarSpecInput(ns("facet_var"), "Optional facet variable"),
           selectInput(ns("smooth_method"), "Select smoother", smooth_method_choices)
         )
       )
@@ -130,7 +131,9 @@ srv_g_scatterplot <- function(input,
     req(input$experiment_name)  # Important to avoid running into NULL here.
 
     mae <- datasets$get_data(mae_name, filtered = TRUE)
-    mae[[input$experiment_name]]
+    object <- mae[[input$experiment_name]]
+    SummarizedExperiment::colData(object) <- hermes::df_char_to_factor(SummarizedExperiment::colData(object))
+    object
   })
 
   # When the filtered data set or the chosen experiment changes, update
@@ -157,12 +160,6 @@ srv_g_scatterplot <- function(input,
     SummarizedExperiment::assayNames(object)
   })
 
-  # When the chosen experiment changes, recompute the colData variables.
-  col_data_vars <- eventReactive(input$experiment_name, ignoreNULL = TRUE, {
-    object <- experiment_data()
-    names(SummarizedExperiment::colData(object))
-  })
-
   # When the assay names change, update the choices for assay.
   observeEvent(assay_names(), {
     assay_name_choices <- setdiff(
@@ -177,32 +174,21 @@ srv_g_scatterplot <- function(input,
     )
   })
 
-  # When the colData variables change, update the choices for facet_var and color_var.
-
-  observeEvent(col_data_vars(), {
-    facet_color_var_choices <- col_data_vars()
-
-    id_names <- c("facet_var", "color_var")
-    for (i in seq_along(id_names)) {
-      updateOptionalSelectInput(
-        session,
-        id_names[i],
-        choices = facet_color_var_choices,
-        selected = character()
-      )
-    }
-  })
-
+  sample_var_specs <- multiSampleVarSpecServer(
+    inputIds = c("facet_var", "color_var"),
+    experiment_name = reactive({input$experiment_name}),
+    original_data = experiment_data
+  )
   x_spec <- geneSpecServer("x_spec", summary_funs, genes)
   y_spec <- geneSpecServer("y_spec", summary_funs, genes)
 
   output$plot <- renderPlot({
     # Resolve all reactivity.
-    experiment_data <- experiment_data()
+    experiment_data <- sample_var_specs$experiment_data()
     x_spec <- x_spec()
     y_spec <- y_spec()
-    facet_var <- input$facet_var
-    color_var <- input$color_var
+    facet_var <- sample_var_specs$vars$facet_var()
+    color_var <- sample_var_specs$vars$color_var()
     assay_name <- input$assay_name
     smooth_method <- input$smooth_method
 

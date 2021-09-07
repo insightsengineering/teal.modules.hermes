@@ -20,4 +20,7 @@ upstream_repos:
   insightsengineering/random.cdisc.data:
     repo: insightsengineering/random.cdisc.data
     host: https://github.com
+  szelepke/shinyRadioMatrix:
+    repo: szelepke/shinyRadioMatrix
+    host: https://github.com
 downstream_repos:

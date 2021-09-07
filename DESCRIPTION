@@ -26,14 +26,18 @@ Imports:
   checkmate,
   DT,
   edgeR,
+  forcats,
   hermes,
   lifecycle,
   MultiAssayExperiment,
+  shinyRadioMatrix,
   shinyWidgets,
+  stats,
   stringr,
   SummarizedExperiment,
   teal.devel,
-  tern
+  tern,
+  utils.nest
 Suggests:
   dplyr,
   globals,
