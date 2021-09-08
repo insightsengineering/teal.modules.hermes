@@ -1,5 +1,5 @@
 # module
-tm_g_pca <- function(label,
+tm_g_pca2 <- function(label,
                      mae_name,
                      pre_output = NULL,
                      post_output = NULL) {
@@ -10,11 +10,11 @@ tm_g_pca <- function(label,
 
   module(
     label = label,
-    server = srv_g_pca,
+    server = srv_g_pca2,
     server_args = list(
       mae_name = mae_name
     ),
-    ui = ui_g_pca,
+    ui = ui_g_pca2,
     ui_args = list(
       mae_name = mae_name,
       pre_output = pre_output,
@@ -26,7 +26,7 @@ tm_g_pca <- function(label,
 
 # ui
 
-ui_g_pca <- function(id,
+ui_g_pca2 <- function(id,
                      datasets,
                      mae_name,
                      pre_output,
@@ -48,11 +48,12 @@ ui_g_pca <- function(id,
         selectizeInput(ns("x_var"), "Select X-axis PC", choices = ""),
         selectizeInput(ns("y_var"), "Select Y-axis PC", choices = ""),
       ),
+      tags$label("Use only Top Variance Genes"),
+      shinyWidgets::switchInput(ns("filter_top"), value = FALSE, size = "mini"),
       conditionalPanel(
-        condition = "input.filter.includes('samples')",
+        condition = "input.filter_top",
         ns = ns,
-        tags$label("Gene Filter Settings", class = "text-primary"),
-        sliderInput(ns("n_top"), label = ("Filter Genes with Max. Variance"), min = 10, max = 5000, value = 500)
+        sliderInput(ns("n_top"), label = "Number of Top Genes", min = 10, max = 5000, value = 500)
       ),
       tags$label("Show Variance %"),
       shinyWidgets::switchInput(ns("var_pct"), value = TRUE, size = "mini"),
@@ -102,7 +103,7 @@ ui_g_pca <- function(id,
 
 # server
 
-  srv_g_pca <- function(input,
+  srv_g_pca2 <- function(input,
                         output,
                         session,
                         datasets,
@@ -165,6 +166,7 @@ ui_g_pca <- function(id,
     pca_result <- reactive({
       experiment_data <- experiment_data()
       assay_name <- input$assay_name
+      filter_top <- input$filter_top
       n_top <- input$n_top
 
       validate(need(hermes::is_hermes_data(experiment_data), "please use HermesData() on input experiments"))
@@ -174,7 +176,7 @@ ui_g_pca <- function(id,
         "Sample size is too small. PCA needs more than 2 samples."
       ))
 
-      hermes::calc_pca(experiment_data, assay_name, n_top = n_top)
+      hermes::calc_pca(experiment_data, assay_name, n_top = if (filter_top) n_top else NULL)
     })
 
     # When experiment or assay name changes, update choices for PCs in x_var and y_var.
@@ -295,3 +297,23 @@ ui_g_pca <- function(id,
       )
     })
   }
+
+  sample_tm_g_pca2 <- function() {
+    mae <- hermes::multi_assay_experiment
+    mae_data <- dataset("MAE", mae)
+    data <- teal_data(mae_data)
+    app <- init(
+      data = data,
+      modules = root_modules(
+        static = {
+          tm_g_pca2(
+            label = "pca",
+            mae_name = "MAE"
+          )
+        }
+      )
+    )
+    shinyApp(app$ui, app$server)
+  }
+
+  sample_tm_g_pca2()
