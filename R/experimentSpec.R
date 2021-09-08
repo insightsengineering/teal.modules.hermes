@@ -13,7 +13,7 @@
 experimentSpecInput <- function(inputId,
                                 datasets,
                                 mae_name,
-                                label_experiments = "Select experiment") {
+                                label_experiments = "Select Experiment") {
   assert_string(inputId)
   assert_r6(datasets)
   assert_string(mae_name, min.chars = 1L)

@@ -8,7 +8,7 @@ experimentSpecInput(
   inputId,
   datasets,
   mae_name,
-  label_experiments = "Select experiment"
+  label_experiments = "Select Experiment"
 )
 }
 \arguments{
