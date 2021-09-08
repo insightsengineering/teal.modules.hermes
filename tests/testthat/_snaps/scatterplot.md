@@ -15,12 +15,12 @@
                   <code>MyMAE</code>
                 </span>
                 <div class="form-group shiny-input-container">
-                  <label class="control-label" id="testid-experiment_name-label" for="testid-experiment_name">Select experiment</label>
+                  <label class="control-label" id="testid-experiment-name-label" for="testid-experiment-name">Select Experiment</label>
                   <div>
-                    <select id="testid-experiment_name"><option value="hd1" selected>hd1</option>
+                    <select id="testid-experiment-name"><option value="hd1" selected>hd1</option>
       <option value="hd2">hd2</option>
       <option value="hd3">hd3</option></select>
-                    <script type="application/json" data-for="testid-experiment_name" data-nonempty="">{"plugins":["selectize-plugin-a11y"]}</script>
+                    <script type="application/json" data-for="testid-experiment-name" data-nonempty="">{"plugins":["selectize-plugin-a11y"]}</script>
                   </div>
                 </div>
                 <div class="form-group shiny-input-container">
