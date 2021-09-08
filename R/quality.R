@@ -112,13 +112,11 @@ ui_g_quality <- function(id,
                          pre_output,
                          post_output) {
   ns <- NS(id)
-  mae <- datasets$get_data(mae_name, filtered = FALSE)
-  experiment_name_choices <- names(mae)
   teal.devel::standard_layout(
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
-      selectInput(ns("experiment_name"), "Select Experiment", experiment_name_choices),
+      experimentSpecInput(ns("experiment"), datasets, mae_name),
       selectInput(
         ns("plot_type"),
         "Plot Type",
@@ -188,73 +186,14 @@ srv_g_quality <- function(input,
                           session,
                           datasets,
                           mae_name) {
+  experiment <- experimentSpecServer(
+    "experiment",
+    datasets = datasets,
+    mae_name = mae_name
+  )
 
-  # Reactive function for experiment data since it is used in multiple places below.
-  experiment_data <- reactive({
-    experiment_name <- input$experiment_name
-
-    req(experiment_name)
-
-    mae <- datasets$get_data(mae_name, filtered = TRUE)
-    result <- mae[[experiment_name]]
-
-    validate(need(hermes::is_hermes_data(result), "Please use HermesData() first on experiments"))
-    already_added <- ("control_quality_flags" %in% names(hermes::metadata(result)))
-    validate(need(!already_added, "Quality flags have already been added to this experiment"))
-    if (any(c("cpm", "rpkm", "tpm", "voom") %in% SummarizedExperiment::assayNames(result))) {
-      showNotification("Original normalized assays will be overwritten", type = "warning")
-    }
-
-    result
-  })
-
-  # When the chosen experiment changes, recompute the annotations available.
-  annotations <- eventReactive(input$experiment_name, {
-    object <- experiment_data()
-    names(hermes::annotation(object))
-  })
-
-  # When the chosen experiment changes, recompute the assay names.
-  assays <- eventReactive(input$experiment_name, {
-    object <- experiment_data()
-    SummarizedExperiment::assayNames(object)
-  })
-
-  # When the chosen experiment changes, recompute the minimum and maximum CPM available.
-  min_cpm_calc <- eventReactive(input$experiment_name, {
-    object <- experiment_data()
-    floor(min(edgeR::cpm(hermes::counts(object))))
-  })
-
-  max_cpm_calc <- eventReactive(input$experiment_name, {
-    object <- experiment_data()
-    floor(max(edgeR::cpm(hermes::counts(object))))
-  })
-
-  # When the chosen experiment changes, recompute the minimum and maximum library size (depth) available.
-  min_depth_calc <- eventReactive(input$experiment_name, {
-    object <- experiment_data()
-    min(colSums(hermes::counts(object)))
-  })
-
-  max_depth_calc <- eventReactive(input$experiment_name, {
-    object <- experiment_data()
-    max(colSums(hermes::counts(object)))
-  })
-
-  observeEvent(annotations(), {
-    annotations <- annotations()
-
-    updateOptionalSelectInput(
-      session,
-      "annotate",
-      choices = annotations,
-      selected = "WidthBP"
-    )
-  })
-
-  observeEvent(input$experiment_name, {
-    assays <- assays()
+  observeEvent(experiment$assays(), {
+    assays <- experiment$assays()
 
     updateSelectInput(
       session,
@@ -264,29 +203,42 @@ srv_g_quality <- function(input,
     )
   })
 
-  observeEvent(input$experiment_name, {
-    min_cpm_calc <- min_cpm_calc()
-    max_cpm_calc <- max_cpm_calc()
-
-    updateSliderInput(
-      session,
-      "min_cpm",
-      min = min_cpm_calc,
-      max = max_cpm_calc,
-      value = min_cpm_calc
+  # When the chosen experiment changes, recompute properties.
+  experiment_properties <- eventReactive(experiment$name(), {
+    data <- experiment$data()
+    cpm <- edgeR::cpm(hermes::counts(data))
+    depth <- colSums(hermes::counts(data))
+    list(
+      annotations = names(hermes::annotation(data)),
+      min_cpm_calc = floor(min(cpm)),
+      max_cpm_calc = floor(max(cpm)),
+      min_depth_calc = min(depth),
+      max_depth_calc = max(depth)
     )
   })
 
-  observeEvent(input$experiment_name, {
-    min_depth_calc <- min_depth_calc()
-    max_depth_calc <- max_depth_calc()
+  observeEvent(experiment_properties(), {
+    properties <- experiment_properties()
 
+    updateOptionalSelectInput(
+      session,
+      "annotate",
+      choices = properties$annotations,
+      selected = "WidthBP"
+    )
+    updateSliderInput(
+      session,
+      "min_cpm",
+      min = properties$min_cpm_calc,
+      max = properties$max_cpm_calc,
+      value = properties$min_cpm_calc
+    )
     updateSliderInput(
       session,
       "min_depth_continuous",
-      min = min_depth_calc,
-      max = max_depth_calc,
-      value = min_depth_calc
+      min = properties$min_depth_calc,
+      max = properties$max_depth_calc,
+      value = properties$min_depth_calc
     )
   })
 
@@ -323,7 +275,14 @@ srv_g_quality <- function(input,
 
   object_flagged <- reactive({
     control <- control()
-    object <- experiment_data()
+    object <- experiment$data()
+
+    already_added <- ("control_quality_flags" %in% names(hermes::metadata(object)))
+    validate(need(!already_added, "Quality flags have already been added to this experiment"))
+    if (any(c("cpm", "rpkm", "tpm", "voom") %in% SummarizedExperiment::assayNames(object))) {
+      showNotification("Original normalized assays will be overwritten", type = "warning")
+    }
+
     hermes::add_quality_flags(
       object,
       control = control

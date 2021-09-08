@@ -80,8 +80,6 @@ ui_g_scatterplot <- function(id,
                              pre_output,
                              post_output) {
   ns <- NS(id)
-  mae <- datasets$get_data(mae_name, filtered = FALSE)
-  experiment_name_choices <- names(mae)
 
   smooth_method_choices <- c(
     Linear = "lm",
@@ -93,7 +91,7 @@ ui_g_scatterplot <- function(id,
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
-      selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
+      experimentSpecInput(ns("experiment"), datasets, mae_name),
       selectInput(ns("assay_name"), "Select assay", choices = ""),
       geneSpecInput(ns("x_spec"), summary_funs, label_genes = "Select x gene(s)"),
       geneSpecInput(ns("y_spec"), summary_funs, label_genes = "Select y gene(s)"),
@@ -125,45 +123,17 @@ srv_g_scatterplot <- function(input,
                               mae_name,
                               exclude_assays,
                               summary_funs) {
-  # When the filtered data set of the chosen experiment changes, update the
-  # experiment data object.
-  experiment_data <- reactive({
-    req(input$experiment_name)  # Important to avoid running into NULL here.
-
-    mae <- datasets$get_data(mae_name, filtered = TRUE)
-    object <- mae[[input$experiment_name]]
-    SummarizedExperiment::colData(object) <- hermes::df_char_to_factor(SummarizedExperiment::colData(object))
-    object
-  })
-
-  # When the filtered data set or the chosen experiment changes, update
-  # the calls that subset the genes of the chosen experiment data object.
-  experiment_subset_calls <- reactive({
-    req(input$experiment_name)  # Important to avoid running into NULL here.
-
-    filtered_mae <- datasets$get_filtered_datasets(mae_name)
-    filter_states <- filtered_mae$get_filter_states(input$experiment_name)
-    subset_queue <- filter_states$queue_get("subset")
-    sapply(subset_queue, function(x) x$get_call())
-  })
-
-  # When the chosen gene subset changes, we recompute gene names.
-  genes <- eventReactive(experiment_subset_calls(), ignoreNULL = FALSE, {
-    object <- experiment_data()
-    gene_ids <- rownames(object)
-    gene_ids
-  })
-
-  # When the chosen experiment changes, recompute the assay names.
-  assay_names <- eventReactive(input$experiment_name, ignoreNULL = TRUE, {
-    object <- experiment_data()
-    SummarizedExperiment::assayNames(object)
-  })
+  experiment <- experimentSpecServer(
+    "experiment",
+    datasets = datasets,
+    mae_name = mae_name
+  )
 
   # When the assay names change, update the choices for assay.
-  observeEvent(assay_names(), {
+  observeEvent(experiment$assays(), {
+    assays <- experiment$assays()
     assay_name_choices <- setdiff(
-      assay_names(),
+      assays,
       exclude_assays
     )
 
@@ -176,11 +146,11 @@ srv_g_scatterplot <- function(input,
 
   sample_var_specs <- multiSampleVarSpecServer(
     inputIds = c("facet_var", "color_var"),
-    experiment_name = reactive({input$experiment_name}),
-    original_data = experiment_data
+    experiment_name = experiment$name,
+    original_data = experiment$data
   )
-  x_spec <- geneSpecServer("x_spec", summary_funs, genes)
-  y_spec <- geneSpecServer("y_spec", summary_funs, genes)
+  x_spec <- geneSpecServer("x_spec", summary_funs, experiment$genes)
+  y_spec <- geneSpecServer("y_spec", summary_funs, experiment$genes)
 
   output$plot <- renderPlot({
     # Resolve all reactivity.
@@ -208,9 +178,6 @@ srv_g_scatterplot <- function(input,
       is.null(color_var) || isTRUE(color_var %in% names(SummarizedExperiment::colData(experiment_data))),
       cancelOutput = FALSE
     )
-
-    # Validate and give useful messages to the user. Note: no need to duplicate here req() from above.
-    validate(need(hermes::is_hermes_data(experiment_data), "please use HermesData() on input experiments"))
 
     hermes::draw_scatterplot(
       object = experiment_data,
