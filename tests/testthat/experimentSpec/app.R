@@ -74,4 +74,5 @@ my_app <- function() {
   )
   shinyApp(app$ui, app$server)
 }
+
 my_app()
