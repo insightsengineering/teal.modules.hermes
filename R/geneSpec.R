@@ -347,9 +347,24 @@ geneSpecServer <- function(inputId,
       }
     })
 
+    # When the gene choice is updated, then also set the names
+    # correctly by looking up in current choices.
+    named_genes <- eventReactive(input$genes, ignoreNULL = FALSE, {
+      genes <- input$genes
+      gene_choices <- gene_choices()
+      ret <- if (!is.null(genes)) {
+        which_id <- match(genes, gene_choices$id)
+        gene_names <- gene_choices$name[which_id]
+        stats::setNames(genes, gene_names)
+      } else {
+        NULL
+      }
+      ret
+    })
+
     reactive({
       hermes::gene_spec(
-        genes = input$genes,
+        genes = named_genes(),
         fun = funs[[input$fun_name]],
         fun_name = input$fun_name
       )
