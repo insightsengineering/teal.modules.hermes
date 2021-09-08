@@ -44,6 +44,12 @@ placed before the output to put the output into context (for example a title).}
 placed after the output to put the output into context (for example the \code{\link[shiny:helpText]{shiny::helpText()}}
 elements can be useful).}
 
+\item{plot_height}{(\code{list})\cr list of integers to set the default, minimum,
+and maximum plot height.}
+
+\item{plot_width}{(\code{list})\cr list of integers to set the default, minimum,
+and maximum plot width.}
+
 \item{id}{(\code{string})\cr
 the ID used to call the teal module's UI function.}
 
