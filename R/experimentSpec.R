@@ -30,6 +30,35 @@ experimentSpecInput <- function(inputId,
   )
 }
 
+h_order_genes <- function(genes) {
+  assert_data_frame(genes, any.missing = FALSE)
+  assert_set_equal(names(genes), c("id", "name"))
+  has_empty_name <- genes$name == ""
+  first_genes <- which(!has_empty_name)[order(genes[!has_empty_name, ]$name)]
+  last_genes <- which(has_empty_name)[order(genes[has_empty_name, ]$id)]
+  genes[c(first_genes, last_genes), ]
+}
+
+h_gene_data <- function(data, name_annotation) {
+  assert_true(hermes::is_hermes_data(data))
+  gene_ids <- hermes::genes(data)
+  gene_names <- if (!is.null(name_annotation)) {
+    annotation_data <- hermes::annotation(data)
+    assert_subset(name_annotation, names(annotation_data))
+    annotation_vector <- annotation_data[[name_annotation]]
+    annotation_missing <- is.na(annotation_vector)
+    annotation_vector[annotation_missing] <- ""
+    annotation_vector
+  } else {
+    ""
+  }
+  gene_data <- data.frame(
+    id = gene_ids,
+    name = gene_names
+  )
+  h_order_genes(gene_data)
+}
+
 #' Module Server for Experiment Specification
 #'
 #' @description `r lifecycle::badge("experimental")`
@@ -38,7 +67,8 @@ experimentSpecInput <- function(inputId,
 #'
 #' @inheritParams module_arguments
 #' @param name_annotation (`string` or `NULL`)\cr which annotation column to use as name
-#'   to return in the `genes` data. If `NULL`, then the `name` column will be set to `NA`.
+#'   to return in the `genes` data. If `NULL`, then the `name` column will be set to empty
+#'   strings.
 #' @param sample_vars_as_factors (`flag`)\cr whether to convert the sample variables
 #'   (columns in `colData()` of the experiment) from character to factor variables.
 #' @param with_mae_col_data (`flag`)\cr whether to include the `colData()` of the
@@ -182,23 +212,10 @@ experimentSpecServer <- function(inputId,
       sapply(subset_queue, function(x) x$get_call())
     })
 
-    # Only when the chosen gene subset changes, we recompute gene names.
+    # Only when the chosen gene subset changes, we recompute gene choices
     genes <- eventReactive(subset_calls(), ignoreNULL = FALSE, {
       data <- data()
-      hermes::genes(data)
-      gene_ids <- hermes::genes(data)
-      gene_names <- if (!is.null(name_annotation)) {
-        annotation_data <- hermes::annotation(data)
-        assert_subset(name_annotation, names(annotation_data))
-        tern::sas_na(annotation_data[[name_annotation]])
-      } else {
-        NA_character_
-      }
-      gene_data <- data.frame(
-        id = gene_ids,
-        name = gene_names
-      )
-      gene_data[order(gene_data$name, na.last = TRUE), , drop = FALSE]
+      h_gene_data(data, name_annotation)
     })
 
     # When the chosen experiment changes, recompute the assay names.

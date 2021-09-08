@@ -221,7 +221,7 @@ h_parse_genes <- function(words, choices) {
 #'   output$result <- renderText({
 #'     validate_gene_spec(
 #'       gene_spec(),
-#'       gene_choices()
+#'       gene_choices()$id
 #'     )
 #'     gene_spec <- gene_spec()
 #'     gene_spec$get_label()
@@ -380,20 +380,19 @@ geneSpecServer <- function(inputId,
 #' one gene selected and that all genes are included in possible choices.
 #'
 #' @param gene_spec (`GeneSpec`)\cr gene specification.
-#' @param gene_choices (`data.frame`)\cr all possible gene choices, with `id`
-#'   and `name` columns.
+#' @param gene_choices (`character`)\cr all possible gene choices.
 #'
 #' @export
 validate_gene_spec <- function(gene_spec,
                                gene_choices) {
   assert_r6(gene_spec, "GeneSpec")
-  assert_data_frame(gene_choices)
+  assert_character(gene_choices)
 
   validate(need(
     !is.null(gene_spec$get_genes()),
     "please select at least one gene"
   ))
-  genes_not_included <- setdiff(gene_spec$get_genes(), gene_choices$id)
+  genes_not_included <- setdiff(gene_spec$get_genes(), gene_choices)
   n_not_incl <- length(genes_not_included)
   validate(need(
     identical(n_not_incl, 0L),

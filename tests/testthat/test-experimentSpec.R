@@ -48,7 +48,7 @@ test_that("experimentSpec module works as expected in the test app", {
   app$setValue(ns("property"), "genes")
   expect_match(
     app$waitForValue(ns("head"), iotype = "output"),
-    '"GeneID:101927746"\\s+"GeneID:1820"\\s+"GeneID:101929818"\\s+"GeneID:94115"'
+    "              id  name\n249 GeneID:10061 ABCF2\n966    GeneID:28   ABO\n532"
   )
   app$setValue(ns("property"), "assays")
   expect_match(

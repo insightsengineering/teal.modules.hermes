@@ -40,7 +40,7 @@ server <- function(input,
   output$result <- renderText({
     validate_gene_spec(
       gene_spec(),
-      gene_choices()
+      gene_choices()$id
     )
     gene_spec <- gene_spec()
     gene_spec$get_label()
