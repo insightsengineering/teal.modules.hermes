@@ -126,6 +126,26 @@ ui_g_pca2 <- function(id,
       dat$get_filter_states(input$experiment_name)$get_call()
     })
 
+    # Total number of genes at the moment.
+    n_genes <- reactive({
+      experiment_data <- experiment_data()
+      nrow(experiment_data)
+    })
+
+    # When the total number changes or gene filter is activated, update slider max.
+    observeEvent(list(n_genes(), input$filter_top), {
+      n_genes <- n_genes()
+      filter_top <- input$filter_top
+      if (filter_top) {
+        n_top <- input$n_top
+        updateSliderInput(
+          inputId = "n_top",
+          value = min(n_top, n_genes),
+          max = n_genes
+        )
+      }
+    })
+
     # When the chosen experiment changes, recompute the assay names.
     assay_names <- eventReactive(input$experiment_name, ignoreNULL = TRUE, {
       object <- experiment_data()
