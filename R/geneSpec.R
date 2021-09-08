@@ -103,20 +103,26 @@ geneSpecInput <- function(inputId,
 #' shows a notification if not all `selected` genes were available.
 #'
 #' @inheritParams module_arguments
-#' @inheritParams teal::updateOptionalSelectInput
+#' @param selected (`character`)\cr currently selected gene IDs.
+#' @param choices (`data.frame`)\cr containing `id` and `name` columns of the
+#'   new choices.
 #'
 #' @export
 h_update_gene_selection <- function(session,
                                     inputId,
                                     selected,
                                     choices) {
-  is_new_selected <- selected %in% choices
+  is_new_selected <- selected %in% choices$id
   is_removed <- !is_new_selected
   updateOptionalSelectInput(
     session,
     inputId = inputId,
     selected = selected[is_new_selected],
-    choices = choices
+    choices = value_choices(
+      data = choices,
+      var_choices = "id",
+      var_label = "name"
+    )
   )
   n_removed <- sum(is_removed)
   if (n_removed > 0) {
@@ -136,8 +142,8 @@ h_update_gene_selection <- function(session,
 #' @inheritParams module_arguments
 #' @param funs (static named `list`)\cr names of this list will be used for the function
 #'   selection drop down menu.
-#' @param gene_choices (reactive `character`)\cr returns the possible gene choices to
-#'   populate in the UI.
+#' @param gene_choices (reactive `data.frame`)\cr returns the possible gene choices to
+#'   populate in the UI, as a `data.frame` with columns `id` and `name`.
 #' @param label_modal_title (`string`)\cr title for the dialog that asks for the text input.
 #' @param label_modal_footer (`character`)\cr lines of text to use for the footer of the dialog.
 #'
@@ -172,7 +178,12 @@ h_update_gene_selection <- function(session,
 #'     mae <- datasets$get_data("MAE", filtered = TRUE)
 #'     object <- mae[[1]]
 #'     gene_ids <- rownames(object)
-#'     sort(gene_ids)
+#'     gene_names <- SummarizedExperiment::rowData(object)$HGNC
+#'     gene_data <- data.frame(
+#'       id = gene_ids,
+#'       name = gene_names
+#'     )
+#'     gene_data[order(gene_data$name), ]
 #'   })
 #'   gene_spec <- geneSpecServer(
 #'     "my_genes",
@@ -323,19 +334,20 @@ geneSpecServer <- function(inputId,
 #' one gene selected and that all genes are included in possible choices.
 #'
 #' @param gene_spec (`GeneSpec`)\cr gene specification.
-#' @param gene_choices (`character`)\cr all possible gene choices.
+#' @param gene_choices (`data.frame`)\cr all possible gene choices, with `id`
+#'   and `name` columns.
 #'
 #' @export
 validate_gene_spec <- function(gene_spec,
                                gene_choices) {
   assert_r6(gene_spec, "GeneSpec")
-  assert_character(gene_choices)
+  assert_data_frame(gene_choices)
 
   validate(need(
     !is.null(gene_spec$get_genes()),
     "please select at least one gene"
   ))
-  genes_not_included <- setdiff(gene_spec$get_genes(), gene_choices)
+  genes_not_included <- setdiff(gene_spec$get_genes(), gene_choices$id)
   n_not_incl <- length(genes_not_included)
   validate(need(
     identical(n_not_incl, 0L),
