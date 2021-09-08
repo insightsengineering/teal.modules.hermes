@@ -12,11 +12,10 @@ h_update_gene_selection(session, inputId, selected, choices)
 \item{inputId}{(\code{string})\cr
 the ID used to call the module input.}
 
-\item{selected}{The new selected value (or multiple values if \code{multiple = TRUE}).
-To reset selected value, in case of multiple picker, use \code{character(0)}.}
+\item{selected}{(\code{character})\cr currently selected gene IDs.}
 
-\item{choices}{List of values to select from. If elements of the list are named
-then that name rather than the value is displayed to the user.}
+\item{choices}{(\code{data.frame})\cr containing \code{id} and \code{name} columns of the
+new choices.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

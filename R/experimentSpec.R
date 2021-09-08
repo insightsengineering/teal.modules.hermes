@@ -37,6 +37,8 @@ experimentSpecInput <- function(inputId,
 #' This defines the server part for the experiment specification.
 #'
 #' @inheritParams module_arguments
+#' @param name_annotation (`string` or `NULL`)\cr which annotation column to use as name
+#'   to return in the `genes` data. If `NULL`, then the `name` column will be set to `NA`.
 #' @param sample_vars_as_factors (`flag`)\cr whether to convert the sample variables
 #'   (columns in `colData()` of the experiment) from character to factor variables.
 #' @param with_mae_col_data (`flag`)\cr whether to include the `colData()` of the
@@ -44,7 +46,7 @@ experimentSpecInput <- function(inputId,
 #' @return List with the following reactive objects:
 #'   - `data`: the [`hermes::AnyHermesData`] experiment.
 #'   - `name`: the name of the experiment as selected by the user.
-#'   - `genes`: the names of the genes in `data`.
+#'   - `genes`: a `data.frame` with the genes in `data`, with columns `id` and `name`.
 #'   - `assays`: the names of the assays in `data`.
 #'
 #' @seealso [experimentSpecInput()] for the module UI.
@@ -132,11 +134,13 @@ experimentSpecInput <- function(inputId,
 experimentSpecServer <- function(inputId,
                                  datasets,
                                  mae_name,
+                                 name_annotation = "HGNC",
                                  sample_vars_as_factors = TRUE,
                                  with_mae_col_data = TRUE) {
   assert_string(inputId)
   assert_r6(datasets)
   assert_string(mae_name, min.chars = 1L)
+  assert_string(name_annotation, min.chars = 1L, null.ok = TRUE)
   assert_flag(sample_vars_as_factors)
   assert_flag(with_mae_col_data)
 
@@ -182,6 +186,19 @@ experimentSpecServer <- function(inputId,
     genes <- eventReactive(subset_calls(), ignoreNULL = FALSE, {
       data <- data()
       hermes::genes(data)
+      gene_ids <- hermes::genes(data)
+      gene_names <- if (!is.null(name_annotation)) {
+        annotation_data <- hermes::annotation(data)
+        assert_subset(name_annotation, names(annotation_data))
+        tern::sas_na(annotation_data[[name_annotation]])
+      } else {
+        NA_character_
+      }
+      gene_data <- data.frame(
+        id = gene_ids,
+        name = gene_names
+      )
+      gene_data[order(gene_data$name, na.last = TRUE), , drop = FALSE]
     })
 
     # When the chosen experiment changes, recompute the assay names.
