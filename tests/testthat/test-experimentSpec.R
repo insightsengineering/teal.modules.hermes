@@ -71,6 +71,7 @@ test_that("experimentSpec module works as expected in the test app", {
   # Filtering out all samples does not lead to an error but an empty experiment.
   ns2 <- NS("teal-main_ui-filter_panel-add_MAE_filter")
   app$setValue(ns2("subjects-var_to_add"), "sex")
+  app$waitForValue(ns2("subjects-var_to_add"))
   app$setValue(ns2("subjects-var_sex-content-selection"), character())
   expect_match(
     app$waitForValue(ns("summary"), iotype = "output"),
@@ -80,6 +81,7 @@ test_that("experimentSpec module works as expected in the test app", {
 
   # Same for filtering out all genes.
   app$setValue(ns2("hd2-row_to_add"), "Chromosome")
+  app$waitForValue(ns2("hd2-rowData_var_Chromosome-content-selection"))
   app$setValue(ns2("hd2-rowData_var_Chromosome-content-selection"), character())
   expect_match(
     app$waitForValue(ns("summary"), iotype = "output"),
