@@ -133,6 +133,34 @@ h_update_gene_selection <- function(session,
   }
 }
 
+#' Helper Function to Parse Genes
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' This helper function takes a vector of `words` and tries to match them
+#' with the `id` and `name` columns of possible gene choices.
+#'
+#' @param words (`character`)\cr containing gene IDs or names.
+#' @inheritParams h_update_gene_selection
+#' @return The subset of `choices` which matches `words` in ID or name.
+#'
+#' @export
+#' @examples
+#' h_parse_genes(
+#'   c("a", "2535"),
+#'   data.frame(id = as.character(2533:2537), name = letters[1:5])
+#' )
+h_parse_genes <- function(words, choices) {
+  assert_character(words, min.len = 1L)
+  assert_data_frame(choices, types = "character")
+  assert_set_equal(names(choices), c("id", "name"))
+
+  id_matches <- choices$id %in% words
+  name_matches <- choices$name %in% words
+  has_match <- id_matches | name_matches
+  choices[has_match, , drop = FALSE]
+}
+
 #' Module Server for Gene Signature Specification
 #'
 #' @description `r lifecycle::badge("experimental")`
@@ -227,7 +255,7 @@ geneSpecServer <- function(inputId,
                            gene_choices,
                            label_modal_title = "Enter list of genes",
                            label_modal_footer = c(
-                             "Please enter a comma-separated list of gene IDs.",
+                             "Please enter a comma-separated list of gene IDs and/or names.",
                              "(Note that genes not included in current choices will be removed)"
                            )) {
   assert_string(inputId)
@@ -238,6 +266,7 @@ geneSpecServer <- function(inputId,
 
   moduleServer(inputId, function(input, output, session) {
     # The `reactiveValues` object for storing current gene text input.
+    # This will also be a data frame with id and name columns.
     parsed_genes <- reactiveVal(NULL, label = "Parsed genes")
 
     # If the parsed genes are entered via text, update gene selection.
@@ -248,7 +277,7 @@ geneSpecServer <- function(inputId,
       h_update_gene_selection(
         session,
         inputId = "genes",
-        selected = parsed_genes,
+        selected = parsed_genes$id,
         choices = gene_choices
       )
     })
@@ -291,14 +320,16 @@ geneSpecServer <- function(inputId,
     # Show modal when the text button is clicked.
     observeEvent(input$text_button, {
       gene_choices <- gene_choices()
-      example_list <- hermes::h_short_list(gene_choices)
+      example_list <- hermes::h_short_list(head(setdiff(gene_choices$name, "")))
       showModal(dataModal(example_list))
     })
 
     # When OK button is pressed, attempt to parse the genes from the text.
+    # This can be IDs and/or names of genes.
     # Remove the modal and display notification message.
     observeEvent(input$ok_button, {
       gene_text <- input$gene_text
+      gene_choices <- gene_choices()
 
       if (!nzchar(gene_text)) {
         showNotification(
@@ -306,10 +337,10 @@ geneSpecServer <- function(inputId,
           type = "error"
         )
       } else {
-        parse_result <- h_extract_words(gene_text)
+        words <- h_extract_words(gene_text)
+        parse_result <- h_parse_genes(words, choices = gene_choices)
         showNotification(paste(
-          "Received", length(parse_result), "genes from text input",
-          hermes::h_parens(hermes::h_short_list(parse_result))
+          "Parsed total", nrow(parse_result), "genes from", length(words), "words"
         ))
         parsed_genes(parse_result)
         removeModal()
