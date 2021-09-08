@@ -33,7 +33,7 @@ test_that("tm_g_scatterplot works as expected in the sample app", {
   ns <- NS("teal-main_ui-modules_ui-root_scatterplot")
 
   # Check initial state of encodings.
-  initial_experiment_name <- app$waitForValue(ns("experiment_name"))
+  initial_experiment_name <- app$waitForValue(ns("experiment-name"))
   expect_identical(initial_experiment_name, "hd1")
 
   plot_message <- app$waitForOutputElement(ns("plot"), "message")
@@ -43,7 +43,7 @@ test_that("tm_g_scatterplot works as expected in the sample app", {
   )
 
   # Choose another experiment.
-  app$setValue(ns("experiment_name"), "hd2")
+  app$setValue(ns("experiment-name"), "hd2")
 
   initial_assay_name <- app$waitForValue(ns("assay_name"))
   expect_identical(initial_assay_name, "cpm")
@@ -84,8 +84,8 @@ test_that("tm_g_scatterplot works as expected in the sample app", {
   now_y_var <- app$waitForValue(ns("y_spec-genes"))
   expect_identical(now_y_var, "GeneID:1820")
 
-  # Now change the experiment_name, genes, method, color.
-  app$setValue(ns("experiment_name"), "hd2")
+  # Now change the experiment_name, genes, method.
+  app$setValue(ns("experiment-name"), "hd2")
   app$setValue(ns("x_spec-genes"), "GeneID:5205")
   app$setValue(ns("y_spec-genes"), "GeneID:102723793")
   app$setValue(ns("smooth_method"), "loess")
