@@ -73,10 +73,11 @@ experimentSpecServer <- function(inputId,
       req(name)
 
       mae <- datasets$get_data(mae_name, filtered = TRUE)
-      object <- if (with_mae_col_data) {
+      orig_object <- mae[[name]]
+      object <- if (with_mae_col_data && !MultiAssayExperiment:::.isEmpty(orig_object)) {
         MultiAssayExperiment::getWithColData(mae, name)
       } else {
-        mae[[name]]
+        orig_object
       }
       validate(need(
         hermes::is_hermes_data(object),
