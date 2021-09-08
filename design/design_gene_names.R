@@ -22,15 +22,18 @@ ui <- function(id,
 h_update_gene_selection2 <- function(session,
                                     inputId,
                                     selected,
-                                    choices,
-                                    names) {
-  is_new_selected <- selected %in% choices
+                                    choice_data) {
+  is_new_selected <- selected %in% choice_data$id
   is_removed <- !is_new_selected
   updateOptionalSelectInput(
     session,
     inputId = inputId,
     selected = selected[is_new_selected],
-    choices = setNames(choices, names)
+    choices = value_choices(
+      data = choice_data,
+      var_choices = "id",
+      var_label = "name"
+    )
   )
   n_removed <- sum(is_removed)
   if (n_removed > 0) {
@@ -47,10 +50,11 @@ server <- function(input,
                    datasets) {
   gene_data <- reactive({
     mae <- datasets$get_data("MAE", filtered = TRUE)
-    data.frame(
+    data <- data.frame(
       id = rownames(mae[[1]]),
       name = SummarizedExperiment::rowData(mae[[1]])$HGNC
     )
+    data[order(data$name), ]
   })
   observeEvent(gene_data(), {
     gene_data <- gene_data()
@@ -60,8 +64,7 @@ server <- function(input,
       session,
       inputId = "genes",
       selected = old_selected,
-      choices = gene_data$id,
-      names = gene_data$name
+      choice_data = gene_data
     )
   })
   output$result <- renderText({
