@@ -99,9 +99,10 @@ ui_g_scatterplot <- function(id,
         input_id = "settings_group",
         teal.devel::panel_item(
           input_id = "settings_item",
+          collapsed = TRUE,
           title = "Additional Settings",
-          optionalSelectInput(ns("color_var"), "Optional color variable"),
-          optionalSelectInput(ns("facet_var"), "Optional facet variable"),
+          sampleVarSpecInput(ns("color_var"), "Optional color variable"),
+          sampleVarSpecInput(ns("facet_var"), "Optional facet variable"),
           selectInput(ns("smooth_method"), "Select smoother", smooth_method_choices)
         )
       )
@@ -128,12 +129,6 @@ srv_g_scatterplot <- function(input,
     mae_name = mae_name
   )
 
-  # When the chosen experiment changes, recompute the colData variables.
-  col_data_vars <- eventReactive(experiment$name(), ignoreNULL = TRUE, {
-    object <- experiment$data()
-    names(SummarizedExperiment::colData(object))
-  })
-
   # When the assay names change, update the choices for assay.
   observeEvent(experiment$assays(), {
     assays <- experiment$assays()
@@ -149,32 +144,21 @@ srv_g_scatterplot <- function(input,
     )
   })
 
-  # When the colData variables change, update the choices for facet_var and color_var.
-
-  observeEvent(col_data_vars(), {
-    facet_color_var_choices <- col_data_vars()
-
-    id_names <- c("facet_var", "color_var")
-    for (i in seq_along(id_names)) {
-      updateOptionalSelectInput(
-        session,
-        id_names[i],
-        choices = facet_color_var_choices,
-        selected = character()
-      )
-    }
-  })
-
+  sample_var_specs <- multiSampleVarSpecServer(
+    inputIds = c("facet_var", "color_var"),
+    experiment_name = experiment$name,
+    original_data = experiment$data
+  )
   x_spec <- geneSpecServer("x_spec", summary_funs, experiment$genes)
   y_spec <- geneSpecServer("y_spec", summary_funs, experiment$genes)
 
   output$plot <- renderPlot({
     # Resolve all reactivity.
-    experiment_data <- experiment$data()
+    experiment_data <- sample_var_specs$experiment_data()
     x_spec <- x_spec()
     y_spec <- y_spec()
-    facet_var <- input$facet_var
-    color_var <- input$color_var
+    facet_var <- sample_var_specs$vars$facet_var()
+    color_var <- sample_var_specs$vars$color_var()
     assay_name <- input$assay_name
     smooth_method <- input$smooth_method
 

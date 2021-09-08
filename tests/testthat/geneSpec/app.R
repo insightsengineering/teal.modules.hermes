@@ -15,6 +15,7 @@ ui <- function(id,
     output = textOutput(ns("result"))
   )
 }
+
 server <- function(input,
                    output,
                    session,
@@ -38,6 +39,7 @@ server <- function(input,
     gene_spec$get_label()
   })
 }
+
 funs <- list(mean = colMeans)
 my_app <- function() {
   mae <- hermes::multi_assay_experiment
@@ -58,4 +60,5 @@ my_app <- function() {
   )
   shinyApp(app$ui, app$server)
 }
+
 my_app()

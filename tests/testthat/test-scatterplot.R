@@ -89,6 +89,7 @@ test_that("tm_g_scatterplot works as expected in the sample app", {
   app$setValue(ns("x_spec-genes"), "GeneID:5205")
   app$setValue(ns("y_spec-genes"), "GeneID:102723793")
   app$setValue(ns("smooth_method"), "loess")
+  app$setValue(ns("facet_var-sample_var"), "AGE18")
 
   # Final plot.
   expect_snapshot_screenshot(

@@ -1,4 +1,6 @@
-# Add a convenience method to the R6 ShinyDriver class.
+# Add convenience methods to the R6 ShinyDriver class.
+
+# waitForOutputElement ----
 shinytest::ShinyDriver$set(
   which = "public",
   name = "waitForOutputElement",
@@ -45,6 +47,31 @@ shinytest::ShinyDriver$set(
       "time out was reached while waiting for element",
       element, "from output", name
     ))
+  },
+  overwrite = TRUE
+)
+
+# setValues ----
+shinytest::ShinyDriver$set(
+  which = "public",
+  name = "setValues",
+  value = function(..., ns = NULL, iotype = c("auto", "input", "output")) {
+    assert_function(ns, args = "id", null.ok = TRUE)
+    iotype <- match.arg(iotype)
+    nm_val_pairs <- list(...)
+    assert_list(nm_val_pairs, names = "unique", min.len = 1L, null.ok = FALSE)
+
+    for (nm in names(nm_val_pairs)) {
+      val <- nm_val_pairs[[nm]]
+      if (!is.null(ns)) {
+        nm <- ns(nm)
+      }
+      self$setValue(
+        name = nm,
+        value = val,
+        iotype = iotype
+      )
+    }
   },
   overwrite = TRUE
 )
