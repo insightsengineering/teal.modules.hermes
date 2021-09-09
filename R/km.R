@@ -133,7 +133,6 @@ h_km_mae_to_adtte <- function(adtte,
 #'       label = "KM PLOT",
 #'       adtte_name = "ADTTE",
 #'       mae_name = "mae",
-#'       paramcd = "OS",
 #'       strata_var = c("SEX", "STRATA1")
 #'     )
 #'   )
@@ -150,7 +149,6 @@ h_km_mae_to_adtte <- function(adtte,
 tm_g_km <- function(label,
                     adtte_name,
                     mae_name,
-                    # paramcd,
                     strata_var = NULL,
                   # time_unit_var = "AVALU",
                   # aval_var = "AVAL",
@@ -162,7 +160,6 @@ tm_g_km <- function(label,
   assert_string(label)
   assert_string(adtte_name)
   assert_string(mae_name)
-  # assert_string(paramcd)
   assert_character(strata_var, null.ok = TRUE)
   assert_tag(pre_output, null.ok = TRUE)
   assert_tag(post_output, null.ok = TRUE)
@@ -173,14 +170,12 @@ tm_g_km <- function(label,
     server_args = list(
       adtte_name = adtte_name,
       mae_name = mae_name,
-      # paramcd = paramcd,
       strata_var = strata_var
     ),
     ui = ui_g_km,
     ui_args = list(
       adtte_name = adtte_name,
       mae_name = mae_name,
-      # paramcd = paramcd,
       strata_var = strata_var,
       pre_output = pre_output,
       post_output = post_output
@@ -197,7 +192,6 @@ ui_g_km <- function(id,
                     datasets,
                     adtte_name,
                     mae_name,
-                    # paramcd,
                     strata_var,
                   # aval_var,
                   # cnsr_var,
@@ -359,6 +353,9 @@ srv_g_km <- function(input,
     percentiles <- input$percentiles
     adtte_data <- adtte_data()
 
+    # require endpoint for plot to generate
+    req(endpoint)
+
     # validate that adtte_data is not empty
     validate(need(nrow(adtte_data) > 0, message = "ADTTE is empty - please relax the filter criteria"))
 
@@ -416,7 +413,6 @@ sample_tm_g_km <- function() {
          label = "KM PLOT",
          adtte_name = "ADTTE",
          mae_name = "mae",
-         # paramcd = "OS",
          strata_var = c("SEX", "STRATA1")
        )
      )
