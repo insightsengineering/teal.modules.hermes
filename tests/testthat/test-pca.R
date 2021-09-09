@@ -240,4 +240,10 @@ test_that("tm_g_pca works as expected in the sample app", {
 
   plot_message <- app$waitForOutputElement(ns("plot_pca"), "message")
   expect_identical(plot_message, "Sample size is too small. PCA needs more than 2 samples.")
+
+  # Initiate Use only Top Variance Genes function
+  app$setValue(ns("filter_top"), TRUE)
+
+  expect_identical("n_top", 500)
+
 })
