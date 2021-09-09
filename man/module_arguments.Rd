@@ -39,6 +39,12 @@ elements can be useful).}
 \item{output}{(\code{shinyoutput})\cr the session's output object.}
 
 \item{session}{(\code{ShinySession})\cr the session object.}
+
+\item{plot_height}{(\code{list})\cr list of integers to set the default, minimum,
+and maximum plot height.}
+
+\item{plot_width}{(\code{list})\cr list of integers to set the default, minimum,
+and maximum plot width.}
 }
 \description{
 The documentation to this function lists all the conventional arguments in

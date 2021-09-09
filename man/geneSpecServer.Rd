@@ -9,7 +9,8 @@ geneSpecServer(
   funs,
   gene_choices,
   label_modal_title = "Enter list of genes",
-  label_modal_footer = c("Please enter a comma-separated list of gene IDs.",
+ 
+    label_modal_footer = c("Please enter a comma-separated list of gene IDs and/or names.",
     "(Note that genes not included in current choices will be removed)")
 )
 }
@@ -20,8 +21,8 @@ the ID used to call the module input.}
 \item{funs}{(static named \code{list})\cr names of this list will be used for the function
 selection drop down menu.}
 
-\item{gene_choices}{(reactive \code{character})\cr returns the possible gene choices to
-populate in the UI.}
+\item{gene_choices}{(reactive \code{data.frame})\cr returns the possible gene choices to
+populate in the UI, as a \code{data.frame} with columns \code{id} and \code{name}.}
 
 \item{label_modal_title}{(\code{string})\cr title for the dialog that asks for the text input.}
 
@@ -61,7 +62,12 @@ server <- function(input,
     mae <- datasets$get_data("MAE", filtered = TRUE)
     object <- mae[[1]]
     gene_ids <- rownames(object)
-    sort(gene_ids)
+    gene_names <- SummarizedExperiment::rowData(object)$HGNC
+    gene_data <- data.frame(
+      id = gene_ids,
+      name = gene_names
+    )
+    gene_data[order(gene_data$name), ]
   })
   gene_spec <- geneSpecServer(
     "my_genes",
@@ -71,7 +77,7 @@ server <- function(input,
   output$result <- renderText({
     validate_gene_spec(
       gene_spec(),
-      gene_choices()
+      gene_choices()$id
     )
     gene_spec <- gene_spec()
     gene_spec$get_label()

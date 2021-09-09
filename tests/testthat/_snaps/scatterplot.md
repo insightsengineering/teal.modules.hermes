@@ -15,12 +15,12 @@
                   <code>MyMAE</code>
                 </span>
                 <div class="form-group shiny-input-container">
-                  <label class="control-label" id="testid-experiment_name-label" for="testid-experiment_name">Select experiment</label>
+                  <label class="control-label" id="testid-experiment-name-label" for="testid-experiment-name">Select Experiment</label>
                   <div>
-                    <select id="testid-experiment_name"><option value="hd1" selected>hd1</option>
+                    <select id="testid-experiment-name"><option value="hd1" selected>hd1</option>
       <option value="hd2">hd2</option>
       <option value="hd3">hd3</option></select>
-                    <script type="application/json" data-for="testid-experiment_name" data-nonempty="">{"plugins":["selectize-plugin-a11y"]}</script>
+                    <script type="application/json" data-for="testid-experiment-name" data-nonempty="">{"plugins":["selectize-plugin-a11y"]}</script>
                   </div>
                 </div>
                 <div class="form-group shiny-input-container">
@@ -221,13 +221,41 @@
                     </div>
                     <div class="panel-collapse collapse " id="settings_item_panel_body_2463">
                       <div class="panel-body">
-                        <div class="form-group shiny-input-container">
-                          <label class="control-label" for="testid-color_var">Optional color variable</label>
-                          <select data-actions-box="false" data-none-selected-text="- Nothing selected -" data-max-options="1" data-show-subtext="true" data-live-search="false" id="testid-color_var" class="selectpicker form-control" multiple="multiple"><option value=""></option></select>
+                        <div class="row">
+                          <div class="col-sm-8">
+                            <label class="control-label">Optional color variable</label>
+                          </div>
+                          <div class="col-sm-4">
+                            <button class="btn btn-default action-button pull-right list-genes" id="testid-color_var-levels_button" title="Combine factor levels" type="button">
+                              <span>
+                                <i class="fa fa-font fa-object-ungroup" role="presentation" aria-label="font fa-object-ungroup icon"></i>
+                              </span>
+                            </button>
+                          </div>
                         </div>
-                        <div class="form-group shiny-input-container">
-                          <label class="control-label" for="testid-facet_var">Optional facet variable</label>
-                          <select data-actions-box="false" data-none-selected-text="- Nothing selected -" data-max-options="1" data-show-subtext="true" data-live-search="false" id="testid-facet_var" class="selectpicker form-control" multiple="multiple"><option value=""></option></select>
+                        <div class="custom-select-input">
+                          <div class="form-group shiny-input-container">
+                            <label class="control-label shiny-label-null" for="testid-color_var-sample_var"></label>
+                            <select data-actions-box="false" data-none-selected-text="- Nothing selected -" data-max-options="1" data-show-subtext="true" data-live-search="false" id="testid-color_var-sample_var" class="selectpicker form-control" multiple="multiple"><option value=""></option></select>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-sm-8">
+                            <label class="control-label">Optional facet variable</label>
+                          </div>
+                          <div class="col-sm-4">
+                            <button class="btn btn-default action-button pull-right list-genes" id="testid-facet_var-levels_button" title="Combine factor levels" type="button">
+                              <span>
+                                <i class="fa fa-font fa-object-ungroup" role="presentation" aria-label="font fa-object-ungroup icon"></i>
+                              </span>
+                            </button>
+                          </div>
+                        </div>
+                        <div class="custom-select-input">
+                          <div class="form-group shiny-input-container">
+                            <label class="control-label shiny-label-null" for="testid-facet_var-sample_var"></label>
+                            <select data-actions-box="false" data-none-selected-text="- Nothing selected -" data-max-options="1" data-show-subtext="true" data-live-search="false" id="testid-facet_var-sample_var" class="selectpicker form-control" multiple="multiple"><option value=""></option></select>
+                          </div>
                         </div>
                         <div class="form-group shiny-input-container">
                           <label class="control-label" id="testid-smooth_method-label" for="testid-smooth_method">Select smoother</label>

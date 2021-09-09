@@ -1,6 +1,6 @@
 # Mockup class to represent teal Datasets behavior as needed in tests.
 MockDatasets <- R6::R6Class(  # nolint
-  classname = "MockDatasets",
+  classname = "Datasets",
   public = list(
     initialize = function(data_list) {
       private$data_list <- data_list

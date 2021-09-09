@@ -72,7 +72,7 @@ ui_g_volcanoplot <- function(id,
     post_output = post_output,
     encoding = div(
       selectInput(ns("experiment_name"), "Select experiment", names(mae)),
-      selectInput(ns("compare_group"), "Compare Groups", choices = ""),
+      sampleVarSpecInput(ns("compare_group"), "Compare Groups", "Please group here into 2 levels"),
       selectInput(ns("method"), "Method", choices = c("voom", "deseq2")),
       sliderInput(ns("log2_fc_thresh"), "Log2 fold change threshold", value = 2.5, min = 0.1, max = 10),
       sliderInput(ns("adj_p_val_thresh"), "Adjusted p-value threshold", value = 0.05, min = 0.001, max = 1),
@@ -103,39 +103,24 @@ srv_g_volcanoplot <- function(input,
     object
   })
 
-  # When the chosen experiment changes, recompute the group variables.
-  # We only select the colData variables which are factors and have 2 levels.
-  group_vars <- eventReactive(input$experiment_name, ignoreNULL = TRUE, {
-    object <- experiment_data()
-    col_data <- SummarizedExperiment::colData(object)
-    can_be_used <- sapply(col_data, function(x) is.factor(x) && identical(nlevels(x), 2L))
-    names(col_data)[can_be_used]
-  })
-
-  # When the group variables change, update the choices for compare_group.
-  observeEvent(group_vars(), {
-    group_var_choices <- group_vars()
-
-    updateSelectInput(
-      session,
-      "compare_group",
-      choices = group_var_choices,
-      selected = group_var_choices[1]
-    )
-  })
+  # Define server part for compare_group specification, request exactly 2 levels.
+  group_spec <- sampleVarSpecServer(
+    "compare_group",
+    experiment_name = reactive({input$experiment_name}),
+    original_data = experiment_data,
+    num_levels = 2L,
+    label_modal_title = "Please click to group into exactly 2 levels, first level is reference"
+  )
 
   # When the filtered data set or the chosen experiment changes, update
   # the call that creates the Hermes object for differential expression.
   diff_expr <- reactive({
-    object <- experiment_data()
-    compare_group <- input$compare_group
+    object <- group_spec$experiment_data()
+    compare_group <- group_spec$sample_var()
     method <- input$method
 
-    req(
-      object,
-      compare_group,
-      method
-    )
+    req(object, method)
+    validate(need(!is.null(compare_group), "Please select a group variable"))
 
     hermes::diff_expression(
       object,

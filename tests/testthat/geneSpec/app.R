@@ -15,6 +15,7 @@ ui <- function(id,
     output = textOutput(ns("result"))
   )
 }
+
 server <- function(input,
                    output,
                    session,
@@ -22,7 +23,14 @@ server <- function(input,
                    funs) {
   gene_choices <- reactive({
     mae <- datasets$get_data("MAE", filtered = TRUE)
-    rownames(mae[[1]])
+    object <- mae[[1]]
+    gene_ids <- rownames(object)
+    gene_names <- SummarizedExperiment::rowData(object)$HGNC
+    gene_data <- data.frame(
+      id = gene_ids,
+      name = gene_names
+    )
+    gene_data[order(gene_data$name), ]
   })
   gene_spec <- geneSpecServer(
     "my_genes",
@@ -32,12 +40,13 @@ server <- function(input,
   output$result <- renderText({
     validate_gene_spec(
       gene_spec(),
-      gene_choices()
+      gene_choices()$id
     )
     gene_spec <- gene_spec()
     gene_spec$get_label()
   })
 }
+
 funs <- list(mean = colMeans)
 my_app <- function() {
   mae <- hermes::multi_assay_experiment
@@ -58,4 +67,5 @@ my_app <- function() {
   )
   shinyApp(app$ui, app$server)
 }
+
 my_app()
