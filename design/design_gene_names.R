@@ -20,9 +20,9 @@ ui <- function(id,
 }
 
 h_update_gene_selection2 <- function(session,
-                                    inputId,
-                                    selected,
-                                    choice_data) {
+                                     inputId, # nolint
+                                     selected,
+                                     choice_data) {
   is_new_selected <- selected %in% choice_data$id
   is_removed <- !is_new_selected
   updateOptionalSelectInput(
