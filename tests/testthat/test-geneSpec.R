@@ -118,6 +118,7 @@ test_that("geneSpec module works as expected in the test app", {
 
   # We select a gene via text input.
   app$click(ns("my_genes-text_button"))
+  app$waitForShiny()
   app$setValue(ns("my_genes-gene_text"), "GeneID:100303749; GeneID:4608")
   app$click(ns("my_genes-ok_button"))
 
