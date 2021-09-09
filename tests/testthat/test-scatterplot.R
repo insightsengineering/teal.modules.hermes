@@ -45,7 +45,7 @@ test_that("tm_g_scatterplot works as expected in the sample app", {
   # Choose another experiment.
   app$setValue(ns("experiment-name"), "hd2")
 
-  initial_assay_name <- app$waitForValue(ns("assay_name"))
+  initial_assay_name <- app$waitForValue(ns("assay-name"))
   expect_identical(initial_assay_name, "cpm")
 
   initial_x_var <- app$waitForValue(ns("x_spec-genes"), ignore = "")
