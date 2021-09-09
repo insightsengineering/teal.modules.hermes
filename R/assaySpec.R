@@ -47,31 +47,39 @@ assaySpecServer <- function(inputId,
   assert_character(exclude_assays, any.missing = FALSE)
 
   moduleServer(inputId, function(input, output, session) {
+
     # When the assay names change, update the choices for assay.
-    observeEvent(assays(), {
+    choices <- reactive({
       assays <- assays()
-      choices <- setdiff(
+      remaining_assays <- setdiff(
         assays,
         exclude_assays
       )
-      removed_assays <- setdiff(choices, assays)
+      removed_assays <- setdiff(assays, remaining_assays)
       if (length(removed_assays) > 0) {
-        showNotification(paste(
-          "Excluded assays", hermes::h_short_list(removed_assays), "as per app specifications"
+        showNotification(type = "warning", paste(
+          "Excluded", ifelse(length(removed_assays) > 1, "assays", "assay"),
+          hermes::h_short_list(removed_assays), "as per app specifications"
         ))
       }
+      remaining_assays
+    })
+
+    observeEvent(choices(), {
+      choices <- choices()
       updateSelectInput(
         session,
         "name",
         choices = choices
       )
+    })
+
+    reactive({
+      choices <- choices()
       validate(need(
         length(choices) > 0,
         "No assays eligible for this experiment, please make sure to add normalized assays"
       ))
-    })
-
-    reactive({
       input$name
     })
   })
