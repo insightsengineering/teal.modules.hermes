@@ -39,7 +39,7 @@ test_that("tm_g_scatterplot works as expected in the sample app", {
   plot_message <- app$waitForOutputElement(ns("plot"), "message")
   expect_identical(
     plot_message,
-    "no assays are available for this experiment, please choose another experiment"
+    "No assays eligible for this experiment, please make sure to add normalized assays"
   )
 
   # Choose another experiment.
