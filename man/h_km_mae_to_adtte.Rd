@@ -19,7 +19,7 @@ h_km_mae_to_adtte(
 
 \item{gene_var}{(\code{character})\cr a gene(s) of interest.}
 
-\item{experiment_name}{(\code{string})\cr the desired experiment to use.}
+\item{experiment_name}{(\code{string})\cr the desired \code{HermesData} to use.}
 
 \item{assay_name}{(\code{string})\cr the assay to define the groups.}
 }

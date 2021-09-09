@@ -2,36 +2,40 @@
 % Please edit documentation in R/km.R
 \name{tm_g_km}
 \alias{tm_g_km}
-\title{Teal Module: Kaplan-Meier}
+\alias{ui_g_km}
+\alias{srv_g_km}
+\alias{sample_tm_g_km}
+\title{Teal Module for Biomarker Kaplan-Meier Plot}
 \usage{
 tm_g_km(
   label,
-  dataname,
-  parentname = ifelse(is(arm_var, "data_extract_spec"),
-    teal.devel::datanames_input(arm_var), "ADSL"),
-  arm_var,
-  arm_ref_comp = NULL,
-  paramcd,
-  strata_var,
-  facet_var,
-  time_unit_var = choices_selected(variable_choices(dataname, "AVALU"), "AVALU", fixed
-    = TRUE),
-  aval_var = choices_selected(variable_choices(dataname, "AVAL"), "AVAL", fixed = TRUE),
-  cnsr_var = choices_selected(variable_choices(dataname, "CNSR"), "CNSR", fixed = TRUE),
-  conf_level = choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
-  plot_height = c(1200L, 400L, 5000L),
-  plot_width = NULL,
+  adtte_name,
+  mae_name,
+  strata_var = NULL,
   pre_output = NULL,
   post_output = NULL
 )
+
+ui_g_km(
+  id,
+  datasets,
+  adtte_name,
+  mae_name,
+  strata_var,
+  pre_output,
+  post_output
+)
+
+srv_g_km(input, output, session, datasets, adtte_name, mae_name, strata_var)
+
+sample_tm_g_km()
 }
 \arguments{
 \item{label}{(\code{string})\cr
 menu item label of the module in the teal app.}
 
-\item{facet_var}{(\code{\link[teal:choices_selected]{teal::choices_selected()}} or \code{\link[teal:data_extract_spec]{teal::data_extract_spec()}})\cr
-object with all available choices and preselected option
-for variable names that can be used for facet plotting.}
+\item{mae_name}{(\code{string})\cr
+name of the MAE data used in the teal module.}
 
 \item{pre_output}{(\code{shiny.tag} or \code{NULL})\cr
 placed before the output to put the output into context (for example a title).}
@@ -39,63 +43,72 @@ placed before the output to put the output into context (for example a title).}
 \item{post_output}{(\code{shiny.tag} or \code{NULL})\cr
 placed after the output to put the output into context (for example the \code{\link[shiny:helpText]{shiny::helpText()}}
 elements can be useful).}
+
+\item{id}{(\code{string})\cr
+the ID used to call the teal module's UI function.}
+
+\item{datasets}{(\code{Datasets})\cr
+teal specific argument which is automatically passed to the UI and server
+functions, holding all the data sets provided in the app initialization.}
+
+\item{input}{(\code{ReactiveValues})\cr the session's input object.}
+
+\item{output}{(\code{shinyoutput})\cr the session's output object.}
+
+\item{session}{(\code{ShinySession})\cr the session object.}
+}
+\value{
+Shiny module to be used in the teal app.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
 This teal module produces a grid style Kaplan-Meier plot for data with
 ADaM structure.
 }
+\section{Functions}{
+\itemize{
+\item \code{ui_g_km}: sets up the user interface.
+
+\item \code{srv_g_km}: sets up the user interface.
+
+\item \code{sample_tm_g_km}: sample module function.
+}}
+
 \examples{
-
-library(scda)
 library(dplyr)
+library(random.cdisc.data)
 
-ADSL <- synthetic_cdisc_data("latest")$adsl
-ADTTE <- synthetic_cdisc_data("latest")$adtte
+mae <- hermes::multi_assay_experiment
+adtte <- radtte(cached = TRUE) \%>\%
+    mutate(CNSR = as.logical(CNSR))
 
-arm_ref_comp = list(
-  ACTARMCD = list(
-    ref = "ARM B",
-    comp = c("ARM A", "ARM C")
-  ),
-  ARM = list(
-    ref = "B: Placebo",
-    comp = c("A: Drug X", "C: Combination")
+data <- teal_data(
+    dataset("ADTTE", adtte, code = 'adtte <- radtte(cached = TRUE) \%>\%
+    mutate(CNSR = as.logical(CNSR))'),
+dataset("mae", mae)
   )
-)
 
-app <- init(
-  data = cdisc_data(
-    cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
-    cdisc_dataset("ADTTE", ADTTE, code = 'ADTTE <- synthetic_cdisc_data("latest")$adtte'),
-    check = TRUE
-  ),
-  modules = root_modules(
+modules <- root_modules(
     tm_g_km(
       label = "KM PLOT",
-      dataname = "ADTTE",
-      arm_var = choices_selected(
-        variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
-        "ARM"
-      ),
-      paramcd = choices_selected(
-        value_choices(ADTTE, "PARAMCD", "PARAM"),
-        "OS"
-      ),
-      arm_ref_comp = arm_ref_comp,
-      strata_var = choices_selected(
-        variable_choices(ADSL, c("SEX", "BMRKR2")),
-        "SEX"
-      ),
-      facet_var = choices_selected(
-        variable_choices(ADSL, c("SEX", "BMRKR2")),
-        NULL
-      )
+      adtte_name = "ADTTE",
+      mae_name = "mae",
+      strata_var = c("SEX", "STRATA1")
     )
   )
+
+app <- init(
+  data = data,
+  modules = modules
 )
 
 \dontrun{
 shinyApp(ui = app$ui, server = app$server)
 }
 
+\dontrun{
+# Alternatively you can run the sample module with this function call:
+sample_tm_g_km()
+}
 }
