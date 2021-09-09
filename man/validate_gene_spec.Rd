@@ -9,8 +9,7 @@ validate_gene_spec(gene_spec, gene_choices)
 \arguments{
 \item{gene_spec}{(\code{GeneSpec})\cr gene specification.}
 
-\item{gene_choices}{(\code{data.frame})\cr all possible gene choices, with \code{id}
-and \code{name} columns.}
+\item{gene_choices}{(\code{character})\cr all possible gene choices.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

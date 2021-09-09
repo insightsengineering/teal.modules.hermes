@@ -25,7 +25,8 @@ functions, holding all the data sets provided in the app initialization.}
 name of the MAE data used in the teal module.}
 
 \item{name_annotation}{(\code{string} or \code{NULL})\cr which annotation column to use as name
-to return in the \code{genes} data. If \code{NULL}, then the \code{name} column will be set to \code{NA}.}
+to return in the \code{genes} data. If \code{NULL}, then the \code{name} column will be set to empty
+strings.}
 
 \item{sample_vars_as_factors}{(\code{flag})\cr whether to convert the sample variables
 (columns in \code{colData()} of the experiment) from character to factor variables.}

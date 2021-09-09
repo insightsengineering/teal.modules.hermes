@@ -30,33 +30,78 @@ experimentSpecInput <- function(inputId,
   )
 }
 
+#' Helper Function to Order Gene Choices
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' The possible gene choices are ordered as follows. First come all genes which
+#' have a non-empty name, ordered by their name alphabetically. Last come
+#' all genes with an empty name, ordered by their ID alphabetically.
+#'
+#' @param genes (`data.frame`)\cr containing `id` and `name` columns of the
+#'   gene choices. Note that no missing values are allowed.
+#'
+#' @return The ordered `data.frame`.
+#' @export
+#'
+#' @examples
+#' genes <- data.frame(
+#'   id = c("7", "1", "2", "345346", "0"),
+#'   name = c("e", "", "c", "", "a")
+#' )
+#' h_order_genes(genes)
 h_order_genes <- function(genes) {
-  assert_data_frame(genes, any.missing = FALSE)
+  assert_data_frame(genes, types = "character", any.missing = FALSE)
   assert_set_equal(names(genes), c("id", "name"))
+
   has_empty_name <- genes$name == ""
   first_genes <- which(!has_empty_name)[order(genes[!has_empty_name, ]$name)]
   last_genes <- which(has_empty_name)[order(genes[has_empty_name, ]$id)]
   genes[c(first_genes, last_genes), ]
 }
 
-h_gene_data <- function(data, name_annotation) {
-  assert_true(hermes::is_hermes_data(data))
-  gene_ids <- hermes::genes(data)
+#' Helper Function to Format Gene Choices
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Given a [`hermes::AnyHermesData`] data object, as well as the annotation
+#' column name to use as gene name, this function formats the contained genes
+#' as a `data.frame` ready for consumption in [h_order_genes()] e.g.
+#'
+#' @details
+#' Note that missing names or names that only contain whitespace
+#' are replaced by empty strings for consistency and better labeling in the
+#' UI downstream
+#'
+#' @inheritParams function_arguments
+#' @inheritParams experimentSpecServer
+#'
+#' @return A `data.frame` with `id` and `name` columns containing all genes from
+#'   `object`.
+#' @export
+#'
+#' @examples
+#' object <- hermes::HermesData(hermes::summarized_experiment[1:10, ])
+#' h_gene_data(object, "HGNC")
+h_gene_data <- function(object, name_annotation) {
+  assert_true(hermes::is_hermes_data(object))
+  assert_string(name_annotation)
+
+  gene_ids <- hermes::genes(object)
   gene_names <- if (!is.null(name_annotation)) {
-    annotation_data <- hermes::annotation(data)
+    annotation_data <- hermes::annotation(object)
     assert_subset(name_annotation, names(annotation_data))
     annotation_vector <- annotation_data[[name_annotation]]
-    annotation_missing <- is.na(annotation_vector)
+    annotation_missing <- is.na(annotation_vector) | grepl("^\\s+$", annotation_vector)
     annotation_vector[annotation_missing] <- ""
     annotation_vector
   } else {
     ""
   }
-  gene_data <- data.frame(
+  data.frame(
     id = gene_ids,
     name = gene_names
   )
-  h_order_genes(gene_data)
 }
 
 #' Module Server for Experiment Specification
@@ -215,7 +260,8 @@ experimentSpecServer <- function(inputId,
     # Only when the chosen gene subset changes, we recompute gene choices
     genes <- eventReactive(subset_calls(), ignoreNULL = FALSE, {
       data <- data()
-      h_gene_data(data, name_annotation)
+      genes <- h_gene_data(data, name_annotation)
+      h_order_genes(genes)
     })
 
     # When the chosen experiment changes, recompute the assay names.
