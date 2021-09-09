@@ -118,11 +118,12 @@ test_that("geneSpec module works as expected in the test app", {
 
   # We select a gene via text input.
   app$click(ns("my_genes-text_button"))
-  app$waitForShiny()
+  app$waitForValue(ns("my_genes-ok_button"))
   app$setValue(ns("my_genes-gene_text"), "GeneID:100303749; GeneID:4608")
   app$click(ns("my_genes-ok_button"))
 
   # Confirm that they are now selected.
+  Sys.sleep(1) # Need this here otherwise we don't get latest update below.
   genes_after_text <- app$waitForValue(ns("my_genes-genes"))
   expect_set_equal(genes_after_text, c("GeneID:100303749", "GeneID:4608"))
 
