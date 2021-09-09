@@ -3,7 +3,6 @@
 library(teal)
 library(teal.modules.hermes)
 library(hermes)
-#library(magrittr)
 
 data <- cdse_data(
   connection = cdse_connection("demo"),
@@ -36,8 +35,8 @@ cdse_tokens()
 cdse_get_environment()
 cdse_set_environment("prod")
 
-# Using Asthma Data Pilot -- Pooled Integrated Datasets -- ADAM ADSL from https://cdse.roche.com/details/cid6736608260612358144
-# dat_single <- cdse_read_dataset("http://clinical.roche.com/dataset/cid6736608260612358144")
+# Using Asthma Data Pilot -- Pooled Integrated Datasets --
+# ADAM ADSL from https://cdse.roche.com/details/cid6736608260612358144
 
 data <- cdse_data(
   connection = cdse_connection("prod"),
@@ -70,12 +69,13 @@ app <- init(
 
 shinyApp(app$ui, app$server)
 
-# Verify that that the missing values in above dataset are actual missing values, and not an issue with cdse_connector
+# Verify that that the missing values in above dataset are actual missing values,
+# and not an issue with cdse_connector
 library(haven)
 test <- read_sas("/Users/bhatian3/NEST/teal.modules.hermes/design/adsl.sas7bdat")
 
-# Using Asthma Data Pilot -- Pooled Integrated Datasets - ADaM ADZB from https://cdse.roche.com/details/cid6736609907921174529
-#dat_single <- cdse_read_dataset("http://clinical.roche.com/dataset/cid6736609908885864448")
+# Using Asthma Data Pilot -- Pooled Integrated Datasets -
+# ADaM ADZB from https://cdse.roche.com/details/cid6736609907921174529
 
 data <- cdse_data(
   connection = cdse_connection("prod"),
@@ -126,4 +126,3 @@ app <- init(
 )
 
 shinyApp(app$ui, app$server)
-
