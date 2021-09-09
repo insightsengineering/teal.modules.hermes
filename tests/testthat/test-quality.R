@@ -15,6 +15,8 @@ test_that("ui_g_quality creates expected HTML", {
 # tm_g_quality ----
 
 test_that("tm_g_quality works as expected in the sample app", {
+  test.nest::skip_if_too_deep(5)
+
   skip_if_covr()
 
   library(shinytest)
@@ -30,7 +32,7 @@ test_that("tm_g_quality works as expected in the sample app", {
   # inputId: assay_name
 
   # Check initial state of encodings.
-  initial_experiment_name <- app$waitForValue("teal-main_ui-modules_ui-root_quality-experiment_name")
+  initial_experiment_name <- app$waitForValue("teal-main_ui-modules_ui-root_quality-experiment-name")
   expect_identical(initial_experiment_name, "hd1")
 
   initial_assay_name <- app$waitForValue("teal-main_ui-modules_ui-root_quality-assay_name")
@@ -58,7 +60,7 @@ test_that("tm_g_quality works as expected in the sample app", {
 
   # Choose another experiment.
   app$setInputs(
-    "teal-main_ui-modules_ui-root_quality-experiment_name" = "hd2"
+    "teal-main_ui-modules_ui-root_quality-experiment-name" = "hd2"
   )
 
   # Check that warning message about already present quality flags works as expected.
@@ -67,7 +69,7 @@ test_that("tm_g_quality works as expected in the sample app", {
 
   # Choose another experiment.
   app$setInputs(
-    "teal-main_ui-modules_ui-root_quality-experiment_name" = "hd3"
+    "teal-main_ui-modules_ui-root_quality-experiment-name" = "hd3"
   )
 
   app$setInputs(

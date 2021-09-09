@@ -72,10 +72,10 @@ ui_g_boxplot <- function(id,
       helpText("Analysis of MAE:", tags$code(mae_name)),
       selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
       selectInput(ns("assay_name"), "Select assay", choices = ""),
+      selectizeInput(ns("genes"), "Select gene(s) of interest", multiple = TRUE, choices = ""),
+      optionalSelectInput(ns("x_var"), "Optional stratifying variable"),
       optionalSelectInput(ns("color_var"), "Optional color variable"),
       optionalSelectInput(ns("facet_var"), "Optional facet variable"),
-      selectizeInput(ns("y_var"), "Select gene of interest", choices = ""),
-      selectizeInput(ns("x_var"), "Select stratifying variable", choices = ""),
       tags$label("Jitter"),
       shinyWidgets::switchInput(ns("jitter"), value = FALSE, size = "mini")
     ),
@@ -143,33 +143,24 @@ srv_g_boxplot <- function(input,
 
   # When the colData variables change, update the choices for facet_var, color_var and x_var.
   observeEvent(col_data_vars(), {
-    facet_color_var_choices <- col_data_vars()
+    col_data_vars <- col_data_vars()
 
-    id_names <- c("facet_var", "color_var")
+    id_names <- c("facet_var", "color_var", "x_var")
     for (i in seq_along(id_names)) {
       updateOptionalSelectInput(
         session,
         id_names[i],
-        choices = facet_color_var_choices,
+        choices = col_data_vars,
         selected = character()
       )
     }
-
-    id_names <- c("x_var")
-      updateSelectizeInput(
-        session,
-        id_names,
-        choices = facet_color_var_choices,
-        selected = facet_color_var_choices[1],
-        server = TRUE
-      )
   })
 
   # When the genes are recomputed, update the choice for genes in the UI.
   observeEvent(genes(), {
     gene_choices <- genes()
 
-    id_names <- c("y_var")
+    id_names <- c("genes")
       updateSelectizeInput(
         session,
         id_names,
@@ -183,20 +174,20 @@ srv_g_boxplot <- function(input,
     # Resolve all reactivity.
     experiment_data <- experiment_data()
     x_var <- input$x_var
-    y_var <- input$y_var
+    genes <- input$genes
     facet_var <- input$facet_var
     color_var <- input$color_var
     assay_name <- input$assay_name
     jitter <- input$jitter
 
     # Require which states need to be truthy.
+    genes_not_included <- setdiff(genes, rownames(experiment_data))
     req(
-      x_var,
-      y_var,
+      genes,
       assay_name,
       # Note: The following statements are important to make sure the UI inputs have been updated.
       isTRUE(assay_name %in% SummarizedExperiment::assayNames(experiment_data)),
-      isTRUE(y_var %in% rownames(experiment_data)),
+      length(genes_not_included) == 0,
       isTRUE(all(c(facet_var, color_var, x_var) %in% names(SummarizedExperiment::colData(experiment_data)))),
       cancelOutput = FALSE
     )
@@ -208,7 +199,7 @@ srv_g_boxplot <- function(input,
       object = experiment_data,
       assay_name = assay_name,
       x_var = x_var,
-      y_var = y_var,
+      genes = genes,
       facet_var = facet_var,
       color_var = color_var,
       jitter = jitter

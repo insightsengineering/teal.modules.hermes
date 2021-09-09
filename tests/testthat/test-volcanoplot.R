@@ -15,6 +15,8 @@ test_that("ui_g_volcanoplot creates expected HTML", {
 # tm_g_volcanoplot ----
 
 test_that("tm_g_volcanoplot works as expected in the sample app", {
+  test.nest::skip_if_too_deep(5)
+
   skip_if_covr()
 
   library(shinytest)
@@ -24,34 +26,35 @@ test_that("tm_g_volcanoplot works as expected in the sample app", {
 
   # nolint start
 
-  # Note: left hand side name is composed as:
-  # prefix: teal-main_ui-modules_ui-root_
-  # label: volcanoplot-
-  # inputId: experiment_name
+  ns <- NS("teal-main_ui-modules_ui-root_volcanoplot")
 
   # Check initial state of encodings.
-  initial_experiment_name <- app$waitForValue("teal-main_ui-modules_ui-root_volcanoplot-experiment_name")
+  initial_experiment_name <- app$waitForValue(ns("experiment_name"))
   expect_identical(initial_experiment_name, "hd1")
 
-  initial_compare_group <- app$waitForValue("teal-main_ui-modules_ui-root_volcanoplot-compare_group")
-  expect_identical(initial_compare_group, "AGE18")
+  initial_compare_group <- app$waitForValue(ns("compare_group-sample_var"), ignore = "")
+  expect_identical(initial_compare_group, NULL)
+
+  output_message <- app$waitForOutputElement(ns("plot"), "message")
+  expect_identical(output_message, "Please select a group variable")
+
+  # Select an initial group variable.
+  app$setValue(ns("compare_group-sample_var"), "AGE18")
 
   # Initial plot.
   expect_snapshot_screenshot(
     app,
-    id = "teal-main_ui-modules_ui-root_volcanoplot-plot",
+    id = ns("plot"),
     name = "initial_plot.png"
   )
 
   # Now change the log2_fc_thresh and check that the plot is updated accordingly.
-  app$setInputs(
-    "teal-main_ui-modules_ui-root_volcanoplot-log2_fc_thresh" = 8
-  )
+  app$setValue(ns("log2_fc_thresh"), 8)
 
   # Final plot.
   expect_snapshot_screenshot(
     app,
-    id = "teal-main_ui-modules_ui-root_volcanoplot-plot",
+    id = ns("plot"),
     name = "final_plot.png"
   )
 

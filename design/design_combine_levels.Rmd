@@ -1,0 +1,589 @@
+---
+title: "Combination of factor levels design"
+output: html_document
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(teal)
+library(teal.devel)
+library(teal.modules.hermes)
+library(hermes)
+library(checkmate)
+library(forcats)
+```
+
+## Objectives
+
+- for the differential expression module, but also for stratification variables, we want to offer the user the option to combine factor levels of `colData` variables.
+- general combinations should be possible, e.g. A + B vs. C vs. D + E when original factor levels were just A, B, C, D, E.
+
+## Initial brainstorming
+
+See https://docs.google.com/presentation/d/1aIwXXYPtfErHKXY7mzE-ugKpoocNfWIHUjd7rDMBAtQ 
+
+## Hermes interface
+
+Here we can actually the teal module server function modify the `colData` factor variable such that it contains the requested factor levels, and then use that in the downstream `hermes` functions. 
+
+### Example
+
+First what we will have as starting point:
+
+```{r}
+object <- HermesData(summarized_experiment)
+
+colData(object) <- df_char_to_factor(colData(object))
+
+var_selected <- "RACE"
+colData(object)[[var_selected]]
+levels(colData(object)[[var_selected]])
+
+# this will come out of the user input, see below:
+comb_list <- list(
+  "ASIAN/BLACK OR AFRICAN AMERICAN" = c("ASIAN", "BLACK OR AFRICAN AMERICAN"),
+  "MULTIPLE/UNKNOWN" = c("MULTIPLE", "UNKNOWN"),
+  "WHITE" = "WHITE"
+)
+```
+
+Now we just need one call for the in place modification of the factor variable:
+
+```{r}
+colData(object)[[var_selected]] <- do.call(
+  forcats::fct_collapse,
+  args = c(
+    list(.f = colData(object)[[var_selected]]),
+    comb_list
+  )
+)
+
+# and voila:
+colData(object)[[var_selected]]
+```
+
+And then we can use that downstream as usual in `hermes` e.g.:
+
+```{r}
+draw_boxplot(
+  object,
+  assay_name = "counts",
+  genes = genes(object)[2],
+  facet_var = var_selected
+)
+```
+
+## Material
+
+### shinyRadioMatrix
+
+We will use https://github.com/szelepke/shinyRadioMatrix maybe with a bit nicer look.
+Toy example for it:
+
+```{r}
+library(shiny)
+library(shinyRadioMatrix)
+
+## Only run examples in interactive R sessions
+if (FALSE) {
+  data(exTaxonList)
+  data(exPftList)
+
+  ui <- fluidPage(
+    radioMatrixInput(
+      inputId = "rmi01", rowIDs = head(exTaxonList$Var),
+      rowLLabels = head(
+        as.matrix(subset(exTaxonList, select = "VarName"))
+      ),
+      choices = exPftList$ID,
+      selected = head(exTaxonList$DefPFT)
+    ),
+    verbatimTextOutput("debug01")
+  )
+
+  server <- function(input, output, session) {
+    output$debug01 <- renderPrint({
+      rmi01 <- input$rmi01
+      teal.devel::as.global(rmi01)
+    })
+  }
+
+  shinyApp(ui, server)
+}
+```
+
+So here we see that the value is a list assigning each row to a column:
+
+```{r}
+list(
+  `1` = "bec|ctc",
+  `32` = "ts|bs|aa",
+  `95` = "bs|aa",
+  `119` = "ec",
+  `137` = "bec",
+  `148` = "ctc1"
+)
+```
+
+### Wrangling of assignment list into combination list
+
+```{r}
+# this will come out of the radioMatrixInput, see above:
+assign_list <- list(
+  "ASIAN" = "1",
+  "BLACK OR AFRICAN AMERICAN" = "1",
+  "MULTIPLE" = "2",
+  "UNKNOWN" = "2",
+  "WHITE" = "4"
+)
+
+# now we want this in the following format:
+objective_list <- list(
+  "ASIAN/BLACK OR AFRICAN AMERICAN" = c("ASIAN", "BLACK OR AFRICAN AMERICAN"),
+  "MULTIPLE/UNKNOWN" = c("MULTIPLE", "UNKNOWN"),
+  "WHITE" = "WHITE"
+)
+
+# let's write a helper function for that:
+h_assign_to_group_list <- function(x) {
+  assert_list(
+    x,
+    types = "character",
+    any.missing = FALSE,
+    names = "unique",
+    unique = FALSE
+  )
+  x_vec <- unlist(x)
+  x_split <- split(names(x_vec), x_vec)
+  new_levels <- sapply(x_split, paste, collapse = "/")
+  setNames(x_split, new_levels)
+}
+
+result_list <- h_assign_to_group_list(assign_list)
+assert_true(identical(result_list, objective_list))
+```
+
+## Teal module prototype
+
+We will build a prototype `tm_g_levels()` module to illustrate the combination of factor levels.
+
+### Module function
+
+Here we don't have any changes, as we don't need additional arguments for the app developer.
+
+```{r}
+tm_g_levels <- function(label,
+                        mae_name,
+                        pre_output = NULL,
+                        post_output = NULL) {
+  assert_string(label)
+  assert_string(mae_name)
+  assert_tag(pre_output, null.ok = TRUE)
+  assert_tag(post_output, null.ok = TRUE)
+
+  module(
+    label = label,
+    server = srv_g_levels,
+    server_args = list(
+      mae_name = mae_name
+    ),
+    ui = ui_g_levels,
+    ui_args = list(
+      mae_name = mae_name,
+      pre_output = pre_output,
+      post_output = post_output
+    ),
+    filters = "all"
+  )
+}
+```
+
+### UI function
+
+Here we have the additional button next to the variable selection dropdown box to open up the combination of factor levels menu. Note that we cannot really work with conditional panel here as the matrix we need is too large and would not fit in the narrow horizontal encoding space.
+
+```{r}
+ui_g_levels <- function(id,
+                        datasets,
+                        mae_name,
+                        pre_output,
+                        post_output) {
+  ns <- NS(id)
+  mae <- datasets$get_data(mae_name, filtered = FALSE)
+  experiment_name_choices <- names(mae)
+
+  teal.devel::standard_layout(
+    encoding = div(
+      selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
+      div(
+        class = "row",
+        div(
+          class = "col-sm-8",
+          tags$label(
+            class = "control-label",
+            "Select faceting variable"
+          )
+        ),
+        div(
+          class = "col-sm-4",
+          actionButton(
+            ns("open_levels_input"),
+            span(icon("font fa-object-ungroup")),
+            title = "Combine factor levels",
+            class = "pull-right list-genes"
+          ),
+          include_css_files(pattern = "*")
+        )
+      ),
+      div(
+        class = "custom-select-input",
+        optionalSelectInput(
+          ns("facet_var"),
+          label = NULL,
+          choices = "",
+          multiple = FALSE
+        )
+      )
+    ),
+    output = plotOutput(ns("plot")),
+    pre_output = pre_output,
+    post_output = post_output
+  )
+}
+```
+
+### Server function
+
+```{r}
+srv_g_levels <- function(input,
+                         output,
+                         session,
+                         datasets,
+                         mae_name) {
+  # When the filtered data set of the chosen experiment changes, update the
+  # experiment data object.
+  experiment_data <- reactive({
+    req(input$experiment_name) # Important to avoid running into NULL here.
+
+    mae <- datasets$get_data(mae_name, filtered = TRUE)
+    object <- mae[[input$experiment_name]]
+    colData(object) <- hermes::df_char_to_factor(colData(object))
+    object
+  })
+
+  # When the chosen experiment changes, recompute the colData variables.
+  col_data_vars <- eventReactive(input$experiment_name, ignoreNULL = TRUE, {
+    object <- experiment_data()
+    names(SummarizedExperiment::colData(object))
+  })
+
+  # When the colData variables change, update the choices for facet_var.
+  observeEvent(col_data_vars(), {
+    col_data_vars <- col_data_vars()
+
+    updateOptionalSelectInput(
+      session,
+      "facet_var",
+      choices = col_data_vars,
+      selected = character()
+    )
+  })
+
+  # `reactiveValuees` object for storing experiment and colData variable
+  # specific assignment lists.
+  # Note that this should have experiments at the first level and then colData in the
+  # second level.
+  assign_lists <- reactiveValues()
+
+  # Reactive for the current combination. Takes the assignment list if available
+  # and converts to combination list.
+  current_combination <- reactive({
+    experiment_name <- input$experiment_name
+    facet_var <- input$facet_var
+
+    req(experiment_name, facet_var)
+
+    assign_list <- assign_lists[[experiment_name]][[facet_var]]
+    if (!is.null(assign_list)) {
+      h_assign_to_group_list(assign_list)
+    } else {
+      NULL
+    }
+  })
+
+  # Here we produce the final object by checking
+  # if we should combine for this facet var.
+  experiment_data_final <- reactive({
+    facet_var <- input$facet_var
+    experiment_data <- experiment_data()
+    current_combination <- current_combination()
+
+    req(facet_var)
+
+    if (!is.null(current_combination)) {
+      colData(experiment_data)[[facet_var]] <- do.call(
+        forcats::fct_collapse,
+        args = c(
+          list(.f = colData(experiment_data)[[facet_var]]),
+          current_combination
+        )
+      )
+    }
+    experiment_data
+  })
+
+  # Function to return the UI for a modal dialog with matrix input for combination
+  # assignment.
+  combModal <- function(facet_levels, # nolint
+                        n_max_groups,
+                        selected_groups) {
+    if (is.null(selected_groups)) {
+      selected_groups <- seq_len(n_max_groups)
+    }
+    modalDialog(
+      shinyRadioMatrix::radioMatrixInput(
+        session$ns("comb_assignment"),
+        rowIDs = facet_levels,
+        rowLLabels = rep("", length = length(facet_levels)),
+        choices = seq_len(n_max_groups),
+        selected = selected_groups
+      ),
+      span(
+        "Please click to group the original factor levels"
+      ),
+      footer = tagList(
+        modalButton("Cancel"),
+        actionButton(session$ns("ok"), "OK")
+      ),
+      include_js_files("checkbox.js")
+    )
+  }
+
+  # Show modal when button is clicked and the current variable is a factor variable.
+  observeEvent(input$open_levels_input, {
+    facet_var <- input$facet_var
+    experiment_data <- experiment_data()
+    experiment_name <- input$experiment_name
+
+    req(experiment_name, facet_var)
+
+    current_facet_var <- colData(experiment_data)[[facet_var]]
+
+    if (is.factor(current_facet_var)) {
+      facet_levels <- levels(current_facet_var)
+
+      # Note: here we make sure we load with previous choice so the user
+      # does not constantly need to start from scratch again.
+      selected_groups <- assign_lists[[experiment_name]][[facet_var]]
+
+      showModal(combModal(
+        facet_levels = facet_levels,
+        n_max_groups = length(facet_levels),
+        selected_groups = selected_groups
+      ))
+    } else {
+      showNotification("Can only group levels for factor variables", type = "message")
+    }
+  })
+
+  # When OK button is pressed, save the settings, and remove the modal.
+  observeEvent(input$ok, {
+    experiment_name <- input$experiment_name
+    facet_var <- input$facet_var
+    comb_assignment <- input$comb_assignment
+
+    req(experiment_name, facet_var, comb_assignment)
+
+    if (FALSE) {
+      # Here we could do checks on comb_assignment, e.g. check that not just
+      # 1 group was selected.
+      showNotification(
+        "Something went wrong",
+        type = "error"
+      )
+    } else {
+      assign_lists[[experiment_name]][[facet_var]] <- comb_assignment
+      removeModal()
+    }
+  })
+
+  output$plot <- renderPlot({
+    # Resolve all reactivity.
+    experiment_data_final <- experiment_data_final()
+    facet_var <- input$facet_var
+
+    # Validate and give useful messages to the user. Note: no need to duplicate
+    # here req() from above.
+    validate(need(
+      hermes::is_hermes_data(experiment_data_final),
+      "please use HermesData() on input experiments"
+    ))
+    validate(need(!is.null(facet_var), "please select a faceting variable"))
+
+    # Output.
+    hermes::draw_boxplot(
+      experiment_data_final,
+      assay_name = "counts",
+      genes = genes(experiment_data_final)[1],
+      facet_var = facet_var
+    )
+  })
+}
+```
+
+### Sample module
+
+```{r}
+sample_tm_g_levels <- function() {
+  mae <- hermes::multi_assay_experiment
+  mae_data <- dataset("MAE", mae)
+  data <- teal_data(mae_data)
+  app <- init(
+    data = data,
+    modules = root_modules(
+      tm_g_levels(
+        label = "levels",
+        mae_name = "MAE"
+      )
+    )
+  )
+  shinyApp(app$ui, app$server)
+}
+```
+
+### Try out
+
+```{r}
+sample_tm_g_levels()
+```
+
+
+## For production
+
+### Length of factor level strings
+
+We need to think about length of resulting level strings. If we combine many levels things can easily get too long.
+- We can consider `shorten_list()` from signature design just with " / " as separator.
+- We can think about hermes functions wrapping e.g. facet labels - but then this only works for facet, not for coloring or x-axis...
+- or we could have generic factor levels (1, 2, 3 etc) and then we need to have footnotes for the outputs, or just a separate output below the main plot/table that explains the groups?
+
+### Special case when we require 2 groups coming out of the levels grouping
+
+In that case we need to:
+- validate that facet variable has exactly 2 levels, point the user to grouping functionality
+- only accept clicking OK when exactly 2 levels are selected (instead of just one level)
+- have a workaround for logical variables, they should also work. maybe modify `hermes` function `diff_expression()` accordingly.
+- only provide 2 columns in the radio matrix
+- can default to having first level in first column and the rest in 2nd column
+
+## Example using the new module
+
+```{r}
+ui_example <- function(id,
+                       datasets,
+                       mae_name,
+                       pre_output,
+                       post_output) {
+  ns <- NS(id)
+  mae <- datasets$get_data(mae_name, filtered = FALSE)
+  experiment_name_choices <- names(mae)
+  teal.devel::standard_layout(
+    encoding = div(
+      selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
+      sampleVarSpecInput(ns("facet_var"), "Select faceting variable")
+    ),
+    output = plotOutput(ns("plot")),
+    pre_output = pre_output,
+    post_output = post_output
+  )
+}
+
+srv_example <- function(input,
+                        output,
+                        session,
+                        datasets,
+                        mae_name) {
+  experiment_data <- reactive({
+    req(input$experiment_name) # Important to avoid running into NULL here.
+    mae <- datasets$get_data(mae_name, filtered = TRUE)
+    object <- mae[[input$experiment_name]]
+    SummarizedExperiment::colData(object) <- hermes::df_char_to_factor(SummarizedExperiment::colData(object))
+    object
+  })
+
+  facet_var_spec <- sampleVarSpecServer(
+    "facet_var",
+    experiment_name = reactive({
+      input$experiment_name
+    }),
+    original_data = experiment_data,
+    num_levels = 2L
+  )
+
+  output$plot <- renderPlot({
+    experiment_data_final <- facet_var_spec$experiment_data()
+    facet_var <- facet_var_spec$sample_var()
+
+    validate(need(
+      hermes::is_hermes_data(experiment_data_final),
+      "please use HermesData() on input experiments"
+    ))
+    validate(need(!is.null(facet_var), "please select a faceting variable"))
+
+    # Output.
+    hermes::draw_boxplot(
+      experiment_data_final,
+      assay_name = "counts",
+      genes = hermes::genes(experiment_data_final)[1],
+      facet_var = facet_var
+    )
+  })
+}
+
+tm_g_example <- function(label,
+                         mae_name,
+                         pre_output = NULL,
+                         post_output = NULL) {
+  assert_string(label)
+  assert_string(mae_name)
+  assert_tag(pre_output, null.ok = TRUE)
+  assert_tag(post_output, null.ok = TRUE)
+  module(
+    label = label,
+    server = srv_example,
+    server_args = list(
+      mae_name = mae_name
+    ),
+    ui = ui_example,
+    ui_args = list(
+      mae_name = mae_name,
+      pre_output = pre_output,
+      post_output = post_output
+    ),
+    filters = "all"
+  )
+}
+
+sample_app <- function() {
+  mae <- hermes::multi_assay_experiment
+  mae_data <- dataset("MAE", mae)
+  data <- teal_data(mae_data)
+  app <- init(
+    data = data,
+    modules = root_modules(
+      tm_g_example(
+        label = "levels",
+        mae_name = "MAE"
+      )
+    )
+  )
+  shinyApp(app$ui, app$server)
+}
+
+if (interactive()) {
+  sample_app()
+}
+```
