@@ -30,6 +30,7 @@ Imports:
   hermes,
   lifecycle,
   MultiAssayExperiment,
+  rtables,
   shinyRadioMatrix,
   shinyWidgets,
   stats,
