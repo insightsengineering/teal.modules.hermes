@@ -103,20 +103,26 @@ geneSpecInput <- function(inputId,
 #' shows a notification if not all `selected` genes were available.
 #'
 #' @inheritParams module_arguments
-#' @inheritParams teal::updateOptionalSelectInput
+#' @param selected (`character`)\cr currently selected gene IDs.
+#' @param choices (`data.frame`)\cr containing `id` and `name` columns of the
+#'   new choices.
 #'
 #' @export
 h_update_gene_selection <- function(session,
                                     inputId,
                                     selected,
                                     choices) {
-  is_new_selected <- selected %in% choices
+  is_new_selected <- selected %in% choices$id
   is_removed <- !is_new_selected
   updateOptionalSelectInput(
     session,
     inputId = inputId,
     selected = selected[is_new_selected],
-    choices = choices
+    choices = value_choices(
+      data = choices,
+      var_choices = "id",
+      var_label = "name"
+    )
   )
   n_removed <- sum(is_removed)
   if (n_removed > 0) {
@@ -125,6 +131,34 @@ h_update_gene_selection <- function(session,
       hermes::h_parens(hermes::h_short_list(selected[is_removed]))
     ))
   }
+}
+
+#' Helper Function to Parse Genes
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' This helper function takes a vector of `words` and tries to match them
+#' with the `id` and `name` columns of possible gene choices.
+#'
+#' @param words (`character`)\cr containing gene IDs or names.
+#' @inheritParams h_update_gene_selection
+#' @return The subset of `choices` which matches `words` in ID or name.
+#'
+#' @export
+#' @examples
+#' h_parse_genes(
+#'   c("a", "2535"),
+#'   data.frame(id = as.character(2533:2537), name = letters[1:5])
+#' )
+h_parse_genes <- function(words, choices) {
+  assert_character(words, min.len = 1L)
+  assert_data_frame(choices, types = "character")
+  assert_set_equal(names(choices), c("id", "name"))
+
+  id_matches <- choices$id %in% words
+  name_matches <- choices$name %in% words
+  has_match <- id_matches | name_matches
+  choices[has_match, , drop = FALSE]
 }
 
 #' Module Server for Gene Signature Specification
@@ -136,8 +170,8 @@ h_update_gene_selection <- function(session,
 #' @inheritParams module_arguments
 #' @param funs (static named `list`)\cr names of this list will be used for the function
 #'   selection drop down menu.
-#' @param gene_choices (reactive `character`)\cr returns the possible gene choices to
-#'   populate in the UI.
+#' @param gene_choices (reactive `data.frame`)\cr returns the possible gene choices to
+#'   populate in the UI, as a `data.frame` with columns `id` and `name`.
 #' @param label_modal_title (`string`)\cr title for the dialog that asks for the text input.
 #' @param label_modal_footer (`character`)\cr lines of text to use for the footer of the dialog.
 #'
@@ -172,7 +206,12 @@ h_update_gene_selection <- function(session,
 #'     mae <- datasets$get_data("MAE", filtered = TRUE)
 #'     object <- mae[[1]]
 #'     gene_ids <- rownames(object)
-#'     sort(gene_ids)
+#'     gene_names <- SummarizedExperiment::rowData(object)$HGNC
+#'     gene_data <- data.frame(
+#'       id = gene_ids,
+#'       name = gene_names
+#'     )
+#'     gene_data[order(gene_data$name), ]
 #'   })
 #'   gene_spec <- geneSpecServer(
 #'     "my_genes",
@@ -182,7 +221,7 @@ h_update_gene_selection <- function(session,
 #'   output$result <- renderText({
 #'     validate_gene_spec(
 #'       gene_spec(),
-#'       gene_choices()
+#'       gene_choices()$id
 #'     )
 #'     gene_spec <- gene_spec()
 #'     gene_spec$get_label()
@@ -216,7 +255,7 @@ geneSpecServer <- function(inputId,
                            gene_choices,
                            label_modal_title = "Enter list of genes",
                            label_modal_footer = c(
-                             "Please enter a comma-separated list of gene IDs.",
+                             "Please enter a comma-separated list of gene IDs and/or names.",
                              "(Note that genes not included in current choices will be removed)"
                            )) {
   assert_string(inputId)
@@ -227,6 +266,7 @@ geneSpecServer <- function(inputId,
 
   moduleServer(inputId, function(input, output, session) {
     # The `reactiveValues` object for storing current gene text input.
+    # This will also be a data frame with id and name columns.
     parsed_genes <- reactiveVal(NULL, label = "Parsed genes")
 
     # If the parsed genes are entered via text, update gene selection.
@@ -237,7 +277,7 @@ geneSpecServer <- function(inputId,
       h_update_gene_selection(
         session,
         inputId = "genes",
-        selected = parsed_genes,
+        selected = parsed_genes$id,
         choices = gene_choices
       )
     })
@@ -280,14 +320,16 @@ geneSpecServer <- function(inputId,
     # Show modal when the text button is clicked.
     observeEvent(input$text_button, {
       gene_choices <- gene_choices()
-      example_list <- hermes::h_short_list(gene_choices)
+      example_list <- hermes::h_short_list(head(setdiff(gene_choices$name, "")))
       showModal(dataModal(example_list))
     })
 
     # When OK button is pressed, attempt to parse the genes from the text.
+    # This can be IDs and/or names of genes.
     # Remove the modal and display notification message.
     observeEvent(input$ok_button, {
       gene_text <- input$gene_text
+      gene_choices <- gene_choices()
 
       if (!nzchar(gene_text)) {
         showNotification(
@@ -295,19 +337,34 @@ geneSpecServer <- function(inputId,
           type = "error"
         )
       } else {
-        parse_result <- h_extract_words(gene_text)
+        words <- h_extract_words(gene_text)
+        parse_result <- h_parse_genes(words, choices = gene_choices)
         showNotification(paste(
-          "Received", length(parse_result), "genes from text input",
-          hermes::h_parens(hermes::h_short_list(parse_result))
+          "Parsed total", nrow(parse_result), "genes from", length(words), "words"
         ))
         parsed_genes(parse_result)
         removeModal()
       }
     })
 
+    # When the gene choice is updated, then also set the names
+    # correctly by looking up in current choices.
+    named_genes <- eventReactive(input$genes, ignoreNULL = FALSE, {
+      genes <- input$genes
+      gene_choices <- gene_choices()
+      ret <- if (!is.null(genes)) {
+        which_id <- match(genes, gene_choices$id)
+        gene_names <- gene_choices$name[which_id]
+        stats::setNames(genes, gene_names)
+      } else {
+        NULL
+      }
+      ret
+    })
+
     reactive({
       hermes::gene_spec(
-        genes = input$genes,
+        genes = named_genes(),
         fun = funs[[input$fun_name]],
         fun_name = input$fun_name
       )
