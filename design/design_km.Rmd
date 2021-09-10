@@ -15,7 +15,6 @@ install_nest("teal", "cb200aa2738f820b9dcffaffd858581fad9cf90e")
 
 ```{r}
 tm_made_up_merge_pr <- function(label = "PR merge", info = NULL, dataname = NULL, pre_output = NULL, post_output = NULL) {
-  
   args <- as.list(environment())
   module(
     label = label,
@@ -34,7 +33,7 @@ ui_made_up_merge_pr <- function(id, ...) {
   arguments <- list(...)
 
   ns <- NS(id)
-  
+
   standard_layout(
     output = white_small_well(
       verbatimTextOutput(outputId = ns("filter_expr")),
@@ -47,19 +46,19 @@ ui_made_up_merge_pr <- function(id, ...) {
       optionalSelectInput(
         inputId = ns("select_experiment"),
         label = "Select experiment",
-        choices = names(MAE),  
+        choices = names(MAE),
         selected = "se1"
       ),
-      sliderInput("obs", 
-                  "Group by percentile cutoff:",
-                  min = 0, 
-                  max = 100, 
-                  value = 50
+      sliderInput("obs",
+        "Group by percentile cutoff:",
+        min = 0,
+        max = 100,
+        value = 50
       ),
       selectizeInput(
         inputId = ns("select_gene"),
         label = "Select gene",
-        choices = ""   # needs to be generated based on experiment chosen
+        choices = "" # needs to be generated based on experiment chosen
       ),
       selectInput(
         inputId = ns("select_endpt"),
@@ -78,7 +77,8 @@ ui_made_up_merge_pr <- function(id, ...) {
       )
     ),
     forms = div(
-      actionButton(ns("show_rcode"), "Show R Code", width = "100%"))
+      actionButton(ns("show_rcode"), "Show R Code", width = "100%")
+    )
   )
 }
 ```
@@ -88,7 +88,7 @@ ui_made_up_merge_pr <- function(id, ...) {
 
 srv_made_up_merge_pr <- function(input, output, session, datasets, dataname) {
   init_chunks()
-  
+
   output$filter_expr <- renderText({
     paste(
       c(
@@ -98,26 +98,26 @@ srv_made_up_merge_pr <- function(input, output, session, datasets, dataname) {
       collapse = "\n"
     )
   })
-  
+
   experiment_data <- reactive({
     MAE <- datasets$get_data(dataname, filtered = TRUE)
     MAE_filtered <- MAE[[input$select_experiment]]
     MAE_filtered
   })
-  
+
   # # When the chosen experiment call changes,
   # # we recompute gene names.
   # genes <- eventReactive(experiment_data(), ignoreNULL = FALSE, {
   #   object <- experiment_data()
   #   rownames(object)
   # })
-  # 
+  #
   # # # ERROR
   # # When the genes are recomputed, update the choices for genes in the UI.
   # observe(genes(), {
   #   # First: resolve all reactivity.
   #   gene_choices <- genes()
-  # 
+  #
   #   # Second: do the action.
   #     updateSelectizeInput(
   #       session,
@@ -126,12 +126,12 @@ srv_made_up_merge_pr <- function(input, output, session, datasets, dataname) {
   #       selected = gene_choices[1]
   #     )
   #   })
-  
+
   output$col_data_table <- renderText({
-      experiment_data <- experiment_data()
-      paste(capture.output(print(experiment_data)), collapse = "\n")
+    experiment_data <- experiment_data()
+    paste(capture.output(print(experiment_data)), collapse = "\n")
   })
-  
+
   output$adsl_data_table <- renderText({
     ADSL <- datasets$get_data("ADSL", filtered = TRUE)
     chunks_reset()
@@ -140,10 +140,9 @@ srv_made_up_merge_pr <- function(input, output, session, datasets, dataname) {
     }))
     chunks_safe_eval()
   })
-  
-  
+
+
   observeEvent(input$show_rcode, {
-    
     show_rcode_modal(
       title = "R Code for MAE analysis",
       rcode = get_rcode(
@@ -174,7 +173,7 @@ adsl <- cdisc_dataset("ADSL", radsl(cached = TRUE, na_percentage = 0.2)) %>%
      ADSL$all_na <- NA
      ADSL$unknown <- as.list(ADSL$SEX)"
   )
-adtte <- cdisc_dataset("ADTTE", radtte(cached = TRUE, seed = 1))  %>%
+adtte <- cdisc_dataset("ADTTE", radtte(cached = TRUE, seed = 1)) %>%
   mutate_dataset(
     "ADTTE$CNSR <- as.logical(ADTTE$CNSR)
      ADTTE$CNSR[100:110] <- NA"
@@ -221,22 +220,22 @@ NOTE: make sure SUBJIDs get mapped properly
 ```{r}
 library(tern)
 
-#Make a plot from scratch
+# Make a plot from scratch
 object <- HermesData(summarized_experiment)
-adtte <- radtte(cached = TRUE) %>% mutate(CNSR = as.logical(CNSR)) 
-adsl <- radsl(cached = TRUE) 
+adtte <- radtte(cached = TRUE) %>% mutate(CNSR = as.logical(CNSR))
+adsl <- radsl(cached = TRUE)
 
 # filter adtte by endpoint of interest
-adtte_filter <- adtte[adtte$PARAMCD == "OS",] %>% droplevels()
+adtte_filter <- adtte[adtte$PARAMCD == "OS", ] %>% droplevels()
 
 # get the variables from se to merge: USUBJIDs, group variable.
 # specs: rownames = samples, 1 sample per patient
-object_tomerge <- colData(object)[, c("USUBJID", "SampleID")] %>% 
-  as.data.frame
+object_tomerge <- colData(object)[, c("USUBJID", "SampleID")] %>%
+  as.data.frame()
 
 # counts of chosen gene
 # rownames are sampleIDs
-gene_assay <- counts(object)["GeneID:11185", ] %>% as.data.frame
+gene_assay <- counts(object)["GeneID:11185", ] %>% as.data.frame()
 colnames(gene_assay) <- "gene_count"
 gene_assay$SampleID <- rownames(gene_assay)
 
@@ -266,7 +265,6 @@ merged_adtte <- merged_adtte %>%
 # draw graph
 variables <- list(tte = "AVAL", is_event = "CNSR", arm = "gene_factor")
 g_km(merged_adtte, variables = variables)
-
 ```
 
 ## ADTTE/SE merge function
@@ -276,81 +274,81 @@ Not exported.
 ```{r}
 
 # h_km_mae_to_adtte
-# 
+#
 # A function to help with merging of MAE/SE to ADTTE object for use with `g_km`. NOTE: We assume that each patient
 # only has one sample.
-# 
+#
 # @params adtte (`data frame`)\cr an adtte dataset.
 # @params mae (`Hermes MAE object`)\cr a `Multi Assay Experiment` object that contains `Summarized Experiments`.
 # @params gene_var (`string`)\cr a gene of interest.
 # @params se_var (`string`)\cr the desired `Summarized Experiment` slot for the gene data.
-# @params assay_var (`string`)\cr the assay to define the groups. 
-# 
+# @params assay_var (`string`)\cr the assay to define the groups.
+#
 # @return A merged data frame containing all columns/rows from adtte and select columns from MAE (counts, Sample IDs) for a given gene.
-# 
+#
 # @importFrom dplyr %>% %in% full_join mutate
 
 # NOTE: assay_var should be one of counts, "cpm", "rpkm", "tpm", "voom"
-h_km_mae_to_adtte <- function (adtte, mae, gene_var, se_var = "se1", assay_var = "counts"){
-  
-              # get SE from MAE
-              mae <- mae
-              se <- mae[[se_var]] 
-              hd <- HermesData(se)
-             
-              # get the variables from se to merge with counts
-              se_tomerge <- colData(hd)[, c("USUBJID", "SampleID")] %>% as.data.frame
+h_km_mae_to_adtte <- function(adtte, mae, gene_var, se_var = "se1", assay_var = "counts") {
 
-              # get assay for gene of interest
-              # NOTE: if gene is not in hd then we get an error ("subscript out of bounds").
-              # No check here because the list of gene choices should be generated by the server and 
-              # should only contain genes that are in object. Same for assay.
-              
-              #When genes > 1, df cols = samples, rows = gene. 
-              # When genes = 1, df col = gene or ".", rows = samples.
-              num_genes <- length(gene_var)
-              gene_assay <- assay(hd, assay_var)[gene_var,] %>% as.data.frame
-              
-              if (num_genes == 1){
-                colnames(gene_assay) <- paste("gene_", assay_var, sep = "")
-                gene_assay$SampleID <- rownames(gene_assay)
-              }
-              
-              if (num_genes >= 1){
-                rownames(gene_assay) <- paste(rownames(gene_assay), assay_var, sep = "_")
-              }
-              
-              # important: merge assays to se (here counts, but could be other assay) object
-              # first check if each patient only has one sampleID
-              if (any(duplicated(se_tomerge$USUBJID))) {
-                simpleError("Some patients have more than one sample.")
-              }
-              se_tomerge <- full_join(se_tomerge, gene_assay, by = "SampleID")
+  # get SE from MAE
+  mae <- mae
+  se <- mae[[se_var]]
+  hd <- HermesData(se)
 
-              # check that patients in se exist in adtte
-              adtte_patients <- unique(adtte$USUBJID)
-              se_patients <- se_tomerge$USUBJID
-              if (!any(se_patients %in% adtte_patients)) {
-                simpleError("There are no USUBJIDs in SummarizedExperiment that match USUBJIDs in ADTTE.")
-              }
+  # get the variables from se to merge with counts
+  se_tomerge <- colData(hd)[, c("USUBJID", "SampleID")] %>% as.data.frame()
 
-              # merge se with adtte 
-              merged_adtte <- full_join(adtte, se_tomerge, by = "USUBJID") %>%
-                tern::df_explicit_na()
-              
-              merged_adtte
+  # get assay for gene of interest
+  # NOTE: if gene is not in hd then we get an error ("subscript out of bounds").
+  # No check here because the list of gene choices should be generated by the server and
+  # should only contain genes that are in object. Same for assay.
+
+  # When genes > 1, df cols = samples, rows = gene.
+  # When genes = 1, df col = gene or ".", rows = samples.
+  num_genes <- length(gene_var)
+  gene_assay <- assay(hd, assay_var)[gene_var, ] %>% as.data.frame()
+
+  if (num_genes == 1) {
+    colnames(gene_assay) <- paste("gene_", assay_var, sep = "")
+    gene_assay$SampleID <- rownames(gene_assay)
+  }
+
+  if (num_genes >= 1) {
+    rownames(gene_assay) <- paste(rownames(gene_assay), assay_var, sep = "_")
+  }
+
+  # important: merge assays to se (here counts, but could be other assay) object
+  # first check if each patient only has one sampleID
+  if (any(duplicated(se_tomerge$USUBJID))) {
+    simpleError("Some patients have more than one sample.")
+  }
+  se_tomerge <- full_join(se_tomerge, gene_assay, by = "SampleID")
+
+  # check that patients in se exist in adtte
+  adtte_patients <- unique(adtte$USUBJID)
+  se_patients <- se_tomerge$USUBJID
+  if (!any(se_patients %in% adtte_patients)) {
+    simpleError("There are no USUBJIDs in SummarizedExperiment that match USUBJIDs in ADTTE.")
+  }
+
+  # merge se with adtte
+  merged_adtte <- full_join(adtte, se_tomerge, by = "USUBJID") %>%
+    tern::df_explicit_na()
+
+  merged_adtte
 }
 ```
 
 ## Test out function
 ```{r}
-library(tern)            
+library(tern)
 
 mae <- multi_assay_experiment # from hermes
-adtte <- radtte(cached = TRUE) %>% mutate(CNSR = as.logical(CNSR)) 
+adtte <- radtte(cached = TRUE) %>% mutate(CNSR = as.logical(CNSR))
 
-#make sure patient IDs match some in adtte to test function
-se_test <- mae[["se2"]] 
+# make sure patient IDs match some in adtte to test function
+se_test <- mae[["se2"]]
 hd_test <- HermesData(se_test)
 se_patients <- colData(hd_test)[, "USUBJID"]
 adtte$USUBJID[1:9] <- se_patients
@@ -362,57 +360,13 @@ probs <- .3
 
 new_adtte <- h_km_mae_to_adtte(adtte, mae, gene_var = "GeneID:1820", se_var = "se2")
 binned_adtte <- new_adtte %>%
-                dplyr::mutate(gene_factor = tern::cut_quantile_bins(gene_counts, probs = .3))
+  dplyr::mutate(gene_factor = tern::cut_quantile_bins(gene_counts, probs = .3))
 
 variables <- list(tte = "AVAL", is_event = "CNSR", arm = "gene_factor")
 tern::g_km(binned_adtte, variables = variables)
-
 ```
 
 ## Next Steps
 # UI again
 # Server
 # App
-
-# Template_g_km
-```{r}
-
- $data
-{
-  anl <- binned_adtte
-  ANL <- radtte(cached = TRUE) %>% mutate(CNSR = as.logical(CNSR)) 
-    anl <- ANL %>% mutate(ARM = droplevels(ARM)) %>% mutate(is_event = CNSR == 
-        0)
-}
-
-$variables
-variables <- list(tte = "AVAL", is_event = "is_event", arm = "ARM")
-variables <- list(tte = "AVAL", is_event = "CNSR", arm = "gene_factor")
-
-$graph
-{
-    grid::grid.newpage()
-    lyt <- grid::grid.layout(nrow = nlevels(anl$SEX), ncol = 1) %>% 
-        grid::viewport(layout = .) %>% grid::pushViewport()
-    result <- mapply(df = as.data.frame(anl), nrow = seq_along(levels(anl$SEX)),
-        FUN = function(df_i, nrow_i) {
-            # if (nrow(df_i) == 0) {
-            #     grid::grid.text("No data found for a given facet value.", 
-            #       x = 0.5, y = 0.5, vp = grid::viewport(layout.pos.row = nrow_i, 
-            #         layout.pos.col = 1))
-            # }
-            # else {
-                tern::g_km(df = df_i, 
-                           variables = variables, 
-                           xlab = paste0("Survival time", " (", anl$AVALU[1], ")"),
-                           yval = "Survival", xticks = NULL, newpage = FALSE,
-                           title = "KM Plot",
-                           annot_surv_med = TRUE,
-                           control_coxph_pw = control_coxph(conf_level = 0.95, pval_method = "log-rank", ties = "efron"), 
-                           ci_ribbon = FALSE, 
-                           vp = grid::viewport(layout.pos.col = 1))
-            # }
-        })
-}
-```
-
