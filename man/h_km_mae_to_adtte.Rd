@@ -42,11 +42,9 @@ the original gene IDs, in particular white space, dots and colons are removed,
 see \code{\link[tern:make_names]{tern::make_names()}} for details.
 }
 \examples{
-library(dplyr)
-library(random.cdisc.data)
 mae <- hermes::multi_assay_experiment
-adtte <- radtte(cached = TRUE) |>
-  mutate(CNSR = as.logical(CNSR))
+adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte |>
+  dplyr::mutate(CNSR = as.logical(CNSR))
 
 new_adtte <- h_km_mae_to_adtte(
   adtte,

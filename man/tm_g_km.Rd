@@ -80,12 +80,9 @@ ADaM structure.
 }}
 
 \examples{
-library(dplyr)
-library(random.cdisc.data)
-
 mae <- hermes::multi_assay_experiment
-adtte <- radtte(cached = TRUE) |>
-    mutate(CNSR = as.logical(CNSR))
+adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte |>
+  dplyr::mutate(CNSR = as.logical(CNSR))
 
 data <- teal_data(
   dataset(
