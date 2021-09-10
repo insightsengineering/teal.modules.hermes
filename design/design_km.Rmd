@@ -12,10 +12,10 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Module Start
 
 ```{r}
-tm_made_up_merge_pr <- function(label = "PR merge", 
-                                info = NULL, 
-                                dataname = NULL, 
-                                pre_output = NULL, 
+tm_made_up_merge_pr <- function(label = "PR merge",
+                                info = NULL,
+                                dataname = NULL,
+                                pre_output = NULL,
                                 post_output = NULL) {
   args <- as.list(environment())
   module(
@@ -102,9 +102,9 @@ srv_made_up_merge_pr <- function(input, output, session, datasets, dataname) {
   })
 
   experiment_data <- reactive({
-    MAE <- datasets$get_data(dataname, filtered = TRUE)
-    MAE_filtered <- MAE[[input$select_experiment]]
-    MAE_filtered
+    mae <- datasets$get_data(dataname, filtered = TRUE)
+    mae_filtered <- mae[[input$select_experiment]]
+    mae_filtered
   })
 
   output$col_data_table <- renderText({
@@ -113,10 +113,10 @@ srv_made_up_merge_pr <- function(input, output, session, datasets, dataname) {
   })
 
   output$adsl_data_table <- renderText({
-    ADSL <- datasets$get_data("ADSL", filtered = TRUE)
+    adsl <- datasets$get_data("ADSL", filtered = TRUE)
     chunks_reset()
     chunks_push(bquote({
-      paste(capture.output(str(ADSL)), collapse = "\n")
+      paste(capture.output(str(adsl)), collapse = "\n")
     }))
     chunks_safe_eval()
   })
@@ -159,17 +159,16 @@ adtte <- cdisc_dataset("ADTTE", radtte(cached = TRUE, seed = 1)) %>%
      ADTTE$CNSR[100:110] <- NA"
   )
 
-MAE <- multi_assay_experiment # from hermes
-mae <- dataset("MAE", MAE)
+mae <- multi_assay_experiment # from hermes
+mae <- dataset("MAE", mae)
 
-ADTTE <- radtte(cached = TRUE, seed = 1) %>%
+adtte <- radtte(cached = TRUE, seed = 1) %>%
   mutate(
     "ADTTE$CNSR <- as.logical(ADTTE$CNSR)
      ADTTE$CNSR[100:110] <- NA"
   )
 
-# gene_choices <- rownames(MAE[["se1"]])
-choices_endpoints <- levels(ADTTE$PARAMCD)
+choices_endpoints <- levels(adtte$PARAMCD)
 
 
 data <- teal_data(mae, adsl, adtte) %>%
@@ -217,7 +216,7 @@ object_tomerge <- colData(object)[, c("USUBJID", "SampleID")] %>%
 # rownames are sampleIDs
 gene_assay <- counts(object)["GeneID:11185", ] %>% as.data.frame()
 colnames(gene_assay) <- "gene_count"
-gene_assay$SampleID <- rownames(gene_assay)
+gene_assay$SampleID <- rownames(gene_assay) # nolint
 
 # important: get the gene value from (here counts, but could be other assay) object
 object_tomerge <- full_join(object_tomerge, gene_assay, by = "SampleID")
@@ -264,7 +263,8 @@ Not exported.
 # @params se_var (`string`)\cr the desired `Summarized Experiment` slot for the gene data.
 # @params assay_var (`string`)\cr the assay to define the groups.
 #
-# @return A merged data frame containing all columns/rows from adtte and select columns from MAE (counts, Sample IDs) for a given gene.
+# @return A merged data frame containing all columns/rows from adtte
+#   and select columns from MAE (counts, Sample IDs) for a given gene.
 #
 # @importFrom dplyr %>% %in% full_join mutate
 
@@ -291,7 +291,7 @@ h_km_mae_to_adtte <- function(adtte, mae, gene_var, se_var = "se1", assay_var = 
 
   if (num_genes == 1) {
     colnames(gene_assay) <- paste("gene_", assay_var, sep = "")
-    gene_assay$SampleID <- rownames(gene_assay)
+    gene_assay$SampleID <- rownames(gene_assay) # nolint
   }
 
   if (num_genes >= 1) {
