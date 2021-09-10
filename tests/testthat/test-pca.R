@@ -242,13 +242,15 @@ test_that("tm_g_pca works as expected in the sample app", {
   expect_identical(plot_message, "Sample size is too small. PCA needs more than 2 samples.")
 
   # Initiate the use of Top Variance Genes function
-  # app$setValue(ns("filter_top"), TRUE)
-  app$setInputs(`teal-main_ui-modules_ui-root_pca-n_top` = 500)
+  app$setValue(ns("filter_top"), TRUE)
+  n_top_value <- app$waitForValue(ns("n_top"))
+  expect_identical(n_top_value, 500L)
 
   expect_snapshot_screenshot(
     app,
-    id = ns("table_cor"),
-    name = "update5_cor_table.png"
+    id = ns("table_pca"),
+    name = "update6_pca_table.png"
   )
+  app$stop()
 
 })
