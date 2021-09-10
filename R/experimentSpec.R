@@ -179,7 +179,7 @@ h_gene_data <- function(object, name_annotation) {
 #'   })
 #'   output$head <- renderPrint({
 #'     result <- result()
-#'     head(result)
+#'     utils::head(result)
 #'   })
 #' }
 #'

@@ -320,7 +320,7 @@ geneSpecServer <- function(inputId,
     # Show modal when the text button is clicked.
     observeEvent(input$text_button, {
       gene_choices <- gene_choices()
-      example_list <- hermes::h_short_list(head(setdiff(gene_choices$name, "")))
+      example_list <- hermes::h_short_list(utils::head(setdiff(gene_choices$name, "")))
       showModal(dataModal(example_list))
     })
 
