@@ -361,6 +361,10 @@ srv_g_km <- function(input,
     adtte_data <- droplevels(adtte_data)
 
     percentiles_without_borders <- setdiff(percentiles, c(0, 1))
+    validate(need(
+      length(percentiles_without_borders) > 0,
+      "Please select at least one quantile other than 0 and 1"
+    ))
 
     binned_adtte <- tryCatch({
       dplyr::mutate(
