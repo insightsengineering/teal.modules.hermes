@@ -24,10 +24,10 @@
                   </div>
                 </div>
                 <div class="form-group shiny-input-container">
-                  <label class="control-label" id="testid-assay_name-label" for="testid-assay_name">Select assay</label>
+                  <label class="control-label" id="testid-assay-name-label" for="testid-assay-name">Select Assay</label>
                   <div>
-                    <select id="testid-assay_name"><option value="" selected></option></select>
-                    <script type="application/json" data-for="testid-assay_name">{"plugins":["selectize-plugin-a11y"]}</script>
+                    <select id="testid-assay-name"><option value="" selected></option></select>
+                    <script type="application/json" data-for="testid-assay-name">{"plugins":["selectize-plugin-a11y"]}</script>
                   </div>
                 </div>
                 <div data-display-if="input.tab_selected == &#39;PCA&#39;" data-ns-prefix="testid-">
