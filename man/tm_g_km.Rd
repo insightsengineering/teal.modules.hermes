@@ -34,8 +34,12 @@ sample_tm_g_km()
 \item{label}{(\code{string})\cr
 menu item label of the module in the teal app.}
 
+\item{adtte_name}{(\code{string})\cr name of the ADTTE dataset.}
+
 \item{mae_name}{(\code{string})\cr
 name of the MAE data used in the teal module.}
+
+\item{strata_var}{(\code{character})\cr names of the stratification variables.}
 
 \item{pre_output}{(\code{shiny.tag} or \code{NULL})\cr
 placed before the output to put the output into context (for example a title).}
@@ -80,11 +84,11 @@ library(dplyr)
 library(random.cdisc.data)
 
 mae <- hermes::multi_assay_experiment
-adtte <- radtte(cached = TRUE) \%>\%
+adtte <- radtte(cached = TRUE) |>
     mutate(CNSR = as.logical(CNSR))
 
 data <- teal_data(
-    dataset("ADTTE", adtte, code = 'adtte <- radtte(cached = TRUE) \%>\%
+    dataset("ADTTE", adtte, code = 'adtte <- radtte(cached = TRUE) |>
     mutate(CNSR = as.logical(CNSR))'),
 dataset("mae", mae)
   )

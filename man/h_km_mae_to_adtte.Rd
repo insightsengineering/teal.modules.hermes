@@ -45,7 +45,7 @@ see \code{\link[tern:make_names]{tern::make_names()}} for details.
 library(dplyr)
 library(random.cdisc.data)
 mae <- hermes::multi_assay_experiment
-adtte <- radtte(cached = TRUE) \%>\%
+adtte <- radtte(cached = TRUE) |>
   mutate(CNSR = as.logical(CNSR))
 
 new_adtte <- h_km_mae_to_adtte(

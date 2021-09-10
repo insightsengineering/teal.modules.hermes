@@ -22,7 +22,7 @@
 #' library(dplyr)
 #' library(random.cdisc.data)
 #' mae <- hermes::multi_assay_experiment
-#' adtte <- radtte(cached = TRUE) %>%
+#' adtte <- radtte(cached = TRUE) |>
 #'   mutate(CNSR = as.logical(CNSR))
 #'
 #' new_adtte <- h_km_mae_to_adtte(
@@ -110,6 +110,8 @@ h_km_mae_to_adtte <- function(adtte,
 #'
 #' @inheritParams module_arguments
 #'
+#' @param adtte_name (`string`)\cr name of the ADTTE dataset.
+#' @param strata_var (`character`)\cr names of the stratification variables.
 #' @return Shiny module to be used in the teal app.
 #'
 #' @export
@@ -119,11 +121,11 @@ h_km_mae_to_adtte <- function(adtte,
 #' library(random.cdisc.data)
 #'
 #' mae <- hermes::multi_assay_experiment
-#' adtte <- radtte(cached = TRUE) %>%
+#' adtte <- radtte(cached = TRUE) |>
 #'     mutate(CNSR = as.logical(CNSR))
 #'
 #'data <- teal_data(
-#'     dataset("ADTTE", adtte, code = 'adtte <- radtte(cached = TRUE) %>%
+#'     dataset("ADTTE", adtte, code = 'adtte <- radtte(cached = TRUE) |>
 #'     mutate(CNSR = as.logical(CNSR))'),
 #' dataset("mae", mae)
 #'   )
@@ -308,7 +310,7 @@ srv_g_km <- function(input,
     req(isTRUE(assay_name %in% SummarizedExperiment::assayNames(experiment_data)))
     mae_data <- datasets$get_data(mae_name, filtered = TRUE)
     adtte_data <- datasets$get_data(adtte_name, filtered = TRUE)
-    adtte_data <- adtte_data %>% mutate(CNSR = as.logical(CNSR))
+    adtte_data$CNSR <- as.logical(adtte_data$CNSR)
 
     h_km_mae_to_adtte(
       adtte_data,
@@ -362,8 +364,9 @@ srv_g_km <- function(input,
     # We need the gene counts column name (the selected gene_var/x_var) to add to the 'arm'
     # variable in the list.
     arm_name <- attr(adtte_data, "gene_cols")
-    adtte_data[, arm_name] <- adtte_data[, arm_name] %>% as.numeric
-    adtte_data <- filter(adtte_data, PARAMCD == endpoint) %>% droplevels
+    adtte_data[, arm_name] <- as.numeric(adtte_data[, arm_name])
+    adtte_data <- dplyr::filter(adtte_data, .data$PARAMCD == endpoint)
+    adtte_data <- droplevels(adtte_data)
 
     percentiles_without_borders <- setdiff(percentiles, c(0, 1))
 
@@ -395,18 +398,16 @@ srv_g_km <- function(input,
 #' }
 sample_tm_g_km <- function() {
 
-   library(dplyr)
-   library(random.cdisc.data)
-
+  requireNamespace("random.cdisc.data")
    mae <- hermes::multi_assay_experiment
-   adtte <- radtte(cached = TRUE) %>%
-       mutate(CNSR = as.logical(CNSR))
+   adtte <- random.cdisc.data::radtte(cached = TRUE)
+   adtte$CNSR <- as.logical(adtte$CNSR)
 
    data <- teal_data(
-       dataset("ADTTE", adtte, code = 'adtte <- radtte(cached = TRUE) %>%
-       mutate(CNSR = as.logical(CNSR))'),
-       dataset("mae", mae)
-       )
+     dataset("ADTTE", adtte, code = 'adtte <- radtte(cached = TRUE)
+             adtte$CNSR <- as.logical(adtte$CNSR))'),
+     dataset("mae", mae)
+   )
 
    modules <- root_modules(
        tm_g_km(
