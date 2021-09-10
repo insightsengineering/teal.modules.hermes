@@ -17,8 +17,8 @@ upstream_repos:
   insightsengineering/tern:
     repo: insightsengineering/tern
     host: https://github.com
-  insightsengineering/random.cdisc.data:
-    repo: insightsengineering/random.cdisc.data
+  insightsengineering/scda:
+    repo: insightsengineering/scda
     host: https://github.com
   szelepke/shinyRadioMatrix:
     repo: szelepke/shinyRadioMatrix

@@ -99,7 +99,7 @@ server <- function(input,
   })
   output$head <- renderPrint({
     result <- result()
-    head(result)
+    utils::head(result)
   })
 }
 
