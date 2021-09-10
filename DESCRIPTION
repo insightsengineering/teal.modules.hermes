@@ -38,7 +38,6 @@ Imports:
   stringr,
   SummarizedExperiment,
   teal.devel,
-  teal.modules.clinical,
   tern,
   utils.nest
 Suggests:
