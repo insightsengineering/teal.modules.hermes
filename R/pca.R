@@ -71,7 +71,7 @@ ui_g_pca <- function(id,
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
       selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
-      selectInput(ns("assay_name"), "Select assay", choices = ""),
+      assaySpecInput(ns("assay")),
       conditionalPanel(
         condition = "input.tab_selected == 'PCA'",
         ns = ns,
@@ -184,17 +184,7 @@ srv_g_pca <- function(input,
     SummarizedExperiment::assayNames(object)
   })
 
-  # When the assay_names changes, update the choices for assay.
-  observeEvent(assay_names(), {
-    assay_name_choices <- assay_names()
-
-    updateSelectInput(
-      session,
-      "assay_name",
-      choices = assay_name_choices,
-      selected = assay_name_choices[1]
-    )
-  })
+  assay <- assaySpecServer("assay", assay_names)
 
   # When the chosen experiment changes, recompute the colData variables.
   col_data_vars <- eventReactive(input$experiment_name, ignoreNULL = TRUE, {
@@ -217,9 +207,9 @@ srv_g_pca <- function(input,
   # When the chosen experiment or assay name changes, recompute the PC.
   pca_result <- reactive({
     experiment_data <- experiment_data()
-    assay_name <- input$assay_name
     filter_top <- input$filter_top
     n_top <- input$n_top
+    assay_name <- assay()
 
     validate(need(hermes::is_hermes_data(experiment_data), "please use HermesData() on input experiments"))
     req(isTRUE(assay_name %in% SummarizedExperiment::assayNames(experiment_data)))
@@ -304,7 +294,7 @@ srv_g_pca <- function(input,
     y_var <- as.numeric(input$y_var)
     data <- as.data.frame(SummarizedExperiment::colData(experiment_data()))
     color_var <- input$color_var
-    assay_name <- input$assay_name
+    assay_name <- assay()
     var_pct <- input$var_pct
     label <- input$label
 
