@@ -5,7 +5,7 @@
 \alias{ui_g_km}
 \alias{srv_g_km}
 \alias{sample_tm_g_km}
-\title{Teal Module for Biomarker Kaplan-Meier Plot}
+\title{Teal Module for Kaplan-Meier Plot}
 \usage{
 tm_g_km(
   label,
@@ -88,19 +88,22 @@ adtte <- radtte(cached = TRUE) |>
     mutate(CNSR = as.logical(CNSR))
 
 data <- teal_data(
-    dataset("ADTTE", adtte, code = 'adtte <- radtte(cached = TRUE) |>
-    mutate(CNSR = as.logical(CNSR))'),
-dataset("mae", mae)
-  )
+  dataset(
+    "ADTTE",
+    adtte,
+    code = 'adtte <- radtte(cached = TRUE) |> mutate(CNSR = as.logical(CNSR))'
+  ),
+  dataset("mae", mae)
+)
 
 modules <- root_modules(
-    tm_g_km(
-      label = "KM PLOT",
-      adtte_name = "ADTTE",
-      mae_name = "mae",
-      strata_var = c("SEX", "STRATA1")
-    )
+  tm_g_km(
+    label = "KM PLOT",
+    adtte_name = "ADTTE",
+    mae_name = "mae",
+    strata_var = c("SEX", "STRATA1")
   )
+)
 
 app <- init(
   data = data,

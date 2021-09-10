@@ -84,8 +84,10 @@ h_km_mae_to_adtte <- function(adtte,
   patients_not_in_adtte <- setdiff(se_patients, adtte_patients)
   if (length(patients_not_in_adtte) > 0) {
     showNotification(
-      paste("Patients", paste(patients_not_in_adtte, collapse = ", "),
-            "removed from MAE because not contained in ADTTE."),
+      paste(
+        "Patients", paste(patients_not_in_adtte, collapse = ", "),
+        "removed from MAE because not contained in ADTTE."
+      ),
       type = "warning"
     )
   }
@@ -101,7 +103,7 @@ h_km_mae_to_adtte <- function(adtte,
   )
 }
 
-#' Teal Module for Biomarker Kaplan-Meier Plot
+#' Teal Module for Kaplan-Meier Plot
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
@@ -124,20 +126,23 @@ h_km_mae_to_adtte <- function(adtte,
 #' adtte <- radtte(cached = TRUE) |>
 #'     mutate(CNSR = as.logical(CNSR))
 #'
-#'data <- teal_data(
-#'     dataset("ADTTE", adtte, code = 'adtte <- radtte(cached = TRUE) |>
-#'     mutate(CNSR = as.logical(CNSR))'),
-#' dataset("mae", mae)
-#'   )
+#' data <- teal_data(
+#'   dataset(
+#'     "ADTTE",
+#'     adtte,
+#'     code = 'adtte <- radtte(cached = TRUE) |> mutate(CNSR = as.logical(CNSR))'
+#'   ),
+#'   dataset("mae", mae)
+#' )
 #'
 #' modules <- root_modules(
-#'     tm_g_km(
-#'       label = "KM PLOT",
-#'       adtte_name = "ADTTE",
-#'       mae_name = "mae",
-#'       strata_var = c("SEX", "STRATA1")
-#'     )
+#'   tm_g_km(
+#'     label = "KM PLOT",
+#'     adtte_name = "ADTTE",
+#'     mae_name = "mae",
+#'     strata_var = c("SEX", "STRATA1")
 #'   )
+#' )
 #'
 #' app <- init(
 #'   data = data,
@@ -152,10 +157,6 @@ tm_g_km <- function(label,
                     adtte_name,
                     mae_name,
                     strata_var = NULL,
-                  # time_unit_var = "AVALU",
-                  # aval_var = "AVAL",
-                  # cnsr_var = "CNSR",
-                  # conf_level = 0.95,
                     pre_output = NULL,
                     post_output = NULL) {
 
@@ -195,10 +196,6 @@ ui_g_km <- function(id,
                     adtte_name,
                     mae_name,
                     strata_var,
-                  # aval_var,
-                  # cnsr_var,
-                  # time_unit_var,
-                  # conf_level,
                     pre_output,
                     post_output) {
 
@@ -223,8 +220,8 @@ ui_g_km <- function(id,
         min = 0,
         max = 1,
         value = c(0, 0.5)
-        )
-      ),
+      )
+    ),
     output = plotOutput(ns("km_plot")),
     pre_output = pre_output,
     post_output = post_output
@@ -396,32 +393,35 @@ srv_g_km <- function(input,
 #' # Alternatively you can run the sample module with this function call:
 #' sample_tm_g_km()
 #' }
-sample_tm_g_km <- function() {
+sample_tm_g_km <- function() { # nolint # nousage
 
-  requireNamespace("random.cdisc.data")
-   mae <- hermes::multi_assay_experiment
-   adtte <- random.cdisc.data::radtte(cached = TRUE)
-   adtte$CNSR <- as.logical(adtte$CNSR)
+  mae <- hermes::multi_assay_experiment
+  adtte <- random.cdisc.data::radtte(cached = TRUE) |>
+    dplyr::mutate(CNSR = as.logical(.data$CNSR))
 
-   data <- teal_data(
-     dataset("ADTTE", adtte, code = 'adtte <- radtte(cached = TRUE)
-             adtte$CNSR <- as.logical(adtte$CNSR))'),
-     dataset("mae", mae)
-   )
+  data <- teal_data(
+    dataset(
+      "ADTTE",
+      adtte,
+      code = 'adtte <- random.cdisc.data::radtte(cached = TRUE)
+        |> dplyr::mutate(CNSR = as.logical(.data$CNSR))'
+    ),
+    dataset("mae", mae)
+  )
 
-   modules <- root_modules(
-       tm_g_km(
-         label = "KM PLOT",
-         adtte_name = "ADTTE",
-         mae_name = "mae",
-         strata_var = c("SEX", "STRATA1")
-       )
-     )
+  modules <- root_modules(
+    tm_g_km(
+      label = "KM PLOT",
+      adtte_name = "ADTTE",
+      mae_name = "mae",
+      strata_var = c("SEX", "STRATA1")
+    )
+  )
 
-   app <- init(
-     data = data,
-     modules = modules
-     )
+  app <- init(
+    data = data,
+    modules = modules
+  )
 
-   shinyApp(ui = app$ui, server = app$server)
+  shinyApp(ui = app$ui, server = app$server)
 }
