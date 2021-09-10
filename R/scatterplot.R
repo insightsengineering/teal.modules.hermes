@@ -92,9 +92,9 @@ ui_g_scatterplot <- function(id,
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
       experimentSpecInput(ns("experiment"), datasets, mae_name),
-      selectInput(ns("assay_name"), "Select assay", choices = ""),
-      geneSpecInput(ns("x_spec"), summary_funs, label_genes = "Select x gene(s)"),
-      geneSpecInput(ns("y_spec"), summary_funs, label_genes = "Select y gene(s)"),
+      assaySpecInput(ns("assay")),
+      geneSpecInput(ns("x_spec"), summary_funs, label_genes = "Select x Gene(s)"),
+      geneSpecInput(ns("y_spec"), summary_funs, label_genes = "Select y Gene(s)"),
       teal.devel::panel_group(
         input_id = "settings_group",
         teal.devel::panel_item(
@@ -128,22 +128,11 @@ srv_g_scatterplot <- function(input,
     datasets = datasets,
     mae_name = mae_name
   )
-
-  # When the assay names change, update the choices for assay.
-  observeEvent(experiment$assays(), {
-    assays <- experiment$assays()
-    assay_name_choices <- setdiff(
-      assays,
-      exclude_assays
-    )
-
-    updateSelectInput(
-      session,
-      "assay_name",
-      choices = assay_name_choices
-    )
-  })
-
+  assay <- assaySpecServer(
+    "assay",
+    assays = experiment$assays,
+    exclude_assays = exclude_assays
+  )
   sample_var_specs <- multiSampleVarSpecServer(
     inputIds = c("facet_var", "color_var"),
     experiment_name = experiment$name,
@@ -159,13 +148,9 @@ srv_g_scatterplot <- function(input,
     y_spec <- y_spec()
     facet_var <- sample_var_specs$vars$facet_var()
     color_var <- sample_var_specs$vars$color_var()
-    assay_name <- input$assay_name
+    assay_name <- assay()
     smooth_method <- input$smooth_method
 
-    validate(need(
-      !is_blank(assay_name),
-      "no assays are available for this experiment, please choose another experiment"
-    ))
     validate_gene_spec(x_spec, rownames(experiment_data))
     validate_gene_spec(y_spec, rownames(experiment_data))
 

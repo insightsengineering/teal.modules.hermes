@@ -18,8 +18,12 @@ reference:
       - h_km_mae_to_adtte
   - title: Internal Helper Functions
     contents:
-  - title: Example Data
+  - title: Shiny Modules
     contents:
+      - assaySpecServer
+      - experimentSpecServer
+      - geneSpecServer
+      - sampleVarSpecServer
   - title: Teal Module Functions
     contents:
       - tm_g_barplot
