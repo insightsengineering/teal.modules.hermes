@@ -20,8 +20,8 @@ test_that("h_km_mae_to_adtte function works as expected with default settings", 
 
   expect_class(result, "data.frame")
   expect_class(result2, "data.frame")
-  expect_true("SampleID" %in% colnames(result))
-  expect_true(any(colnames(result) %like% "GeneID"))
+  expect_subset("SampleID", colnames(result))
+  expect_true(any(grep("GeneID", colnames(result))))
 })
 
 test_that("h_km_mae_to_adtte fails as expected with invalid settings", {
