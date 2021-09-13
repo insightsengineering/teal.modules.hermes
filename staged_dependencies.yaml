@@ -2,6 +2,12 @@ current_repo:
   repo: insightsengineering/teal.modules.hermes
   host: https://github.com
 upstream_repos:
+  Roche/rtables:
+    repo: Roche/rtables
+    host: https://github.com
+  insightsengineering/utils.nest:
+    repo: insightsengineering/utils.nest
+    host: https://github.com
   insightsengineering/teal.devel:
     repo: insightsengineering/teal.devel
     host: https://github.com
@@ -17,10 +23,7 @@ upstream_repos:
   insightsengineering/tern:
     repo: insightsengineering/tern
     host: https://github.com
-  insightsengineering/random.cdisc.data:
-    repo: insightsengineering/random.cdisc.data
-    host: https://github.com
-  szelepke/shinyRadioMatrix:
-    repo: szelepke/shinyRadioMatrix
+  insightsengineering/scda:
+    repo: insightsengineering/scda
     host: https://github.com
 downstream_repos:

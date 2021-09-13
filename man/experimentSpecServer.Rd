@@ -8,6 +8,7 @@ experimentSpecServer(
   inputId,
   datasets,
   mae_name,
+  name_annotation = "HGNC",
   sample_vars_as_factors = TRUE,
   with_mae_col_data = TRUE
 )
@@ -23,6 +24,10 @@ functions, holding all the data sets provided in the app initialization.}
 \item{mae_name}{(\code{string})\cr
 name of the MAE data used in the teal module.}
 
+\item{name_annotation}{(\code{string} or \code{NULL})\cr which annotation column to use as name
+to return in the \code{genes} data. If \code{NULL}, then the \code{name} column will be set to empty
+strings.}
+
 \item{sample_vars_as_factors}{(\code{flag})\cr whether to convert the sample variables
 (columns in \code{colData()} of the experiment) from character to factor variables.}
 
@@ -34,7 +39,7 @@ List with the following reactive objects:
 \itemize{
 \item \code{data}: the \code{\link[hermes:HermesData-class]{hermes::AnyHermesData}} experiment.
 \item \code{name}: the name of the experiment as selected by the user.
-\item \code{genes}: the names of the genes in \code{data}.
+\item \code{genes}: a \code{data.frame} with the genes in \code{data}, with columns \code{id} and \code{name}.
 \item \code{assays}: the names of the assays in \code{data}.
 }
 }
@@ -94,7 +99,7 @@ server <- function(input,
   })
   output$head <- renderPrint({
     result <- result()
-    head(result)
+    utils::head(result)
   })
 }
 

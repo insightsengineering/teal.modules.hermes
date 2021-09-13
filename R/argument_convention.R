@@ -65,7 +65,7 @@ NULL
 #' @param mae (`MultiAssayExperiment`)\cr contains `AnyHermesData` objects.
 #' @param object (`AnyHermesData`)\cr contains RNA-seq values for one experiment.
 #' @param gene_var (`character`)\cr a gene(s) of interest.
-#' @param experiment_name (`string`)\cr the desired experiment to use.
+#' @param experiment_name (`string`)\cr the desired `HermesData` to use.
 #' @param assay_name (`string`)\cr the assay to define the groups.
 #'
 #' @name function_arguments
