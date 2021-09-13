@@ -60,6 +60,32 @@ h_km_mae_to_adtte <- function(adtte,
   hd <- mae[[experiment_name]]
   assert_class(hd, "AnyHermesData")
 
+  #########################################################
+  ## This section is to detect if hd has different USUBJID
+  # In practice, colData may not be applicable for all hd, so we use try() here
+  try_colData_hd <- try(colnames_from_hd <- colnames(colData(hd)),
+                        silent = TRUE)
+
+  if (class(try_colData_hd) != "try-error" &&
+      "USUBJID" %in% colnames_from_hd){
+
+    patID_not_in_merge_samplemap <- setdiff(colData(hd)$USUBJID,
+                                            merge_samplemap$USUBJID)
+
+    if (length(patID_not_in_merge_samplemap) > 0){
+    showNotification(
+      paste(
+        "Patient USUBJID", paste(patID_not_in_merge_samplemap, collapse = ", "),
+        "in", experiment_name,
+        "do not match with Patient USUBJID in sample map"
+      ),
+      type = "warning"
+    )
+    }
+
+  }
+
+  #########################################################
   num_genes <- length(gene_var)
   gene_assay <- SummarizedExperiment::assay(hd, assay_name)[gene_var,]
   gene_assay <- as.data.frame(gene_assay)
