@@ -5,7 +5,7 @@ Welcome to `teal.modules.hermes`! Jump right into an ad-hoc module example or re
 ## Ad-hoc module example
 
 Let's assume you have a function `awesome_plot()` which takes a count matrix and makes an awesome plot out of it. Now you would like to make a Shiny app where you can filter patients, samples, select the experiment out of your `MultiAssayExperiment` (MAE), select the count matrix from the experiment, etc. 
-Nothing is easier than that with `teal.modules.hermes`! 
+Nothing is easier than that with `teal.modules.hermes`!
 We show you below how to quickly spin up your UI, server and put them together into a nice little app.
 
 ### UI function
@@ -58,7 +58,7 @@ srv <- function(input,
 
 ### App function
 
-Now let's assume you want to spin up your app for an MAE. 
+Now let's assume you want to spin up your app for an MAE.
 
 ```r
 library(teal.modules.hermes)
@@ -100,11 +100,11 @@ awesome_app(hermes::multi_assay_experiment)
 ### What is `teal`?
 
 `teal` is a shiny-based interactive exploration framework for analyzing clinical trials data. `teal` currently provides a dynamic filtering facility and diverse data viewers. `teal` shiny applications are built using standard [shiny modules](https://shiny.rstudio.com/articles/modules.html).
-See [github](https://github.com/insightsengineering/teal) and [training material](http://pdwebdev01.gene.com/groups/devo/multimedia/Gen_Teal/story_html5.html?lms=1) for more details. 
+See [github](https://github.com/insightsengineering/teal) and [training material](http://pdwebdev01.gene.com/groups/devo/multimedia/Gen_Teal/story_html5.html?lms=1) for more details.
 
 ### What is `hermes`?
 
-`hermes` facilitates preprocessing, analyzing, and reporting of RNA-seq data. 
+`hermes` facilitates preprocessing, analyzing, and reporting of RNA-seq data.
 The core functionality is built on the BioConductor ecosystem, especially the `SummarizedExperiment` class from which the `HermesData` class inherits.
 See the [vignette](https://docs.nest.roche.com/releases/2021_07_07/embedded/hermes/articles/introduction.html) for more details.
 
