@@ -49,14 +49,24 @@
                       <script type="application/json" data-for="testid-y_var">{"plugins":["selectize-plugin-a11y"]}</script>
                     </div>
                   </div>
-                  <label>Show Variance %</label>
+                </div>
+                <label>Use only Top Variance Genes</label>
+                <div class="form-group shiny-input-container">
+                  <input id="testid-filter_top" type="checkbox" class="sw-switchInput" data-input-id="testid-filter_top" data-on-text="ON" data-off-text="OFF" data-label-width="auto" data-handle-width="auto" data-size="mini"/>
+                </div>
+                <div data-display-if="input.filter_top" data-ns-prefix="testid-">
                   <div class="form-group shiny-input-container">
-                    <input id="testid-var_pct" type="checkbox" class="sw-switchInput" data-input-id="testid-var_pct" data-on-text="ON" data-off-text="OFF" data-label-width="auto" data-handle-width="auto" data-size="mini" checked="checked"/>
+                    <label class="control-label" id="testid-n_top-label" for="testid-n_top">Number of Top Genes</label>
+                    <input class="js-range-slider" id="testid-n_top" data-skin="shiny" data-min="10" data-max="5000" data-from="500" data-step="1" data-grid="true" data-grid-num="10" data-grid-snap="false" data-prettify-separator="," data-prettify-enabled="true" data-keyboard="true" data-data-type="number"/>
                   </div>
-                  <label>Show Label</label>
-                  <div class="form-group shiny-input-container">
-                    <input id="testid-label" type="checkbox" class="sw-switchInput" data-input-id="testid-label" data-on-text="ON" data-off-text="OFF" data-label-width="auto" data-handle-width="auto" data-size="mini" checked="checked"/>
-                  </div>
+                </div>
+                <label>Show Variance %</label>
+                <div class="form-group shiny-input-container">
+                  <input id="testid-var_pct" type="checkbox" class="sw-switchInput" data-input-id="testid-var_pct" data-on-text="ON" data-off-text="OFF" data-label-width="auto" data-handle-width="auto" data-size="mini" checked="checked"/>
+                </div>
+                <label>Show Label</label>
+                <div class="form-group shiny-input-container">
+                  <input id="testid-label" type="checkbox" class="sw-switchInput" data-input-id="testid-label" data-on-text="ON" data-off-text="OFF" data-label-width="auto" data-handle-width="auto" data-size="mini" checked="checked"/>
                 </div>
                 <div data-display-if="input.tab_selected == &#39;PC and Sample Correlation&#39;" data-ns-prefix="testid-">
                   <label>Cluster columns</label>

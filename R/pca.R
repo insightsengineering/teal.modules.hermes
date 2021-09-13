@@ -77,21 +77,30 @@ ui_g_pca <- function(id,
         ns = ns,
         optionalSelectInput(ns("color_var"), "Optional color variable"),
         selectizeInput(ns("x_var"), "Select X-axis PC", choices = ""),
-        selectizeInput(ns("y_var"), "Select Y-axis PC", choices = ""),
-        tags$label("Show Variance %"),
-        shinyWidgets::switchInput(ns("var_pct"), value = TRUE, size = "mini"),
-        tags$label("Show Label"),
-        shinyWidgets::switchInput(ns("label"), value = TRUE, size = "mini")
+        selectizeInput(ns("y_var"), "Select Y-axis PC", choices = "")
       ),
+      tags$label("Use only Top Variance Genes"),
+      shinyWidgets::switchInput(ns("filter_top"), value = FALSE, size = "mini"),
+      conditionalPanel(
+        condition = "input.filter_top",
+        ns = ns,
+        sliderInput(ns("n_top"), label = "Number of Top Genes", min = 10, max = 5000, value = 500)
+      ),
+      tags$label("Show Variance %"),
+      shinyWidgets::switchInput(ns("var_pct"), value = TRUE, size = "mini"),
+      tags$label("Show Label"),
+      shinyWidgets::switchInput(ns("label"), value = TRUE, size = "mini"),
       conditionalPanel(
         condition = "input.tab_selected == 'PC and Sample Correlation'",
         ns = ns,
         tags$label("Cluster columns"),
         shinyWidgets::switchInput(ns("cluster_columns"), value = FALSE, size = "mini")
       ),
+
       tags$label("View Matrix"),
       shinyWidgets::switchInput(ns("show_matrix"), value = TRUE, size = "mini")
     ),
+
     output = tagList(
       tabsetPanel(
         id = ns("tab_selected"),
@@ -149,6 +158,26 @@ srv_g_pca <- function(input,
     dat$get_filter_states(input$experiment_name)$get_call()
   })
 
+  # Total number of genes at the moment.
+  n_genes <- reactive({
+    experiment_data <- experiment_data()
+    nrow(experiment_data)
+  })
+
+  # When the total number changes or gene filter is activated, update slider max.
+  observeEvent(list(n_genes(), input$filter_top), {
+    n_genes <- n_genes()
+    filter_top <- input$filter_top
+    if (filter_top) {
+      n_top <- input$n_top
+      updateSliderInput(
+        inputId = "n_top",
+        value = min(n_top, n_genes),
+        max = n_genes
+      )
+    }
+  })
+
   # When the chosen experiment changes, recompute the assay names.
   assay_names <- eventReactive(input$experiment_name, ignoreNULL = TRUE, {
     object <- experiment_data()
@@ -178,6 +207,8 @@ srv_g_pca <- function(input,
   # When the chosen experiment or assay name changes, recompute the PC.
   pca_result <- reactive({
     experiment_data <- experiment_data()
+    filter_top <- input$filter_top
+    n_top <- input$n_top
     assay_name <- assay()
 
     validate(need(hermes::is_hermes_data(experiment_data), "please use HermesData() on input experiments"))
@@ -187,7 +218,7 @@ srv_g_pca <- function(input,
       "Sample size is too small. PCA needs more than 2 samples."
     ))
 
-    hermes::calc_pca(experiment_data, assay_name)
+    hermes::calc_pca(experiment_data, assay_name, n_top = if (filter_top) n_top else NULL)
   })
 
   # When experiment or assay name changes, update choices for PCs in x_var and y_var.

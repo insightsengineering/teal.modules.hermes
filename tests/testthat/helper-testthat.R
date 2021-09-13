@@ -22,6 +22,7 @@ expect_snapshot_screenshot <- function(app,
   if (wait_for_plot) {
     app$waitForOutputElement(id, "alt", timeout = 1e5)
   }
+  Sys.sleep(0.5)
   app$takeScreenshot(path, id, parent = parent)
   testthat::expect_snapshot_file(path, name)
 }

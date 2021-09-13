@@ -240,4 +240,56 @@ test_that("tm_g_pca works as expected in the sample app", {
 
   plot_message <- app$waitForOutputElement(ns("plot_pca"), "message")
   expect_identical(plot_message, "Sample size is too small. PCA needs more than 2 samples.")
+
+  # Remove filter.
+  app$click(ns2("subjects-var_sex-remove"))
+
+  # Initiate the use of Top Variance Genes filtering functionality.
+  app$setValue(ns("filter_top"), TRUE)
+  n_top_value <- app$waitForValue(ns("n_top"))
+  expect_identical(n_top_value, 500L)
+
+  expect_snapshot_screenshot(
+    app,
+    id = ns("table_pca"),
+    name = "update6_pca_table.png"
+  )
+
+  # Change the number of top genes.
+  app$setValue(ns("n_top"), 777L)
+
+  # Change to another experiment and check that it did not change.
+  app$setValue(ns("experiment_name"), "hd2")
+  app$waitForShiny()
+  n_top_value2 <- app$waitForValue(ns("n_top"))
+  expect_identical(n_top_value2, 777L)
+
+  # Increase number of top genes to maximum.
+  app$setValue(ns("n_top"), 2500L)
+
+  # Take screenshot of table.
+  expect_snapshot_screenshot(
+    app,
+    id = ns("table_pca"),
+    name = "update7_pca_table.png"
+  )
+
+  # Switch off gene filtering and check that table is still the same.
+  app$setValue(ns("filter_top"), FALSE)
+  expect_snapshot_screenshot(
+    app,
+    id = ns("table_pca"),
+    name = "update7_pca_table.png"
+  )
+
+  # Go back to first experiment and check how n_top changed.
+  app$setValue(ns("experiment_name"), "hd1")
+  app$setValue(ns("filter_top"), TRUE)
+  n_top_value3 <- app$waitForValue(
+    ns("n_top"),
+    ignore = list(2500L)  # Ignore the old value so that we get the updated one.
+  )
+  expect_identical(n_top_value3, 1000L)
+
+  app$stop()
 })
