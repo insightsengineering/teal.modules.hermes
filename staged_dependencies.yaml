@@ -26,7 +26,4 @@ upstream_repos:
   insightsengineering/scda:
     repo: insightsengineering/scda
     host: https://github.com
-  szelepke/shinyRadioMatrix:
-    repo: szelepke/shinyRadioMatrix
-    host: https://github.com
 downstream_repos:
