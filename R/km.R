@@ -63,11 +63,11 @@ h_km_mae_to_adtte <- function(adtte,
 
   # This section is to detect if hd has different USUBJID
   # In practice, colData may not be applicable for all hd, so we use try() here
-  try_colData_hd <- try(colnames_from_hd <- colnames(colData(hd)),
+  try_colData_hd <- try(colnames_from_hd <- colnames(SummarizedExperiment::colData(hd)),
                         silent = TRUE)
   if (class(try_colData_hd) != "try-error" &&
       "USUBJID" %in% colnames_from_hd){
-    patID_not_in_merge_samplemap <- setdiff(colData(hd)$USUBJID,
+    patID_not_in_merge_samplemap <- setdiff(SummarizedExperiment::colData(hd)$USUBJID,
                                             merge_samplemap$USUBJID)
     expect(length(patID_not_in_merge_samplemap) == 0,
       paste("Patient USUBJID",
