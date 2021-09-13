@@ -72,18 +72,13 @@ h_km_mae_to_adtte <- function(adtte,
     patID_not_in_merge_samplemap <- setdiff(colData(hd)$USUBJID,
                                             merge_samplemap$USUBJID)
 
-    if (length(patID_not_in_merge_samplemap) > 0){
-    showNotification(
-      paste(
-        "Patient USUBJID", paste(patID_not_in_merge_samplemap, collapse = ", "),
-        "in", experiment_name,
-        "do not match with Patient USUBJID in sample map"
-      ),
-      type = "warning"
-    )
+    expect(length(patID_not_in_merge_samplemap) == 0,
+      paste("Patient USUBJID",
+            paste(patID_not_in_merge_samplemap, collapse = ", "),
+            "in", experiment_name,
+            "do not match with Patient USUBJID in sample map"
+      ))
     }
-
-  }
 
   #########################################################
   num_genes <- length(gene_var)
