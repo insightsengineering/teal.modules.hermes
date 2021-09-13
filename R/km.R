@@ -20,7 +20,7 @@
 #' @export
 #' @examples
 #' mae <- hermes::multi_assay_experiment
-#' adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte |>
+#' adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
 #'   dplyr::mutate(CNSR = as.logical(CNSR))
 #'
 #' new_adtte <- h_km_mae_to_adtte(
@@ -118,14 +118,14 @@ h_km_mae_to_adtte <- function(adtte,
 #'
 #' @examples
 #' mae <- hermes::multi_assay_experiment
-#' adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte |>
+#' adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
 #'   dplyr::mutate(CNSR = as.logical(CNSR))
 #'
 #' data <- teal_data(
 #'   dataset(
 #'     "ADTTE",
 #'     adtte,
-#'     code = 'adtte <- radtte(cached = TRUE) |> mutate(CNSR = as.logical(CNSR))'
+#'     code = 'adtte <- radtte(cached = TRUE) %>% mutate(CNSR = as.logical(CNSR))'
 #'   ),
 #'   dataset("mae", mae)
 #' )
@@ -395,14 +395,14 @@ srv_g_km <- function(input,
 sample_tm_g_km <- function() { # nolint # nousage
 
   mae <- hermes::multi_assay_experiment
-  adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte |>
+  adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
     dplyr::mutate(CNSR = as.logical(.data$CNSR))
 
   data <- teal_data(
     dataset(
       "ADTTE",
       adtte,
-      code = 'adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte |>
+      code = 'adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
         dplyr::mutate(CNSR = as.logical(.data$CNSR))'
     ),
     dataset("mae", mae)
