@@ -96,7 +96,6 @@ ui_g_scatterplot <- function(id,
       geneSpecInput(ns("x_spec"), summary_funs, label_genes = "Select x gene(s)"),
       geneSpecInput(ns("y_spec"), summary_funs, label_genes = "Select y gene(s)"),
       teal.devel::panel_group(
-        input_id = "settings_group",
         teal.devel::panel_item(
           input_id = "settings_item",
           collapsed = TRUE,

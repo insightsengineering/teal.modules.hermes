@@ -209,8 +209,7 @@
                     </div>
                   </div>
                 </div>
-                <div id="settings_group" class="panel-group">
-                  <input id="settings_group" type="text" value="None" class="shinyjs-hide"/>
+                <div class="panel-group">
                   <style type="text/css">.panel-title { font-size: 14px; } /*same as everywhere else*/
       .panel-body { background-color: #f5f5f5; } /*same as panel-title*/</style>
                   <input id="settings_item" type="checkbox" value="TRUE" class="shinyjs-hide"/>
