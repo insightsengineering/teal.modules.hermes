@@ -50,7 +50,6 @@ h_km_mae_to_adtte <- function(adtte,
   mae_samplemap <- MultiAssayExperiment::sampleMap(mae)
   samplemap_experiment <- mae_samplemap[mae_samplemap$assay == experiment_name, ]
   patients_in_experiment <- samplemap_experiment$primary
-
   assert_character(patients_in_experiment, unique = TRUE)
 
   merge_samplemap <- samplemap_experiment[, c("primary", "colname")]
@@ -59,24 +58,22 @@ h_km_mae_to_adtte <- function(adtte,
 
   hd <- mae[[experiment_name]]
   assert_class(hd, "AnyHermesData")
-
-
-  # This section is to detect if hd has different USUBJID
- colnames_from_hd <- colnames(SummarizedExperiment::colData(hd))
-  if ("USUBJID" %in% colnames_from_hd){
-    patID_not_in_merge_samplemap <- setdiff(SummarizedExperiment::colData(hd)$USUBJID,
-                                            merge_samplemap$USUBJID)
-    expect(length(patID_not_in_merge_samplemap) == 0,
-      paste("Patient USUBJID",
-            paste(patID_not_in_merge_samplemap, collapse = ", "),
-            "in", experiment_name,
-            "do not match with Patient USUBJID in sample map"
-      ))
-    }
-
+  hd_usubjid <- SummarizedExperiment::colData(hd)$USUBJID
+  assert_subset(
+    x = hd_usubjid,
+    choices = merge_samplemap$USUBJID
+  )
+  mae_coldata <- MultiAssayExperiment::colData(mae)
+  if ("USUBJID" %in% colnames(mae_coldata)) {
+    mae_usubjid <- mae_coldata$USUBJID
+    assert_set_equal(
+      x = mae_usubjid,
+      y = merge_samplemap$USUBJID
+    )
+  }
 
   num_genes <- length(gene_var)
-  gene_assay <- SummarizedExperiment::assay(hd, assay_name)[gene_var,]
+  gene_assay <- SummarizedExperiment::assay(hd, assay_name)[gene_var, ]
   gene_assay <- as.data.frame(gene_assay)
   gene_names <- tern::make_names(gene_var)
   merged_names <- paste(gene_names, assay_name, sep = "_")
