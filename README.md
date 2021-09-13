@@ -49,6 +49,7 @@ srv <- function(input,
   output$awesome_plot <- renderPlot({
     data <- experiment$data()
     assay <- assay()
+    req(assay %in% SummarizedExperiment::assayNames(data))
     counts <- SummarizedExperiment::assay(data, assay)
     awesome_plot(counts)
   })
@@ -109,4 +110,4 @@ See the [vignette](https://docs.nest.roche.com/releases/2021_07_07/embedded/herm
 
 ### So what is then `teal.modules.hermes`?
 
-`teal.modules.hermes` provides `teal` modules (which can be used as part of any `teal` app), for interactive RNA-seq data analysis using `hermes`. Again it is heavily built on the BioConductor classes, in particular `MultiAssayExperiment` which is expected to contain the `HermesData` experiments.
+`teal.modules.hermes` provides `teal` modules (which can be used as part of any `teal` app), for interactive RNA-seq data analysis using `hermes`. Again it is heavily built on the BioConductor classes, in particular `MultiAssayExperiment` (MAE) which is expected to contain the `HermesData` experiments.
