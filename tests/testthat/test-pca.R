@@ -36,7 +36,7 @@ test_that("tm_g_pca works as expected in the sample app", {
   initial_experiment_name <- app$waitForValue(ns("experiment_name"))
   expect_identical(initial_experiment_name, "hd1")
 
-  initial_assay_name <- app$waitForValue(ns("assay_name"))
+  initial_assay_name <- app$waitForValue(ns("assay-name"))
   expect_identical(initial_assay_name, "counts")
 
   initial_tab <- app$waitForValue(ns("tab_selected"))
@@ -75,7 +75,7 @@ test_that("tm_g_pca works as expected in the sample app", {
   initial_experiment_name <- app$waitForValue(ns("experiment_name"))
   expect_identical(initial_experiment_name, "hd1")
 
-  initial_assay_name <- app$waitForValue(ns("assay_name"))
+  initial_assay_name <- app$waitForValue(ns("assay-name"))
   expect_identical(initial_assay_name, "counts")
 
   initial_cluster <- app$waitForValue(ns("cluster_columns"))
@@ -99,7 +99,7 @@ test_that("tm_g_pca works as expected in the sample app", {
 
   # Now update experiment name, assay name, cluster & matrix option on correlation tab.
   app$setValue(ns("experiment_name"), "hd2")
-  app$setValue(ns("assay_name"), "voom")
+  app$setValue(ns("assay-name"), "voom")
   app$setValue(ns("cluster_columns"), TRUE)
   app$setValue(ns("show_matrix"), FALSE)
 
@@ -119,7 +119,7 @@ test_that("tm_g_pca works as expected in the sample app", {
   # Now go back to pca tab and update experiment, assay name, variance % option,
   # label option and matrix option.
   app$setValue(ns("tab_selected"), "PCA")
-  app$setValue(ns("assay_name"), "rpkm")
+  app$setValue(ns("assay-name"), "rpkm")
   app$setValue(ns("x_var"), "3")
   app$setValue(ns("y_var"), "4")
   app$setValue(ns("var_pct"), FALSE)
@@ -144,7 +144,7 @@ test_that("tm_g_pca works as expected in the sample app", {
   app$setValue(ns("experiment_name"), "hd1")
   app$setValue(ns("color_var"), "AGE18")
 
-  new_varpct <- app$waitForValue(ns("assay_name"))
+  new_varpct <- app$waitForValue(ns("assay-name"))
   expect_identical(new_varpct, "counts")
 
   new_xvar <- app$waitForValue(ns("x_var"))
@@ -187,7 +187,7 @@ test_that("tm_g_pca works as expected in the sample app", {
     ns = ns,
     "tab_selected" = "PCA",
     "experiment_name" = "hd1",
-    "assay_name" = "counts",
+    "assay-name" = "counts",
     "x_var" = "3",
     "y_var" = "4",
     "var_pct" = TRUE,
@@ -240,4 +240,56 @@ test_that("tm_g_pca works as expected in the sample app", {
 
   plot_message <- app$waitForOutputElement(ns("plot_pca"), "message")
   expect_identical(plot_message, "Sample size is too small. PCA needs more than 2 samples.")
+
+  # Remove filter.
+  app$click(ns2("subjects-var_sex-remove"))
+
+  # Initiate the use of Top Variance Genes filtering functionality.
+  app$setValue(ns("filter_top"), TRUE)
+  n_top_value <- app$waitForValue(ns("n_top"))
+  expect_identical(n_top_value, 500L)
+
+  expect_snapshot_screenshot(
+    app,
+    id = ns("table_pca"),
+    name = "update6_pca_table.png"
+  )
+
+  # Change the number of top genes.
+  app$setValue(ns("n_top"), 777L)
+
+  # Change to another experiment and check that it did not change.
+  app$setValue(ns("experiment_name"), "hd2")
+  app$waitForShiny()
+  n_top_value2 <- app$waitForValue(ns("n_top"))
+  expect_identical(n_top_value2, 777L)
+
+  # Increase number of top genes to maximum.
+  app$setValue(ns("n_top"), 2500L)
+
+  # Take screenshot of table.
+  expect_snapshot_screenshot(
+    app,
+    id = ns("table_pca"),
+    name = "update7_pca_table.png"
+  )
+
+  # Switch off gene filtering and check that table is still the same.
+  app$setValue(ns("filter_top"), FALSE)
+  expect_snapshot_screenshot(
+    app,
+    id = ns("table_pca"),
+    name = "update7_pca_table.png"
+  )
+
+  # Go back to first experiment and check how n_top changed.
+  app$setValue(ns("experiment_name"), "hd1")
+  app$setValue(ns("filter_top"), TRUE)
+  n_top_value3 <- app$waitForValue(
+    ns("n_top"),
+    ignore = list(2500L)  # Ignore the old value so that we get the updated one.
+  )
+  expect_identical(n_top_value3, 1000L)
+
+  app$stop()
 })
