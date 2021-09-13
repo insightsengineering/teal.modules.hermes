@@ -4,7 +4,7 @@ Welcome to `teal.modules.hermes`! Jump right into an ad-hoc module example or re
 
 ## Ad-hoc module example
 
-Let's assume you have a function `awesome_plot()` which takes a count matrix and makes an awesome plot out of it. Now you would like to make a Shiny app where you can filter patients, samples, select the experiment out of your `MultiAssayExperiment` (MAE), select the count matrix from the experiment, etc. 
+Let's assume you have a function `awesome_plot()` which takes a count matrix and makes an awesome plot out of it. Now you would like to make a Shiny app where you can filter patients, samples, select the experiment out of your `MultiAssayExperiment` (MAE), select the count matrix from the experiment, etc.
 Nothing is easier than that with `teal.modules.hermes`!
 We show you below how to quickly spin up your UI, server and put them together into a nice little app.
 
