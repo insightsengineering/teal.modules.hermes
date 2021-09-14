@@ -81,14 +81,14 @@ ADaM structure.
 
 \examples{
 mae <- hermes::multi_assay_experiment
-adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte |>
+adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte \%>\%
   dplyr::mutate(CNSR = as.logical(CNSR))
 
 data <- teal_data(
   dataset(
     "ADTTE",
     adtte,
-    code = 'adtte <- radtte(cached = TRUE) |> mutate(CNSR = as.logical(CNSR))'
+    code = 'adtte <- radtte(cached = TRUE) \%>\% mutate(CNSR = as.logical(CNSR))'
   ),
   dataset("mae", mae)
 )
