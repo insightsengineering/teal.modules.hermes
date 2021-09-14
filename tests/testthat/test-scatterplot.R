@@ -19,12 +19,11 @@ test_that("ui_g_scatterplot creates expected HTML", {
 # tm_g_scatterplot ----
 
 test_that("tm_g_scatterplot works as expected in the sample app", {
-  # test.nest::skip_if_too_deep(5)
-
+  test.nest::skip_if_too_deep(5)
   skip_if_covr()
 
   library(shinytest)
-  app <- ShinyDriver$new("tests/testthat/scatterplot/", loadTimeout = 1e5, debug = "all", phantomTimeout = 1e5)
+  app <- ShinyDriver$new("scatterplot/", loadTimeout = 1e5, debug = "all", phantomTimeout = 1e5)
   app$getDebugLog()
   app$snapshotInit("test-app")
 
@@ -100,4 +99,3 @@ test_that("tm_g_scatterplot works as expected in the sample app", {
 
   app$stop()
 })
-
