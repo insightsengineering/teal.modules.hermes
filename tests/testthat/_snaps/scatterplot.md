@@ -24,15 +24,15 @@
                   </div>
                 </div>
                 <div class="form-group shiny-input-container">
-                  <label class="control-label" id="testid-assay_name-label" for="testid-assay_name">Select assay</label>
+                  <label class="control-label" id="testid-assay-name-label" for="testid-assay-name">Select Assay</label>
                   <div>
-                    <select id="testid-assay_name"><option value="" selected></option></select>
-                    <script type="application/json" data-for="testid-assay_name">{"plugins":["selectize-plugin-a11y"]}</script>
+                    <select id="testid-assay-name"><option value="" selected></option></select>
+                    <script type="application/json" data-for="testid-assay-name">{"plugins":["selectize-plugin-a11y"]}</script>
                   </div>
                 </div>
                 <div class="row">
                   <div class="col-sm-8">
-                    <label class="control-label">Select x gene(s)</label>
+                    <label class="control-label">Select x Gene(s)</label>
                   </div>
                   <div class="col-sm-4">
                     <button class="btn btn-default action-button pull-right list-genes" id="testid-x_spec-text_button" title="Enter list of genes" type="button">
@@ -165,7 +165,7 @@
                 </div>
                 <div class="row">
                   <div class="col-sm-8">
-                    <label class="control-label">Select y gene(s)</label>
+                    <label class="control-label">Select y Gene(s)</label>
                   </div>
                   <div class="col-sm-4">
                     <button class="btn btn-default action-button pull-right list-genes" id="testid-y_spec-text_button" title="Enter list of genes" type="button">
