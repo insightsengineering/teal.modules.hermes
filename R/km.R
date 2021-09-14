@@ -19,8 +19,8 @@
 #'
 #' @export
 #' @examples
-#'   dplyr::mutate(CNSR = as.logical(CNSR))
-#'   dplyr::mutate(CNSR = as.logical(CNSR))
+#' mae <- hermes::multi_assay_experiment
+#' adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte |>
 #'   dplyr::mutate(CNSR = as.logical(CNSR))
 #'
 #' new_adtte <- h_km_mae_to_adtte(
