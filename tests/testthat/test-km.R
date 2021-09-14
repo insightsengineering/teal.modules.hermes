@@ -2,7 +2,7 @@
 
 test_that("h_km_mae_to_adtte function works as expected with default settings", {
   mae <- hermes::multi_assay_experiment
-  adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte |>
+  adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
     dplyr::mutate(CNSR = as.logical(.data$CNSR))
 
   result <- h_km_mae_to_adtte(
@@ -26,12 +26,12 @@ test_that("h_km_mae_to_adtte function works as expected with default settings", 
 
 test_that("h_km_mae_to_adtte fails as expected with invalid settings", {
   mae <- hermes::multi_assay_experiment
-  adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte |>
+  adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
     dplyr::mutate(CNSR = as.logical(.data$CNSR))
   good_adtte <- adtte
 
   # Example with no matched patient IDs.
-  bad_adtte <- adtte |> dplyr::mutate(USUBJID = paste0("bla-", USUBJID))
+  bad_adtte <- adtte %>% dplyr::mutate(USUBJID = paste0("bla-", USUBJID))
 
   expect_error(h_km_mae_to_adtte(
     good_adtte,
