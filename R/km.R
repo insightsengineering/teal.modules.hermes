@@ -19,8 +19,8 @@
 #'
 #' @export
 #' @examples
-#' mae <- hermes::multi_assay_experiment
-#' adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte |>
+#'   dplyr::mutate(CNSR = as.logical(CNSR))
+#'   dplyr::mutate(CNSR = as.logical(CNSR))
 #'   dplyr::mutate(CNSR = as.logical(CNSR))
 #'
 #' new_adtte <- h_km_mae_to_adtte(
@@ -66,9 +66,9 @@ h_km_mae_to_adtte <- function(adtte,
   mae_coldata <- MultiAssayExperiment::colData(mae)
   if ("USUBJID" %in% colnames(mae_coldata)) {
     mae_usubjid <- mae_coldata$USUBJID
-    assert_set_equal(
-      x = mae_usubjid,
-      y = merge_samplemap$USUBJID
+    assert_subset(
+      x = merge_samplemap$USUBJID,
+      choices = mae_usubjid
     )
   }
 
