@@ -80,7 +80,7 @@ heatmap_plot <- function(object, assay_name) {
 #' }
 tm_g_quality <- function(label,
                          mae_name,
-                         exclude_assays = NULL,
+                         exclude_assays = c(),
                          pre_output = NULL,
                          post_output = NULL) {
   assert_string(label)
