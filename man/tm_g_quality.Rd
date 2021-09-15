@@ -10,7 +10,7 @@
 tm_g_quality(
   label,
   mae_name,
-  exclude_assays = NULL,
+  exclude_assays = character(),
   pre_output = NULL,
   post_output = NULL
 )

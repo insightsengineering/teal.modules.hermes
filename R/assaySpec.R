@@ -102,7 +102,7 @@ assaySpecServer <- function(inputId,
                             exclude_assays = character()) {
   assert_string(inputId)
   assert_reactive(assays)
-  assert_character(exclude_assays, any.missing = FALSE, null.ok = TRUE)
+  assert_character(exclude_assays, any.missing = FALSE)
 
   moduleServer(inputId, function(input, output, session) {
 

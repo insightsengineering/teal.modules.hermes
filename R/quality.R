@@ -80,12 +80,12 @@ heatmap_plot <- function(object, assay_name) {
 #' }
 tm_g_quality <- function(label,
                          mae_name,
-                         exclude_assays = c(),
+                         exclude_assays = character(),
                          pre_output = NULL,
                          post_output = NULL) {
   assert_string(label)
   assert_string(mae_name)
-  assert_character(exclude_assays, any.missing = FALSE, null.ok = TRUE)
+  assert_character(exclude_assays, any.missing = FALSE)
   assert_tag(pre_output, null.ok = TRUE)
   assert_tag(post_output, null.ok = TRUE)
 
@@ -135,10 +135,7 @@ ui_g_quality <- function(id,
       conditionalPanel(
         condition = "input.plot_type == 'Top Genes Plot' || input.plot_type == 'Correlation Heatmap'",
         ns = ns,
-        assaySpecInput(
-          ns("assay"),
-          label_assays = "Please choose assay"
-        )
+        assaySpecInput(ns("assay"))
       ),
       tags$label("Gene Filter Settings", class = "text-primary"),
       shinyWidgets::switchInput(
