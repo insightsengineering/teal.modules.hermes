@@ -56,8 +56,8 @@ test_that("h_order_genes does not fail when given empty data frame", {
 # h_gene_data ----
 
 test_that("h_gene_data works as expected", {
-  object <- hermes::HermesData(hermes::summarized_experiment[1:10, ])
-  result <- h_gene_data(object, "HGNC")
+  object <- hermes::hermes_data[1:10, ]
+  result <- h_gene_data(object, "symbol")
   expected <- data.frame(
     id = c(
       "GeneID:11185", "GeneID:10677", "GeneID:101928428",
@@ -73,8 +73,8 @@ test_that("h_gene_data works as expected", {
 })
 
 test_that("h_gene_data does not fail when object does not contain any genes", {
-  object <- hermes::HermesData(hermes::summarized_experiment[NULL, ])
-  result <- expect_silent(h_gene_data(object, "HGNC"))
+  object <- hermes::hermes_data[NULL, ]
+  result <- expect_silent(h_gene_data(object, "symbol"))
   expected <- data.frame(
     id = character(),
     name = character()
