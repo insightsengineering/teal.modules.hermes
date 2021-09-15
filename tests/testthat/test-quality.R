@@ -2,6 +2,7 @@
 
 test_that("ui_g_quality creates expected HTML", {
   mae_name <- "MyMAE"
+  set.seed(123)
   datasets <- mock_datasets(list(MyMAE = hermes::multi_assay_experiment))
   expect_snapshot(ui_g_quality(
     id = "testid",
@@ -34,12 +35,6 @@ test_that("tm_g_quality works as expected in the sample app", {
 
   initial_assay_name <- app$waitForValue(ns("assay_name"))
   expect_identical(initial_assay_name, "counts")
-
-  # initial_filter_genes <- app$waitForValue(ns("filter_genes"))
-  # expect_true(initial_filter_genes)
-  #
-  # initial_filter_samples <- app$waitForValue(ns("filter_samples"))
-  # expect_true(initial_filter_samples)
 
   initial_plot_type <- app$waitForValue(ns("plot_type"))
   expect_identical(initial_plot_type, "Histogram")
