@@ -80,10 +80,12 @@ heatmap_plot <- function(object, assay_name) {
 #' }
 tm_g_quality <- function(label,
                          mae_name,
+                         exclude_assays = NULL,
                          pre_output = NULL,
                          post_output = NULL) {
   assert_string(label)
   assert_string(mae_name)
+  assert_character(exclude_assays, any.missing = FALSE, null.ok = TRUE)
   assert_tag(pre_output, null.ok = TRUE)
   assert_tag(post_output, null.ok = TRUE)
 
@@ -91,7 +93,8 @@ tm_g_quality <- function(label,
     label = label,
     server = srv_g_quality,
     server_args = list(
-      mae_name = mae_name
+      mae_name = mae_name,
+      exclude_assays = exclude_assays
     ),
     ui = ui_g_quality,
     ui_args = list(
@@ -132,18 +135,20 @@ ui_g_quality <- function(id,
       conditionalPanel(
         condition = "input.plot_type == 'Top Genes Plot' || input.plot_type == 'Correlation Heatmap'",
         ns = ns,
-        selectInput(ns("assay_name"), "Select Assay", choices = ""),
+        assaySpecInput(
+          ns("assay"),
+          label_assays = "Please choose assay"
+        )
       ),
-      checkboxGroupInput(
-        ns("filter"),
-        label = "Filter",
-        choices = list("Genes" = "genes", "Samples" = "samples"),
-        selected = c("genes", "samples")
+      tags$label("Gene Filter Settings", class = "text-primary"),
+      shinyWidgets::switchInput(
+        ns("filter_gene"),
+        value = TRUE,
+        size = "mini"
       ),
       conditionalPanel(
-        condition = "input.filter.includes('genes')",
+        condition = "input.filter_gene",
         ns = ns,
-        tags$label("Gene Filter Settings", class = "text-primary"),
         sliderInput(ns("min_cpm"), label = ("Minimum CPM"), min = 1, max = 10, value = 5),
         sliderInput(ns("min_cpm_prop"), label = ("Minimum CPM Proportion"), min = 0.01, max = 0.99, value = 0.25),
         optionalSelectInput(
@@ -154,10 +159,15 @@ ui_g_quality <- function(id,
           multiple = TRUE
         )
       ),
+      tags$label("Sample Filter Settings", class = "text-primary"),
+      shinyWidgets::switchInput(
+        ns("filter_sample"),
+        value = TRUE,
+        size = "mini"
+      ),
       conditionalPanel(
-        condition = "input.filter.includes('samples')",
+        condition = "input.filter_sample",
         ns = ns,
-        tags$label("Sample Filter Settings", class = "text-primary"),
         sliderInput(ns("min_corr"), label = ("Minimum Correlation"), min = 0.01, max = 0.99, value = 0.5),
         radioButtons(
           ns("min_depth"),
@@ -185,25 +195,21 @@ srv_g_quality <- function(input,
                           output,
                           session,
                           datasets,
-                          mae_name) {
+                          mae_name,
+                          exclude_assays) {
+
   experiment <- experimentSpecServer(
     "experiment",
     datasets = datasets,
     mae_name = mae_name
   )
 
-  observeEvent(experiment$assays(), {
-    assays <- experiment$assays()
+  assay <- assaySpecServer(
+    "assay",
+    assays = experiment$assays,
+    exclude_assays = exclude_assays
+  )
 
-    updateSelectInput(
-      session,
-      "assay_name",
-      choices = assays,
-      selected = assays[1]
-    )
-  })
-
-  # When the chosen experiment changes, recompute properties.
   experiment_properties <- eventReactive(experiment$name(), {
     data <- experiment$data()
     cpm <- edgeR::cpm(hermes::counts(data))
@@ -313,7 +319,7 @@ srv_g_quality <- function(input,
   output$plot <- renderPlot({
     object_final <- object_final()
     plot_type <- input$plot_type
-    assay_name <- input$assay_name
+    assay_name <- assay()
 
     switch(
       plot_type,
