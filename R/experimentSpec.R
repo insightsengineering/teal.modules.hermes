@@ -240,7 +240,7 @@ experimentSpecServer <- function(inputId,
       ))
       if (sample_vars_as_factors) {
         SummarizedExperiment::colData(object) <-
-          hermes::df_char_to_factor(SummarizedExperiment::colData(object))
+          hermes::df_cols_to_factor(SummarizedExperiment::colData(object))
       }
       object
     })

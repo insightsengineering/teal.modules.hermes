@@ -99,7 +99,7 @@ srv_g_volcanoplot <- function(input,
     mae <- datasets$get_data(mae_name, filtered = TRUE)
 
     object <- hermes::HermesData(mae[[input$experiment_name]])
-    SummarizedExperiment::colData(object) <- hermes::df_char_to_factor(SummarizedExperiment::colData(object))
+    SummarizedExperiment::colData(object) <- hermes::df_cols_to_factor(SummarizedExperiment::colData(object))
     object
   })
 
