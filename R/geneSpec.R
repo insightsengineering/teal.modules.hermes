@@ -206,7 +206,7 @@ h_parse_genes <- function(words, choices) {
 #'     mae <- datasets$get_data("MAE", filtered = TRUE)
 #'     object <- mae[[1]]
 #'     gene_ids <- rownames(object)
-#'     gene_names <- SummarizedExperiment::rowData(object)$HGNC
+#'     gene_names <- SummarizedExperiment::rowData(object)$symbol
 #'     gene_data <- data.frame(
 #'       id = gene_ids,
 #'       name = gene_names
