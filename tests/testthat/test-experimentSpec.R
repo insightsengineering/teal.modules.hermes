@@ -147,17 +147,17 @@ test_that("experimentSpec module works as expected in the test app", {
     app$waitForValue(ns("summary"), iotype = "output"),
     "HermesData object with 0 samples of 2500 genes"
   )
-  app$click("teal-main_ui-filter_panel-MAE_filters-remove_filters")
+  app$click("teal-main_ui-filter_panel-MAE_filter-remove_filters")
 
   # Same for filtering out all genes.
-  app$setValue(ns2("hd2-row_to_add"), "Chromosome")
-  app$waitForValue(ns2("hd2-rowData_var_Chromosome-content-selection"))
-  app$setValue(ns2("hd2-rowData_var_Chromosome-content-selection"), character())
+  app$setValue(ns2("hd2-row_to_add"), "chromosome")
+  app$waitForValue(ns2("hd2-rowData_var_chromosome-content-selection"))
+  app$setValue(ns2("hd2-rowData_var_chromosome-content-selection"), character())
   expect_match(
     app$waitForValue(ns("summary"), iotype = "output"),
     "HermesData object with 9 samples of 0 genes"
   )
-  app$click("teal-main_ui-filter_panel-MAE_filters-remove_filters")
+  app$click("teal-main_ui-filter_panel-MAE_filter-remove_filters")
 
   app$stop()
 })
