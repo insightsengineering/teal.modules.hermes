@@ -31,7 +31,7 @@ test_that("tm_g_quality works as expected in the sample app", {
   initial_experiment_name <- app$waitForValue(ns("experiment-name"))
   expect_identical(initial_experiment_name, "hd1")
 
-  initial_assay_name <- app$waitForValue(ns("assay_name"))
+  initial_assay_name <- app$waitForValue(ns("assay-name"))
   expect_identical(initial_assay_name, "counts")
 
   initial_plot_type <- app$waitForValue(ns("plot_type"))
