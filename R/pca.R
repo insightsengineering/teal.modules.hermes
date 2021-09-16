@@ -18,12 +18,11 @@
 #' app <- init(
 #'   data = data,
 #'   modules = root_modules(
-#'     static = {
-#'       tm_g_pca(
+#'    tm_g_pca(
 #'         label = "PCA plot",
-#'         mae_name = "MAE"
-#'       )
-#'     }
+#'         mae_name = "MAE",
+#'         exclude_assays = ""
+#'    )
 #'   )
 #' )
 #' \dontrun{
@@ -31,6 +30,7 @@
 #' }
 tm_g_pca <- function(label,
                      mae_name,
+                     exclude_assays = "",
                      pre_output = NULL,
                      post_output = NULL) {
   assert_string(label)
@@ -42,7 +42,8 @@ tm_g_pca <- function(label,
     label = label,
     server = srv_g_pca,
     server_args = list(
-      mae_name = mae_name
+      mae_name = mae_name,
+      exclude_assays = exclude_assays
     ),
     ui = ui_g_pca,
     ui_args = list(
@@ -70,7 +71,7 @@ ui_g_pca <- function(id,
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
-      selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
+      experimentSpecInput(ns("experiment"), datasets, mae_name),
       assaySpecInput(ns("assay")),
       conditionalPanel(
         condition = "input.tab_selected == 'PCA'",
@@ -139,28 +140,27 @@ srv_g_pca <- function(input,
                       output,
                       session,
                       datasets,
-                      mae_name) {
-  # When the filtered data set of the chosen experiment changes, update the
-  # experiment data object.
-  experiment_data <- reactive({
-    req(input$experiment_name)  # Important to avoid running into NULL here.
-
-    mae <- datasets$get_data(mae_name, filtered = TRUE)
-    mae[[input$experiment_name]]
-  })
-
-  # When the filtered data set or the chosen experiment changes, update
-  # the call that creates the chosen experiment data object.
-  experiment_call <- reactive({
-    req(input$experiment_name)  # Important to avoid running into NULL here.
-
-    dat <- datasets$get_filtered_datasets(mae_name)
-    dat$get_filter_states(input$experiment_name)$get_call()
-  })
+                      mae_name,
+                      exclude_assays) {
+  experiment <- experimentSpecServer(
+    "experiment",
+    datasets = datasets,
+    mae_name = mae_name
+  )
+  assay <- assaySpecServer(
+    "assay",
+    assays = experiment$assays,
+    exclude_assays = exclude_assays
+  )
+  sample_var_specs <- multiSampleVarSpecServer(
+    inputIds = c("color_var"),
+    experiment_name = experiment$name,
+    original_data = experiment$data
+  )
 
   # Total number of genes at the moment.
   n_genes <- reactive({
-    experiment_data <- experiment_data()
+    experiment_data <- sample_var_specs$experiment_data()
     nrow(experiment_data)
   })
 
@@ -178,17 +178,10 @@ srv_g_pca <- function(input,
     }
   })
 
-  # When the chosen experiment changes, recompute the assay names.
-  assay_names <- eventReactive(input$experiment_name, ignoreNULL = TRUE, {
-    object <- experiment_data()
-    SummarizedExperiment::assayNames(object)
-  })
-
-  assay <- assaySpecServer("assay", assay_names)
 
   # When the chosen experiment changes, recompute the colData variables.
   col_data_vars <- eventReactive(input$experiment_name, ignoreNULL = TRUE, {
-    object <- experiment_data()
+    object <- sample_var_specs$experiment_data()
     names(SummarizedExperiment::colData(object))
   })
 
@@ -206,7 +199,7 @@ srv_g_pca <- function(input,
 
   # When the chosen experiment or assay name changes, recompute the PC.
   pca_result <- reactive({
-    experiment_data <- experiment_data()
+    experiment_data <- sample_var_specs$experiment_data()
     filter_top <- input$filter_top
     n_top <- input$n_top
     assay_name <- assay()
@@ -240,7 +233,7 @@ srv_g_pca <- function(input,
   # Compute correlation of PC with sample variables.
   cor_result <- reactive({
     pca_result <- pca_result()
-    experiment_data <- experiment_data()
+    experiment_data <- sample_var_specs$experiment_data()
 
     hermes::correlate(pca_result, experiment_data)
   })
@@ -289,10 +282,10 @@ srv_g_pca <- function(input,
   output$plot_pca <- renderPlot({
     # Resolve all reactivity.
     pca_result <- pca_result()
-    experiment_data <- experiment_data()
+    experiment_data <- sample_var_specs$experiment_data()
     x_var <- as.numeric(input$x_var)
     y_var <- as.numeric(input$y_var)
-    data <- as.data.frame(SummarizedExperiment::colData(experiment_data()))
+    data <- as.data.frame(SummarizedExperiment::colData(sample_var_specs$experiment_data()))
     color_var <- input$color_var
     assay_name <- assay()
     var_pct <- input$var_pct
