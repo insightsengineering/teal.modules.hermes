@@ -31,7 +31,7 @@ ui <- function(id,
 
 ### Server function
 
-Similary for the server we use the modules, and call then our awesome plotting function.
+Similarly for the server we use the modules, and call then our awesome plotting function.
 
 ```r
 srv <- function(input,
