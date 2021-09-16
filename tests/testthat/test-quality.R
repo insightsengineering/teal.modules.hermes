@@ -25,8 +25,6 @@ test_that("tm_g_quality works as expected in the sample app", {
   app$getDebugLog()
   app$snapshotInit("test-app")
 
-  # nolint start
-
   ns <- NS("teal-main_ui-modules_ui-root_quality")
 
   # Check initial state of encodings.
@@ -59,8 +57,7 @@ test_that("tm_g_quality works as expected in the sample app", {
   expect_identical(plot_message, "Quality flags have already been added to this experiment")
 
   # Choose another experiment.
-  app$setValue(ns("experiment-name"),"hd3")
-
+  app$setValue(ns("experiment-name"), "hd3")
   app$setValue(ns("min_depth"), "Specify")
 
   # Check state of encodings again.
