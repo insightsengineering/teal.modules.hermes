@@ -45,7 +45,7 @@ shorten_list(letters[1:4])
 shorten_list(letters)
 
 parenthesize <- function(x) {
-  if (is_blank(x)) 
+  if (is_blank(x))
     ""
   else
     paste0("(", x, ")")
@@ -55,41 +55,40 @@ parenthesize <- function(x) {
 This will make our life easier below.
 
 ```{r}
-draw_signature <- function(object, 
-                           assay_name, 
-                           x_var, 
+draw_signature <- function(object,
+                           assay_name,
+                           x_var,
                            y_vars,
                            summary_fun = colMeans,
-                           fun_name = deparse(substitute(summary_fun))) 
-{
+                           fun_name = deparse(substitute(summary_fun))) {
     assert_class(object, "AnyHermesData")
     assert_string(assay_name)
     assert_string(x_var)
     assert_character(y_vars, min.len = 1L, any.missing = FALSE, unique = TRUE)
     assay_matrix <- assay(object, assay_name)
-    
+
     col_data <- colData(object)
     assert_names(names(col_data), must.include = x_var)
     assert_names(rownames(assay_matrix), must.include = y_vars)
-    
+
     y_vals <- if (length(y_vars) > 1L) {
       assert_function(summary_fun)
       summary_fun(assay_matrix[y_vars, ])
     } else {
       assay_matrix[y_vars, ]
     }
-    
+
     y_label <- if (length(y_vars) > 1L) {
       assert_string(fun_name, min.chars = 1L)
       paste0(fun_name, parenthesize(shorten_list(y_vars)))
     } else {
       y_vars
     }
-    
+
     df <- data.frame(x = col_data[, x_var], y = y_vals)
-    
-    p <- ggplot(df, aes(x = .data$x, y = .data$y)) + 
-      geom_boxplot(outlier.shape = 19) + 
+
+    p <- ggplot(df, aes(x = .data$x, y = .data$y)) +
+      geom_boxplot(outlier.shape = 19) +
       stat_boxplot(geom = "errorbar") +
       labs(x = x_var, y = y_label)
     geom_point_args <- list()
@@ -143,10 +142,10 @@ tm_g_signature <- function(label,
   assert_string(label)
   assert_string(mae_name)
   assert_list(
-    summary_funs, 
-    types = "function", 
-    min.len = 1L, 
-    unique = TRUE, 
+    summary_funs,
+    types = "function",
+    min.len = 1L,
+    unique = TRUE,
     any.missing = FALSE,
     names = "unique"
   )
@@ -199,7 +198,7 @@ ui_g_signature <- function(id,
           tags$label(class = "control-label",
                      "Select gene(s) of interest")
         ),
-        
+
         div(
           class = "col-sm-4",
           actionButton(
@@ -227,13 +226,13 @@ ui_g_signature <- function(id,
           ),
           include_css_files(pattern = "*")
         )
-      ), 
+      ),
       div(
         class = "custom-select-input",
         optionalSelectInput(
-          ns("y_vars"), 
-          label = NULL, 
-          choices = "", 
+          ns("y_vars"),
+          label = NULL,
+          choices = "",
           multiple = TRUE
         )
       ),
@@ -326,7 +325,7 @@ srv_g_signature <- function(input,
 
   # `reactiveValues` object for storing current gene text input.
   parsed_genes <- reactiveVal(NULL, label = "Parsed genes")
-  
+
   # 3) the parsed genes are entered via text
   observeEvent(parsed_genes(), ignoreNULL = TRUE, {
     # Resolve reactives.
@@ -351,8 +350,8 @@ srv_g_signature <- function(input,
       ))
     }
   })
-  
-  # When 
+
+  # When
   # 1) the genes are recomputed,
   # 2) the lock is switched off,
   # then update the choices and selections for genes in the UI.
@@ -373,19 +372,19 @@ srv_g_signature <- function(input,
       n_removed <- length(removed)
       if (n_removed > 0) {
         showNotification(paste(
-          "Removed", n_removed, 
-          ifelse(n_removed > 1, "genes", "gene"), 
+          "Removed", n_removed,
+          ifelse(n_removed > 1, "genes", "gene"),
           parenthesize(shorten_list(removed))
         ))
       }
     }
   })
-  
+
   # Return the UI for a modal dialog with gene text input.
-  dataModal <- function(example_list) {
+  dataModal <- function(example_list) { # nolint
     modalDialog(
       textInput(
-        session$ns("gene_text"), 
+        session$ns("gene_text"),
         "Enter list of genes",
         placeholder = example_list
       ),
@@ -399,22 +398,22 @@ srv_g_signature <- function(input,
       )
     )
   }
-  
+
   # Show modal when button is clicked.
   observeEvent(input$open_text_input, {
     gene_choices <- genes()
     example_list <- shorten_list(gene_choices)
     showModal(dataModal(example_list))
   })
-  
+
   # When OK button is pressed, attempt to parse the genes from the text.
   # Remove the modal and display notification message.
   observeEvent(input$ok, {
     gene_text <- input$gene_text
-    
+
     if (!nzchar(gene_text)) {
       showNotification(
-        "Please enter at least one full gene ID.", 
+        "Please enter at least one full gene ID.",
         type = "error"
       )
     } else {
@@ -423,7 +422,7 @@ srv_g_signature <- function(input,
         "Received", length(parse_result), "genes from text input",
         parenthesize(shorten_list(parse_result))
       ))
-      parsed_genes(parse_result) 
+      parsed_genes(parse_result)
       removeModal()
     }
   })
@@ -434,7 +433,7 @@ srv_g_signature <- function(input,
     y_vars <- input$y_vars
     assay_name <- input$assay_name
     summary_fun_name <- input$summary_fun_name
-    
+
     # Require which states need to be truthy.
     req(
       assay_name,
@@ -442,11 +441,11 @@ srv_g_signature <- function(input,
       isTRUE(assay_name %in% SummarizedExperiment::assayNames(experiment_data)),
       cancelOutput = FALSE
     )
-    
-    # Validate and give useful messages to the user. Note: no need to duplicate 
+
+    # Validate and give useful messages to the user. Note: no need to duplicate
     # here req() from above.
     validate(need(
-      hermes::is_hermes_data(experiment_data), 
+      hermes::is_hermes_data(experiment_data),
       "please use HermesData() on input experiments"
     ))
     validate(need(!is.null(y_vars), "please select at least one gene"))
@@ -455,9 +454,9 @@ srv_g_signature <- function(input,
     validate(need(
       identical(n_not_incl, 0L),
       paste(
-        n_not_incl, 
+        n_not_incl,
         ifelse(n_not_incl > 1, "genes", "gene"),
-        parenthesize(shorten_list(y_vars_not_included)), 
+        parenthesize(shorten_list(y_vars_not_included)),
         "not included, please unlock or change filters"
       )
     ))
@@ -516,7 +515,7 @@ We can add similar functions to `hermes`.
 #' Function to calculate the mean Z-score from RNAseq assay matrix
 #' (one-gene-per-row, one-sample-per-column)
 #' @export
-calc_meanZ <- function(x) {
+calc_meanZ <- function(x) { # nolint
   stopifnot(class(x) == "matrix")
   zmat  <- apply(x, 1, function(y) if (sd(y) > 0) scale(y) else rep(NA, length(y)))
   zmean <- apply(zmat, 1, mean, na.rm = TRUE)
@@ -529,10 +528,10 @@ calc_meanZ <- function(x) {
 #' Function to calculate the PC1 using principal component analysis from RNAseq
 #' assay matrix (one-gene-per-row, one-sample-per-column)
 #' @export
-calc_PC1 <- function(x) {
+calc_PC1 <- function(x) { # nolint
   stopifnot(class(x) == "matrix")
   pc <- prcomp(t(x), center = TRUE)
-  return(pc$x[,1])
+  return(pc$x[, 1])
 }
 ```
 
