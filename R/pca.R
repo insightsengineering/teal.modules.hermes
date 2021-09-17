@@ -75,7 +75,7 @@ ui_g_pca <- function(id,
       conditionalPanel(
         condition = "input.tab_selected == 'PCA'",
         ns = ns,
-        sampleVarSpecInput(ns("color_var"), "Optional color variable"),
+        sampleVarSpecInput(ns("color"), "Optional color variable"),
         selectizeInput(ns("x_var"), "Select X-axis PC", choices = ""),
         selectizeInput(ns("y_var"), "Select Y-axis PC", choices = "")
       ),
@@ -161,7 +161,7 @@ srv_g_pca <- function(input,
     exclude_assays = exclude_assays
   )
   color <- sampleVarSpecServer(
-    "color_var",
+    "color",
     experiment_name = experiment$name,
     original_data = experiment$data
   )

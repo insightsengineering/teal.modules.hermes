@@ -1,10 +1,9 @@
 # ui_g_pca ----
 
-test_that("ui_g_pca creates expected HTML", {
+test_that("ui_g_pca creates HTML", {
   mae_name <- "MyMAE"
-  shiny:::withPrivateSeed(set.seed(123))
   datasets <- mock_datasets(list(MyMAE = hermes::multi_assay_experiment))
-  expect_snapshot(ui_g_pca(
+  expect_silent(ui_g_pca(
     id = "testid",
     datasets = datasets,
     mae_name = mae_name,
@@ -140,7 +139,7 @@ test_that("tm_g_pca works as expected in the sample app", {
   )
 
   # Update experiment / assay (ensure xvar and yvar revert back to PC1 and PC2, assay to counts)
-  # and add color_var for pca.
+  # and add color for pca.
   app$setValue(ns("experiment-name"), "hd1")
   app$setValue(ns("color-sample_var"), "AGE18")
 
