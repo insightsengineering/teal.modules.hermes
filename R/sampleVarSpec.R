@@ -213,7 +213,7 @@ validate_n_levels <- function(x, name, n_levels) {
 #'     req(input$experiment_name)
 #'     mae <- datasets$get_data("MAE", filtered = TRUE)
 #'     object <- mae[[input$experiment_name]]
-#'     SummarizedExperiment::colData(object) <- hermes::df_char_to_factor(SummarizedExperiment::colData(object))
+#'     SummarizedExperiment::colData(object) <- hermes::df_cols_to_factor(SummarizedExperiment::colData(object))
 #'     object
 #'   })
 #'   facet_var_spec <- sampleVarSpecServer(

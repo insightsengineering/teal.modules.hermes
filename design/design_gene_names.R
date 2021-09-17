@@ -52,7 +52,7 @@ server <- function(input,
     mae <- datasets$get_data("MAE", filtered = TRUE)
     data <- data.frame(
       id = rownames(mae[[1]]),
-      name = SummarizedExperiment::rowData(mae[[1]])$HGNC
+      name = SummarizedExperiment::rowData(mae[[1]])$symbol
     )
     data[order(data$name), ]
   })
