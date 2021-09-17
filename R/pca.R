@@ -20,8 +20,7 @@
 #'   modules = root_modules(
 #'    tm_g_pca(
 #'         label = "PCA plot",
-#'         mae_name = "MAE",
-#'         exclude_assays = ""
+#'         mae_name = "MAE"
 #'    )
 #'   )
 #' )
@@ -30,7 +29,7 @@
 #' }
 tm_g_pca <- function(label,
                      mae_name,
-                     exclude_assays = "",
+                     exclude_assays = character(),
                      pre_output = NULL,
                      post_output = NULL) {
   assert_string(label)
@@ -76,7 +75,7 @@ ui_g_pca <- function(id,
       conditionalPanel(
         condition = "input.tab_selected == 'PCA'",
         ns = ns,
-        optionalSelectInput(ns("color_var"), "Optional color variable"),
+        sampleVarSpecInput(ns("color_var"), "Optional color variable"),
         selectizeInput(ns("x_var"), "Select X-axis PC", choices = ""),
         selectizeInput(ns("y_var"), "Select Y-axis PC", choices = "")
       ),
@@ -152,54 +151,54 @@ srv_g_pca <- function(input,
     assays = experiment$assays,
     exclude_assays = exclude_assays
   )
-  sample_var_specs <- multiSampleVarSpecServer(
-    inputIds = c("color_var"),
+  color_var_spec <- sampleVarSpecServer(
+    inputId = c("color_var"),
     experiment_name = experiment$name,
     original_data = experiment$data
   )
 
   # Total number of genes at the moment.
   n_genes <- reactive({
-    experiment_data <- sample_var_specs$experiment_data()
+    experiment_data <- color_var_spec$experiment_data()
     nrow(experiment_data)
   })
 
   # When the total number changes or gene filter is activated, update slider max.
   observeEvent(list(n_genes(), input$filter_top), {
-    n_genes <- n_genes()
-    filter_top <- input$filter_top
-    if (filter_top) {
-      n_top <- input$n_top
-      updateSliderInput(
-        inputId = "n_top",
-        value = min(n_top, n_genes),
-        max = n_genes
-      )
-    }
-  })
+     n_genes <- n_genes()
+     filter_top <- input$filter_top
+     if (filter_top) {
+       n_top <- input$n_top
+       updateSliderInput(
+         inputId = "n_top",
+         value = min(n_top, n_genes),
+         max = n_genes
+       )
+     }
+   })
 
 
   # When the chosen experiment changes, recompute the colData variables.
-  col_data_vars <- eventReactive(input$experiment_name, ignoreNULL = TRUE, {
-    object <- sample_var_specs$experiment_data()
-    names(SummarizedExperiment::colData(object))
-  })
+   col_data_vars <- eventReactive(input$experiment_name, ignoreNULL = TRUE, {
+     object <- color_var_spec$experiment_data()
+     names(SummarizedExperiment::colData(object))
+   })
 
   # When the colData variables change, update the choices for color_var.
-  observeEvent(col_data_vars(), {
-    color_var_choices <- col_data_vars()
+   observeEvent(col_data_vars(), {
+     color_var_choices <- col_data_vars()
 
-    updateOptionalSelectInput(
-      session,
-      "color_var",
-      choices = color_var_choices,
-      selected = character()
-    )
-  })
+     updateOptionalSelectInput(
+       session,
+       "color_var",
+       choices = color_var_choices,
+       selected = character()
+     )
+   })
 
   # When the chosen experiment or assay name changes, recompute the PC.
   pca_result <- reactive({
-    experiment_data <- sample_var_specs$experiment_data()
+    experiment_data <- color_var_spec$experiment_data()
     filter_top <- input$filter_top
     n_top <- input$n_top
     assay_name <- assay()
@@ -233,7 +232,7 @@ srv_g_pca <- function(input,
   # Compute correlation of PC with sample variables.
   cor_result <- reactive({
     pca_result <- pca_result()
-    experiment_data <- sample_var_specs$experiment_data()
+    experiment_data <- color_var_spec$experiment_data()
 
     hermes::correlate(pca_result, experiment_data)
   })
@@ -282,11 +281,11 @@ srv_g_pca <- function(input,
   output$plot_pca <- renderPlot({
     # Resolve all reactivity.
     pca_result <- pca_result()
-    experiment_data <- sample_var_specs$experiment_data()
+    experiment_data <- color_var_spec$experiment_data()
     x_var <- as.numeric(input$x_var)
     y_var <- as.numeric(input$y_var)
-    data <- as.data.frame(SummarizedExperiment::colData(sample_var_specs$experiment_data()))
-    color_var <- input$color_var
+    data <- as.data.frame(SummarizedExperiment::colData(color_var_spec$experiment_data()))
+    color_var <- color_var_spec$vars$color_var()
     assay_name <- assay()
     var_pct <- input$var_pct
     label <- input$label
