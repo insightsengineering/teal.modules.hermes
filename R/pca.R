@@ -79,27 +79,37 @@ ui_g_pca <- function(id,
         selectizeInput(ns("x_var"), "Select X-axis PC", choices = ""),
         selectizeInput(ns("y_var"), "Select Y-axis PC", choices = "")
       ),
-      tags$label("Use only Top Variance Genes"),
-      shinyWidgets::switchInput(ns("filter_top"), value = FALSE, size = "mini"),
-      conditionalPanel(
-        condition = "input.filter_top",
-        ns = ns,
-        sliderInput(ns("n_top"), label = "Number of Top Genes", min = 10, max = 5000, value = 500)
-      ),
-      tags$label("Show Variance %"),
-      shinyWidgets::switchInput(ns("var_pct"), value = TRUE, size = "mini"),
-      tags$label("Show Label"),
-      shinyWidgets::switchInput(ns("label"), value = TRUE, size = "mini"),
-      conditionalPanel(
-        condition = "input.tab_selected == 'PC and Sample Correlation'",
-        ns = ns,
-        tags$label("Cluster columns"),
-        shinyWidgets::switchInput(ns("cluster_columns"), value = FALSE, size = "mini")
-      ),
-      tags$label("View Matrix"),
-      shinyWidgets::switchInput(ns("show_matrix"), value = TRUE, size = "mini")
+      teal.devel::panel_group(
+        teal.devel::panel_item(
+          input_id = "settings_item",
+          collapsed = TRUE,
+          title = "Additional Settings",
+          tags$label("Use only Top Variance Genes"),
+          shinyWidgets::switchInput(ns("filter_top"), value = FALSE, size = "mini"),
+          conditionalPanel(
+            condition = "input.filter_top",
+            ns = ns,
+            sliderInput(ns("n_top"), label = "Number of Top Genes", min = 10, max = 5000, value = 500)
+          ),
+          conditionalPanel(
+            condition = "input.tab_selected == 'PCA'",
+            ns = ns,
+            tags$label("Show Variance %"),
+            shinyWidgets::switchInput(ns("var_pct"), value = TRUE, size = "mini"),
+            tags$label("Show Label"),
+            shinyWidgets::switchInput(ns("label"), value = TRUE, size = "mini")
+          ),
+          conditionalPanel(
+            condition = "input.tab_selected == 'PC and Sample Correlation'",
+            ns = ns,
+            tags$label("Cluster columns"),
+            shinyWidgets::switchInput(ns("cluster_columns"), value = FALSE, size = "mini")
+          ),
+          tags$label("View Matrix"),
+          shinyWidgets::switchInput(ns("show_matrix"), value = TRUE, size = "mini")
+        )
+      )
     ),
-
     output = tagList(
       tabsetPanel(
         id = ns("tab_selected"),
@@ -150,7 +160,7 @@ srv_g_pca <- function(input,
     assays = experiment$assays,
     exclude_assays = exclude_assays
   )
-  color_var_spec <- sampleVarSpecServer(
+  color <- sampleVarSpecServer(
     "color_var",
     experiment_name = experiment$name,
     original_data = experiment$data
@@ -158,7 +168,7 @@ srv_g_pca <- function(input,
 
   # Total number of genes at the moment.
   n_genes <- reactive({
-    experiment_data <- color_var_spec$experiment_data()
+    experiment_data <- color$experiment_data()
     nrow(experiment_data)
   })
 
@@ -178,7 +188,7 @@ srv_g_pca <- function(input,
 
   # When the chosen experiment or assay name changes, recompute the PC.
   pca_result <- reactive({
-    experiment_data <- color_var_spec$experiment_data()
+    experiment_data <- color$experiment_data()
     filter_top <- input$filter_top
     n_top <- input$n_top
     assay_name <- assay()
@@ -212,7 +222,7 @@ srv_g_pca <- function(input,
   # Compute correlation of PC with sample variables.
   cor_result <- reactive({
     pca_result <- pca_result()
-    experiment_data <- color_var_spec$experiment_data()
+    experiment_data <- color$experiment_data()
 
     hermes::correlate(pca_result, experiment_data)
   })
@@ -242,7 +252,7 @@ srv_g_pca <- function(input,
   show_matrix_cor <- reactive({
     if (input$show_matrix) {
       cor_result <- cor_result()
-      cor_result <- round(cor_result(), 3)
+      cor_result <- round(cor_result, 3)
       as.data.frame(cor_result)
     } else {
       NULL
@@ -262,11 +272,11 @@ srv_g_pca <- function(input,
   output$plot_pca <- renderPlot({
     # Resolve all reactivity.
     pca_result <- pca_result()
-    experiment_data <- color_var_spec$experiment_data()
+    experiment_data <- color$experiment_data()
     x_var <- as.numeric(input$x_var)
     y_var <- as.numeric(input$y_var)
-    data <- as.data.frame(SummarizedExperiment::colData(color_var_spec$experiment_data()))
-    color_var <- color_var_spec$sample_var()
+    data <- as.data.frame(SummarizedExperiment::colData(color$experiment_data()))
+    color_var <- color$sample_var()
     assay_name <- assay()
     var_pct <- input$var_pct
     label <- input$label
