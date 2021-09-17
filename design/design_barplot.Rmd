@@ -182,7 +182,7 @@ srv_barplot <- function(input, output, session, datasets, dataname) {
   })
   
   experiment_call <- reactive({
-   dat <- datasets$get_filtered_datasets(dataname)
+   dat <- datasets$get_filtered_dataset(dataname)
    if (is.null(input$experiment)) {
      NULL
    } else {
