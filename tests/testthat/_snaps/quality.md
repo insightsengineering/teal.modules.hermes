@@ -37,32 +37,18 @@
                 </div>
                 <div data-display-if="input.plot_type == &#39;Top Genes Plot&#39; || input.plot_type == &#39;Correlation Heatmap&#39;" data-ns-prefix="testid-">
                   <div class="form-group shiny-input-container">
-                    <label class="control-label" id="testid-assay_name-label" for="testid-assay_name">Select Assay</label>
+                    <label class="control-label" id="testid-assay-name-label" for="testid-assay-name">Select Assay</label>
                     <div>
-                      <select id="testid-assay_name"><option value="" selected></option></select>
-                      <script type="application/json" data-for="testid-assay_name">{"plugins":["selectize-plugin-a11y"]}</script>
+                      <select id="testid-assay-name"><option value="" selected></option></select>
+                      <script type="application/json" data-for="testid-assay-name">{"plugins":["selectize-plugin-a11y"]}</script>
                     </div>
                   </div>
                 </div>
-                <div id="testid-filter" class="form-group shiny-input-checkboxgroup shiny-input-container" role="group" aria-labelledby="testid-filter-label">
-                  <label class="control-label" id="testid-filter-label" for="testid-filter">Filter</label>
-                  <div class="shiny-options-group">
-                    <div class="checkbox">
-                      <label>
-                        <input type="checkbox" name="testid-filter" value="genes" checked="checked"/>
-                        <span>Genes</span>
-                      </label>
-                    </div>
-                    <div class="checkbox">
-                      <label>
-                        <input type="checkbox" name="testid-filter" value="samples" checked="checked"/>
-                        <span>Samples</span>
-                      </label>
-                    </div>
-                  </div>
+                <label class="text-primary">Gene Filter Settings</label>
+                <div class="form-group shiny-input-container">
+                  <input id="testid-filter_gene" type="checkbox" class="sw-switchInput" data-input-id="testid-filter_gene" data-on-text="ON" data-off-text="OFF" data-label-width="auto" data-handle-width="auto" data-size="mini" checked="checked"/>
                 </div>
-                <div data-display-if="input.filter.includes(&#39;genes&#39;)" data-ns-prefix="testid-">
-                  <label class="text-primary">Gene Filter Settings</label>
+                <div data-display-if="input.filter_gene" data-ns-prefix="testid-">
                   <div class="form-group shiny-input-container">
                     <label class="control-label" id="testid-min_cpm-label" for="testid-min_cpm">Minimum CPM</label>
                     <input class="js-range-slider" id="testid-min_cpm" data-skin="shiny" data-min="1" data-max="10" data-from="5" data-step="1" data-grid="true" data-grid-num="9" data-grid-snap="false" data-prettify-separator="," data-prettify-enabled="true" data-keyboard="true" data-data-type="number"/>
@@ -76,8 +62,11 @@
                     <select data-actions-box="true" data-none-selected-text="- Nothing selected -" data-max-options="Inf" data-show-subtext="true" data-live-search="false" id="testid-annotate" class="selectpicker form-control" multiple="multiple"><option value="" selected></option></select>
                   </div>
                 </div>
-                <div data-display-if="input.filter.includes(&#39;samples&#39;)" data-ns-prefix="testid-">
-                  <label class="text-primary">Sample Filter Settings</label>
+                <label class="text-primary">Sample Filter Settings</label>
+                <div class="form-group shiny-input-container">
+                  <input id="testid-filter_sample" type="checkbox" class="sw-switchInput" data-input-id="testid-filter_sample" data-on-text="ON" data-off-text="OFF" data-label-width="auto" data-handle-width="auto" data-size="mini" checked="checked"/>
+                </div>
+                <div data-display-if="input.filter_sample" data-ns-prefix="testid-">
                   <div class="form-group shiny-input-container">
                     <label class="control-label" id="testid-min_corr-label" for="testid-min_corr">Minimum Correlation</label>
                     <input class="js-range-slider" id="testid-min_corr" data-skin="shiny" data-min="0.01" data-max="0.99" data-from="0.5" data-step="0.01" data-grid="true" data-grid-num="9.8" data-grid-snap="false" data-prettify-separator="," data-prettify-enabled="true" data-keyboard="true" data-data-type="number"/>

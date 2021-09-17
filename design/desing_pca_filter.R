@@ -122,7 +122,7 @@ ui_g_pca2 <- function(id,
     experiment_call <- reactive({
       req(input$experiment_name)  # Important to avoid running into NULL here.
 
-      dat <- datasets$get_filtered_datasets(mae_name)
+      dat <- datasets$get_filtered_dataset(mae_name)
       dat$get_filter_states(input$experiment_name)$get_call()
     })
 

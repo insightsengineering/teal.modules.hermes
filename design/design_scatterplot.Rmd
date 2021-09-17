@@ -8,7 +8,7 @@ editor_options:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
-source("https://raw.github.roche.com/gist/sabanesd/0e839ca7d4920fab342d8ed4b9d668fc/raw/eeaf752448e1b07641cc0c2a3af2172af7b99c94/install_nest.R")
+source("https://raw.github.roche.com/gist/sabanesd/0e839ca7d4920fab342d8ed4b9d668fc/raw/eeaf752448e1b07641cc0c2a3af2172af7b99c94/install_nest.R") # nolint
 install_nest("teal", "1185_dataset_specific_filter_panel")
 
 library(teal)
@@ -23,10 +23,10 @@ We want to design a simple scatterplot teal module.
 ## Example data
 
 ```{r}
-MAE <- multi_assay_experiment # from hermes
+MAE <- multi_assay_experiment # from hermes # nolint
 mae <- dataset("MAE", MAE)
 
-data <- teal_data(mae) 
+data <- teal_data(mae)
 ```
 
 
@@ -39,11 +39,10 @@ Note: this is similar to https://github.roche.com/EDISNHL/dashdis/blob/master/R/
 so we can look into that repo to get ideas.
 
 ```{r}
-is.blank <- function(x) identical(x, "")
+is.blank <- function(x) identical(x, "") # nolint
 
 library(assertthat)
 draw_scatterplot <- function(object, assayname, facetvar, xvar, yvar) {
-  # browser()
   assert_that(
     is(object, "SummarizedExperiment"),
     is.string(assayname),
@@ -52,7 +51,7 @@ draw_scatterplot <- function(object, assayname, facetvar, xvar, yvar) {
     is.string(yvar)
   )
   mat <- assay(object, assayname)
-  
+
   # we add this since xvar, yvar could be blank first
   if (is.blank(xvar)) {
     xvar <- 1
@@ -130,7 +129,7 @@ ui_scatterplot <- function(id, datasets, dataname) {
 
 ```{r}
 srv_scatterplot <- function(input, output, session, datasets, dataname) {
-  
+
   # Reactive for experiment data since that is used in multiple places below.
   experiment_data <- reactive({
     mae <- datasets$get_data(dataname, filtered = TRUE)
@@ -141,35 +140,35 @@ srv_scatterplot <- function(input, output, session, datasets, dataname) {
     }
     mae[[experiment]]
   })
-  
+
   experiment_call <- reactive({
-    dat <- datasets$get_filtered_datasets(dataname)
+    dat <- datasets$get_filtered_dataset(dataname)
     if (is.null(input$experiment)) {
       NULL
     } else {
       dat$get_filter_queues(input$experiment)$get_call()
     }
   })
-  
+
   # When the chosen experiment call changes,
   # we recompute gene names.
   genes <- eventReactive(experiment_call(), ignoreNULL = FALSE, {
     object <- experiment_data()
     rownames(object)
   })
-  
-  # When the chosen experiment changes, recompute the assay names. 
+
+  # When the chosen experiment changes, recompute the assay names.
   assaynames <- eventReactive(input$experiment, ignoreInit = TRUE, {
     object <- experiment_data()
     SummarizedExperiment::assayNames(object)
   })
-  
+
   # When the chosen experiment changes, recompute the col vars.
   colvars <- eventReactive(input$experiment, {
     object <- experiment_data()
     names(colData(object))
   })
-  
+
   # When the assay names change, update the choices for assay.
   observeEvent(assaynames(), {
     # First: resolve all reactivity.
@@ -177,13 +176,13 @@ srv_scatterplot <- function(input, output, session, datasets, dataname) {
 
     # Second: do the action.
     updateSelectInput(
-      session, 
+      session,
       "assay",
       choices = assaynames,
       selected = assaynames[1]
     )
   })
-  
+
   # When the colvars change, update the choices for facetvar.
   observeEvent(colvars(), {
     # First: resolve all reactivity.
@@ -191,23 +190,23 @@ srv_scatterplot <- function(input, output, session, datasets, dataname) {
 
     # Second: do the action.
     updateOptionalSelectInput(
-      session, 
+      session,
       "facetvar",
       choices = colvars,
       selected = character()
     )
   })
-  
+
   # When the genes are recomputed, update the choices for genes in the UI.
   observeEvent(genes(), {
     # First: resolve all reactivity.
     gene_choices <- genes()
-    
+
     # Second: do the action.
     idnames <- c("xvar", "yvar")
     for (i in seq_along(idnames)) {
       updateSelectizeInput(
-        session, 
+        session,
         idnames[i],
         choices = gene_choices,
         selected = gene_choices[i],
@@ -215,7 +214,7 @@ srv_scatterplot <- function(input, output, session, datasets, dataname) {
       )
     }
   })
-  
+
   output$plot <- renderPlot({
     # First: resolve all reactivity.
     experiment <- input$experiment
@@ -224,22 +223,22 @@ srv_scatterplot <- function(input, output, session, datasets, dataname) {
     yvar <- input$yvar
     facetvar <- input$facetvar
     assayname <- input$assay
-    
+
     # Second: validate.
     validate(need(is.string(experiment), "please select one experiment"))
     validate(need(is.string(assayname), "please select one assay"))
     validate(need(is.string(xvar), "please select one gene for the x variable"))
     validate(need(is.string(yvar), "please select one gene for the y variable"))
     validate(need(xvar != yvar, "please select different genes for x and y variables"))
-    
+
     # Third: plot
     draw_scatterplot(
-      object, 
-      assayname = assayname, 
-      xvar = xvar, 
-      yvar = yvar, 
+      object,
+      assayname = assayname,
+      xvar = xvar,
+      yvar = yvar,
       facetvar = facetvar
-    ) 
+    )
   })
 }
 ```
@@ -249,10 +248,10 @@ Unfortunately in the current shiny version in the dockers we cannot yet try this
 ## Teal module function
 
 ```{r}
-tm_g_scatterplot <- function(label = "Simple MAE module", 
-                             info = NULL, 
-                             dataname = NULL, 
-                             pre_output = NULL, 
+tm_g_scatterplot <- function(label = "Simple MAE module",
+                             info = NULL,
+                             dataname = NULL,
+                             pre_output = NULL,
                              post_output = NULL) {
   module(
     label = label,

@@ -75,7 +75,7 @@ test_that("tm_g_scatterplot works as expected in the sample app", {
   expect_identical(now_y_var, "GeneID:1820")
 
   # Change the genes filter and confirm that genes are staying the same.
-  app$setValue(ns2("hd2-row_to_add"), "Chromosome")
+  app$setValue(ns2("hd2-row_to_add"), "chromosome")
 
   now_x_var <- app$waitForValue(ns("x_spec-genes"))
   expect_identical(now_x_var, "GeneID:5205")

@@ -8,7 +8,7 @@ experimentSpecServer(
   inputId,
   datasets,
   mae_name,
-  name_annotation = "HGNC",
+  name_annotation = "symbol",
   sample_vars_as_factors = TRUE,
   with_mae_col_data = TRUE
 )
