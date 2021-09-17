@@ -174,17 +174,17 @@ srv_g_pca <- function(input,
 
   # When the total number changes or gene filter is activated, update slider max.
   observeEvent(list(n_genes(), input$filter_top), {
-     n_genes <- n_genes()
-     filter_top <- input$filter_top
-     if (filter_top) {
-       n_top <- input$n_top
-       updateSliderInput(
-         inputId = "n_top",
-         value = min(n_top, n_genes),
-         max = n_genes
-       )
-     }
-   })
+    n_genes <- n_genes()
+    filter_top <- input$filter_top
+    if (filter_top) {
+      n_top <- input$n_top
+      updateSliderInput(
+        inputId = "n_top",
+        value = min(n_top, n_genes),
+        max = n_genes
+      )
+    }
+  })
 
   # When the chosen experiment or assay name changes, recompute the PC.
   pca_result <- reactive({
