@@ -141,6 +141,7 @@ test_that("tm_g_pca works as expected in the sample app", {
   # Update experiment / assay (ensure xvar and yvar revert back to PC1 and PC2, assay to counts)
   # and add color for pca.
   app$setValue(ns("experiment-name"), "hd1")
+  Sys.sleep(0.5)
   app$setValue(ns("color-sample_var"), "AGE18")
 
   new_varpct <- app$waitForValue(ns("assay-name"))
