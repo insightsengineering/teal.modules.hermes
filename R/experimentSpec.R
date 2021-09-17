@@ -251,7 +251,7 @@ experimentSpecServer <- function(inputId,
       name <- input$name
       req(name)
 
-      filtered_mae <- datasets$get_filtered_datasets(mae_name)
+      filtered_mae <- datasets$get_filtered_dataset(mae_name)
       filter_states <- filtered_mae$get_filter_states(name)
       subset_queue <- filter_states$queue_get("subset")
       sapply(subset_queue, function(x) x$get_call())

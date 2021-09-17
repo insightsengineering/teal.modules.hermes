@@ -35,7 +35,7 @@ shorten_list(letters[1:4])
 shorten_list(letters)
 
 parenthesize <- function(x) {
-  if (is_blank(x)) 
+  if (is_blank(x))
     ""
   else
     paste0("(", x, ")")
@@ -68,7 +68,7 @@ Probably this can be an R6 class.
 ```{r}
 library(R6)
 
-GeneSpec <- R6::R6Class(
+GeneSpec <- R6::R6Class( # nolint
   "GeneSpec",
   public = list(
     initialize = function(genes,
@@ -77,7 +77,7 @@ GeneSpec <- R6::R6Class(
       assert_character(genes, any.missing = FALSE, unique = TRUE, null.ok = TRUE)
       assert_function(summary_fun, null.ok = TRUE)
       assert_string(summary_name, min.chars = 1L)
-      
+
       self$genes <- genes
       self$summary_fun <- summary_fun
       self$summary_name <- summary_name
@@ -93,11 +93,11 @@ GeneSpec <- R6::R6Class(
       if (length(self$genes) > 1) {
         paste0(self$summary_name, parenthesize(shorten_list(self$genes)))
       } else {
-        self$genes  
+        self$genes
       }
     },
     extract = function(assay) {
-      assert_names(rownames(assay), must.include = self$genes)    
+      assert_names(rownames(assay), must.include = self$genes)
       assay_cols <- assay[self$genes, , drop = TRUE]
       if (length(self$genes) > 1 && is.function(self$summary_fun)) {
         summary_res <- self$summary_fun(assay_cols)
@@ -114,9 +114,9 @@ GeneSpec <- R6::R6Class(
       validate(need(
         identical(n_not_incl, 0L),
         paste(
-          n_not_incl, 
+          n_not_incl,
           ifelse(n_not_incl > 1, "genes", "gene"),
-          parenthesize(shorten_list(genes_not_included)), 
+          parenthesize(shorten_list(genes_not_included)),
           "not included, please unlock or change filters"
         )
       ))
@@ -150,20 +150,19 @@ x_spec$get_label()
 Just as an example here a simplified scatterplot function.
 
 ```{r}
-draw_scatterplot2 <- function(object, 
-                              assay_name, 
-                              x_spec, 
-                              y_spec)
-{
+draw_scatterplot2 <- function(object,
+                              assay_name,
+                              x_spec,
+                              y_spec) {
     assert_class(object, "AnyHermesData")
     assert_string(assay_name)
     assert_class(x_spec, "GeneSpec")
     assert_class(y_spec, "GeneSpec")
-    
+
     # make sure we get vectors back and not matrices with multiple genes
-    assert_true(x_spec$returns_vector()) 
+    assert_true(x_spec$returns_vector())
     assert_true(y_spec$returns_vector())
-    
+
     # now use extract method on matrix which internally applies summary function
     # etc.
     assay_matrix <- assay(object, assay_name)
@@ -191,12 +190,14 @@ draw_scatterplot2(
   y_spec = GeneSpec$new(genes(hd)[3:10], summary_fun = colMeans)
 )
 
+# nolint start
 # draw_scatterplot2(
 #   hd,
 #   assay_name = "counts",
 #   x_spec = gene_spec(genes(hd)[2]),
 #   y_spec = gene_spec(genes(hd)[3:10], summary_fun = colMeans)
 # )
+# nolint end
 ```
 
 So this works quite nicely and makes the `hermes` drawing functions light again.
@@ -210,7 +211,7 @@ So let's try to start our first shiny module for this.
 In this case we just do input, no output, so we can name the module UI function accordingly.
 
 ```{r}
-geneSpecInput <- function(id,
+geneSpecInput <- function(id, # nolint
                           axis,
                           summary_funs) {
   ns <- NS(id)
@@ -251,13 +252,13 @@ geneSpecInput <- function(id,
         ),
         include_css_files(pattern = "*")
       )
-    ), 
+    ),
     div(
       class = "custom-select-input",
       optionalSelectInput(
-        ns("genes"), 
-        label = NULL, 
-        choices = "", 
+        ns("genes"),
+        label = NULL,
+        choices = "",
         multiple = TRUE
       )
     ),
@@ -293,7 +294,7 @@ assert_reactive <- function(x) {
 Here we take the `summary_funs` too as we need to look up the function in it.
 
 ```{r}
-geneSpecServer <- function(id, 
+geneSpecServer <- function(id, # nolint
                            summary_funs,
                            genes) {
   assert_static(summary_funs)
@@ -303,13 +304,13 @@ geneSpecServer <- function(id,
   moduleServer(id, function(input, output, session) {
     # `reactiveValues` object for storing current gene text input.
     parsed_genes <- reactiveVal(NULL, label = "Parsed genes")
-    
+
     # the parsed genes are entered via text
     observeEvent(parsed_genes(), ignoreNULL = TRUE, {
       # Resolve reactives.
       genes <- genes()
       parsed_genes <- parsed_genes()
-      
+
       # Only select the subset of parsed genes included in choices.
       new_selected <- intersect(parsed_genes, genes)
       removed <- setdiff(parsed_genes, new_selected)
@@ -328,8 +329,8 @@ geneSpecServer <- function(id,
         ))
       }
     })
-    
-    # When 
+
+    # When
     # 1) the genes are recomputed,
     # 2) the lock is switched off,
     # then update the choices and selections for genes in the UI.
@@ -337,7 +338,7 @@ geneSpecServer <- function(id,
       genes <- genes()
       lock <- input$lock
       old_selected <- input$genes
-      
+
       if (!lock) {
         new_selected <- intersect(old_selected, genes)
         removed <- setdiff(old_selected, new_selected)
@@ -350,19 +351,19 @@ geneSpecServer <- function(id,
         n_removed <- length(removed)
         if (n_removed > 0) {
           showNotification(paste(
-            "Removed", n_removed, 
-            ifelse(n_removed > 1, "genes", "gene"), 
+            "Removed", n_removed,
+            ifelse(n_removed > 1, "genes", "gene"),
             parenthesize(shorten_list(removed))
           ))
         }
       }
     })
-    
+
     # Return the UI for a modal dialog with gene text input.
-    dataModal <- function(example_list) {
+    dataModal <- function(example_list) { # nolint
       modalDialog(
         textInput(
-          session$ns("gene_text"), 
+          session$ns("gene_text"),
           "Enter list of genes",
           placeholder = example_list
         ),
@@ -376,22 +377,22 @@ geneSpecServer <- function(id,
         )
       )
     }
-    
+
     # Show modal when button is clicked.
     observeEvent(input$open_text_input, {
       gene_choices <- genes()
       example_list <- shorten_list(gene_choices)
       showModal(dataModal(example_list))
     })
-    
+
     # When OK button is pressed, attempt to parse the genes from the text.
     # Remove the modal and display notification message.
     observeEvent(input$ok, {
       gene_text <- input$gene_text
-      
+
       if (!nzchar(gene_text)) {
         showNotification(
-          "Please enter at least one full gene ID.", 
+          "Please enter at least one full gene ID.",
           type = "error"
         )
       } else {
@@ -400,11 +401,11 @@ geneSpecServer <- function(id,
           "Received", length(parse_result), "genes from text input",
           parenthesize(shorten_list(parse_result))
         ))
-        parsed_genes(parse_result) 
+        parsed_genes(parse_result)
         removeModal()
       }
     })
-    
+
     # return the GeneSpec
     reactive({
       GeneSpec$new(
@@ -435,10 +436,10 @@ tm_g_signature <- function(label,
   assert_string(label)
   assert_string(mae_name)
   assert_list(
-    summary_funs, 
-    types = "function", 
-    min.len = 1L, 
-    unique = TRUE, 
+    summary_funs,
+    types = "function",
+    min.len = 1L,
+    unique = TRUE,
     any.missing = FALSE,
     names = "unique"
   )
@@ -516,7 +517,7 @@ srv_g_signature <- function(input,
   experiment_call <- reactive({
     req(input$experiment_name)  # Important to avoid running into NULL here.
 
-    dat <- datasets$get_filtered_datasets(mae_name)
+    dat <- datasets$get_filtered_dataset(mae_name)
     dat$get_filter_states(input$experiment_name)$get_call()
   })
 
@@ -553,7 +554,7 @@ srv_g_signature <- function(input,
     assay_name <- input$assay_name
     x_spec <- x_spec()
     y_spec <- y_spec()
-    
+
     # Require which states need to be truthy.
     req(
       assay_name,
@@ -561,18 +562,18 @@ srv_g_signature <- function(input,
       isTRUE(assay_name %in% SummarizedExperiment::assayNames(experiment_data)),
       cancelOutput = FALSE
     )
-    
-    # Validate and give useful messages to the user. Note: no need to duplicate 
+
+    # Validate and give useful messages to the user. Note: no need to duplicate
     # here req() from above.
     validate(need(
-      hermes::is_hermes_data(experiment_data), 
+      hermes::is_hermes_data(experiment_data),
       "please use HermesData() on input experiments"
     ))
     # Need to think about whether an object method is the best here or a separate
     # validation function that takes spec and genes.
     x_spec$validate(rownames(experiment_data))
     y_spec$validate(rownames(experiment_data))
-    
+
     # Output.
     draw_scatterplot2(
       object = experiment_data,
@@ -628,7 +629,7 @@ We can add similar functions to `hermes`.
 #' Function to calculate the mean Z-score from RNAseq assay matrix
 #' (one-gene-per-row, one-sample-per-column)
 #' @export
-calc_meanZ <- function(x) {
+calc_meanZ <- function(x) { # nolint
   stopifnot(class(x) == "matrix")
   zmat  <- apply(x, 1, function(y) if (sd(y) > 0) scale(y) else rep(NA, length(y)))
   zmean <- apply(zmat, 1, mean, na.rm = TRUE)
@@ -641,10 +642,10 @@ calc_meanZ <- function(x) {
 #' Function to calculate the PC1 using principal component analysis from RNAseq
 #' assay matrix (one-gene-per-row, one-sample-per-column)
 #' @export
-calc_PC1 <- function(x) {
+calc_PC1 <- function(x) { # nolint
   stopifnot(class(x) == "matrix")
   pc <- prcomp(t(x), center = TRUE)
-  return(pc$x[,1])
+  return(pc$x[, 1])
 }
 ```
 
