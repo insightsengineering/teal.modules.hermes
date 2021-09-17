@@ -96,7 +96,6 @@ ui_g_pca <- function(id,
         tags$label("Cluster columns"),
         shinyWidgets::switchInput(ns("cluster_columns"), value = FALSE, size = "mini")
       ),
-
       tags$label("View Matrix"),
       shinyWidgets::switchInput(ns("show_matrix"), value = TRUE, size = "mini")
     ),
@@ -152,7 +151,7 @@ srv_g_pca <- function(input,
     exclude_assays = exclude_assays
   )
   color_var_spec <- sampleVarSpecServer(
-    inputId = c("color_var"),
+    "color_var",
     experiment_name = experiment$name,
     original_data = experiment$data
   )
@@ -175,25 +174,6 @@ srv_g_pca <- function(input,
          max = n_genes
        )
      }
-   })
-
-
-  # When the chosen experiment changes, recompute the colData variables.
-   col_data_vars <- eventReactive(input$experiment_name, ignoreNULL = TRUE, {
-     object <- color_var_spec$experiment_data()
-     names(SummarizedExperiment::colData(object))
-   })
-
-  # When the colData variables change, update the choices for color_var.
-   observeEvent(col_data_vars(), {
-     color_var_choices <- col_data_vars()
-
-     updateOptionalSelectInput(
-       session,
-       "color_var",
-       choices = color_var_choices,
-       selected = character()
-     )
    })
 
   # When the chosen experiment or assay name changes, recompute the PC.
@@ -247,6 +227,7 @@ srv_g_pca <- function(input,
       NULL
     }
   })
+
   output$table_pca <- DT::renderDT({
     show_matrix_pca <- show_matrix_pca()
     DT::datatable(
@@ -285,7 +266,7 @@ srv_g_pca <- function(input,
     x_var <- as.numeric(input$x_var)
     y_var <- as.numeric(input$y_var)
     data <- as.data.frame(SummarizedExperiment::colData(color_var_spec$experiment_data()))
-    color_var <- color_var_spec$vars$color_var()
+    color_var <- color_var_spec$sample_var()
     assay_name <- assay()
     var_pct <- input$var_pct
     label <- input$label
