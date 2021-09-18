@@ -32,9 +32,9 @@ tm_made_up_merge_pr <- function(label = "Simple MAE module",
 
 ui_made_up_merge_pr <- function(id, ...) {
   arguments <- list(...)
-  
+
   ns <- NS(id)
-  
+
   standard_layout(
     output = white_small_well(
       tabsetPanel(
@@ -44,16 +44,15 @@ ui_made_up_merge_pr <- function(id, ...) {
   )
 }
 srv_made_up_merge_pr <- function(input, output, session, datasets, dataname) {
-  
+
   output$col_data_table <- renderText({
-    MAE <- datasets$get_data(dataname, filtered = TRUE)
-    paste(capture.output(print(MAE)), collapse = "\n")
+    mae <- datasets$get_data(dataname, filtered = TRUE)
+    paste(capture.output(print(mae)), collapse = "\n")
   })
 }
 
-MAE <- multi_assay_experiment # from hermes
-mae <- dataset("MAE", MAE)
-data <- teal_data(mae)
+mae <- multi_assay_experiment # from hermes
+data <- teal_data(dataset("MAE", mae))
 
 app <- init(
   data = data,

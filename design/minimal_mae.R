@@ -10,7 +10,6 @@ remotes::install_github(
 )
 
 # 2) Try simplest example.
-=======
 
 tm_made_up_merge_pr <- function(label = "Simple MAE module",
                                 info = NULL,
@@ -45,8 +44,8 @@ ui_made_up_merge_pr <- function(id, ...) {
 srv_made_up_merge_pr <- function(input, output, session, datasets, dataname) {
 
   output$col_data_table <- renderText({
-    MAE <- datasets$get_data(dataname, filtered = TRUE)
-    paste(capture.output(print(MAE)), collapse = "\n")
+    mae <- datasets$get_data(dataname, filtered = TRUE)
+    paste(capture.output(print(mae)), collapse = "\n")
   })
 }
 
@@ -54,11 +53,9 @@ library(teal)
 library(teal.devel)
 library(hermes)
 
-MAE <- multi_assay_experiment # from hermes
-mae <- dataset("MAE", MAE)
+mae <- multi_assay_experiment # from hermes
 
-
-data <- teal_data(mae)
+data <- teal_data(dataset("MAE", MAE))
 
 app <- init(
   data = data,
