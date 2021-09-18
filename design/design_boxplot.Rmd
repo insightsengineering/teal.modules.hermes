@@ -1,7 +1,7 @@
 ---
-title: "Boxplot module design" 
+title: "Boxplot module design"
 output: html_document
-editor_options: 
+editor_options:
   chunk_output_type: console
 ---
 
@@ -31,10 +31,9 @@ We want to design a simple boxplot teal module.
 ## Example data
 
 ```{r}
-MAE <- multi_assay_experiment # from hermes
-mae <- dataset("MAE", MAE)
+mae <- multi_assay_experiment # from hermes
 
-data <- teal_data(mae) 
+data <- teal_data(dataset("MAE", mae))
 ```
 
 
@@ -45,7 +44,7 @@ This takes the SE object, the name of the assay, the optional facet variable, an
 
 
 ```{r}
-is.blank <- function(x) identical(x, "")
+is_blank <- function(x) identical(x, "")
 
 library(assertthat)
 draw_boxplot <- function(object, assayname, facetvar, xvar, yvar) {
@@ -56,14 +55,14 @@ draw_boxplot <- function(object, assayname, facetvar, xvar, yvar) {
     is.string(xvar),
     is.string(yvar)
   )
-  
+
   mat <- assay(object, assayname)
   cd <- colData(object)
   # we add this since xvar, yvar could be blank first
-  if (is.blank(xvar)) {
+  if (is_blank(xvar)) {
     xvar <- 1
   }
-  if (is.blank(yvar)) {
+  if (is_blank(yvar)) {
     yvar <- 1
   }
   df <- data.frame(x = cd[, xvar], y = mat[yvar, ])
@@ -115,9 +114,9 @@ Note that:
 ```{r}
 
 # helper function
-emptySelectInput <- function(inputId, label, ...) {
+empty_select_input <- function(input_id, label, ...) {
   selectInput(
-    inputId = inputId,
+    inputId = input_id,
     label = label,
     choices = "",
     selected = "",
@@ -156,26 +155,26 @@ srv_boxplot <- function(input, output, session, datasets, dataname) {
     } else {
       input$experiment
     }
-    mae[[experiment]] 
+    mae[[experiment]]
   })
-  
+
   genes <- reactive({
     object <- experiment_data()
     rownames(object)
   })
-  
+
   colvars <- reactive({
     object <- experiment_data()
     names(colData(object))
   })
-  
+
   # When the colvars, update the choices for facetvar and stratification factor.
   # Todo: at the moment this always triggers when experiment data is updated.
   # how can we trigger this only when colvars really changes?
   observeEvent(colvars(), {
     # First: resolve all reactivity.
     colvars <- colvars()
-    
+
     # Second: do the action.
     updateSelectInput(
       session,
@@ -184,18 +183,17 @@ srv_boxplot <- function(input, output, session, datasets, dataname) {
       selected = ""
     )
     updateOptionalSelectInput(
-      session, 
+      session,
       "facetvar",
       choices = colvars,
       selected = ""
     )
   })
-  
+
   # When the genes in the experiment change, update the choices for genes.
   # Todo: at the moment this always triggers when experiment data is updated.
   # how can we trigger this only when genes really changes?
   observeEvent(genes(), {
-    # browser()
     # First: resolve all reactivity.
     genes <- genes()
     gene_choices <- if (is.null(genes)) {
@@ -203,37 +201,35 @@ srv_boxplot <- function(input, output, session, datasets, dataname) {
     } else {
       genes
     }
-    
+
     # Second: do the action.
       updateSelectInput(
-        session, 
+        session,
         "yvar",
         choices = gene_choices,
         selected = gene_choices[1]
       )
   })
-    
+
   output$plot <- renderPlot({
-    # browser()
     # First: resolve all reactivity.
     object <- experiment_data()
     xvar <- input$xvar
     yvar <- input$yvar
     facetvar <- input$facetvar
     assayname <- "counts"
-    
+
     # Second: validate.
     # add later
-    # teal.devel::as.global(experiment_data)
-    
+
     # Third: plot
     draw_boxplot(
-      object, 
-      assayname = assayname, 
-      xvar = xvar, 
-      yvar = yvar, 
+      object,
+      assayname = assayname,
+      xvar = xvar,
+      yvar = yvar,
       facetvar = facetvar
-    ) 
+    )
   })
 }
 ```
@@ -243,16 +239,16 @@ Unfortunately in the current shiny version in the dockers we cannot yet try this
 ## Teal module function
 
 ```{r}
-tm_g_boxplot <- function(label = "Simple MAE module", 
-                             info = NULL, 
-                             dataname = NULL, 
-                             pre_output = NULL, 
+tm_g_boxplot <- function(label = "Simple MAE module",
+                             info = NULL,
+                             dataname = NULL,
+                             pre_output = NULL,
                              post_output = NULL) {
   module(
     label = label,
     server = srv_boxplot,
     ui = ui_boxplot,
-    ui_args = args,,
+    ui_args = args,
     server_args = list(dataname = dataname),
     filters = "all"
   )
