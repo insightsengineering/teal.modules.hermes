@@ -1,5 +1,10 @@
-source("https://raw.github.roche.com/gist/sabanesd/0e839ca7d4920fab342d8ed4b9d668fc/raw/eeaf752448e1b07641cc0c2a3af2172af7b99c94/install_nest.R")
-install_nest("teal", "1185_dataset_specific_filter_panel")
+# Install teal
+remotes::install_github(
+  "insightsengineering/teal",
+  ref = "1185_dataset_specific_filter_panel",
+  upgrade = "never",
+  force = TRUE
+)
 
 library(teal)
 library(teal.devel)
