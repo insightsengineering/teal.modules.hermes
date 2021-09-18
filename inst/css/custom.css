@@ -85,3 +85,7 @@ div.shiny-radiomatrix th:hover::before {
   top: -500vh;
   width: 100%;
 }
+
+.dataTable-container table td{
+  white-space: unset !important;
+}
