@@ -1,12 +1,15 @@
 # Simplest example to pass MAE data to teal module.
 
 
-# 1) Install teal from the right feature branch.
-source("https://raw.github.roche.com/gist/sabanesd/0e839ca7d4920fab342d8ed4b9d668fc/raw/eeaf752448e1b07641cc0c2a3af2172af7b99c94/install_nest.R")
-install_nest("teal", "cb200aa2738f820b9dcffaffd858581fad9cf90e")
+# 1) Install teal
+remotes::install_github(
+  "insightsengineering/teal",
+  ref = "cb200aa2738f820b9dcffaffd858581fad9cf90e",
+  upgrade = "never",
+  force = TRUE
+)
 
 # 2) Try simplest example.
-=======
 
 tm_made_up_merge_pr <- function(label = "Simple MAE module",
                                 info = NULL,
@@ -41,8 +44,8 @@ ui_made_up_merge_pr <- function(id, ...) {
 srv_made_up_merge_pr <- function(input, output, session, datasets, dataname) {
 
   output$col_data_table <- renderText({
-    MAE <- datasets$get_data(dataname, filtered = TRUE)
-    paste(capture.output(print(MAE)), collapse = "\n")
+    mae <- datasets$get_data(dataname, filtered = TRUE)
+    paste(capture.output(print(mae)), collapse = "\n")
   })
 }
 
@@ -50,11 +53,9 @@ library(teal)
 library(teal.devel)
 library(hermes)
 
-MAE <- multi_assay_experiment # from hermes
-mae <- dataset("MAE", MAE)
+mae <- multi_assay_experiment # from hermes
 
-
-data <- teal_data(mae)
+data <- teal_data(dataset("MAE", MAE))
 
 app <- init(
   data = data,

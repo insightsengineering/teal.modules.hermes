@@ -1,5 +1,10 @@
-source("https://raw.github.roche.com/gist/sabanesd/0e839ca7d4920fab342d8ed4b9d668fc/raw/eeaf752448e1b07641cc0c2a3af2172af7b99c94/install_nest.R")
-install_nest("teal", "1185_dataset_specific_filter_panel")
+# Install teal
+remotes::install_github(
+  "insightsengineering/teal",
+  ref = "1185_dataset_specific_filter_panel",
+  upgrade = "never",
+  force = TRUE
+)
 
 library(teal)
 library(teal.devel)
@@ -27,9 +32,9 @@ tm_made_up_merge_pr <- function(label = "Simple MAE module",
 
 ui_made_up_merge_pr <- function(id, ...) {
   arguments <- list(...)
-  
+
   ns <- NS(id)
-  
+
   standard_layout(
     output = white_small_well(
       tabsetPanel(
@@ -39,16 +44,15 @@ ui_made_up_merge_pr <- function(id, ...) {
   )
 }
 srv_made_up_merge_pr <- function(input, output, session, datasets, dataname) {
-  
+
   output$col_data_table <- renderText({
-    MAE <- datasets$get_data(dataname, filtered = TRUE)
-    paste(capture.output(print(MAE)), collapse = "\n")
+    mae <- datasets$get_data(dataname, filtered = TRUE)
+    paste(capture.output(print(mae)), collapse = "\n")
   })
 }
 
-MAE <- multi_assay_experiment # from hermes
-mae <- dataset("MAE", MAE)
-data <- teal_data(mae)
+mae <- multi_assay_experiment # from hermes
+data <- teal_data(dataset("MAE", mae))
 
 app <- init(
   data = data,

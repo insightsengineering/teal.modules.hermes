@@ -620,9 +620,6 @@ use of R6 syntax, see above commented code.
 
 ### Additional summary functions
 
-Taken from https://github.roche.com/EDISNHL/dashdis/blob/581cf558b62b3c615a4267e19bf07aea4ccb64fc/R/utils.R#L434 as example here.
-We can add similar functions to `hermes`.
-
 ```{r}
 #' Generate gene signature using mean Z-score
 #'

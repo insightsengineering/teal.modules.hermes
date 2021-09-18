@@ -21,8 +21,6 @@ app <- init(
 
 shinyApp(app$ui, app$server)
 
-# Accessing CDSE datasets: https://github.roche.com/sabanesd/nest/blob/master/mae/cdse.R
-
 # # CDISC data set (ADTTE) with existing teal.module.clinical (tm_)
 library(dplyr)
 library(teal)
@@ -36,7 +34,6 @@ cdse_get_environment()
 cdse_set_environment("prod")
 
 # Using Asthma Data Pilot -- Pooled Integrated Datasets --
-# ADAM ADSL from https://cdse.roche.com/details/cid6736608260612358144
 
 data <- cdse_data(
   connection = cdse_connection("prod"),
@@ -75,7 +72,6 @@ library(haven)
 test <- read_sas("/Users/bhatian3/NEST/teal.modules.hermes/design/adsl.sas7bdat")
 
 # Using Asthma Data Pilot -- Pooled Integrated Datasets -
-# ADaM ADZB from https://cdse.roche.com/details/cid6736609907921174529
 
 data <- cdse_data(
   connection = cdse_connection("prod"),
@@ -107,8 +103,6 @@ app <- init(
 
 shinyApp(app$ui, app$server)
 
-
-# Test on CDSE MAE data from https://cdse.roche.com/details/cid6740627690476584961
 
 data <- cdse_data(
   connection = cdse_connection("prod"),
