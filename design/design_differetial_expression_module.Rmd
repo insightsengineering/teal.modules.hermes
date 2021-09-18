@@ -20,10 +20,6 @@ data <- teal_data(mae)
 
 We want to design a non-teal based differential expression module.
 
-Target:
-https://go.gene.com/EDIS-NHL-Dashboard click on RNAseq and then differential expression -
-but we will start with a simpler version first.
-
 Work in design folder within an Rmd:
 -plot function
 -ui function
