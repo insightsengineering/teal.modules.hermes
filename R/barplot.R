@@ -30,6 +30,7 @@
 #' shinyApp(app$ui, app$server)
 #' }
 tm_g_barplot <- function(label,
+                         exclude_assays = character(),
                          mae_name,
                          pre_output = NULL,
                          post_output = NULL,
@@ -48,7 +49,8 @@ tm_g_barplot <- function(label,
     server = srv_g_barplot,
     server_args = list(
       mae_name = mae_name,
-      summary_funs = summary_funs
+      summary_funs = summary_funs,
+      exclude_assays = exclude_assays
     ),
     ui = ui_g_barplot,
     ui_args = list(
@@ -71,29 +73,30 @@ ui_g_barplot <- function(id,
                          pre_output,
                          post_output) {
   ns <- NS(id)
-  mae <- datasets$get_data(mae_name, filtered = FALSE)
-  experiment_name_choices <- names(mae)
+  # mae <- datasets$get_data(mae_name, filtered = FALSE)
+  # experiment_name_choices <- names(mae)
   teal.devel::standard_layout(
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
-      selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
-
       experimentSpecInput(ns("experiment"), datasets, mae_name),
       assaySpecInput(ns("assay"), "Select assay"),
-      sampleVarSpecInput(ns("facet_var"), "Optional facet variable"),
-      sampleVarSpecInput(ns("color_var"), "Optional fill variable"),
+      sampleVarSpecInput(ns("facet_var"), "Facet variable"),
       geneSpecInput(ns("x_spec"), summary_funs, label_genes = "Select x Gene(s)"),
-
-
-      # will become geneSpecInput
-      # selectizeInput(ns("x_var"), "Select x gene", choices = ""),
       sliderInput(
         ns("percentiles"),
         "Select quantiles to be displayed",
         min = 0,
         max = 1,
         value = c(0.2, 0.8)
+      ),
+      teal.devel::panel_group(
+        teal.devel::panel_item(
+          input_id = "settings_item",
+          collapsed = TRUE,
+          title = "Additional Settings",
+          sampleVarSpecInput(ns("color_var"), "Optional fill variable")
+        )
       )
     ),
     output = plotOutput(ns("plot")),
@@ -143,34 +146,18 @@ srv_g_barplot <- function(input,
     summary_funs,
     experimentx$genes)
 
-
-  # When the genes are recomputed, update the choices for genes in the UI.
-  # observeEvent(experimentx$genes(), {
-  #   gene_choices <- unlist(experimentx$genes()$id)
-  #
-  #   updateSelectizeInput(
-  #     session,
-  #     "x_var",
-  #     choices = gene_choices,
-  #     selected = gene_choices[1],
-  #     server = TRUE
-  #   )
-  # })
-
   output$plot <- renderPlot({
     # Resolve all reactivity.
     experiment_data <- experimentx$data()
-
-    x_var <- gene_x()
-
     facet_var <- sample_var_specs_x$sample_var()
     fill_var <- color_var_specs_x$sample_var()
     percentiles <- input$percentiles
     assay_name <- assayx() # input$assay_name
 
 
-    assay_matrix <- assay(experiment_data, assay_name)
-
+    # assay_matrix <- SummarizedExperiment::assay(experiment_data, assay_name)
+    # to move to the draw_barplot function
+    x_var <- gene_x()
     x = as.vector(x_var$get_genes())
 
     # Require which states need to be truthy.
@@ -192,17 +179,14 @@ srv_g_barplot <- function(input,
     ))
 
 
-      hermes::draw_barplot(
-      object = experimentx$data(),
+    hermes::draw_barplot(
+      object = experiment_data,
       assay_name = assay_name,
       x_var = x[1],
       facet_var = facet_var,
       fill_var = fill_var,
       percentiles = percentiles
       )
-
-
-
   })
 }
 
@@ -230,4 +214,3 @@ sample_tm_g_barplot <- function() {
   )
   shinyApp(app$ui, app$server)
 }
-
