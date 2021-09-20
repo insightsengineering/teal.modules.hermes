@@ -8,8 +8,13 @@ editor_options:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
-source("https://raw.github.roche.com/gist/sabanesd/0e839ca7d4920fab342d8ed4b9d668fc/raw/eeaf752448e1b07641cc0c2a3af2172af7b99c94/install_nest.R") # nolint
-install_nest("teal", "1185_dataset_specific_filter_panel")
+# Install teal
+remotes::install_github(
+  "insightsengineering/teal",
+  ref = "1185_dataset_specific_filter_panel",
+  upgrade = "never",
+  force = TRUE
+)
 
 library(teal)
 library(teal.devel)
@@ -34,9 +39,6 @@ data <- teal_data(mae)
 
 In order to test the plotting separately, we write a separate function for the plot.
 This takes the SE object, the name of the assay, the optional facet variable, the optional fill variable and the names of the x variables which are genes, and produces the ggplot.
-
-Note: this is similar to https://github.roche.com/EDISNHL/dashdis/blob/master/R/draw_barplot.R
-so we can look into that repo to get ideas.
 
 ```{r}
 is.blank <- function(x) identical(x, "") # nolint

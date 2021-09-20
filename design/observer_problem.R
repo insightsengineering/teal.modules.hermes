@@ -80,7 +80,6 @@ srv_g_scatterplot <- function(input,
   output$plot <- renderPlot({
     # First: resolve all reactivity.
     my_experiment_name <- experiment_name()
-    # genes <- genes()
     x_var <- input$x_var
     y_var <- input$y_var
     assay_name <- input$assay_name
@@ -89,12 +88,12 @@ srv_g_scatterplot <- function(input,
   })
 }
 
-MAE <- hermes::multi_assay_experiment
-for (i in seq_along(MAE)) {
-  MAE[[i]] <- HermesData(MAE[[i]])
+mae <- hermes::multi_assay_experiment
+for (i in seq_along(mae)) {
+  mae[[i]] <- HermesData(mae[[i]])
 }
-mae <- dataset("MAE", MAE)
-data <- teal_data(mae)
+
+data <- teal_data(dataset("MAE", mae))
 app <- init(
   data = data,
   modules = root_modules(
@@ -107,5 +106,4 @@ app <- init(
   )
 )
 
-# options(shiny.error = browser)
 shinyApp(app$ui, app$server)
