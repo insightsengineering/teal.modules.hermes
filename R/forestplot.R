@@ -30,12 +30,27 @@
 #' }
 tm_g_forest_tte <- function(label,
                             mae_name,
+                            exclude_assays = "counts",
+                            summary_funs = list(
+                              Mean = colMeans,
+                              Median = matrixStats::colMedians,
+                              Max = matrixStats::colMaxs
+                            ),
                             pre_output = NULL,
                             post_output = NULL,
                             plot_height = c(600L, 200L, 2000L),
                             plot_width = c(1360L, 500L, 2000L)) {
   assert_string(label)
   assert_string(mae_name)
+  assert_character(exclude_assays, any.missing = FALSE)
+  assert_list(
+    summary_funs,
+    types = "function",
+    min.len = 1L,
+    unique = TRUE,
+    any.missing = FALSE,
+    names = "unique"
+  )
   assert_tag(pre_output, null.ok = TRUE)
   assert_tag(post_output, null.ok = TRUE)
 
@@ -44,12 +59,15 @@ tm_g_forest_tte <- function(label,
     server = srv_g_forest_tte,
     server_args = list(
       mae_name = mae_name,
+      exclude_assays = exclude_assays,
+      summary_funs = summary_funs,
       plot_height = plot_height,
       plot_width = plot_width
     ),
     ui = ui_g_forest_tte,
     ui_args = list(
       mae_name = mae_name,
+      summary_funs = summary_funs,
       pre_output = pre_output,
       post_output = post_output
     ),
@@ -60,19 +78,22 @@ tm_g_forest_tte <- function(label,
 #' @describeIn tm_g_forest_tte sets up the user interface.
 #' @inheritParams module_arguments
 #' @export
-ui_g_forest_tte <- function(id, datasets, mae_name,pre_output, post_output) {
+ui_g_forest_tte <- function(id,
+                            datasets,
+                            mae_name,
+                            summary_funs,
+                            pre_output,
+                            post_output) {
   ns <- NS(id)
-  mae <- datasets$get_data(mae_name, filtered = FALSE)
-  experiment_name_choices <- names(mae)
   teal.devel::standard_layout(
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
-      selectInput(ns("experiment_name"), "Select Experiment", experiment_name_choices),
-      selectInput(ns("assay_name"), "Select Assay", choices = ""),
-      selectizeInput(ns("geneid"), "Gene ID", choices = ""),
+      experimentSpecInput(ns("experiment"), datasets, mae_name),
+      assaySpecInput(ns("assay")),
+      geneSpecInput(ns("geneid"), summary_funs, label_genes = "Select Gene(s)"),
       sliderInput(ns("probs"), label = ("Probability Cutoff"), min = 0.01, max = 0.99, value = 0.5),
-      optionalSelectInput(ns("subgroups"), label = "Subgroups", choices = "", selected = "", multiple = TRUE)
+      sampleVarSpecInput(ns("subgroups"), "Optional subgroup variable")
     ),
     output = teal.devel::plot_with_settings_ui(ns("plot")),
     pre_output = pre_output,
@@ -88,79 +109,37 @@ srv_g_forest_tte <- function(input,
                              session,
                              datasets,
                              mae_name,
+                             exclude_assays,
+                             summary_funs,
                              plot_height,
                              plot_width) {
 
-  # When the filtered data set of the chosen experiment changes, update the
-  # experiment data object.
-  experiment_data <- reactive({
-    experiment_name <- input$experiment_name
-    req(input$experiment_name) # Important to avoid running into NULL here.
+  experiment <- experimentSpecServer(
+    "experiment",
+    datasets = datasets,
+    mae_name = mae_name
+  )
 
-    mae <- datasets$get_data(mae_name, filtered = TRUE)
-    mae[[input$experiment_name]]
-  })
+  assay <- assaySpecServer(
+    "assay",
+    assays = experiment$assays,
+    exclude_assays = exclude_assays
+  )
 
-  # When the chosen experiment changes, recompute the available assay.
-  assay_names <- eventReactive(input$experiment_name, ignoreNULL = FALSE, {
-    object <- experiment_data()
-    SummarizedExperiment::assayNames(object)
-  })
+  geneid <- geneSpecServer("geneid", experiment$genes)
 
-  # When the chosen experiment changes, recompute the available genes.
-  genes <- eventReactive(input$experiment_name, ignoreNULL = FALSE, {
-    object <- experiment_data()
-    rownames(object)
-  })
-
-  # When the chosen experiment changes, recompute the available colData.
-  subgroups <- eventReactive(input$experiment_name, {
-    adtte <- datasets$get_data("ADTTE", filtered = TRUE)
-    colnames(adtte)
-  })
-
-  # When the assay names change, update the choices for assay.
-  observeEvent(assay_names(), {
-    assay_name_choices <- assay_names()
-
-    updateSelectInput(
-      session,
-      "assay_name",
-      choices = assay_name_choices,
-      selected = assay_name_choices[1]
-    )
-  })
-
-  # When the genes are recomputed, update the choice for genes in the UI.
-  observeEvent(genes(), {
-    gene_choices <- genes()
-
-    updateSelectizeInput(
-      session,
-      "geneid",
-      choices = gene_choices,
-      selected = gene_choices[1],
-      server = TRUE
-    )
-  })
-
-  observeEvent(subgroups(), {
-    subgroup_choices <- subgroups()
-
-    updateOptionalSelectInput(
-      session,
-      "subgroups",
-      choices = subgroup_choices,
-      selected = subgroup_choices[1]
-    )
-  })
+  sample_var_specs <- sampleVarSpecServer(
+    inputIds = c("subgroups"),
+    experiment_name = experiment$name,
+    original_data = experiment$data
+  )
 
   adtte_counts <- reactive({
     mae <- datasets$get_data(mae_name, filtered = TRUE)
     adtte <- datasets$get_data("ADTTE", filtered = TRUE)
-    geneid <- input$geneid
-    experiment_name <- input$experiment_name
-    assay_name <- input$assay_name
+    geneid <- geneid()
+    experiment_name <- experiment$name
+    assay_name <- assay()
 
     req(geneid, experiment_name, assay_name)
 
@@ -194,7 +173,7 @@ srv_g_forest_tte <- function(input,
 
   tbl <- reactive({
     adtte_final <- adtte_final()
-    subgroups <- input$subgroups
+    subgroups <- sample_var_specs$vars$subgroups()
 
     tern::extract_survival_subgroups(
       variables = list(
