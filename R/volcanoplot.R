@@ -14,16 +14,13 @@
 #' @examples
 #' mae <- hermes::multi_assay_experiment
 #' mae_data <- dataset("MAE", mae)
-#' data <- teal_data(mae_data)
 #' app <- init(
 #'   data = data,
 #'   modules = root_modules(
-#'     static = {
 #'       tm_g_volcanoplot(
 #'         label = "volcanoplot",
 #'         mae_name = "MAE"
 #'       )
-#'     }
 #'   )
 #' )
 #' \dontrun{
@@ -31,6 +28,7 @@
 #' }
 tm_g_volcanoplot <- function(label,
                              mae_name,
+                             exclude_assays = character(),
                              pre_output = NULL,
                              post_output = NULL) {
 
@@ -42,7 +40,10 @@ tm_g_volcanoplot <- function(label,
   module(
     label = label,
     server = srv_g_volcanoplot,
-    server_args = list(mae_name = mae_name),
+    server_args = list(
+      mae_name = mae_name,
+      exclude_assays = exclude_assays
+    ),
     ui = ui_g_volcanoplot,
     ui_args = list(
       mae_name = mae_name,
@@ -71,7 +72,7 @@ ui_g_volcanoplot <- function(id,
     pre_output = pre_output,
     post_output = post_output,
     encoding = div(
-      selectInput(ns("experiment_name"), "Select experiment", names(mae)),
+      experimentSpecInput(ns("experiment"), datasets, mae_name),
       sampleVarSpecInput(ns("compare_group"), "Compare Groups", "Please group here into 2 levels"),
       selectInput(ns("method"), "Method", choices = c("voom", "deseq2")),
       sliderInput(ns("log2_fc_thresh"), "Log2 fold change threshold", value = 2.5, min = 0.1, max = 10),
@@ -89,34 +90,46 @@ srv_g_volcanoplot <- function(input,
                               output,
                               session,
                               datasets,
-                              mae_name) {
+                              mae_name,
+                              exclude_assays) {
 
   # When the filtered data set of the chosen experiment changes, update the
   # experiment data object.
-  experiment_data <- reactive({
-    req(input$experiment_name)
+   # experiment_data <- reactive({
+   #   req(input$experiment_name)
+   #
+   #   mae <- datasets$get_data(mae_name, filtered = TRUE)
+   #
+   #   object <- hermes::HermesData(mae[[input$experiment_name]])
+   #   SummarizedExperiment::colData(object) <- hermes::df_cols_to_factor(SummarizedExperiment::colData(object))
+   #   object
+   # })
 
-    mae <- datasets$get_data(mae_name, filtered = TRUE)
-
-    object <- hermes::HermesData(mae[[input$experiment_name]])
-    SummarizedExperiment::colData(object) <- hermes::df_cols_to_factor(SummarizedExperiment::colData(object))
-    object
-  })
+   experiment_data <- experimentSpecServer(
+     "experiment",
+     datasets = datasets,
+     mae_name = mae_name
+   )
+   assay <- assaySpecServer(
+     "assay",
+     assays = experiment_data$assays,
+     exclude_assays = exclude_assays
+   )
 
   # Define server part for compare_group specification, request exactly 2 levels.
-  group_spec <- sampleVarSpecServer(
-    "compare_group",
-    experiment_name = reactive({input$experiment_name}),
-    original_data = experiment_data,
-    num_levels = 2L,
-    label_modal_title = "Please click to group into exactly 2 levels, first level is reference"
-  )
+   compare_group <- sampleVarSpecServer(
+     "compare_group",
+     experiment_name = experiment_data$name,
+     original_data = experiment_data$data,
+     num_levels = 2L,
+     label_modal_title = "Please click to group into exactly 2 levels, first level is reference"
+   )
 
   # When the filtered data set or the chosen experiment changes, update
   # the call that creates the Hermes object for differential expression.
   diff_expr <- reactive({
-    object <- group_spec$experiment_data()
-    compare_group <- group_spec$sample_var()
+    object <- compare_group$experiment_data()
+    compare_group <- compare_group$sample_var()
     method <- input$method
 
     req(object, method)
