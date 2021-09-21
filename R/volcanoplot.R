@@ -73,12 +73,20 @@ ui_g_volcanoplot <- function(id,
     post_output = post_output,
     encoding = div(
       experimentSpecInput(ns("experiment"), datasets, mae_name),
+      assaySpecInput(ns("assay")),
       sampleVarSpecInput(ns("compare_group"), "Compare Groups", "Please group here into 2 levels"),
-      selectInput(ns("method"), "Method", choices = c("voom", "deseq2")),
-      sliderInput(ns("log2_fc_thresh"), "Log2 fold change threshold", value = 2.5, min = 0.1, max = 10),
-      sliderInput(ns("adj_p_val_thresh"), "Adjusted p-value threshold", value = 0.05, min = 0.001, max = 1),
       tags$label("Show Top Differentiated Genes"),
-      shinyWidgets::switchInput(ns("show_top_gene"), value = FALSE, size = "mini")
+      shinyWidgets::switchInput(ns("show_top_gene"), value = FALSE, size = "mini"),
+      teal.devel::panel_group(
+        teal.devel::panel_item(
+          input_id = "settings_item",
+          collapsed = TRUE,
+          title = "Additional Settings",
+          selectInput(ns("method"), "Method", choices = c("voom", "deseq2")),
+          sliderInput(ns("log2_fc_thresh"), "Log2 fold change threshold", value = 2.5, min = 0.1, max = 10),
+          sliderInput(ns("adj_p_val_thresh"), "Adjusted p-value threshold", value = 0.05, min = 0.001, max = 1)
+        )
+      )
     )
   )
 }
@@ -92,18 +100,6 @@ srv_g_volcanoplot <- function(input,
                               datasets,
                               mae_name,
                               exclude_assays) {
-
-  # When the filtered data set of the chosen experiment changes, update the
-  # experiment data object.
-   # experiment_data <- reactive({
-   #   req(input$experiment_name)
-   #
-   #   mae <- datasets$get_data(mae_name, filtered = TRUE)
-   #
-   #   object <- hermes::HermesData(mae[[input$experiment_name]])
-   #   SummarizedExperiment::colData(object) <- hermes::df_cols_to_factor(SummarizedExperiment::colData(object))
-   #   object
-   # })
 
    experiment_data <- experimentSpecServer(
      "experiment",
@@ -204,12 +200,10 @@ sample_tm_g_volcanoplot <- function() {
   app <- init(
     data = data,
     modules = root_modules(
-      static = {
         tm_g_volcanoplot(
           label = "volcanoplot",
           mae_name = "MAE"
         )
-      }
     )
   )
   shinyApp(app$ui, app$server)
