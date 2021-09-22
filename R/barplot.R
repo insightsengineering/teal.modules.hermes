@@ -73,8 +73,6 @@ ui_g_barplot <- function(id,
                          pre_output,
                          post_output) {
   ns <- NS(id)
-  # mae <- datasets$get_data(mae_name, filtered = FALSE)
-  # experiment_name_choices <- names(mae)
   teal.devel::standard_layout(
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
@@ -95,7 +93,7 @@ ui_g_barplot <- function(id,
           input_id = "settings_item",
           collapsed = TRUE,
           title = "Additional Settings",
-          sampleVarSpecInput(ns("color_var"), "Optional fill variable")
+          sampleVarSpecInput(ns("color_var"), "Optional fill variable", "Select function")
         )
       )
     ),
@@ -116,7 +114,7 @@ srv_g_barplot <- function(input,
                           exclude_assays = character(),
                           summary_funs) {
 
-  experimentx <- experimentSpecServer(# return hermes data
+  experimentx <- experimentSpecServer(
     "experiment",
     datasets = datasets,
     mae_name = mae_name
@@ -127,7 +125,6 @@ srv_g_barplot <- function(input,
     assays = experimentx$assays,
     exclude_assays = exclude_assays
   )
-
 
   sample_var_specs_x <- sampleVarSpecServer(
     "facet_var",
@@ -152,37 +149,32 @@ srv_g_barplot <- function(input,
     facet_var <- sample_var_specs_x$sample_var()
     fill_var <- color_var_specs_x$sample_var()
     percentiles <- input$percentiles
-    assay_name <- assayx() # input$assay_name
+    assay_name <- assayx()
+    x_spec <- gene_x()
 
-
-    # assay_matrix <- SummarizedExperiment::assay(experiment_data, assay_name)
-    # to move to the draw_barplot function
-    x_var <- gene_x()
-    x = as.vector(x_var$get_genes())
 
     # Require which states need to be truthy.
     req(
-      x_var,
+      x_spec,
       assay_name,
       # Note: The following statements are important to make sure the UI inputs have been updated.
-      isTRUE(assay_name %in% SummarizedExperiment::assayNames(experimentx$data())),
-      #isTRUE(x_var %in% rownames(experimentx$data())),
-      isTRUE(all(c(facet_var, fill_var) %in% names(SummarizedExperiment::colData(experimentx$data())))),
+      isTRUE(assay_name %in% SummarizedExperiment::assayNames(experiment_data)),
+      isTRUE(all(c(facet_var, fill_var) %in% names(SummarizedExperiment::colData(experiment_data)))),
       cancelOutput = FALSE
     )
 
     # Validate and give useful messages to the user. Note: no need to duplicate here req() from above.
-    validate(need(hermes::is_hermes_data(experimentx$data()), "please use HermesData() on input experiments"))
+    validate(need(hermes::is_hermes_data(experiment_data), "please use HermesData() on input experiments"))
     validate(need(
       percentiles[1] != percentiles[2],
       "please select two different quantiles - if you want only 2 groups, choose one quantile as 0 or 1"
     ))
-
+    validate_gene_spec(x_spec, rownames(experiment_data))
 
     hermes::draw_barplot(
       object = experiment_data,
       assay_name = assay_name,
-      x_var = x[1],
+      x_spec = x_spec,
       facet_var = facet_var,
       fill_var = fill_var,
       percentiles = percentiles
