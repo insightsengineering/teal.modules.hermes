@@ -7,11 +7,17 @@
 \alias{sample_tm_g_volcanoplot}
 \title{Teal Module for RNA-seq Volcano Plot}
 \usage{
-tm_g_volcanoplot(label, mae_name, pre_output = NULL, post_output = NULL)
+tm_g_volcanoplot(
+  label,
+  mae_name,
+  exclude_assays = character(),
+  pre_output = NULL,
+  post_output = NULL
+)
 
 ui_g_volcanoplot(id, datasets, mae_name, pre_output, post_output)
 
-srv_g_volcanoplot(input, output, session, datasets, mae_name)
+srv_g_volcanoplot(input, output, session, datasets, mae_name, exclude_assays)
 
 sample_tm_g_volcanoplot()
 }
@@ -21,6 +27,9 @@ menu item label of the module in the teal app.}
 
 \item{mae_name}{(\code{string})\cr
 name of the MAE data used in the teal module.}
+
+\item{exclude_assays}{(\code{character})\cr
+names of the assays which should not be included in choices in the teal module.}
 
 \item{pre_output}{(\code{shiny.tag} or \code{NULL})\cr
 placed before the output to put the output into context (for example a title).}
@@ -67,12 +76,10 @@ data <- teal_data(mae_data)
 app <- init(
   data = data,
   modules = root_modules(
-    static = {
-      tm_g_volcanoplot(
-        label = "volcanoplot",
-        mae_name = "MAE"
-      )
-    }
+    tm_g_volcanoplot(
+      label = "volcanoplot",
+      mae_name = "MAE"
+    )
   )
 )
 \dontrun{

@@ -10,7 +10,7 @@ Description: RNA-seq analysis teal modules based on the `hermes` package.
 License: Apache License 2.0 | file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 RdMacros: lifecycle
 Language: en-US
 URL: https://github.com/insightsengineering/teal.modules.hermes/
@@ -51,4 +51,3 @@ Suggests:
   testthat (>= 2.0)
 Remotes:
   szelepke/shinyRadioMatrix
-
