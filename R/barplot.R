@@ -35,10 +35,10 @@ tm_g_barplot <- function(label,
                          pre_output = NULL,
                          post_output = NULL,
                          summary_funs = list(
-                               Mean = colMeans,
-                               Median = matrixStats::colMedians,
-                               Max = matrixStats::colMaxs
-                             )) {
+                           Mean = colMeans,
+                           Median = matrixStats::colMedians,
+                           Max = matrixStats::colMaxs
+                         )) {
   assert_string(label)
   assert_string(mae_name)
   assert_tag(pre_output, null.ok = TRUE)
@@ -178,7 +178,7 @@ srv_g_barplot <- function(input,
       facet_var = facet_var,
       fill_var = fill_var,
       percentiles = percentiles
-      )
+    )
   })
 }
 

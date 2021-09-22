@@ -67,7 +67,7 @@ test_that("tm_g_barplot works as expected in the sample app", {
   # Check error message in case of identical percentile boundaries
   app$setValue(ns("percentiles"), c(0.1,0.1))
   plot_message <- app$waitForOutputElement(ns("plot"), "message")
-    expect_identical(
+  expect_identical(
     plot_message,
     "please select two different quantiles - if you want only 2 groups, choose one quantile as 0 or 1"
   )
