@@ -14,13 +14,14 @@
 #' @examples
 #' mae <- hermes::multi_assay_experiment
 #' mae_data <- dataset("MAE", mae)
+#' data <- teal_data(mae_data)
 #' app <- init(
 #'   data = data,
 #'   modules = root_modules(
-#'       tm_g_volcanoplot(
-#'         label = "volcanoplot",
-#'         mae_name = "MAE"
-#'       )
+#'     tm_g_volcanoplot(
+#'       label = "volcanoplot",
+#'       mae_name = "MAE"
+#'     )
 #'   )
 #' )
 #' \dontrun{
@@ -31,9 +32,9 @@ tm_g_volcanoplot <- function(label,
                              exclude_assays = character(),
                              pre_output = NULL,
                              post_output = NULL) {
-
   assert_string(label)
   assert_string(mae_name)
+  assert_character(exclude_assays)
   assert_tag(pre_output, null.ok = TRUE)
   assert_tag(post_output, null.ok = TRUE)
 
@@ -68,7 +69,8 @@ ui_g_volcanoplot <- function(id,
   teal.devel::standard_layout(
     output = div(
       plotOutput(ns("plot")),
-      DT::DTOutput(ns("table"))),
+      DT::DTOutput(ns("table"))
+    ),
     pre_output = pre_output,
     post_output = post_output,
     encoding = div(
@@ -111,8 +113,6 @@ srv_g_volcanoplot <- function(input,
      assays = experiment_data$assays,
      exclude_assays = exclude_assays
    )
-
-  # Define server part for compare_group specification, request exactly 2 levels.
    compare_group <- sampleVarSpecServer(
      "compare_group",
      experiment_name = experiment_data$name,
@@ -121,69 +121,73 @@ srv_g_volcanoplot <- function(input,
      label_modal_title = "Please click to group into exactly 2 levels, first level is reference"
    )
 
-  # When the filtered data set or the chosen experiment changes, update
-  # the call that creates the Hermes object for differential expression.
-  diff_expr <- reactive({
-    object <- compare_group$experiment_data()
-    compare_group <- compare_group$sample_var()
-    method <- input$method
+   # When the filtered data set or the chosen experiment changes, update
+   # the differential expression results.
+   diff_expr <- reactive({
+     object <- compare_group$experiment_data()
+     compare_group <- compare_group$sample_var()
+     method <- input$method
 
-    req(object, method)
-    validate(need(!is.null(compare_group), "Please select a group variable"))
+     req(
+       object,
+       method
+     )
+     validate(need(
+       !is.null(compare_group),
+       "Please select a group variable"
+     ))
 
-    hermes::diff_expression(
-      object,
-      group = compare_group,
-      method = method
-    )
-  })
+     hermes::diff_expression(
+       object,
+       group = compare_group,
+       method = method
+     )
+   })
 
-  output$plot <- renderPlot({
-    # Resolve all reactivity.
-    diff_expr_result <- diff_expr()
-    log2_fc_thresh <- input$log2_fc_thresh
-    adj_p_val_thresh <- input$adj_p_val_thresh
+   output$plot <- renderPlot({
+     diff_expr_result <- diff_expr()
+     log2_fc_thresh <- input$log2_fc_thresh
+     adj_p_val_thresh <- input$adj_p_val_thresh
 
-    # Require which states need to be truthy.
-    req(
-      log2_fc_thresh,
-      adj_p_val_thresh
-    )
+     req(
+       log2_fc_thresh,
+       adj_p_val_thresh
+     )
 
-    hermes::autoplot(
-      diff_expr_result,
-      adj_p_val_thresh = adj_p_val_thresh,
-      log2_fc_thresh = log2_fc_thresh
-    )
-  })
+     hermes::autoplot(
+       diff_expr_result,
+       adj_p_val_thresh = adj_p_val_thresh,
+       log2_fc_thresh = log2_fc_thresh
+     )
+   })
 
-  # display top genes if show_top_gene is TRUE
-  show_top_gene_diffexpr <- reactive({
-    if (input$show_top_gene) {
-      result <- diff_expr()
-      with(
-        result,
-        data.frame(
-          log2_fc = round(log2_fc, 2),
-          stat = round(stat, 2),
-          p_val = format.pval(p_val),
-          adj_p_val = format.pval(adj_p_val),
-          row.names = rownames(result)
-        )
-      )
-    } else {
-      NULL
-    }
-  })
+   # Display top genes if switched on.
+   show_top_gene_diffexpr <- reactive({
+     if (input$show_top_gene) {
+       result <- diff_expr()
+       with(
+         result,
+         data.frame(
+           log2_fc = round(log2_fc, 2),
+           stat = round(stat, 2),
+           p_val = format.pval(p_val),
+           adj_p_val = format.pval(adj_p_val),
+           row.names = rownames(result)
+         )
+       )
+     } else {
+       NULL
+     }
+   })
 
-  output$table <- DT::renderDT({
-    DT::datatable(
-      show_top_gene_diffexpr(),
-      rownames = TRUE,
-      options = list(scrollX = TRUE, pageLength = 30, lengthMenu = c(5, 15, 30, 100)),
-      caption = "Top Differentiated Genes"
-    )
-  })
+   output$table <- DT::renderDT({
+     DT::datatable(
+       show_top_gene_diffexpr(),
+       rownames = TRUE,
+       options = list(scrollX = TRUE, pageLength = 30, lengthMenu = c(5, 15, 30, 100)),
+       caption = "Top Differentiated Genes"
+     )
+   })
 }
 
 #' @describeIn tm_g_volcanoplot sample module function.
@@ -200,10 +204,10 @@ sample_tm_g_volcanoplot <- function() {
   app <- init(
     data = data,
     modules = root_modules(
-        tm_g_volcanoplot(
-          label = "volcanoplot",
-          mae_name = "MAE"
-        )
+      tm_g_volcanoplot(
+        label = "volcanoplot",
+        mae_name = "MAE"
+      )
     )
   )
   shinyApp(app$ui, app$server)
