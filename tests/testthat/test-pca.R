@@ -1,10 +1,9 @@
 # ui_g_pca ----
 
-test_that("ui_g_pca creates expected HTML", {
+test_that("ui_g_pca creates HTML", {
   mae_name <- "MyMAE"
-  shiny:::withPrivateSeed(set.seed(123))
   datasets <- mock_datasets(list(MyMAE = hermes::multi_assay_experiment))
-  expect_snapshot(ui_g_pca(
+  expect_silent(ui_g_pca(
     id = "testid",
     datasets = datasets,
     mae_name = mae_name,
@@ -33,7 +32,7 @@ test_that("tm_g_pca works as expected in the sample app", {
   ns <- NS("teal-main_ui-modules_ui-root_pca")
 
   # Check initial state of encodings.
-  initial_experiment_name <- app$waitForValue(ns("experiment_name"))
+  initial_experiment_name <- app$waitForValue(ns("experiment-name"))
   expect_identical(initial_experiment_name, "hd1")
 
   initial_assay_name <- app$waitForValue(ns("assay-name"))
@@ -72,7 +71,7 @@ test_that("tm_g_pca works as expected in the sample app", {
   # Now update the tab selection.
   app$setValue(ns("tab_selected"), "PC and Sample Correlation")
 
-  initial_experiment_name <- app$waitForValue(ns("experiment_name"))
+  initial_experiment_name <- app$waitForValue(ns("experiment-name"))
   expect_identical(initial_experiment_name, "hd1")
 
   initial_assay_name <- app$waitForValue(ns("assay-name"))
@@ -98,7 +97,7 @@ test_that("tm_g_pca works as expected in the sample app", {
   )
 
   # Now update experiment name, assay name, cluster & matrix option on correlation tab.
-  app$setValue(ns("experiment_name"), "hd2")
+  app$setValue(ns("experiment-name"), "hd2")
   app$setValue(ns("assay-name"), "voom")
   app$setValue(ns("cluster_columns"), TRUE)
   app$setValue(ns("show_matrix"), FALSE)
@@ -140,9 +139,10 @@ test_that("tm_g_pca works as expected in the sample app", {
   )
 
   # Update experiment / assay (ensure xvar and yvar revert back to PC1 and PC2, assay to counts)
-  # and add color_var for pca.
-  app$setValue(ns("experiment_name"), "hd1")
-  app$setValue(ns("color_var"), "AGE18")
+  # and add color for pca.
+  app$setValue(ns("experiment-name"), "hd1")
+  Sys.sleep(0.5)
+  app$setValue(ns("color-sample_var"), "AGE18")
 
   new_varpct <- app$waitForValue(ns("assay-name"))
   expect_identical(new_varpct, "counts")
@@ -186,7 +186,7 @@ test_that("tm_g_pca works as expected in the sample app", {
   app$setValues(
     ns = ns,
     "tab_selected" = "PCA",
-    "experiment_name" = "hd1",
+    "experiment-name" = "hd1",
     "assay-name" = "counts",
     "x_var" = "3",
     "y_var" = "4",
@@ -259,7 +259,7 @@ test_that("tm_g_pca works as expected in the sample app", {
   app$setValue(ns("n_top"), 777L)
 
   # Change to another experiment and check that it did not change.
-  app$setValue(ns("experiment_name"), "hd2")
+  app$setValue(ns("experiment-name"), "hd2")
   app$waitForShiny()
   n_top_value2 <- app$waitForValue(ns("n_top"))
   expect_identical(n_top_value2, 777L)
@@ -283,7 +283,7 @@ test_that("tm_g_pca works as expected in the sample app", {
   )
 
   # Go back to first experiment and check how n_top changed.
-  app$setValue(ns("experiment_name"), "hd1")
+  app$setValue(ns("experiment-name"), "hd1")
   app$setValue(ns("filter_top"), TRUE)
   n_top_value3 <- app$waitForValue(
     ns("n_top"),

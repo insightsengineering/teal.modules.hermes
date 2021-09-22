@@ -77,7 +77,9 @@ ui_g_boxplot <- function(id,
       optionalSelectInput(ns("color_var"), "Optional color variable"),
       optionalSelectInput(ns("facet_var"), "Optional facet variable"),
       tags$label("Jitter"),
-      shinyWidgets::switchInput(ns("jitter"), value = FALSE, size = "mini")
+      shinyWidgets::switchInput(ns("jitter"), value = FALSE, size = "mini"),
+      tags$label("Violin Plot"),
+      shinyWidgets::switchInput(ns("violin"), value = FALSE, size = "mini")
     ),
     output = plotOutput(ns("plot")),
     pre_output = pre_output,
@@ -179,6 +181,7 @@ srv_g_boxplot <- function(input,
     color_var <- input$color_var
     assay_name <- input$assay_name
     jitter <- input$jitter
+    violin <- input$violin
 
     # Require which states need to be truthy.
     genes_not_included <- setdiff(genes, rownames(experiment_data))
@@ -202,7 +205,8 @@ srv_g_boxplot <- function(input,
       genes = genes,
       facet_var = facet_var,
       color_var = color_var,
-      jitter = jitter
+      jitter = jitter,
+      violin = violin
     )
   })
 }

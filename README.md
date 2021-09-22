@@ -100,13 +100,13 @@ awesome_app(hermes::multi_assay_experiment)
 ### What is `teal`?
 
 `teal` is a shiny-based interactive exploration framework for analyzing clinical trials data. `teal` currently provides a dynamic filtering facility and diverse data viewers. `teal` shiny applications are built using standard [shiny modules](https://shiny.rstudio.com/articles/modules.html).
-See [github](https://github.com/insightsengineering/teal) and [training material](http://pdwebdev01.gene.com/groups/devo/multimedia/Gen_Teal/story_html5.html?lms=1) for more details.
+See [github](https://github.com/insightsengineering/teal) for more details.
 
 ### What is `hermes`?
 
 `hermes` facilitates preprocessing, analyzing, and reporting of RNA-seq data.
 The core functionality is built on the BioConductor ecosystem, especially the `SummarizedExperiment` class from which the `HermesData` class inherits.
-See the [vignette](https://docs.nest.roche.com/releases/2021_07_07/embedded/hermes/articles/introduction.html) for more details.
+See the [vignette](https://insightsengineering.github.io/hermes/articles/introduction.html) for more details.
 
 ### So what is then `teal.modules.hermes`?
 

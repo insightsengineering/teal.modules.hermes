@@ -53,6 +53,10 @@
                 <div class="form-group shiny-input-container">
                   <input id="testid-jitter" type="checkbox" class="sw-switchInput" data-input-id="testid-jitter" data-on-text="ON" data-off-text="OFF" data-label-width="auto" data-handle-width="auto" data-size="mini"/>
                 </div>
+                <label>Violin Plot</label>
+                <div class="form-group shiny-input-container">
+                  <input id="testid-violin" type="checkbox" class="sw-switchInput" data-input-id="testid-violin" data-on-text="ON" data-off-text="OFF" data-label-width="auto" data-handle-width="auto" data-size="mini"/>
+                </div>
               </div>
             </div>
           </div>
