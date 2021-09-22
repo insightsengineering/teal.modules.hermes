@@ -42,7 +42,7 @@
 <meta property="og:title" content="Teal Module for RNA-seq Barplot — tm_g_barplot" />
 <meta property="og:description" content="
 This module provides an interactive barplot for RNA-seq gene expression
-analysis. The percentiles are calculated at initialization." />
+analysis." />
 
 
 
@@ -121,14 +121,30 @@ analysis. The percentiles are calculated at initialization." />
     <div class="ref-description">
     <p><a href='https://lifecycle.r-lib.org/articles/stages.html#experimental'><img src='figures/lifecycle-experimental.svg' alt='[Experimental]' /></a></p>
 <p>This module provides an interactive barplot for RNA-seq gene expression
-analysis. The percentiles are calculated at initialization.</p>
+analysis.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>tm_g_barplot</span><span class='op'>(</span><span class='va'>label</span>, <span class='va'>mae_name</span>, pre_output <span class='op'>=</span> <span class='cn'>NULL</span>, post_output <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>tm_g_barplot</span><span class='op'>(</span>
+  <span class='va'>label</span>,
+  <span class='va'>mae_name</span>,
+  exclude_assays <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/character.html'>character</a></span><span class='op'>(</span><span class='op'>)</span>,
+  summary_funs <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>Mean <span class='op'>=</span> <span class='va'>colMeans</span>, Median <span class='op'>=</span> <span class='fu'>matrixStats</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/pkg/matrixStats/man/rowMedians.html'>colMedians</a></span>, Max <span class='op'>=</span>
+    <span class='fu'>matrixStats</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/pkg/matrixStats/man/rowRanges.html'>colMaxs</a></span><span class='op'>)</span>,
+  pre_output <span class='op'>=</span> <span class='cn'>NULL</span>,
+  post_output <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>)</span>
 
-<span class='fu'>ui_g_barplot</span><span class='op'>(</span><span class='va'>id</span>, <span class='va'>datasets</span>, <span class='va'>mae_name</span>, <span class='va'>pre_output</span>, <span class='va'>post_output</span><span class='op'>)</span>
+<span class='fu'>ui_g_barplot</span><span class='op'>(</span><span class='va'>id</span>, <span class='va'>datasets</span>, <span class='va'>mae_name</span>, <span class='va'>summary_funs</span>, <span class='va'>pre_output</span>, <span class='va'>post_output</span><span class='op'>)</span>
 
-<span class='fu'>srv_g_barplot</span><span class='op'>(</span><span class='va'>input</span>, <span class='va'>output</span>, <span class='va'>session</span>, <span class='va'>datasets</span>, <span class='va'>mae_name</span><span class='op'>)</span>
+<span class='fu'>srv_g_barplot</span><span class='op'>(</span>
+  <span class='va'>input</span>,
+  <span class='va'>output</span>,
+  <span class='va'>session</span>,
+  <span class='va'>datasets</span>,
+  <span class='va'>mae_name</span>,
+  <span class='va'>exclude_assays</span>,
+  <span class='va'>summary_funs</span>
+<span class='op'>)</span>
 
 <span class='fu'>sample_tm_g_barplot</span><span class='op'>(</span><span class='op'>)</span></pre>
 
@@ -144,6 +160,17 @@ menu item label of the module in the teal app.</p></td>
       <th>mae_name</th>
       <td><p>(<code>string</code>)<br />
 name of the MAE data used in the teal module.</p></td>
+    </tr>
+    <tr>
+      <th>exclude_assays</th>
+      <td><p>(<code>character</code>)<br />
+names of the assays which should not be included in choices in the teal module.</p></td>
+    </tr>
+    <tr>
+      <th>summary_funs</th>
+      <td><p>(named <code>list</code> of functions or <code>NULL</code>)<br /> functions which can be used
+in the the gene signatures. For modules that support also multiple genes without
+summary, <code>NULL</code> can be included to not summarize the genes but provide all of them.</p></td>
     </tr>
     <tr>
       <th>pre_output</th>
@@ -200,12 +227,10 @@ functions, holding all the data sets provided in the app initialization.</p></td
 <span class='va'>app</span> <span class='op'>&lt;-</span> <span class='fu'>init</span><span class='op'>(</span>
   data <span class='op'>=</span> <span class='va'>data</span>,
   modules <span class='op'>=</span> <span class='fu'>root_modules</span><span class='op'>(</span>
-    static <span class='op'>=</span> <span class='op'>{</span>
-      <span class='fu'>tm_g_barplot</span><span class='op'>(</span>
-        label <span class='op'>=</span> <span class='st'>"barplot"</span>,
-        mae_name <span class='op'>=</span> <span class='st'>"MAE"</span>
-      <span class='op'>)</span>
-    <span class='op'>}</span>
+    <span class='fu'>tm_g_barplot</span><span class='op'>(</span>
+      label <span class='op'>=</span> <span class='st'>"barplot"</span>,
+      mae_name <span class='op'>=</span> <span class='st'>"MAE"</span>
+    <span class='op'>)</span>
   <span class='op'>)</span>
 <span class='op'>)</span>
 <span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
