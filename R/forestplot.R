@@ -17,12 +17,10 @@
 #' app <- init(
 #'   data = data,
 #'   modules = root_modules(
-#'     static = {
-#'       tm_g_forest_tte(
-#'         label = "forestplot",
-#'         mae_name = "MAE"
-#'       )
-#'     }
+#'     tm_g_forest_tte(
+#'       label = "forestplot",
+#'       mae_name = "MAE"
+#'     )
 #'   )
 #' )
 #' \dontrun{
@@ -91,7 +89,7 @@ ui_g_forest_tte <- function(id,
       helpText("Analysis of MAE:", tags$code(mae_name)),
       experimentSpecInput(ns("experiment"), datasets, mae_name),
       assaySpecInput(ns("assay")),
-      geneSpecInput(ns("geneid"), summary_funs, label_genes = "Select Gene(s)"),
+      geneSpecInput(ns("genes"), summary_funs, label_genes = "Select Gene(s)"),
       sliderInput(ns("probs"), label = ("Probability Cutoff"), min = 0.01, max = 0.99, value = 0.5),
       sampleVarSpecInput(ns("subgroups"), "Optional subgroup variable")
     ),
@@ -119,17 +117,18 @@ srv_g_forest_tte <- function(input,
     datasets = datasets,
     mae_name = mae_name
   )
-
   assay <- assaySpecServer(
     "assay",
     assays = experiment$assays,
     exclude_assays = exclude_assays
   )
-
-  geneid <- geneSpecServer("geneid", experiment$genes)
-
-  sample_var_specs <- sampleVarSpecServer(
-    inputIds = c("subgroups"),
+  genes <- geneSpecServer(
+    "genes",
+    funs = summary_funs,
+    gene_choices = experiment$genes
+  )
+  subgroups <- sampleVarSpecServer(
+    "subgroups",
     experiment_name = experiment$name,
     original_data = experiment$data
   )
@@ -137,12 +136,17 @@ srv_g_forest_tte <- function(input,
   adtte_counts <- reactive({
     mae <- datasets$get_data(mae_name, filtered = TRUE)
     adtte <- datasets$get_data("ADTTE", filtered = TRUE)
-    geneid <- geneid()
+    genes <- genes()
     experiment_name <- experiment$name
-    assay_name <- assay()
+    assay <- assay()
 
-    req(geneid, experiment_name, assay_name)
-
+    req(
+      genes,
+      experiment_name,
+      assay
+    )
+    # TODO : need to change the h_km_mae_to_adtte function to take gene spec
+    # as well as the HermesData object directly coming out of sample var
     h_km_mae_to_adtte(
       adtte,
       mae,
@@ -173,14 +177,14 @@ srv_g_forest_tte <- function(input,
 
   tbl <- reactive({
     adtte_final <- adtte_final()
-    subgroups <- sample_var_specs$vars$subgroups()
+    subgroups_var <- subgroups$sample_var()
 
     tern::extract_survival_subgroups(
       variables = list(
         tte = "AVAL",
         is_event = "is_event",
         arm = "gene_bin",
-        subgroups = subgroups
+        subgroups = subgroups_var
       ),
       label_all = "All Patients",
       data = adtte_final
@@ -229,12 +233,10 @@ sample_tm_g_forest_tte <- function() { # nolint # nousage
   app <- init(
     data = data,
     modules = root_modules(
-      static = {
-        tm_g_forest_tte(
-          label = "forestplot",
-          mae_name = "MAE"
-        )
-      }
+      tm_g_forest_tte(
+        label = "forestplot",
+        mae_name = "MAE"
+      )
     )
   )
   shinyApp(app$ui, app$server)
