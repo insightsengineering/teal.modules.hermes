@@ -24,6 +24,7 @@ reference:
       - experimentSpecServer
       - geneSpecServer
       - sampleVarSpecServer
+      - multiSampleVarSpecServer
   - title: Teal Module Functions
     contents:
       - tm_g_barplot
@@ -39,6 +40,8 @@ reference:
     contents:
   - title: Assertions
     contents:
+      - assert_reactive
+      - assert_summary_funs
       - assert_tag
   - title: Constants
     contents:
