@@ -27,8 +27,6 @@ test_that("tm_g_barplot works as expected in the sample app", {
   app$getDebugLog()
   app$snapshotInit("test-app")
 
-  # nolint start
-
   ns <- NS("teal-main_ui-modules_ui-root_barplot")
 
   # Check initial experiment name.
@@ -40,7 +38,7 @@ test_that("tm_g_barplot works as expected in the sample app", {
   expect_identical(initial_assay_name, "counts")
 
   # Check that no gene is initially selected.
-  initial_x_spec <- app$waitForValue(ns("x_spec-genes"), ignore = "")
+  initial_x_spec <- app$waitForValue(ns("x-genes"), ignore = "")
   expect_identical(initial_x_spec, NULL)
 
   # Check that a message initially replaces the plot.
@@ -53,11 +51,11 @@ test_that("tm_g_barplot works as expected in the sample app", {
   # Set gene value
   app$setValue(ns("experiment-name"), "hd2")
   app$setValue(ns("assay-name"), "tpm")
-  app$setValue(ns("x_spec-genes"), "GeneID:8086")
+  app$setValue(ns("x-genes"), "GeneID:8086")
   app$setValue(ns("experiment-name"), "hd1")
 
   # Check that gene list is updated
-  now_x_spec_gene <- app$waitForValue(ns("x_spec-genes"), ignore = "")
+  now_x_spec_gene <- app$waitForValue(ns("x-genes"), ignore = "")
   expect_null(now_x_spec_gene)
 
   # Check that assay list is updated
@@ -65,7 +63,7 @@ test_that("tm_g_barplot works as expected in the sample app", {
   expect_null(now_assay)
 
   # Check error message in case of identical percentile boundaries
-  app$setValue(ns("percentiles"), c(0.1,0.1))
+  app$setValue(ns("percentiles"), c(0.1, 0.1))
   plot_message <- app$waitForOutputElement(ns("plot"), "message")
   expect_identical(
     plot_message,
@@ -75,9 +73,9 @@ test_that("tm_g_barplot works as expected in the sample app", {
   # Set Experiment, assay, gene, percentile and facet
   app$setValue(ns("experiment-name"), "hd1")
   app$setValue(ns("assay-name"), "counts")
-  app$setValue(ns("x_spec-genes"), "GeneID:47")
-  app$setValue(ns("percentiles"), c(0.2,0.8))
-  app$setValue(ns("facet_var-sample_var"), "AGE18")
+  app$setValue(ns("x-genes"), "GeneID:47")
+  app$setValue(ns("percentiles"), c(0.2, 0.8))
+  app$setValue(ns("facet-sample_var"), "AGE18")
 
   expect_snapshot_screenshot(
     app,

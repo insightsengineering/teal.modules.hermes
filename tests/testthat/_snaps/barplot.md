@@ -24,7 +24,7 @@
                   </div>
                 </div>
                 <div class="form-group shiny-input-container">
-                  <label class="control-label" id="testid-assay-name-label" for="testid-assay-name">Select assay</label>
+                  <label class="control-label" id="testid-assay-name-label" for="testid-assay-name">Select Assay</label>
                   <div>
                     <select id="testid-assay-name"><option value="" selected></option></select>
                     <script type="application/json" data-for="testid-assay-name">{"plugins":["selectize-plugin-a11y"]}</script>
@@ -32,10 +32,10 @@
                 </div>
                 <div class="row">
                   <div class="col-sm-8">
-                    <label class="control-label">Facet variable</label>
+                    <label class="control-label">Select Facet Variable</label>
                   </div>
                   <div class="col-sm-4">
-                    <button class="btn btn-default action-button pull-right list-genes" id="testid-facet_var-levels_button" title="Combine factor levels" type="button">
+                    <button class="btn btn-default action-button pull-right list-genes" id="testid-facet-levels_button" title="Combine factor levels" type="button">
                       <span>
                         <i class="fa fa-font fa-object-ungroup" role="presentation" aria-label="font fa-object-ungroup icon"></i>
                       </span>
@@ -126,21 +126,25 @@
         position: absolute;
         top: -500vh;
         width: 100%;
+      }
+      
+      .dataTable-container table td{
+        white-space: unset !important;
       }</style>
                   </div>
                 </div>
                 <div class="custom-select-input">
                   <div class="form-group shiny-input-container">
-                    <label class="control-label shiny-label-null" for="testid-facet_var-sample_var"></label>
-                    <select data-actions-box="false" data-none-selected-text="- Nothing selected -" data-max-options="1" data-show-subtext="true" data-live-search="false" id="testid-facet_var-sample_var" class="selectpicker form-control" multiple="multiple"><option value=""></option></select>
+                    <label class="control-label shiny-label-null" for="testid-facet-sample_var"></label>
+                    <select data-actions-box="false" data-none-selected-text="- Nothing selected -" data-max-options="1" data-show-subtext="true" data-live-search="false" id="testid-facet-sample_var" class="selectpicker form-control" multiple="multiple"><option value=""></option></select>
                   </div>
                 </div>
                 <div class="row">
                   <div class="col-sm-8">
-                    <label class="control-label">Select x Gene(s)</label>
+                    <label class="control-label">Select gene(s)</label>
                   </div>
                   <div class="col-sm-4">
-                    <button class="btn btn-default action-button pull-right list-genes" id="testid-x_spec-text_button" title="Enter list of genes" type="button">
+                    <button class="btn btn-default action-button pull-right list-genes" id="testid-x-text_button" title="Enter list of genes" type="button">
                       <span>
                         <i class="fa fa-font fa-border" role="presentation" aria-label="font fa-border icon"></i>
                       </span>
@@ -148,7 +152,7 @@
                     <div class="pull-right" title="Lock gene selection">
                       <div class="form-group shiny-input-container">
                         <div class="pretty p-toggle p-plain p-icon p-pulse">
-                          <input id="testid-x_spec-lock_button" type="checkbox"/>
+                          <input id="testid-x-lock_button" type="checkbox"/>
                           <div class="state p-on">
                             <i class="icon fa fa-lock fa-border" role="presentation" aria-label="lock fa-border icon"></i>
                             <label>
@@ -168,21 +172,21 @@
                 </div>
                 <div class="custom-select-input">
                   <div class="form-group shiny-input-container">
-                    <label class="control-label shiny-label-null" for="testid-x_spec-genes"></label>
-                    <select data-live-search="true" data-actions-box="true" data-none-selected-text="- Nothing selected -" data-max-options="Inf" data-show-subtext="true" id="testid-x_spec-genes" class="selectpicker form-control" multiple="multiple"><option value=""></option></select>
+                    <label class="control-label shiny-label-null" for="testid-x-genes"></label>
+                    <select data-live-search="true" data-actions-box="true" data-none-selected-text="- Nothing selected -" data-max-options="Inf" data-show-subtext="true" id="testid-x-genes" class="selectpicker form-control" multiple="multiple"><option value=""></option></select>
                   </div>
                 </div>
-                <div data-display-if="input.genes.length &gt; 1" data-ns-prefix="testid-x_spec-">
+                <div data-display-if="input.genes.length &gt; 1" data-ns-prefix="testid-x-">
                   <div class="form-group shiny-input-container">
-                    <label class="control-label" id="testid-x_spec-fun_name-label" for="testid-x_spec-fun_name">Select gene summary</label>
+                    <label class="control-label" id="testid-x-fun_name-label" for="testid-x-fun_name">Select gene summary</label>
                     <div>
-                      <select id="testid-x_spec-fun_name"><option value="Mean" selected>Mean</option></select>
-                      <script type="application/json" data-for="testid-x_spec-fun_name" data-nonempty="">{"plugins":["selectize-plugin-a11y"]}</script>
+                      <select id="testid-x-fun_name"><option value="Mean" selected>Mean</option></select>
+                      <script type="application/json" data-for="testid-x-fun_name" data-nonempty="">{"plugins":["selectize-plugin-a11y"]}</script>
                     </div>
                   </div>
                 </div>
                 <div class="form-group shiny-input-container">
-                  <label class="control-label" id="testid-percentiles-label" for="testid-percentiles">Select quantiles to be displayed</label>
+                  <label class="control-label" id="testid-percentiles-label" for="testid-percentiles">Select Quantiles</label>
                   <input class="js-range-slider" id="testid-percentiles" data-skin="shiny" data-type="double" data-min="0" data-max="1" data-from="0.2" data-to="0.8" data-step="0.01" data-grid="true" data-grid-num="10" data-grid-snap="false" data-prettify-separator="," data-prettify-enabled="true" data-keyboard="true" data-drag-interval="true" data-data-type="number"/>
                 </div>
                 <div class="panel-group">
@@ -198,10 +202,10 @@
                       <div class="panel-body">
                         <div class="row">
                           <div class="col-sm-8">
-                            <label class="control-label">Optional fill variable</label>
+                            <label class="control-label">Optional Fill Variable</label>
                           </div>
                           <div class="col-sm-4">
-                            <button class="btn btn-default action-button pull-right list-genes" id="testid-color_var-levels_button" title="Select function" type="button">
+                            <button class="btn btn-default action-button pull-right list-genes" id="testid-fill-levels_button" title="Combine factor levels" type="button">
                               <span>
                                 <i class="fa fa-font fa-object-ungroup" role="presentation" aria-label="font fa-object-ungroup icon"></i>
                               </span>
@@ -210,8 +214,8 @@
                         </div>
                         <div class="custom-select-input">
                           <div class="form-group shiny-input-container">
-                            <label class="control-label shiny-label-null" for="testid-color_var-sample_var"></label>
-                            <select data-actions-box="false" data-none-selected-text="- Nothing selected -" data-max-options="1" data-show-subtext="true" data-live-search="false" id="testid-color_var-sample_var" class="selectpicker form-control" multiple="multiple"><option value=""></option></select>
+                            <label class="control-label shiny-label-null" for="testid-fill-sample_var"></label>
+                            <select data-actions-box="false" data-none-selected-text="- Nothing selected -" data-max-options="1" data-show-subtext="true" data-live-search="false" id="testid-fill-sample_var" class="selectpicker form-control" multiple="multiple"><option value=""></option></select>
                           </div>
                         </div>
                       </div>

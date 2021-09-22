@@ -3,7 +3,7 @@
 #' @description `r lifecycle::badge("experimental")`
 #'
 #' This module provides an interactive barplot for RNA-seq gene expression
-#' analysis. The percentiles are calculated at initialization.
+#' analysis.
 #'
 #' @inheritParams module_arguments
 #'
@@ -18,29 +18,29 @@
 #' app <- init(
 #'   data = data,
 #'   modules = root_modules(
-#'     static = {
-#'       tm_g_barplot(
-#'         label = "barplot",
-#'         mae_name = "MAE"
-#'       )
-#'     }
+#'     tm_g_barplot(
+#'       label = "barplot",
+#'       mae_name = "MAE"
+#'     )
 #'   )
 #' )
 #' \dontrun{
 #' shinyApp(app$ui, app$server)
 #' }
 tm_g_barplot <- function(label,
-                         exclude_assays = character(),
                          mae_name,
-                         pre_output = NULL,
-                         post_output = NULL,
+                         exclude_assays = character(),
                          summary_funs = list(
                            Mean = colMeans,
                            Median = matrixStats::colMedians,
                            Max = matrixStats::colMaxs
-                         )) {
+                         ),
+                         pre_output = NULL,
+                         post_output = NULL) {
   assert_string(label)
   assert_string(mae_name)
+  assert_character(exclude_assays)
+  assert_summary_funs(summary_funs)
   assert_tag(pre_output, null.ok = TRUE)
   assert_tag(post_output, null.ok = TRUE)
 
@@ -49,8 +49,8 @@ tm_g_barplot <- function(label,
     server = srv_g_barplot,
     server_args = list(
       mae_name = mae_name,
-      summary_funs = summary_funs,
-      exclude_assays = exclude_assays
+      exclude_assays = exclude_assays,
+      summary_funs = summary_funs
     ),
     ui = ui_g_barplot,
     ui_args = list(
@@ -78,12 +78,12 @@ ui_g_barplot <- function(id,
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
       experimentSpecInput(ns("experiment"), datasets, mae_name),
-      assaySpecInput(ns("assay"), "Select assay"),
-      sampleVarSpecInput(ns("facet_var"), "Facet variable"),
-      geneSpecInput(ns("x_spec"), summary_funs, label_genes = "Select x Gene(s)"),
+      assaySpecInput(ns("assay")),
+      sampleVarSpecInput(ns("facet"), "Select Facet Variable"),
+      geneSpecInput(ns("x"), summary_funs),
       sliderInput(
         ns("percentiles"),
-        "Select quantiles to be displayed",
+        "Select Quantiles",
         min = 0,
         max = 1,
         value = c(0.2, 0.8)
@@ -93,7 +93,10 @@ ui_g_barplot <- function(id,
           input_id = "settings_item",
           collapsed = TRUE,
           title = "Additional Settings",
-          sampleVarSpecInput(ns("color_var"), "Optional fill variable", "Select function")
+          sampleVarSpecInput(
+            ns("fill"),
+            label_vars = "Optional Fill Variable"
+          )
         )
       )
     ),
@@ -111,70 +114,58 @@ srv_g_barplot <- function(input,
                           session,
                           datasets,
                           mae_name,
-                          exclude_assays = character(),
+                          exclude_assays,
                           summary_funs) {
-
-  experimentx <- experimentSpecServer(
+  experiment <- experimentSpecServer(
     "experiment",
     datasets = datasets,
     mae_name = mae_name
   )
-
-  assayx <- assaySpecServer(
+  assay <- assaySpecServer(
     "assay",
-    assays = experimentx$assays,
+    assays = experiment$assays,
     exclude_assays = exclude_assays
   )
-
-  sample_var_specs_x <- sampleVarSpecServer(
-    "facet_var",
-    experiment_name = experimentx$name,
-    original_data = experimentx$data
+  multi <- multiSampleVarSpecServer(
+    c("facet", "fill"),
+    experiment_name = experiment$name,
+    original_data = experiment$data
   )
-
-  color_var_specs_x <- sampleVarSpecServer(
-    "color_var",
-    experiment_name = experimentx$name,
-    original_data = experimentx$data
+  x <- geneSpecServer(
+    "x",
+    funs = summary_funs,
+    gene_choices = experiment$genes
   )
-
-  gene_x <- geneSpecServer(
-    "x_spec",
-    summary_funs,
-    experimentx$genes)
 
   output$plot <- renderPlot({
     # Resolve all reactivity.
-    experiment_data <- experimentx$data()
-    facet_var <- sample_var_specs_x$sample_var()
-    fill_var <- color_var_specs_x$sample_var()
+    experiment_data <- multi$experiment_data()
+    facet_var <- multi$vars$facet()
+    fill_var <- multi$vars$fill()
     percentiles <- input$percentiles
-    assay_name <- assayx()
-    x_spec <- gene_x()
-
+    assay <- assay()
+    x <- x()
 
     # Require which states need to be truthy.
     req(
-      x_spec,
-      assay_name,
+      assay,
       # Note: The following statements are important to make sure the UI inputs have been updated.
-      isTRUE(assay_name %in% SummarizedExperiment::assayNames(experiment_data)),
+      isTRUE(assay %in% SummarizedExperiment::assayNames(experiment_data)),
       isTRUE(all(c(facet_var, fill_var) %in% names(SummarizedExperiment::colData(experiment_data)))),
       cancelOutput = FALSE
     )
 
     # Validate and give useful messages to the user. Note: no need to duplicate here req() from above.
-    validate(need(hermes::is_hermes_data(experiment_data), "please use HermesData() on input experiments"))
     validate(need(
       percentiles[1] != percentiles[2],
       "please select two different quantiles - if you want only 2 groups, choose one quantile as 0 or 1"
     ))
-    validate_gene_spec(x_spec, rownames(experiment_data))
+    validate_gene_spec(x, rownames(experiment_data))
 
     hermes::draw_barplot(
       object = experiment_data,
-      assay_name = assay_name,
-      x_spec = x_spec,
+      assay_name = assay,
+      x_spec = x,
       facet_var = facet_var,
       fill_var = fill_var,
       percentiles = percentiles
@@ -196,12 +187,10 @@ sample_tm_g_barplot <- function() {
   app <- init(
     data = data,
     modules = root_modules(
-      static = {
-        tm_g_barplot(
-          label = "barplot",
-          mae_name = "MAE"
-        )
-      }
+      tm_g_barplot(
+        label = "barplot",
+        mae_name = "MAE"
+      )
     )
   )
   shinyApp(app$ui, app$server)

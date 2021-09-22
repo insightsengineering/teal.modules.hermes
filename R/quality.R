@@ -106,15 +106,6 @@ tm_g_quality <- function(label,
   )
 }
 
-
-
-
-
-
-
-
-
-
 #' @describeIn tm_g_quality sets up the user interface.
 #' @inheritParams module_arguments
 #' @export
