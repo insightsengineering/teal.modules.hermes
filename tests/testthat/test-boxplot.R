@@ -64,13 +64,13 @@ test_that("tm_g_boxplot works as expected in the sample app", {
   now_genes <- app$waitForValue("teal-main_ui-modules_ui-root_boxplot-genes")
   expect_identical(now_genes, "GeneID:5205")
 
-  # Update boxplot with Jitter, select multiple genes and x variable.
+  # Update boxplot with Jitter, select multiple genes and x variable and update to violin plot.
   app$setInputs(
     "teal-main_ui-modules_ui-root_boxplot-jitter" = TRUE,
-    "teal-main_ui-modules_ui-root_boxplot-genes" = c("GeneID:5205", "GeneID:102723793"),
+    "teal-main_ui-modules_ui-root_boxplot-violin" = TRUE,
+    "teal-main_ui-modules_ui-root_boxplot-genes" = c("GeneID:5205"),
     "teal-main_ui-modules_ui-root_boxplot-x_var" = "COUNTRY",
-    "teal-main_ui-modules_ui-root_boxplot-color_var" = "AGE18",
-    "teal-main_ui-modules_ui-root_boxplot-facet_var" = "RACE"
+    "teal-main_ui-modules_ui-root_boxplot-color_var" = "AGE18"
   )
 
   # Final plot.
