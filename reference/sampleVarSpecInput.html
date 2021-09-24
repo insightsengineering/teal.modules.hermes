@@ -91,14 +91,6 @@ This defines the input for the sample variable specification." />
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -163,7 +155,115 @@ the ID used to call the module input.</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>sampleVarSpecInput</span><span class='op'>(</span><span class='st'>"my_vars"</span>, label_vars <span class='op'>=</span> <span class='st'>"Select faceting variable"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error: 'include_css_files' is not an exported object from 'namespace:teal'</span></div></pre>
+</div><div class='output co'>#&gt; &lt;div class="row"&gt;
+#&gt;   &lt;div class="col-sm-8"&gt;
+#&gt;     &lt;label class="control-label"&gt;Select faceting variable&lt;/label&gt;
+#&gt;   &lt;/div&gt;
+#&gt;   &lt;div class="col-sm-4"&gt;
+#&gt;     &lt;button class="btn btn-default action-button pull-right list-genes" id="my_vars-levels_button" title="Combine factor levels" type="button"&gt;
+#&gt;       &lt;span&gt;
+#&gt;         &lt;i class="fa fa-font fa-object-ungroup" role="presentation" aria-label="font fa-object-ungroup icon"&gt;&lt;/i&gt;
+#&gt;       &lt;/span&gt;
+#&gt;     &lt;/button&gt;
+#&gt;     &lt;style type="text/css"&gt;.pretty {
+#&gt;   margin-right: 0;
+#&gt; }
+#&gt; 
+#&gt; .list-genes {
+#&gt;   padding: 0;
+#&gt;   margin: 0 0 0 0.5rem;
+#&gt;   background: transparent !important;
+#&gt;   outline: none !important;
+#&gt;   box-shadow: none !important;
+#&gt;   border: 0;
+#&gt; }
+#&gt; 
+#&gt; .custom-select-input .bootstrap-select .dropdown-menu {
+#&gt;   min-width: fit-content;
+#&gt; }
+#&gt; 
+#&gt; div.shiny-radiomatrix input[type="radio"] {
+#&gt;   display: none;
+#&gt; }
+#&gt; 
+#&gt; div.shiny-radiomatrix .radio-parent {
+#&gt;   display: block;
+#&gt;   position: relative;
+#&gt;   cursor: pointer;
+#&gt;   -webkit-user-select: none;
+#&gt;   -moz-user-select: none;
+#&gt;   -ms-user-select: none;
+#&gt;   user-select: none;
+#&gt;   top: -10px;
+#&gt;   left: -13px;
+#&gt; }
+#&gt; 
+#&gt; /* Hide the browser's default radio button */
+#&gt; div.shiny-radiomatrix .radio-parent input {
+#&gt;   position: absolute;
+#&gt;   opacity: 0;
+#&gt;   cursor: pointer;
+#&gt;   height: 0;
+#&gt;   width: 0;
+#&gt; }
+#&gt; 
+#&gt; /* Create a custom radio button */
+#&gt; div.shiny-radiomatrix .checkmark {
+#&gt;   position: absolute;
+#&gt;   height: 25px;
+#&gt;   width: 25px;
+#&gt;   background-color: #eee;
+#&gt;   z-index: 25;
+#&gt;   transition: 0.5s all ease-in-out;
+#&gt; }
+#&gt; 
+#&gt; div.shiny-radiomatrix .radio-parent:hover input ~ .checkmark {
+#&gt;   background-color: #2195f34b;
+#&gt; }
+#&gt; 
+#&gt; div.shiny-radiomatrix .radio-parent input:checked ~ .checkmark {
+#&gt;   background-color: #2196f3;
+#&gt; }
+#&gt; 
+#&gt; div.shiny-radiomatrix table {
+#&gt;   border-spacing: 0;
+#&gt;   border-collapse: collapse;
+#&gt;   overflow: hidden;
+#&gt; }
+#&gt; 
+#&gt; div.shiny-radiomatrix td,
+#&gt; div.shiny-radiomatrix th {
+#&gt;   padding: 10px;
+#&gt;   position: relative;
+#&gt;   transition: 0.5s all ease-in-out;
+#&gt; }
+#&gt; 
+#&gt; div.shiny-radiomatrix tr:hover {
+#&gt;   background-color: rgba(151, 151, 151, 0.1);
+#&gt; }
+#&gt; 
+#&gt; div.shiny-radiomatrix td:hover::before,
+#&gt; div.shiny-radiomatrix th:hover::before {
+#&gt;   background-color: rgba(151, 151, 151, 0.1);
+#&gt;   content: "\00a0";
+#&gt;   height: 1000vh;
+#&gt;   left: 0;
+#&gt;   position: absolute;
+#&gt;   top: -500vh;
+#&gt;   width: 100%;
+#&gt; }
+#&gt; 
+#&gt; .dataTable-container table td{
+#&gt;   white-space: unset !important;
+#&gt; }&lt;/style&gt;
+#&gt;   &lt;/div&gt;
+#&gt; &lt;/div&gt;
+#&gt; &lt;div class="custom-select-input"&gt;
+#&gt;   &lt;div class="form-group shiny-input-container"&gt;
+#&gt;     &lt;label class="control-label shiny-label-null" for="my_vars-sample_var"&gt;&lt;/label&gt;
+#&gt;     &lt;select data-actions-box="false" data-none-selected-text="- Nothing selected -" data-max-options="1" data-show-subtext="true" data-live-search="false" id="my_vars-sample_var" class="selectpicker form-control" multiple="multiple"&gt;&lt;option value=""&gt;&lt;/option&gt;&lt;/select&gt;
+#&gt;   &lt;/div&gt;
+#&gt; &lt;/div&gt;</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
