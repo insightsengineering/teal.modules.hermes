@@ -235,7 +235,7 @@ ui_g_levels <- function(id,
             title = "Combine factor levels",
             class = "pull-right list-genes"
           ),
-          teal::include_css_files(pattern = "*", package = "teal.modules.hermes")
+          include_css_files(pattern = "*")
         )
       ),
       div(
@@ -358,7 +358,7 @@ srv_g_levels <- function(input,
         modalButton("Cancel"),
         actionButton(session$ns("ok"), "OK")
       ),
-      teal::include_js_files("checkbox.js", package = "teal.modules.hermes")
+      include_js_files("checkbox.js")
     )
   }
 
