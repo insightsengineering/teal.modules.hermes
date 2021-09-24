@@ -40,7 +40,7 @@ sampleVarSpecInput <- function(inputId,
           title = label_levels_button,
           class = "pull-right list-genes"
         ),
-        teal::include_css_files(pattern = "*", package = "teal.modules.hermes")
+        include_css_files(pattern = "*")
       )
     ),
     div(
@@ -366,7 +366,7 @@ sampleVarSpecServer <- function(inputId,
           modalButton("Cancel"),
           actionButton(session$ns("ok"), "OK")
         ),
-        teal::include_js_files("checkbox.js", package = "teal.modules.hermes")
+        include_js_files("checkbox.js")
       )
     }
 
