@@ -145,12 +145,12 @@ srv_g_boxplot <- function(input,
     violin <- input$violin
 
     req(
-      assay_name,
+      assay,
       # Note: The following statements are important to make sure the UI inputs have been updated.
-      isTRUE(assay_name %in% SummarizedExperiment::assayNames(experiment_data)),
-      # is.null(facet_var) || isTRUE(facet_var %in% names(SummarizedExperiment::colData(experiment_data))),
-      # is.null(color_var) || isTRUE(color_var %in% names(SummarizedExperiment::colData(experiment_data))),
-      # is.null(x_var) || isTRUE(x_var %in% names(SummarizedExperiment::colData(experiment_data))),
+      isTRUE(assay %in% SummarizedExperiment::assayNames(experiment_data)),
+      is.null(facet) || isTRUE(facet_var %in% names(SummarizedExperiment::colData(experiment_data))),
+      is.null(color) || isTRUE(color_var %in% names(SummarizedExperiment::colData(experiment_data))),
+      is.null(strat) || isTRUE(strat %in% names(SummarizedExperiment::colData(experiment_data))),
       cancelOutput = FALSE
     )
 
