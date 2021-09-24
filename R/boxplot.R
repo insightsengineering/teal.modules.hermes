@@ -151,23 +151,24 @@ srv_g_boxplot <- function(input,
     validate_gene_spec(genes, rownames(experiment_data))
 
     # Require which states need to be truthy.
-     genes_not_included <- setdiff(genes, rownames(experiment_data))
-     req(
-       genes,
-       assay_name,
-       # Note: The following statements are important to make sure the UI inputs have been updated.
-       isTRUE(assay_name %in% SummarizedExperiment::assayNames(experiment_data)),
-       length(genes_not_included) == 0,
-       is.null(facet_var) || isTRUE(facet_var %in% names(SummarizedExperiment::colData(experiment_data))),
-       is.null(color_var) || isTRUE(color_var %in% names(SummarizedExperiment::colData(experiment_data))),
-       is.null(x_var) || isTRUE(x_var %in% names(SummarizedExperiment::colData(experiment_data))),
-       cancelOutput = FALSE
-     )
+    genes_not_included <- setdiff(genes$get_genes(), rownames(experiment_data))
+      req(
+        genes$get_genes(),
+        assay_name,
+        # Note: The following statements are important to make sure the UI inputs have been updated.
+        isTRUE(assay_name %in% SummarizedExperiment::assayNames(experiment_data)),
+        length(genes_not_included) == 0,
+        is.null(facet_var) || isTRUE(facet_var %in% names(SummarizedExperiment::colData(experiment_data))),
+        is.null(color_var) || isTRUE(color_var %in% names(SummarizedExperiment::colData(experiment_data))),
+        is.null(x_var) || isTRUE(x_var %in% names(SummarizedExperiment::colData(experiment_data))),
+        cancelOutput = FALSE
+      )
 
-    # Validate and give useful messages to the user. Note: no need to duplicate here req() from above.
-     validate(need(hermes::is_hermes_data(experiment_data), "please use HermesData() on input experiments"))
+     # Validate and give useful messages to the user. Note: no need to duplicate here req() from above.
+      validate(need(hermes::is_hermes_data(experiment_data), "please use HermesData() on input experiments"))
 
-    hermes::draw_boxplot(
+    #hermes::draw_boxplot(
+    draw_boxplot(
       object = experiment_data,
       assay_name = assay_name,
       x_var = x_var,
