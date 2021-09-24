@@ -67,7 +67,7 @@ geneSpecInput <- function(inputId,
             animation = "pulse"
           )
         ),
-        teal::include_css_files(pattern = "*", package = "teal.modules.hermes")
+        include_css_files(pattern = "*")
       )
     ),
     div(
