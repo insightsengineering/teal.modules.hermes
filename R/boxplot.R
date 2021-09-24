@@ -18,10 +18,10 @@
 #' app <- init(
 #'   data = data,
 #'   modules = root_modules(
-#'       tm_g_boxplot(
-#'         label = "boxplot",
-#'         mae_name = "MAE"
-#'       )
+#'     tm_g_boxplot(
+#'       label = "boxplot",
+#'       mae_name = "MAE"
+#'     )
 #'   )
 #' )
 #' \dontrun{
@@ -31,6 +31,7 @@ tm_g_boxplot <- function(label,
                          mae_name,
                          exclude_assays = character(),
                          summary_funs = list(
+                           None = NULL,
                            Mean = colMeans,
                            Median = matrixStats::colMedians,
                            Max = matrixStats::colMaxs
@@ -40,7 +41,7 @@ tm_g_boxplot <- function(label,
   assert_string(label)
   assert_string(mae_name)
   assert_character(exclude_assays, any.missing = FALSE)
-  assert_summary_funs(summary_funs)
+  assert_summary_funs(summary_funs, null.ok = TRUE)
   assert_tag(pre_output, null.ok = TRUE)
   assert_tag(post_output, null.ok = TRUE)
 
@@ -73,8 +74,6 @@ ui_g_boxplot <- function(id,
                          pre_output,
                          post_output) {
   ns <- NS(id)
-  mae <- datasets$get_data(mae_name, filtered = TRUE)
-
 
   teal.devel::standard_layout(
     encoding = div(
@@ -82,7 +81,7 @@ ui_g_boxplot <- function(id,
       helpText("Analysis of MAE:", tags$code(mae_name)),
       experimentSpecInput(ns("experiment"), datasets, mae_name),
       assaySpecInput(ns("assay")),
-      geneSpecInput(ns("x_spec"), summary_funs, label_genes = "Select gene(s) of interest"),
+      geneSpecInput(ns("genes"), summary_funs),
       tags$label("Jitter"),
       shinyWidgets::switchInput(ns("jitter"), value = FALSE, size = "mini"),
       tags$label("Violin Plot"),
@@ -92,9 +91,9 @@ ui_g_boxplot <- function(id,
           input_id = "settings_item",
           collapsed = TRUE,
           title = "Additional Settings",
-          sampleVarSpecInput(ns("x_var"), "Optional stratifying variable"),
-          sampleVarSpecInput(ns("color_var"), "Optional color variable"),
-          sampleVarSpecInput(ns("facet_var"), "Optional facet variable")
+          sampleVarSpecInput(ns("strat"), "Optional stratifying variable"),
+          sampleVarSpecInput(ns("color"), "Optional color variable"),
+          sampleVarSpecInput(ns("facet"), "Optional facet variable")
         )
       )
     ),
@@ -114,67 +113,56 @@ srv_g_boxplot <- function(input,
                           mae_name,
                           exclude_assays,
                           summary_funs) {
-  # When the filtered data set of the chosen experiment changes, update the
-  # experiment data object.
   experiment <- experimentSpecServer(
     "experiment",
     datasets = datasets,
     mae_name = mae_name
   )
-
   assay <- assaySpecServer(
     "assay",
     assays = experiment$assays,
     exclude_assays = exclude_assays
   )
-
-  sample_var_specs <- multiSampleVarSpecServer(
-    inputIds = c("x_var", "color_var", "facet_var"),
+  multi <- multiSampleVarSpecServer(
+    inputIds = c("strat", "color", "facet"),
     experiment_name = experiment$name,
     original_data = experiment$data
   )
-
-  # When the chosen experiment call changes, we recompute gene names.
-  x_spec <- geneSpecServer("x_spec", summary_funs, experiment$genes)
-
+  genes <- geneSpecServer(
+    "genes",
+    funs = summary_funs,
+    gene_choices = experiment$genes
+  )
   output$plot <- renderPlot({
     # Resolve all reactivity.
-    experiment_data <- sample_var_specs$experiment_data()
-    x_var <- sample_var_specs$vars$x_var()
-    genes <- x_spec()
-    facet_var <- sample_var_specs$vars$facet_var()
-    color_var <- sample_var_specs$vars$color_var()
-    assay_name <- assay()
+    experiment_data <- multi$experiment_data()
+    strat <- multi$vars$strat()
+    genes <- genes()
+    facet <- multi$vars$facet()
+    color <- multi$vars$color()
+    assay <- assay()
     jitter <- input$jitter
     violin <- input$violin
 
+    req(
+      assay_name,
+      # Note: The following statements are important to make sure the UI inputs have been updated.
+      isTRUE(assay_name %in% SummarizedExperiment::assayNames(experiment_data)),
+      # is.null(facet_var) || isTRUE(facet_var %in% names(SummarizedExperiment::colData(experiment_data))),
+      # is.null(color_var) || isTRUE(color_var %in% names(SummarizedExperiment::colData(experiment_data))),
+      # is.null(x_var) || isTRUE(x_var %in% names(SummarizedExperiment::colData(experiment_data))),
+      cancelOutput = FALSE
+    )
+
     validate_gene_spec(genes, rownames(experiment_data))
 
-    # Require which states need to be truthy.
-    genes_not_included <- setdiff(genes$get_genes(), rownames(experiment_data))
-      req(
-        genes$get_genes(),
-        assay_name,
-        # Note: The following statements are important to make sure the UI inputs have been updated.
-        isTRUE(assay_name %in% SummarizedExperiment::assayNames(experiment_data)),
-        length(genes_not_included) == 0,
-        is.null(facet_var) || isTRUE(facet_var %in% names(SummarizedExperiment::colData(experiment_data))),
-        is.null(color_var) || isTRUE(color_var %in% names(SummarizedExperiment::colData(experiment_data))),
-        is.null(x_var) || isTRUE(x_var %in% names(SummarizedExperiment::colData(experiment_data))),
-        cancelOutput = FALSE
-      )
-
-     # Validate and give useful messages to the user. Note: no need to duplicate here req() from above.
-      validate(need(hermes::is_hermes_data(experiment_data), "please use HermesData() on input experiments"))
-
-    #hermes::draw_boxplot(
-    draw_boxplot(
+    hermes::draw_boxplot(
       object = experiment_data,
-      assay_name = assay_name,
-      x_var = x_var,
+      assay_name = assay,
       genes = genes,
-      facet_var = facet_var,
-      color_var = color_var,
+      x_var = strat,
+      facet_var = facet,
+      color_var = color,
       jitter = jitter,
       violin = violin
     )
@@ -195,10 +183,10 @@ sample_tm_g_boxplot <- function() {
   app <- init(
     data = data,
     modules = root_modules(
-        tm_g_boxplot(
-          label = "boxplot",
-          mae_name = "MAE"
-        )
+      tm_g_boxplot(
+        label = "boxplot",
+        mae_name = "MAE"
+      )
     )
   )
   shinyApp(app$ui, app$server)
