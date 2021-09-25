@@ -3,6 +3,7 @@
 export(assaySpecInput)
 export(assaySpecServer)
 export(assert_reactive)
+export(assert_summary_funs)
 export(assert_tag)
 export(check_reactive)
 export(check_tag)

@@ -3,10 +3,11 @@
 test_that("ui_g_boxplot creates expected HTML", {
   mae_name <- "MyMAE"
   datasets <- mock_datasets(list(MyMAE = hermes::multi_assay_experiment))
-  expect_snapshot(ui_g_boxplot(
+  expect_silent(ui_g_boxplot(
     id = "testid",
     datasets = datasets,
     mae_name = mae_name,
+    summary_funs = list(Mean = colMeans),
     pre_output = NULL,
     post_output = NULL
   ))
@@ -30,54 +31,39 @@ test_that("tm_g_boxplot works as expected in the sample app", {
   app$getDebugLog()
   app$snapshotInit("test-app")
 
-  # nolint start
-
-  # Note: left hand side name is composed as:
-  # prefix: teal-main_ui-modules_ui-root_
-  # label: boxplot-
-  # inputId: assay_name
+  ns <- NS("teal-main_ui-modules_ui-root_boxplot")
 
   # Check initial state of encodings.
-  initial_experiment_name <- app$waitForValue("teal-main_ui-modules_ui-root_boxplot-experiment_name")
+  initial_experiment_name <- app$waitForValue(ns("experiment-name"))
   expect_identical(initial_experiment_name, "hd1")
 
-  initial_assay_name <- app$waitForValue("teal-main_ui-modules_ui-root_boxplot-assay_name")
+  initial_assay_name <- app$waitForValue(ns("assay-name"))
   expect_identical(initial_assay_name, "counts")
 
-  initial_x_var <- app$waitForValue("teal-main_ui-modules_ui-root_boxplot-x_var", ignore = "")
-  expect_identical(initial_x_var, NULL)
+  initial_strat <- app$waitForValue(ns("strat-sample_var"), ignore = "")
+  expect_identical(initial_strat, NULL)
 
-  initial_genes <- app$waitForValue("teal-main_ui-modules_ui-root_boxplot-genes")
-  expect_identical(initial_genes, "GeneID:101927746")
+  initial_genes <- app$waitForValue(ns("genes-genes"), ignore = "")
+  expect_identical(initial_genes, NULL)
 
-  # Initial plot.
+  # Initial validation message.
+  output_message <- app$waitForOutputElement(ns("plot"), "message")
+  expect_identical(output_message, "please select at least one gene")
+
+  # Do a couple of updates to obtain a plot.
+  app$setValues(
+    "jitter" = TRUE,
+    "violin" = TRUE,
+    "genes-genes" = "GeneID:5205",
+    "strat-sample_var" = "COUNTRY",
+    "color-sample_var" = "AGE18",
+    ns = ns
+  )
+
   expect_snapshot_screenshot(
     app,
-    id = "teal-main_ui-modules_ui-root_boxplot-plot",
-    name = "initial_plot.png"
-  )
-
-  # Now change the experiment_name and confirm that the gene is updated accordingly.
-  app$setInputs(
-    "teal-main_ui-modules_ui-root_boxplot-experiment_name" = "hd3"
-  )
-  now_genes <- app$waitForValue("teal-main_ui-modules_ui-root_boxplot-genes")
-  expect_identical(now_genes, "GeneID:5205")
-
-  # Update boxplot with Jitter, select multiple genes and x variable and update to violin plot.
-  app$setInputs(
-    "teal-main_ui-modules_ui-root_boxplot-jitter" = TRUE,
-    "teal-main_ui-modules_ui-root_boxplot-violin" = TRUE,
-    "teal-main_ui-modules_ui-root_boxplot-genes" = c("GeneID:5205"),
-    "teal-main_ui-modules_ui-root_boxplot-x_var" = "COUNTRY",
-    "teal-main_ui-modules_ui-root_boxplot-color_var" = "AGE18"
-  )
-
-  # Final plot.
-  expect_snapshot_screenshot(
-    app,
-    id = "teal-main_ui-modules_ui-root_boxplot-plot",
-    name = "final_plot.png"
+    id = ns("plot"),
+    name = "boxplot.png"
   )
   app$stop()
 })

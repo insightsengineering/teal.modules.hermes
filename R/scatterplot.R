@@ -40,14 +40,7 @@ tm_g_scatterplot <- function(label,
   assert_string(label)
   assert_string(mae_name)
   assert_character(exclude_assays, any.missing = FALSE)
-  assert_list(
-    summary_funs,
-    types = "function",
-    min.len = 1L,
-    unique = TRUE,
-    any.missing = FALSE,
-    names = "unique"
-  )
+  assert_summary_funs(summary_funs)
   assert_tag(pre_output, null.ok = TRUE)
   assert_tag(post_output, null.ok = TRUE)
 

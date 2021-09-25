@@ -7,11 +7,27 @@
 \alias{sample_tm_g_boxplot}
 \title{Teal Module for RNA-seq Boxplot}
 \usage{
-tm_g_boxplot(label, mae_name, pre_output = NULL, post_output = NULL)
+tm_g_boxplot(
+  label,
+  mae_name,
+  exclude_assays = character(),
+  summary_funs = list(None = NULL, Mean = colMeans, Median = matrixStats::colMedians,
+    Max = matrixStats::colMaxs),
+  pre_output = NULL,
+  post_output = NULL
+)
 
-ui_g_boxplot(id, datasets, mae_name, pre_output, post_output)
+ui_g_boxplot(id, datasets, mae_name, summary_funs, pre_output, post_output)
 
-srv_g_boxplot(input, output, session, datasets, mae_name)
+srv_g_boxplot(
+  input,
+  output,
+  session,
+  datasets,
+  mae_name,
+  exclude_assays,
+  summary_funs
+)
 
 sample_tm_g_boxplot()
 }
@@ -21,6 +37,13 @@ menu item label of the module in the teal app.}
 
 \item{mae_name}{(\code{string})\cr
 name of the MAE data used in the teal module.}
+
+\item{exclude_assays}{(\code{character})\cr
+names of the assays which should not be included in choices in the teal module.}
+
+\item{summary_funs}{(named \code{list} of functions or \code{NULL})\cr functions which can be used
+in the the gene signatures. For modules that support also multiple genes without
+summary, \code{NULL} can be included to not summarize the genes but provide all of them.}
 
 \item{pre_output}{(\code{shiny.tag} or \code{NULL})\cr
 placed before the output to put the output into context (for example a title).}
@@ -67,12 +90,10 @@ data <- teal_data(mae_data)
 app <- init(
   data = data,
   modules = root_modules(
-    static = {
-      tm_g_boxplot(
-        label = "boxplot",
-        mae_name = "MAE"
-      )
-    }
+    tm_g_boxplot(
+      label = "boxplot",
+      mae_name = "MAE"
+    )
   )
 )
 \dontrun{

@@ -18,12 +18,10 @@
 #' app <- init(
 #'   data = data,
 #'   modules = root_modules(
-#'     static = {
-#'       tm_g_boxplot(
-#'         label = "boxplot",
-#'         mae_name = "MAE"
-#'       )
-#'     }
+#'     tm_g_boxplot(
+#'       label = "boxplot",
+#'       mae_name = "MAE"
+#'     )
 #'   )
 #' )
 #' \dontrun{
@@ -31,10 +29,19 @@
 #' }
 tm_g_boxplot <- function(label,
                          mae_name,
+                         exclude_assays = character(),
+                         summary_funs = list(
+                           None = NULL,
+                           Mean = colMeans,
+                           Median = matrixStats::colMedians,
+                           Max = matrixStats::colMaxs
+                         ),
                          pre_output = NULL,
                          post_output = NULL) {
   assert_string(label)
   assert_string(mae_name)
+  assert_character(exclude_assays, any.missing = FALSE)
+  assert_summary_funs(summary_funs, null.ok = TRUE)
   assert_tag(pre_output, null.ok = TRUE)
   assert_tag(post_output, null.ok = TRUE)
 
@@ -42,11 +49,14 @@ tm_g_boxplot <- function(label,
     label = label,
     server = srv_g_boxplot,
     server_args = list(
-      mae_name = mae_name
+      mae_name = mae_name,
+      summary_funs = summary_funs,
+      exclude_assays = exclude_assays
     ),
     ui = ui_g_boxplot,
     ui_args = list(
       mae_name = mae_name,
+      summary_funs = summary_funs,
       pre_output = pre_output,
       post_output = post_output
     ),
@@ -60,26 +70,32 @@ tm_g_boxplot <- function(label,
 ui_g_boxplot <- function(id,
                          datasets,
                          mae_name,
+                         summary_funs,
                          pre_output,
                          post_output) {
   ns <- NS(id)
-  mae <- datasets$get_data(mae_name, filtered = FALSE)
-  experiment_name_choices <- names(mae)
 
   teal.devel::standard_layout(
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
-      selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
-      selectInput(ns("assay_name"), "Select assay", choices = ""),
-      selectizeInput(ns("genes"), "Select gene(s) of interest", multiple = TRUE, choices = ""),
-      optionalSelectInput(ns("x_var"), "Optional stratifying variable"),
-      optionalSelectInput(ns("color_var"), "Optional color variable"),
-      optionalSelectInput(ns("facet_var"), "Optional facet variable"),
+      experimentSpecInput(ns("experiment"), datasets, mae_name),
+      assaySpecInput(ns("assay")),
+      geneSpecInput(ns("genes"), summary_funs),
       tags$label("Jitter"),
       shinyWidgets::switchInput(ns("jitter"), value = FALSE, size = "mini"),
       tags$label("Violin Plot"),
-      shinyWidgets::switchInput(ns("violin"), value = FALSE, size = "mini")
+      shinyWidgets::switchInput(ns("violin"), value = FALSE, size = "mini"),
+      teal.devel::panel_group(
+        teal.devel::panel_item(
+          input_id = "settings_item",
+          collapsed = TRUE,
+          title = "Additional Settings",
+          sampleVarSpecInput(ns("strat"), "Optional stratifying variable"),
+          sampleVarSpecInput(ns("color"), "Optional color variable"),
+          sampleVarSpecInput(ns("facet"), "Optional facet variable")
+        )
+      )
     ),
     output = plotOutput(ns("plot")),
     pre_output = pre_output,
@@ -94,117 +110,59 @@ srv_g_boxplot <- function(input,
                           output,
                           session,
                           datasets,
-                          mae_name) {
-  # When the filtered data set of the chosen experiment changes, update the
-  # experiment data object.
-  experiment_data <- reactive({
-    req(input$experiment_name)  # Important to avoid running into NULL here.
-
-    mae <- datasets$get_data(mae_name, filtered = TRUE)
-    mae[[input$experiment_name]]
-  })
-
-  # When the filtered data set or the chosen experiment changes, update
-  # the call that creates the chosen experiment data object.
-  experiment_call <- reactive({
-    req(input$experiment_name)  # Important to avoid running into NULL here.
-
-    dat <- datasets$get_filtered_dataset(mae_name)
-    dat$get_filter_states(input$experiment_name)$get_call()
-  })
-
-  # When the chosen experiment call changes, we recompute gene names.
-  genes <- eventReactive(experiment_call(), ignoreNULL = FALSE, {
-    object <- experiment_data()
-    rownames(object)
-  })
-
-  # When the chosen experiment changes, recompute the assay names.
-  assay_names <- eventReactive(input$experiment_name, ignoreNULL = TRUE, {
-    object <- experiment_data()
-    SummarizedExperiment::assayNames(object)
-  })
-
-  # When the chosen experiment changes, recompute the colData variables.
-  col_data_vars <- eventReactive(input$experiment_name, ignoreNULL = TRUE, {
-    object <- experiment_data()
-    names(SummarizedExperiment::colData(object))
-  })
-
-  # When the assay names change, update the choices for assay.
-  observeEvent(assay_names(), {
-    assay_name_choices <- assay_names()
-
-    updateSelectInput(
-      session,
-      "assay_name",
-      choices = assay_name_choices,
-      selected = assay_name_choices[1]
-    )
-  })
-
-  # When the colData variables change, update the choices for facet_var, color_var and x_var.
-  observeEvent(col_data_vars(), {
-    col_data_vars <- col_data_vars()
-
-    id_names <- c("facet_var", "color_var", "x_var")
-    for (i in seq_along(id_names)) {
-      updateOptionalSelectInput(
-        session,
-        id_names[i],
-        choices = col_data_vars,
-        selected = character()
-      )
-    }
-  })
-
-  # When the genes are recomputed, update the choice for genes in the UI.
-  observeEvent(genes(), {
-    gene_choices <- genes()
-
-    id_names <- c("genes")
-      updateSelectizeInput(
-        session,
-        id_names,
-        choices = gene_choices,
-        selected = gene_choices[1],
-        server = TRUE
-      )
-  })
-
+                          mae_name,
+                          exclude_assays,
+                          summary_funs) {
+  experiment <- experimentSpecServer(
+    "experiment",
+    datasets = datasets,
+    mae_name = mae_name
+  )
+  assay <- assaySpecServer(
+    "assay",
+    assays = experiment$assays,
+    exclude_assays = exclude_assays
+  )
+  multi <- multiSampleVarSpecServer(
+    inputIds = c("strat", "color", "facet"),
+    experiment_name = experiment$name,
+    original_data = experiment$data
+  )
+  genes <- geneSpecServer(
+    "genes",
+    funs = summary_funs,
+    gene_choices = experiment$genes
+  )
   output$plot <- renderPlot({
     # Resolve all reactivity.
-    experiment_data <- experiment_data()
-    x_var <- input$x_var
-    genes <- input$genes
-    facet_var <- input$facet_var
-    color_var <- input$color_var
-    assay_name <- input$assay_name
+    experiment_data <- multi$experiment_data()
+    strat <- multi$vars$strat()
+    genes <- genes()
+    facet <- multi$vars$facet()
+    color <- multi$vars$color()
+    assay <- assay()
     jitter <- input$jitter
     violin <- input$violin
 
-    # Require which states need to be truthy.
-    genes_not_included <- setdiff(genes, rownames(experiment_data))
     req(
-      genes,
-      assay_name,
+      assay,
       # Note: The following statements are important to make sure the UI inputs have been updated.
-      isTRUE(assay_name %in% SummarizedExperiment::assayNames(experiment_data)),
-      length(genes_not_included) == 0,
-      isTRUE(all(c(facet_var, color_var, x_var) %in% names(SummarizedExperiment::colData(experiment_data)))),
+      isTRUE(assay %in% SummarizedExperiment::assayNames(experiment_data)),
+      is.null(facet) || isTRUE(facet_var %in% names(SummarizedExperiment::colData(experiment_data))),
+      is.null(color) || isTRUE(color_var %in% names(SummarizedExperiment::colData(experiment_data))),
+      is.null(strat) || isTRUE(strat %in% names(SummarizedExperiment::colData(experiment_data))),
       cancelOutput = FALSE
     )
 
-    # Validate and give useful messages to the user. Note: no need to duplicate here req() from above.
-    validate(need(hermes::is_hermes_data(experiment_data), "please use HermesData() on input experiments"))
+    validate_gene_spec(genes, rownames(experiment_data))
 
     hermes::draw_boxplot(
       object = experiment_data,
-      assay_name = assay_name,
-      x_var = x_var,
+      assay_name = assay,
       genes = genes,
-      facet_var = facet_var,
-      color_var = color_var,
+      x_var = strat,
+      facet_var = facet,
+      color_var = color,
       jitter = jitter,
       violin = violin
     )
@@ -225,12 +183,10 @@ sample_tm_g_boxplot <- function() {
   app <- init(
     data = data,
     modules = root_modules(
-      static = {
-        tm_g_boxplot(
-          label = "boxplot",
-          mae_name = "MAE"
-        )
-      }
+      tm_g_boxplot(
+        label = "boxplot",
+        mae_name = "MAE"
+      )
     )
   )
   shinyApp(app$ui, app$server)

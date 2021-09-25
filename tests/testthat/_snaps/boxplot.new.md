@@ -180,11 +180,11 @@
       .panel-body { background-color: #f5f5f5; } /*same as panel-title*/</style>
                   <input id="settings_item" type="checkbox" value="TRUE" class="shinyjs-hide"/>
                   <div class="panel panel-default">
-                    <div id="settings_item_div" class="panel-heading collapsed" data-toggle="collapse" href="#settings_item_panel_body_1020" aria-expanded="false">
+                    <div id="settings_item_div" class="panel-heading collapsed" data-toggle="collapse" href="#settings_item_panel_body_5058" aria-expanded="false">
                       <i class="fa fa-angle-down dropdown-icon" role="presentation" aria-label="angle-down icon"></i>
                       <label class="panel-title" style="display:inline">Additional Settings</label>
                     </div>
-                    <div class="panel-collapse collapse " id="settings_item_panel_body_1020">
+                    <div class="panel-collapse collapse " id="settings_item_panel_body_5058">
                       <div class="panel-body">
                         <div class="row">
                           <div class="col-sm-8">
