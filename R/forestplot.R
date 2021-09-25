@@ -138,19 +138,21 @@ srv_g_forest_tte <- function(input,
     adtte <- datasets$get_data("ADTTE", filtered = TRUE)
     genes <- genes()
     experiment_name <- experiment$name
+    experiment_data <- subgroups$experiment_data
+    mae[[experiment_name]] <- experiment_data
     assay <- assay()
 
     req(
-      genes,
+      genes$returns_vector(),
+      genes$get_genes(),
       experiment_name,
       assay
     )
-    # TODO : need to change the h_km_mae_to_adtte function to take gene spec
-    # as well as the HermesData object directly coming out of sample var
+
     h_km_mae_to_adtte(
       adtte,
       mae,
-      gene_var = geneid,
+      genes = genes,
       experiment_name = experiment_name,
       assay_name = assay_name
     )
@@ -175,7 +177,7 @@ srv_g_forest_tte <- function(input,
     )
   })
 
-  tbl <- reactive({
+  surv_subgroups <- reactive({
     adtte_final <- adtte_final()
     subgroups_var <- subgroups$sample_var()
 
@@ -192,19 +194,20 @@ srv_g_forest_tte <- function(input,
   })
 
   result <- reactive({
-    tbl <- tbl()
+    surv_subgroups <- surv_subgroups()
     lyt <- rtables::basic_table()
     tern::tabulate_survival_subgroups(
       lyt = lyt,
-      df = tbl,
+      df = surv_subgroups,
       vars = c("n_tot_events", "n", "n_events", "median", "hr", "ci"),
       time_unit = adtte_final()$AVALU[1]
     )
   })
 
   forest_plot <- reactive({
-    result <- result()
-    tern::g_forest(result)
+    # result <- result()
+    # tern::g_forest(result)
+    plot(1, 1)
   })
 
   callModule(

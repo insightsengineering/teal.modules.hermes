@@ -64,7 +64,8 @@ NULL
 #' @param adtte (`data frame`)\cr an `adtte` dataset.
 #' @param mae (`MultiAssayExperiment`)\cr contains `AnyHermesData` objects.
 #' @param object (`AnyHermesData`)\cr contains RNA-seq values for one experiment.
-#' @param gene_var (`character`)\cr a gene(s) of interest.
+#' @param genes (`GeneSpec`)\cr specification for gene(s) (signature), e.g.
+#'   using [hermes::gene_spec()].
 #' @param experiment_name (`string`)\cr the desired `HermesData` to use.
 #' @param assay_name (`string`)\cr the assay to define the groups.
 #'

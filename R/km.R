@@ -14,7 +14,7 @@
 #'   and `gene_cols` contain the column names for the sample ID and gene columns.
 #'
 #' @note The final gene column names can start with a different string than
-#'   the original gene IDs, in particular white space, dots and colons are removed,
+#'   the original gene IDs (or labels), in particular white space, dots and colons are removed,
 #'   see [tern::make_names()] for details.
 #'
 #' @export
@@ -26,25 +26,31 @@
 #' new_adtte <- h_km_mae_to_adtte(
 #'   adtte,
 #'   mae,
-#'   gene_var = "GeneID:1820",
+#'   genes = hermes::gene_spec("GeneID:1820"),
 #'   experiment_name = "hd2"
 #' )
 #' new_adtte2 <- h_km_mae_to_adtte(
 #'   adtte,
 #'   mae,
-#'   gene_var = c("GeneID:1820", "GeneID:94115"),
+#'   genes = hermes::gene_spec(c("GeneID:1820", "GeneID:94115"), fun = colMeans),
+#'   experiment_name = "hd2"
+#' )
+#' new_adtte3 <- h_km_mae_to_adtte(
+#'   adtte,
+#'   mae,
+#'   genes = hermes::gene_spec(c(A = "GeneID:1820", B = "GeneID:94115")),
 #'   experiment_name = "hd2"
 #' )
 h_km_mae_to_adtte <- function(adtte,
                               mae,
-                              gene_var,
+                              genes,
                               experiment_name = "hd1",
                               assay_name = "counts") {
   assert_choice(
     assay_name,
     c("counts", "cpm", "rpkm", "tpm", "voom")
   )
-  assert_character(gene_var, min.chars = 1L)
+  assert_class(genes, "GeneSpec")
   assert_string(experiment_name)
 
   mae_samplemap <- MultiAssayExperiment::sampleMap(mae)
@@ -60,19 +66,25 @@ h_km_mae_to_adtte <- function(adtte,
   hd <- mae[[experiment_name]]
   assert_class(hd, "AnyHermesData")
 
-  num_genes <- length(gene_var)
-  gene_assay <- SummarizedExperiment::assay(hd, assay_name)[gene_var,]
-  gene_assay <- as.data.frame(gene_assay)
-  gene_names <- tern::make_names(gene_var)
-  merged_names <- paste(gene_names, assay_name, sep = "_")
-
-  if (num_genes == 1){
-    colnames(gene_assay) <- merged_names
-    gene_assay$SampleID <- rownames(gene_assay)
-  } else {
-    rownames(gene_assay) <- merged_names
-    gene_assay <- data.frame(t(gene_assay), SampleID = colnames(gene_assay))
+  assay_matrix <- SummarizedExperiment::assay(hd, assay_name)
+  gene_assay <- genes$extract(assay_matrix)
+  if (!is.matrix(gene_assay)) {
+    gene_assay <- t(gene_assay)
   }
+  gene_assay <- as.data.frame(gene_assay)
+  num_genes <- nrow(gene_assay)
+  gene_names <- if (num_genes == 1) {
+    genes$get_label()
+  } else {
+    genes$get_gene_labels()
+  }
+  gene_names <- tern::make_names(gene_names)
+  merged_names <- paste(gene_names, assay_name, sep = "_")
+  rownames(gene_assay) <- merged_names
+  gene_assay <- data.frame(
+    t(gene_assay),
+    SampleID = colnames(gene_assay)
+  )
 
   merge_se_data <- merge(merge_samplemap, gene_assay, by = "SampleID")
 
