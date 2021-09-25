@@ -63,7 +63,7 @@ h_km_mae_to_adtte <- function(adtte,
   merge_samplemap <- as.data.frame(merge_samplemap)
   colnames(merge_samplemap) <- c("USUBJID", "SampleID")
 
-  hd <- mae[[experiment_name]]
+  hd <- MultiAssayExperiment::getWithColData(mae, experiment_name)
   assert_class(hd, "AnyHermesData")
 
   assay_matrix <- SummarizedExperiment::assay(hd, assay_name)
@@ -71,6 +71,7 @@ h_km_mae_to_adtte <- function(adtte,
   if (!is.matrix(gene_assay)) {
     gene_assay <- t(gene_assay)
   }
+  colnames(gene_assay) <- colnames(hd)
   gene_assay <- as.data.frame(gene_assay)
   num_genes <- nrow(gene_assay)
   gene_names <- if (num_genes == 1) {
@@ -85,8 +86,10 @@ h_km_mae_to_adtte <- function(adtte,
     t(gene_assay),
     SampleID = colnames(gene_assay)
   )
-
+  se_col_data <- SummarizedExperiment::colData(hd)
+  se_col_data$SampleID <- rownames(se_col_data)
   merge_se_data <- merge(merge_samplemap, gene_assay, by = "SampleID")
+  merge_se_data <- merge(merge_se_data, se_col_data, by = c("USUBJID", "SampleID"))
 
   adtte_patients <- unique(adtte$USUBJID)
   se_patients <- merge_se_data$USUBJID
@@ -103,8 +106,14 @@ h_km_mae_to_adtte <- function(adtte,
   }
 
   # Now do the inner join.
-  merged_adtte <- merge(adtte, merge_se_data, by = "USUBJID")
-  merged_adtte <- tern::df_explicit_na(merged_adtte)
+  cols_to_take_from_col_data <- setdiff(names(se_col_data), "USUBJID")
+  adtte_reduced <- adtte[, - which(names(adtte) %in% cols_to_take_from_col_data)]
+  merged_adtte <- merge(adtte_reduced, merge_se_data, by = "USUBJID")
+  merged_adtte <- tern::df_explicit_na(
+    merged_adtte,
+    char_as_factor = TRUE,
+    logical_as_factor = TRUE
+  )
 
   structure(
     merged_adtte,

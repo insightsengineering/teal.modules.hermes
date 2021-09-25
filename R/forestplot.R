@@ -137,24 +137,24 @@ srv_g_forest_tte <- function(input,
     mae <- datasets$get_data(mae_name, filtered = TRUE)
     adtte <- datasets$get_data("ADTTE", filtered = TRUE)
     genes <- genes()
-    experiment_name <- experiment$name
-    experiment_data <- subgroups$experiment_data
-    mae[[experiment_name]] <- experiment_data
+    experiment_name <- experiment$name()
+    experiment_data <- subgroups$experiment_data()
     assay <- assay()
 
+    validate(need(genes$get_genes(), "please select at least one gene"))
     req(
       genes$returns_vector(),
-      genes$get_genes(),
       experiment_name,
       assay
     )
 
+    mae[[experiment_name]] <- experiment_data
     h_km_mae_to_adtte(
       adtte,
       mae,
       genes = genes,
       experiment_name = experiment_name,
-      assay_name = assay_name
+      assay_name = assay
     )
   })
 
@@ -180,6 +180,10 @@ srv_g_forest_tte <- function(input,
   surv_subgroups <- reactive({
     adtte_final <- adtte_final()
     subgroups_var <- subgroups$sample_var()
+    validate(need(
+      is.null(subgroups_var) || is.factor(adtte_final[[subgroups_var]]),
+      "please select a categorical variable"
+    ))
 
     tern::extract_survival_subgroups(
       variables = list(
@@ -205,9 +209,8 @@ srv_g_forest_tte <- function(input,
   })
 
   forest_plot <- reactive({
-    # result <- result()
-    # tern::g_forest(result)
-    plot(1, 1)
+    result <- result()
+    tern::g_forest(result)
   })
 
   callModule(
