@@ -1,7 +1,7 @@
 Package: teal.modules.hermes
 Title: RNA-seq analysis modules to add to a teal application
 Type: Package
-Date: 2021-07-07
+Date: 2021-10-13
 Version: 0.1.0
 Authors@R: c(
   person("NEST", email = "nestcicd@roche.com", role = c("aut", "cre"))
@@ -21,7 +21,7 @@ Depends:
   R (>= 3.5.0),
   ggplot2,
   shiny,
-  teal
+  teal (>= 0.10.0)
 Imports:
   checkmate,
   DT,
@@ -37,9 +37,9 @@ Imports:
   stats,
   stringr,
   SummarizedExperiment,
-  teal.devel,
-  tern,
-  utils.nest
+  teal.devel (>= 0.2.12),
+  tern (>= 0.7.5),
+  utils.nest (>= 0.2.11)
 Suggests:
   dplyr,
   globals,
@@ -47,7 +47,7 @@ Suggests:
   matrixStats,
   R6,
   shinytest (>= 1.5.0),
-  test.nest (>= 0.2.9),
+  test.nest (>= 0.2.11),
   testthat (>= 2.0)
 Remotes:
   szelepke/shinyRadioMatrix
