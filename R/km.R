@@ -114,7 +114,7 @@ h_km_mae_to_adtte <- function(adtte,
   merged_adtte <- tern::df_explicit_na(
     merged_adtte,
     char_as_factor = TRUE,
-    logical_as_factor = FALSE  # TODO sometimes we want this sometimes not...
+    logical_as_factor = FALSE
   )
 
   structure(
