@@ -34,7 +34,7 @@ test_that("tm_g_forest_tte works as expected in the sample app", {
   initial_experiment_name <- app$waitForValue(ns("experiment-name"))
   expect_identical(initial_experiment_name, "hd1")
 
-  plot_message <- app$waitForOutputElement(ns("plot-plot_main"), "message")
+  plot_message <- app$waitForOutputElement(ns("plot"), "message")
   expect_identical(
     plot_message,
     "No assays eligible for this experiment, please make sure to add normalized assays"
@@ -52,7 +52,7 @@ test_that("tm_g_forest_tte works as expected in the sample app", {
   # Initial plot.
   expect_snapshot_screenshot(
     app,
-    id = ns("plot-plot_main"),
+    id = ns("plot"),
     name = "initial_plot.png"
   )
 

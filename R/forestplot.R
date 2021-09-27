@@ -106,7 +106,7 @@ ui_g_forest_tte <- function(id,
         )
       )
     ),
-    output = teal.devel::plot_with_settings_ui(ns("plot")),
+    output = plotOutput(ns("plot")),
     pre_output = pre_output,
     post_output = post_output
   )
@@ -249,18 +249,10 @@ srv_g_forest_tte <- function(input,
     )
   })
 
-  forest_plot <- reactive({
+  output$plot <- renderPlot({
     result <- result()
     tern::g_forest(result)
   })
-
-  callModule(
-    teal.devel::plot_with_settings_srv,
-    id = "plot",
-    plot_r = forest_plot,
-    height = plot_height,
-    width = plot_width
-  )
 }
 
 #' @describeIn tm_g_forest_tte sample module function.
