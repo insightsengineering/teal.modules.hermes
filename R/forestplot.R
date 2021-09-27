@@ -12,8 +12,17 @@
 #'
 #' @examples
 #' mae <- hermes::multi_assay_experiment
-#' mae_data <- dataset("MAE", mae)
-#' data <- teal_data(mae_data)
+#' adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
+#'   dplyr::mutate(CNSR = as.logical(.data$CNSR))
+#'
+#' data <- teal_data(
+#'   dataset(
+#'     "ADTTE",
+#'     adtte,
+#'     code = 'adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
+#'       dplyr::mutate(CNSR = as.logical(.data$CNSR))',
+#'   dataset("MAE", mae)
+#' )
 #' app <- init(
 #'   data = data,
 #'   modules = root_modules(
@@ -27,6 +36,7 @@
 #' shinyApp(app$ui, app$server)
 #' }
 tm_g_forest_tte <- function(label,
+                            adtte_name,
                             mae_name,
                             exclude_assays = "counts",
                             summary_funs = list(
@@ -39,6 +49,7 @@ tm_g_forest_tte <- function(label,
                             plot_height = c(600L, 200L, 2000L),
                             plot_width = c(1360L, 500L, 2000L)) {
   assert_string(label)
+  assert_string(adtte_name)
   assert_string(mae_name)
   assert_character(exclude_assays, any.missing = FALSE)
   assert_summary_funs(summary_funs)
@@ -49,6 +60,7 @@ tm_g_forest_tte <- function(label,
     label = label,
     server = srv_g_forest_tte,
     server_args = list(
+      adtte_name = adtte_name,
       mae_name = mae_name,
       exclude_assays = exclude_assays,
       summary_funs = summary_funs,
@@ -83,8 +95,16 @@ ui_g_forest_tte <- function(id,
       experimentSpecInput(ns("experiment"), datasets, mae_name),
       assaySpecInput(ns("assay")),
       geneSpecInput(ns("genes"), summary_funs, label_genes = "Select Gene(s)"),
-      sliderInput(ns("probs"), label = ("Probability Cutoff"), min = 0.01, max = 0.99, value = 0.5),
-      sampleVarSpecInput(ns("subgroups"), "Optional subgroup variable")
+      selectizeInput(ns("paramcd"), "Select Endpoint", choices = ""),
+      teal.devel::panel_group(
+        teal.devel::panel_item(
+          input_id = "settings_item",
+          collapsed = TRUE,
+          title = "Additional Settings",
+          sliderInput(ns("probs"), label = ("Probability Cutoff"), min = 0.01, max = 0.99, value = 0.5),
+          sampleVarSpecInput(ns("subgroups"), "Select Subgroup Variable")
+        )
+      )
     ),
     output = teal.devel::plot_with_settings_ui(ns("plot")),
     pre_output = pre_output,
@@ -99,6 +119,7 @@ srv_g_forest_tte <- function(input,
                              output,
                              session,
                              datasets,
+                             adtte_name,
                              mae_name,
                              exclude_assays,
                              summary_funs,
@@ -128,7 +149,7 @@ srv_g_forest_tte <- function(input,
 
   adtte_counts <- reactive({
     mae <- datasets$get_data(mae_name, filtered = TRUE)
-    adtte <- datasets$get_data("ADTTE", filtered = TRUE)
+    adtte <- datasets$get_data(adtte_name, filtered = TRUE)
     genes <- genes()
     experiment_name <- experiment$name()
     experiment_data <- subgroups$experiment_data()
@@ -151,7 +172,7 @@ srv_g_forest_tte <- function(input,
     )
   })
 
-  adtte_final <- reactive({
+  adtte_data <- reactive({
     adtte_counts <- adtte_counts()
     probs <- input$probs
     colname <- attr(adtte_counts, "gene_cols")
@@ -170,13 +191,40 @@ srv_g_forest_tte <- function(input,
     )
   })
 
+  # After post processing ADTTE, we recompute endpoints.
+  endpoints <- reactive({
+    adtte_data <- adtte_data()
+    unique(adtte_data$PARAMCD)
+  })
+
+  # When the endpoints are recomputed, update the choices for endpoints in the UI.
+  observeEvent(endpoints(), {
+    endpoints <- endpoints()
+
+    updateSelectizeInput(
+      session,
+      "paramcd",
+      choices = endpoints,
+      selected = endpoints[1],
+      server = TRUE
+    )
+  })
+
   surv_subgroups <- reactive({
-    adtte_final <- adtte_final()
+    endpoint <- input$paramcd
+    adtte_data <- adtte_data()
     subgroups_var <- subgroups$sample_var()
+
+    req(endpoint)
     validate(need(
-      is.null(subgroups_var) || is.factor(adtte_final[[subgroups_var]]),
+      nrow(adtte_data) > 0,
+      "ADTTE is empty - please relax the filter criteria"
+    ))
+    validate(need(
+      is.null(subgroups_var) || is.factor(adtte_data[[subgroups_var]]),
       "please select a categorical variable"
     ))
+    adtte_final <- dplyr::filter(adtte_data, .data$PARAMCD == endpoint)
 
     tern::extract_survival_subgroups(
       variables = list(
@@ -197,7 +245,7 @@ srv_g_forest_tte <- function(input,
       lyt = lyt,
       df = surv_subgroups,
       vars = c("n_tot_events", "n", "n_events", "median", "hr", "ci"),
-      time_unit = adtte_final()$AVALU[1]
+      time_unit = adtte_data()$AVALU[1]
     )
   })
 
@@ -223,17 +271,27 @@ srv_g_forest_tte <- function(input,
 #' sample_tm_g_forest_tte()
 #' }
 sample_tm_g_forest_tte <- function() { # nolint # nousage
+
   mae <- hermes::multi_assay_experiment
-  mae_data <- dataset("MAE", mae)
-  adsl <- cdisc_dataset("ADSL", rtables::ex_adsl)
-  adtte <- cdisc_dataset("ADTTE", rtables::ex_adtte)
-  data <- teal_data(mae_data, adsl, adtte)
-  data <- mutate_join_keys(data, "MAE", "MAE", c("STUDYID", "USUBJID"))
+  adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
+    dplyr::mutate(CNSR = as.logical(.data$CNSR))
+
+  data <- teal_data(
+    dataset(
+      "ADTTE",
+      adtte,
+      code = 'adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
+        dplyr::mutate(CNSR = as.logical(.data$CNSR))'
+    ),
+    dataset("MAE", mae)
+  )
+
   app <- init(
     data = data,
     modules = root_modules(
       tm_g_forest_tte(
-        label = "forestplot",
+        label = "forest",
+        adtte_name = "ADTTE",
         mae_name = "MAE"
       )
     )

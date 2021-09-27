@@ -11,22 +11,25 @@ tm_g_km(
   label,
   adtte_name,
   mae_name,
-  strata_var = NULL,
+  exclude_assays = "counts",
+  summary_funs = list(Mean = colMeans, Median = matrixStats::colMedians, Max =
+    matrixStats::colMaxs),
   pre_output = NULL,
   post_output = NULL
 )
 
-ui_g_km(
-  id,
+ui_g_km(id, datasets, mae_name, summary_funs, pre_output, post_output)
+
+srv_g_km(
+  input,
+  output,
+  session,
   datasets,
   adtte_name,
   mae_name,
-  strata_var,
-  pre_output,
-  post_output
+  summary_funs,
+  exclude_assays
 )
-
-srv_g_km(input, output, session, datasets, adtte_name, mae_name, strata_var)
 
 sample_tm_g_km()
 }
@@ -34,12 +37,18 @@ sample_tm_g_km()
 \item{label}{(\code{string})\cr
 menu item label of the module in the teal app.}
 
-\item{adtte_name}{(\code{string})\cr name of the ADTTE dataset.}
+\item{adtte_name}{(\code{string})\cr
+name of the ADTTE dataset.}
 
 \item{mae_name}{(\code{string})\cr
 name of the MAE data used in the teal module.}
 
-\item{strata_var}{(\code{character})\cr names of the stratification variables.}
+\item{exclude_assays}{(\code{character})\cr
+names of the assays which should not be included in choices in the teal module.}
+
+\item{summary_funs}{(named \code{list} of functions or \code{NULL})\cr functions which can be used
+in the the gene signatures. For modules that support also multiple genes without
+summary, \code{NULL} can be included to not summarize the genes but provide all of them.}
 
 \item{pre_output}{(\code{shiny.tag} or \code{NULL})\cr
 placed before the output to put the output into context (for example a title).}
@@ -88,17 +97,17 @@ data <- teal_data(
   dataset(
     "ADTTE",
     adtte,
-    code = 'adtte <- radtte(cached = TRUE) \%>\% mutate(CNSR = as.logical(CNSR))'
+    code = 'adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte \%>\%
+      dplyr::mutate(CNSR = as.logical(CNSR))'
   ),
-  dataset("mae", mae)
+  dataset("MAE", mae)
 )
 
 modules <- root_modules(
   tm_g_km(
-    label = "KM PLOT",
+    label = "kaplan-meier",
     adtte_name = "ADTTE",
-    mae_name = "mae",
-    strata_var = c("SEX", "STRATA1")
+    mae_name = "MAE"
   )
 )
 

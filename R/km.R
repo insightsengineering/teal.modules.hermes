@@ -96,13 +96,15 @@ h_km_mae_to_adtte <- function(adtte,
 
   patients_not_in_adtte <- setdiff(se_patients, adtte_patients)
   if (length(patients_not_in_adtte) > 0) {
-    showNotification(
-      paste(
-        "Patients", paste(patients_not_in_adtte, collapse = ", "),
-        "removed from MAE because not contained in ADTTE."
-      ),
-      type = "warning"
+    warn_message <- paste(
+      "Patients", paste(patients_not_in_adtte, collapse = ", "),
+      "removed from MAE because not contained in ADTTE."
     )
+    if (is.null(getDefaultReactiveDomain())) {
+      warning(warn_message)
+    } else {
+      showNotification(warn_message, type = "warning")
+    }
   }
 
   # Now do the inner join.
@@ -131,7 +133,6 @@ h_km_mae_to_adtte <- function(adtte,
 #'
 #' @inheritParams module_arguments
 #'
-#' @param adtte_name (`string`)\cr name of the ADTTE dataset.
 #' @return Shiny module to be used in the teal app.
 #'
 #' @export
@@ -145,16 +146,17 @@ h_km_mae_to_adtte <- function(adtte,
 #'   dataset(
 #'     "ADTTE",
 #'     adtte,
-#'     code = 'adtte <- radtte(cached = TRUE) %>% mutate(CNSR = as.logical(CNSR))'
+#'     code = 'adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
+#'       dplyr::mutate(CNSR = as.logical(CNSR))'
 #'   ),
-#'   dataset("mae", mae)
+#'   dataset("MAE", mae)
 #' )
 #'
 #' modules <- root_modules(
 #'   tm_g_km(
-#'     label = "KM PLOT",
+#'     label = "kaplan-meier",
 #'     adtte_name = "ADTTE",
-#'     mae_name = "mae"
+#'     mae_name = "MAE"
 #'   )
 #' )
 #'
@@ -226,13 +228,20 @@ ui_g_km <- function(id,
       assaySpecInput(ns("assay")),
       geneSpecInput(ns("genes"), summary_funs),
       selectizeInput(ns("paramcd"), "Select Endpoint", choices = ""),
-      sampleVarSpecInput(ns("strata"), "Select Strata"),
-      sliderInput(
-        ns("percentiles"),
-        "Select quantiles to be displayed",
-        min = 0,
-        max = 1,
-        value = c(0, 0.5)
+      teal.devel::panel_group(
+        teal.devel::panel_item(
+          input_id = "settings_item",
+          collapsed = TRUE,
+          title = "Additional Settings",
+          sampleVarSpecInput(ns("strata"), "Select Strata"),
+          sliderInput(
+            ns("percentiles"),
+            "Select quantiles to be displayed",
+            min = 0,
+            max = 1,
+            value = c(0, 0.5)
+          )
+        )
       )
     ),
     output = plotOutput(ns("km_plot")),
@@ -397,14 +406,14 @@ sample_tm_g_km <- function() { # nolint # nousage
       code = 'adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
         dplyr::mutate(CNSR = as.logical(.data$CNSR))'
     ),
-    dataset("mae", mae)
+    dataset("MAE", mae)
   )
 
   modules <- root_modules(
     tm_g_km(
-      label = "KM PLOT",
+      label = "kaplan-meier",
       adtte_name = "ADTTE",
-      mae_name = "mae"
+      mae_name = "MAE"
     )
   )
 

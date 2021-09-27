@@ -9,21 +9,28 @@
 \usage{
 tm_g_forest_tte(
   label,
+  adtte_name,
   mae_name,
+  exclude_assays = "counts",
+  summary_funs = list(Mean = colMeans, Median = matrixStats::colMedians, Max =
+    matrixStats::colMaxs),
   pre_output = NULL,
   post_output = NULL,
   plot_height = c(600L, 200L, 2000L),
   plot_width = c(1360L, 500L, 2000L)
 )
 
-ui_g_forest_tte(id, datasets, mae_name, pre_output, post_output)
+ui_g_forest_tte(id, datasets, mae_name, summary_funs, pre_output, post_output)
 
 srv_g_forest_tte(
   input,
   output,
   session,
   datasets,
+  adtte_name,
   mae_name,
+  exclude_assays,
+  summary_funs,
   plot_height,
   plot_width
 )
@@ -34,8 +41,18 @@ sample_tm_g_forest_tte()
 \item{label}{(\code{string})\cr
 menu item label of the module in the teal app.}
 
+\item{adtte_name}{(\code{string})\cr
+name of the ADTTE dataset.}
+
 \item{mae_name}{(\code{string})\cr
 name of the MAE data used in the teal module.}
+
+\item{exclude_assays}{(\code{character})\cr
+names of the assays which should not be included in choices in the teal module.}
+
+\item{summary_funs}{(named \code{list} of functions or \code{NULL})\cr functions which can be used
+in the the gene signatures. For modules that support also multiple genes without
+summary, \code{NULL} can be included to not summarize the genes but provide all of them.}
 
 \item{pre_output}{(\code{shiny.tag} or \code{NULL})\cr
 placed before the output to put the output into context (for example a title).}
@@ -82,17 +99,24 @@ This module provides an interactive survival forest plot.
 
 \examples{
 mae <- hermes::multi_assay_experiment
-mae_data <- dataset("MAE", mae)
-data <- teal_data(mae_data)
+adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte \%>\%
+  dplyr::mutate(CNSR = as.logical(.data$CNSR))
+
+data <- teal_data(
+  dataset(
+    "ADTTE",
+    adtte,
+    code = 'adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte \%>\%
+      dplyr::mutate(CNSR = as.logical(.data$CNSR))',
+  dataset("MAE", mae)
+)
 app <- init(
   data = data,
   modules = root_modules(
-    static = {
-      tm_g_forest_tte(
-        label = "forestplot",
-        mae_name = "MAE"
-      )
-    }
+    tm_g_forest_tte(
+      label = "forestplot",
+      mae_name = "MAE"
+    )
   )
 )
 \dontrun{
