@@ -63,7 +63,7 @@ h_km_mae_to_adtte <- function(adtte,
   merge_samplemap <- as.data.frame(merge_samplemap)
   colnames(merge_samplemap) <- c("USUBJID", "SampleID")
 
-  hd <- MultiAssayExperiment::getWithColData(mae, experiment_name)
+  hd <- suppressWarnings(MultiAssayExperiment::getWithColData(mae, experiment_name))
   assert_class(hd, "AnyHermesData")
 
   assay_matrix <- SummarizedExperiment::assay(hd, assay_name)
