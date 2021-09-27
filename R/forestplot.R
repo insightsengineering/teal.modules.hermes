@@ -20,7 +20,8 @@
 #'     "ADTTE",
 #'     adtte,
 #'     code = 'adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
-#'       dplyr::mutate(CNSR = as.logical(.data$CNSR))',
+#'       dplyr::mutate(CNSR = as.logical(.data$CNSR))'
+#'   ),
 #'   dataset("MAE", mae)
 #' )
 #' app <- init(
@@ -28,6 +29,7 @@
 #'   modules = root_modules(
 #'     tm_g_forest_tte(
 #'       label = "forestplot",
+#'       adtte_name = "ADTTE",
 #'       mae_name = "MAE"
 #'     )
 #'   )
