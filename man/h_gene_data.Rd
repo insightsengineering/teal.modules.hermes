@@ -30,6 +30,6 @@ are replaced by empty strings for consistency and better labeling in the
 UI downstream
 }
 \examples{
-object <- hermes::HermesData(hermes::summarized_experiment[1:10, ])
-h_gene_data(object, "HGNC")
+object <- hermes::hermes_data[1:10, ]
+h_gene_data(object, "symbol")
 }

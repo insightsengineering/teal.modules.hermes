@@ -81,8 +81,8 @@ h_order_genes <- function(genes) {
 #' @export
 #'
 #' @examples
-#' object <- hermes::HermesData(hermes::summarized_experiment[1:10, ])
-#' h_gene_data(object, "HGNC")
+#' object <- hermes::hermes_data[1:10, ]
+#' h_gene_data(object, "symbol")
 h_gene_data <- function(object, name_annotation) {
   assert_true(hermes::is_hermes_data(object))
   assert_string(name_annotation)
@@ -209,7 +209,7 @@ h_gene_data <- function(object, name_annotation) {
 experimentSpecServer <- function(inputId,
                                  datasets,
                                  mae_name,
-                                 name_annotation = "HGNC",
+                                 name_annotation = "symbol",
                                  sample_vars_as_factors = TRUE,
                                  with_mae_col_data = TRUE) {
   assert_string(inputId)
@@ -240,7 +240,7 @@ experimentSpecServer <- function(inputId,
       ))
       if (sample_vars_as_factors) {
         SummarizedExperiment::colData(object) <-
-          hermes::df_char_to_factor(SummarizedExperiment::colData(object))
+          hermes::df_cols_to_factor(SummarizedExperiment::colData(object))
       }
       object
     })
@@ -251,7 +251,7 @@ experimentSpecServer <- function(inputId,
       name <- input$name
       req(name)
 
-      filtered_mae <- datasets$get_filtered_datasets(mae_name)
+      filtered_mae <- datasets$get_filtered_dataset(mae_name)
       filter_states <- filtered_mae$get_filter_states(name)
       subset_queue <- filter_states$queue_get("subset")
       sapply(subset_queue, function(x) x$get_call())

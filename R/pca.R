@@ -18,12 +18,10 @@
 #' app <- init(
 #'   data = data,
 #'   modules = root_modules(
-#'     static = {
-#'       tm_g_pca(
+#'    tm_g_pca(
 #'         label = "PCA plot",
 #'         mae_name = "MAE"
-#'       )
-#'     }
+#'    )
 #'   )
 #' )
 #' \dontrun{
@@ -31,6 +29,7 @@
 #' }
 tm_g_pca <- function(label,
                      mae_name,
+                     exclude_assays = character(),
                      pre_output = NULL,
                      post_output = NULL) {
   assert_string(label)
@@ -42,7 +41,8 @@ tm_g_pca <- function(label,
     label = label,
     server = srv_g_pca,
     server_args = list(
-      mae_name = mae_name
+      mae_name = mae_name,
+      exclude_assays = exclude_assays
     ),
     ui = ui_g_pca,
     ui_args = list(
@@ -70,37 +70,46 @@ ui_g_pca <- function(id,
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
-      selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
+      experimentSpecInput(ns("experiment"), datasets, mae_name),
       assaySpecInput(ns("assay")),
       conditionalPanel(
         condition = "input.tab_selected == 'PCA'",
         ns = ns,
-        optionalSelectInput(ns("color_var"), "Optional color variable"),
+        sampleVarSpecInput(ns("color"), "Optional color variable"),
         selectizeInput(ns("x_var"), "Select X-axis PC", choices = ""),
         selectizeInput(ns("y_var"), "Select Y-axis PC", choices = "")
       ),
-      tags$label("Use only Top Variance Genes"),
-      shinyWidgets::switchInput(ns("filter_top"), value = FALSE, size = "mini"),
-      conditionalPanel(
-        condition = "input.filter_top",
-        ns = ns,
-        sliderInput(ns("n_top"), label = "Number of Top Genes", min = 10, max = 5000, value = 500)
-      ),
-      tags$label("Show Variance %"),
-      shinyWidgets::switchInput(ns("var_pct"), value = TRUE, size = "mini"),
-      tags$label("Show Label"),
-      shinyWidgets::switchInput(ns("label"), value = TRUE, size = "mini"),
-      conditionalPanel(
-        condition = "input.tab_selected == 'PC and Sample Correlation'",
-        ns = ns,
-        tags$label("Cluster columns"),
-        shinyWidgets::switchInput(ns("cluster_columns"), value = FALSE, size = "mini")
-      ),
-
-      tags$label("View Matrix"),
-      shinyWidgets::switchInput(ns("show_matrix"), value = TRUE, size = "mini")
+      teal.devel::panel_group(
+        teal.devel::panel_item(
+          input_id = "settings_item",
+          collapsed = TRUE,
+          title = "Additional Settings",
+          tags$label("Use only Top Variance Genes"),
+          shinyWidgets::switchInput(ns("filter_top"), value = FALSE, size = "mini"),
+          conditionalPanel(
+            condition = "input.filter_top",
+            ns = ns,
+            sliderInput(ns("n_top"), label = "Number of Top Genes", min = 10, max = 5000, value = 500)
+          ),
+          conditionalPanel(
+            condition = "input.tab_selected == 'PCA'",
+            ns = ns,
+            tags$label("Show Variance %"),
+            shinyWidgets::switchInput(ns("var_pct"), value = TRUE, size = "mini"),
+            tags$label("Show Label"),
+            shinyWidgets::switchInput(ns("label"), value = TRUE, size = "mini")
+          ),
+          conditionalPanel(
+            condition = "input.tab_selected == 'PC and Sample Correlation'",
+            ns = ns,
+            tags$label("Cluster columns"),
+            shinyWidgets::switchInput(ns("cluster_columns"), value = FALSE, size = "mini")
+          ),
+          tags$label("View Matrix"),
+          shinyWidgets::switchInput(ns("show_matrix"), value = TRUE, size = "mini")
+        )
+      )
     ),
-
     output = tagList(
       tabsetPanel(
         id = ns("tab_selected"),
@@ -139,28 +148,27 @@ srv_g_pca <- function(input,
                       output,
                       session,
                       datasets,
-                      mae_name) {
-  # When the filtered data set of the chosen experiment changes, update the
-  # experiment data object.
-  experiment_data <- reactive({
-    req(input$experiment_name)  # Important to avoid running into NULL here.
-
-    mae <- datasets$get_data(mae_name, filtered = TRUE)
-    mae[[input$experiment_name]]
-  })
-
-  # When the filtered data set or the chosen experiment changes, update
-  # the call that creates the chosen experiment data object.
-  experiment_call <- reactive({
-    req(input$experiment_name)  # Important to avoid running into NULL here.
-
-    dat <- datasets$get_filtered_datasets(mae_name)
-    dat$get_filter_states(input$experiment_name)$get_call()
-  })
+                      mae_name,
+                      exclude_assays) {
+  experiment <- experimentSpecServer(
+    "experiment",
+    datasets = datasets,
+    mae_name = mae_name
+  )
+  assay <- assaySpecServer(
+    "assay",
+    assays = experiment$assays,
+    exclude_assays = exclude_assays
+  )
+  color <- sampleVarSpecServer(
+    "color",
+    experiment_name = experiment$name,
+    original_data = experiment$data
+  )
 
   # Total number of genes at the moment.
   n_genes <- reactive({
-    experiment_data <- experiment_data()
+    experiment_data <- color$experiment_data()
     nrow(experiment_data)
   })
 
@@ -178,35 +186,9 @@ srv_g_pca <- function(input,
     }
   })
 
-  # When the chosen experiment changes, recompute the assay names.
-  assay_names <- eventReactive(input$experiment_name, ignoreNULL = TRUE, {
-    object <- experiment_data()
-    SummarizedExperiment::assayNames(object)
-  })
-
-  assay <- assaySpecServer("assay", assay_names)
-
-  # When the chosen experiment changes, recompute the colData variables.
-  col_data_vars <- eventReactive(input$experiment_name, ignoreNULL = TRUE, {
-    object <- experiment_data()
-    names(SummarizedExperiment::colData(object))
-  })
-
-  # When the colData variables change, update the choices for color_var.
-  observeEvent(col_data_vars(), {
-    color_var_choices <- col_data_vars()
-
-    updateOptionalSelectInput(
-      session,
-      "color_var",
-      choices = color_var_choices,
-      selected = character()
-    )
-  })
-
   # When the chosen experiment or assay name changes, recompute the PC.
   pca_result <- reactive({
-    experiment_data <- experiment_data()
+    experiment_data <- color$experiment_data()
     filter_top <- input$filter_top
     n_top <- input$n_top
     assay_name <- assay()
@@ -240,7 +222,7 @@ srv_g_pca <- function(input,
   # Compute correlation of PC with sample variables.
   cor_result <- reactive({
     pca_result <- pca_result()
-    experiment_data <- experiment_data()
+    experiment_data <- color$experiment_data()
 
     hermes::correlate(pca_result, experiment_data)
   })
@@ -255,6 +237,7 @@ srv_g_pca <- function(input,
       NULL
     }
   })
+
   output$table_pca <- DT::renderDT({
     show_matrix_pca <- show_matrix_pca()
     DT::datatable(
@@ -269,7 +252,7 @@ srv_g_pca <- function(input,
   show_matrix_cor <- reactive({
     if (input$show_matrix) {
       cor_result <- cor_result()
-      cor_result <- round(cor_result(), 3)
+      cor_result <- round(cor_result, 3)
       as.data.frame(cor_result)
     } else {
       NULL
@@ -289,11 +272,11 @@ srv_g_pca <- function(input,
   output$plot_pca <- renderPlot({
     # Resolve all reactivity.
     pca_result <- pca_result()
-    experiment_data <- experiment_data()
+    experiment_data <- color$experiment_data()
     x_var <- as.numeric(input$x_var)
     y_var <- as.numeric(input$y_var)
-    data <- as.data.frame(SummarizedExperiment::colData(experiment_data()))
-    color_var <- input$color_var
+    data <- as.data.frame(SummarizedExperiment::colData(color$experiment_data()))
+    color_var <- color$sample_var()
     assay_name <- assay()
     var_pct <- input$var_pct
     label <- input$label

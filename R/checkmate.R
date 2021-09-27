@@ -80,3 +80,31 @@ assert_reactive <- makeAssertionFunction(check_reactive)
 #' @rdname check_reactive
 #' @export
 test_reactive <- makeTestFunction(check_reactive)
+
+# assert_summary_funs ----
+
+#' Check for List of Summary Functions
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Check whether `x` is a list of summary functions.
+#'
+#' @inheritParams assertion_arguments
+#' @param null.ok (`flag`)\cr whether `x` may also contain `NULL`, meaning that
+#'   a user choice is possible where no summary function should be applied.
+#' @seealso [`assertions`] for more details.
+#'
+#' @export
+#'
+#' @examples
+#' assert_summary_funs(list(mean = colMeans, raw = NULL), null.ok = TRUE)
+assert_summary_funs <- function(x, null.ok = FALSE) {
+  assert_flag(null.ok)
+  assert_list(
+    x,
+    types = c("function", `if`(null.ok, "null", NULL)),
+    min.len = 1L,
+    unique = TRUE,
+    names = "unique"
+  )
+}

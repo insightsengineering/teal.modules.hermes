@@ -1,4 +1,4 @@
-.MyMae <- setClass("MyMae", contains = "MultiAssayExperiment")
+my_mae <- setClass("MyMae", contains = "MultiAssayExperiment")
 
 setReplaceMethod("[[", "MyMae", function(x, i, j, ..., value) {
   if (!missing(j) || length(list(...)))
@@ -8,13 +8,13 @@ setReplaceMethod("[[", "MyMae", function(x, i, j, ..., value) {
   if (!any(colnames(value) %in% colnames(x)[[i]]) && !MultiAssayExperiment:::.isEmpty(value))
     stop("'colnames(value)' have no match in 'colnames(x)[[i]]';\n",
          "See '?renameColname' for renaming colname identifiers")
-  
+
   experiments(x)[i] <- S4Vectors::setListElement(experiments(x)[i], 1L, value)
-  
+
   return(x)
 })
 
-mae <- .MyMae(multi_assay_experiment)
+mae <- my_mae(multi_assay_experiment)
 
 lobstr::ref(mae)
 lobstr::ref(mae[[1]])
@@ -36,16 +36,15 @@ experiments(mae)
 
 setReplaceMethod("experiments", c("MultiAssayExperiment", "ExperimentList"),
                  function(object, value) {
-                   
+
                    # here the whole MAE is recalculated:
                    rebliss <- .harmonize(value, colData(object), sampleMap(object))
-                   
                    if (!any(names(object) %in% names(value)) && !isEmpty(object)) {
                      drops(object) <-
                        list(experiments = setdiff(names(object), names(value)))
                      warning("'experiments' dropped; see 'metadata'", call. = FALSE)
                    }
-                   
+
                    BiocGenerics:::replaceSlots(
                      object = object,
                      ExperimentList = rebliss[["experiments"]],

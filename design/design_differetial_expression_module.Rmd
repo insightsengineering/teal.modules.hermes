@@ -1,7 +1,7 @@
 ---
-title: "Differential Expression module design" 
+title: "Differential Expression module design"
 output: html_document
-editor_options: 
+editor_options:
   chunk_output_type: console
 ---
 
@@ -11,18 +11,13 @@ knitr::opts_chunk$set(echo = TRUE)
 library(teal)
 library(teal.devel)
 library(hermes)
-MAE <- multi_assay_experiment # from hermes
-mae <- dataset("MAE", MAE)
-data <- teal_data(mae)
+mae <- multi_assay_experiment # from hermes
+data <- teal_data(dataset("MAE", mae))
 ```
 
 ## Scatterplot module design
 
 We want to design a non-teal based differential expression module.
-
-Target:
-https://go.gene.com/EDIS-NHL-Dashboard click on RNAseq and then differential expression -
-but we will start with a simpler version first.
 
 Work in design folder within an Rmd:
 -plot function
@@ -37,7 +32,6 @@ Take as input the multi_assay_experiment in hermes and let the user select an ex
  -use diff_expression and autoplot from hermes to obtain volcano plot (no table yet at this point)
  -no reference/comparison group yet at this point, interactive plot, title settings, or Show R code for now.
 
-  
 Test the plot function for vocano plot:
 
 ```{r}
@@ -53,12 +47,12 @@ autoplot(res1, adj_p_val_thresh = 0.05, log2_fc_thresh = 2.5)
 ui_volcanoplot <- function(id, datasets, dataname) {
   ns <- NS(id)
   mae <- datasets$get_data(dataname, filtered = TRUE)
-  
+
   standard_layout(
     output = plotOutput(ns("plot")),
     encoding = div(
       selectInput(ns("experiment_name"), "Select experiment", names(mae)),
-      selectInput(ns("facetvar"), "Facet by", choices = c("SEX"="SEX", "AGE18"="AGE18") ),
+      selectInput(ns("facetvar"), "Facet by", choices = c("SEX" = "SEX", "AGE18" = "AGE18")),
       sliderInput(ns("log2_fc_thresh"), "Log2 folder change threshold", value = 2.5, min = 0.1, max = 10),
       sliderInput(ns("adj_p_val_thresh"), "Adjusted p-value threshold", value = 0.05, min = 0.01, max = 1)
     )
@@ -69,43 +63,43 @@ ui_volcanoplot <- function(id, datasets, dataname) {
 ## Server function
 
 ```{r}
-srv_volcanoplot <- function(input, output, session, datasets, dataname ) {
-  
+srv_volcanoplot <- function(input, output, session, datasets, dataname) {
+
    experiment_data <- reactive({
      req(input$experiment_name)
-     
+
      mae <- datasets$get_data(dataname, filtered = TRUE)
 
-     object <- HermesData(mae[[input$experiment_name]]) 
+     object <- HermesData(mae[[input$experiment_name]])
      colData(object) <- df_char_to_factor(colData(object))
      object
    })
-  
+
   diff_expr <- reactive({
     object <- experiment_data()
     facetvar <- input$facetvar
-    
+
     req(facetvar)
-    
+
     diff_expression(object, group = facetvar, method = "voom")
    })
-  
+
   output$plot <- renderPlot({
 
     object <- experiment_data()
     diff_expr_result <- diff_expr()
-    
+
     log2_fc_thresh <- input$log2_fc_thresh
     adj_p_val_thresh <- input$adj_p_val_thresh
     facetvar <- input$facetvar
-    
+
     req(
       log2_fc_thresh,
       adj_p_val_thresh,
       facetvar
     )
-    
- 
+
+
     autoplot(diff_expr_result, adj_p_val_thresh = adj_p_val_thresh, log2_fc_thresh = log2_fc_thresh)
   })
 }
@@ -114,10 +108,10 @@ srv_volcanoplot <- function(input, output, session, datasets, dataname ) {
 ## Teal module function
 
 ```{r}
-tm_g_volcanoplot <- function(label = "Simple MAE module", 
-                             info = NULL, 
-                             dataname = NULL, 
-                             pre_output = NULL, 
+tm_g_volcanoplot <- function(label = "Simple MAE module",
+                             info = NULL,
+                             dataname = NULL,
+                             pre_output = NULL,
                              post_output = NULL) {
   module(
     label = label,

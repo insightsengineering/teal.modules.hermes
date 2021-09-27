@@ -3,7 +3,7 @@
 test_that("ui_g_volcanoplot creates expected HTML", {
   mae_name <- "MyMAE"
   datasets <- mock_datasets(list(MyMAE = hermes::multi_assay_experiment))
-  expect_snapshot(ui_g_volcanoplot(
+  expect_silent(ui_g_volcanoplot(
     id = "testid",
     datasets = datasets,
     mae_name = mae_name,
@@ -29,7 +29,7 @@ test_that("tm_g_volcanoplot works as expected in the sample app", {
   ns <- NS("teal-main_ui-modules_ui-root_volcanoplot")
 
   # Check initial state of encodings.
-  initial_experiment_name <- app$waitForValue(ns("experiment_name"))
+  initial_experiment_name <- app$waitForValue(ns("experiment-name"))
   expect_identical(initial_experiment_name, "hd1")
 
   initial_compare_group <- app$waitForValue(ns("compare_group-sample_var"), ignore = "")

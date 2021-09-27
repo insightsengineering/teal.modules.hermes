@@ -2,11 +2,15 @@
 
 test_that("ui_g_barplot creates expected HTML", {
   mae_name <- "MyMAE"
+  set.seed(999)
   datasets <- mock_datasets(list(MyMAE = hermes::multi_assay_experiment))
   expect_snapshot(ui_g_barplot(
     id = "testid",
     datasets = datasets,
     mae_name = mae_name,
+    summary_funs = list(
+      Mean = colMeans
+    ),
     pre_output = NULL,
     post_output = NULL
   ))
@@ -16,7 +20,6 @@ test_that("ui_g_barplot creates expected HTML", {
 
 test_that("tm_g_barplot works as expected in the sample app", {
   test.nest::skip_if_too_deep(5)
-
   skip_if_covr()
 
   library(shinytest)
@@ -24,53 +27,59 @@ test_that("tm_g_barplot works as expected in the sample app", {
   app$getDebugLog()
   app$snapshotInit("test-app")
 
-  # nolint start
+  ns <- NS("teal-main_ui-modules_ui-root_barplot")
 
-  # Note: left hand side name is composed as:
-  # prefix: teal-main_ui-modules_ui-root_
-  # label: barplot-
-  # inputId: assay_name
-
-  # Check initial state of encodings.
-  initial_experiment_name <- app$waitForValue("teal-main_ui-modules_ui-root_barplot-experiment_name")
+  # Check initial experiment name.
+  initial_experiment_name <- app$waitForValue(ns("experiment-name"))
   expect_identical(initial_experiment_name, "hd1")
 
-  initial_assay_name <- app$waitForValue("teal-main_ui-modules_ui-root_barplot-assay_name")
+  # Check initial assay name
+  initial_assay_name <- app$waitForValue(ns("assay-name"))
   expect_identical(initial_assay_name, "counts")
 
-  initial_x_var <- app$waitForValue("teal-main_ui-modules_ui-root_barplot-x_var")
-  expect_identical(initial_x_var, "GeneID:101927746")
+  # Check that no gene is initially selected.
+  initial_x_spec <- app$waitForValue(ns("x-genes"), ignore = "")
+  expect_identical(initial_x_spec, NULL)
 
-  # Initial plot.
+  # Check that a message initially replaces the plot.
+  plot_message <- app$waitForOutputElement(ns("plot"), "message")
+  expect_identical(
+    plot_message,
+    "please select at least one gene"
+  )
+
+  # Set gene value
+  app$setValue(ns("experiment-name"), "hd2")
+  app$setValue(ns("assay-name"), "tpm")
+  app$setValue(ns("x-genes"), "GeneID:8086")
+  app$setValue(ns("experiment-name"), "hd1")
+
+  # Check that gene list is updated
+  now_x_spec_gene <- app$waitForValue(ns("x-genes"), ignore = "")
+  expect_null(now_x_spec_gene)
+
+  # Check that assay list is updated
+  now_assay <- app$waitForValue(ns("assay"), ignore = "")
+  expect_null(now_assay)
+
+  # Check error message in case of identical percentile boundaries
+  app$setValue(ns("percentiles"), c(0.1, 0.1))
+  plot_message <- app$waitForOutputElement(ns("plot"), "message")
+  expect_identical(
+    plot_message,
+    "please select two different quantiles - if you want only 2 groups, choose one quantile as 0 or 1"
+  )
+
+  # Set Experiment, assay, gene, percentile and facet
+  app$setValue(ns("experiment-name"), "hd1")
+  app$setValue(ns("assay-name"), "counts")
+  app$setValue(ns("x-genes"), "GeneID:47")
+  app$setValue(ns("percentiles"), c(0.2, 0.8))
+  app$setValue(ns("facet-sample_var"), "AGE18")
+
   expect_snapshot_screenshot(
     app,
-    id = "teal-main_ui-modules_ui-root_barplot-plot",
-    name = "initial_plot.png"
-  )
-
-  # Now change the experiment_name and confirm that genes are updated accordingly.
-  app$setInputs(
-    "teal-main_ui-modules_ui-root_barplot-experiment_name" = "hd3"
-  )
-  now_x_var <- app$waitForValue("teal-main_ui-modules_ui-root_barplot-x_var")
-  expect_identical(now_x_var, "GeneID:5205")
-
-  # Test that validation message is correct when select two equal quantiles with the slider.
-  app$setInputs(
-    "teal-main_ui-modules_ui-root_barplot-percentiles" = c(0.2, 0.2)
-  )
-  plot_message <- app$waitForOutputElement("teal-main_ui-modules_ui-root_barplot-plot", "message")
-  expect_match(plot_message, "please select two different quantiles")
-
-  # Change percentiles to something that works.
-  app$setInputs(
-    "teal-main_ui-modules_ui-root_barplot-percentiles" = c(0.2, 0.5)
-  )
-
-  # Final plot.
-  expect_snapshot_screenshot(
-    app,
-    id = "teal-main_ui-modules_ui-root_barplot-plot",
+    id = ns("plot"),
     name = "final_plot.png"
   )
 

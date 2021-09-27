@@ -1,8 +1,9 @@
-url: https://go.roche.com/nest-docs/releases/latest/api-reference/teal.modules.hermes
+url: https://insightsengineering.github.io/teal.modules.hermes
 
 template:
   params:
     bootswatch: cerulean
+    ganalytics: "UA-125641273-1"
 
 navbar:
   right:
@@ -10,20 +11,37 @@ navbar:
       href: https://github.com/insightsengineering/teal.modules.hermes
 
 reference:
+  - title: Package
+    contents:
+      - teal.modules.hermes-package
   - title: Classes
     contents:
   - title: Utility Functions
     contents:
       - is_blank
       - h_km_mae_to_adtte
+      - include_css_files
+      - include_js_files
   - title: Internal Helper Functions
     contents:
+      - h_assign_to_group_list
+      - h_collapse_levels
+      - h_extract_words
+      - h_gene_data
+      - h_order_genes
+      - h_parse_genes
+      - h_update_gene_selection
   - title: Shiny Modules
     contents:
+      - assaySpecInput
       - assaySpecServer
+      - experimentSpecInput
       - experimentSpecServer
+      - geneSpecInput
       - geneSpecServer
+      - sampleVarSpecInput
       - sampleVarSpecServer
+      - multiSampleVarSpecServer
   - title: Teal Module Functions
     contents:
       - tm_g_barplot
@@ -31,14 +49,29 @@ reference:
       - tm_g_forest_tte
       - tm_g_scatterplot
       - tm_g_boxplot
+      - tm_g_km
       - tm_g_pca
+      - tm_g_quality
       - tm_g_volcanoplot
   - title: Graphs
     contents:
+      - heatmap_plot
+      - top_gene_plot
   - title: Control Functions
     contents:
   - title: Assertions
     contents:
+      - assertions
+      - assert_reactive
+      - assert_summary_funs
       - assert_tag
-  - title: Constants
+  - title: Validations
     contents:
+      - validate_gene_spec
+      - validate_n_levels
+  - title: Documentation Templates
+    contents:
+      - assertion_arguments
+      - function_arguments
+      - module_arguments
+

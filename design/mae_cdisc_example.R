@@ -1,4 +1,10 @@
-tm_made_up_merge_pr <- function(label = "PR merge", info = NULL, dataname = NULL, pre_output = NULL, post_output = NULL) {
+tm_made_up_merge_pr <- function(
+    label = "PR merge",
+    info = NULL,
+    dataname = NULL,
+    pre_output = NULL,
+    post_output = NULL
+  ) {
 
   args <- as.list(environment())
   module(
@@ -58,19 +64,19 @@ srv_made_up_merge_pr <- function(input, output, session, datasets, dataname) {
   })
 
   output$col_data_table <- renderText({
-    MAE <- datasets$get_data(dataname, filtered = TRUE)
+    mae <- datasets$get_data(dataname, filtered = TRUE)
     chunks_reset()
     chunks_push(bquote({
-      paste(capture.output(print(MAE)), collapse = "\n")
+      paste(capture.output(print(mae)), collapse = "\n")
     }))
     chunks_safe_eval()
   })
 
   output$adsl_data_table <- renderText({
-    ADSL <- datasets$get_data("ADSL", filtered = TRUE)
+    adsl <- datasets$get_data("ADSL", filtered = TRUE)
     chunks_reset()
     chunks_push(bquote({
-      paste(capture.output(str(ADSL)), collapse = "\n")
+      paste(capture.output(str(adsl)), collapse = "\n")
     }))
     chunks_safe_eval()
   })
@@ -110,11 +116,9 @@ adtte <- cdisc_dataset("ADTTE", radtte(cached = TRUE))  %>%
   )
 
 
-MAE <- multi_assay_experiment # from hermes
-mae <- dataset("MAE", MAE)
+mae <- multi_assay_experiment # from hermes
 
-
-data <- cdisc_data(mae, adsl, adtte) %>%
+data <- cdisc_data(dataset("MAE", mae), adsl, adtte) %>%
   mutate_join_keys("MAE", "MAE", c("STUDYID", "USUBJID"))
 
 app <- init(

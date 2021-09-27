@@ -75,16 +75,16 @@ test_that("geneSpec module works as expected in the test app", {
   ns2 <- NS("teal-main_ui-filter_panel-add_MAE_filter-hd1")
   app$setValue(
     ns2("row_to_add"),
-    "Chromosome"
+    "chromosome"
   )
 
   # Now we lock the gene selection.
   app$setValue(ns("my_genes-lock_button"), TRUE)
 
   # Now we just select a small subset of chromosomes.
-  app$waitForValue(ns2("rowData_var_Chromosome-content-selection"))
+  app$waitForValue(ns2("rowData_var_chromosome-content-selection"))
   app$setValue(
-    ns2("rowData_var_Chromosome-content-selection"),
+    ns2("rowData_var_chromosome-content-selection"),
     c("X", "Y")
   )
 
@@ -114,7 +114,7 @@ test_that("geneSpec module works as expected in the test app", {
   expect_identical(output_text, "mean(GAGE4, IDS, MAGEB16)")
 
   # Now we remove the filter.
-  app$click(ns2("rowData_var_Chromosome-remove"))
+  app$click(ns2("rowData_var_chromosome-remove"))
 
   # We select a gene via text input.
   app$click(ns("my_genes-text_button"))
