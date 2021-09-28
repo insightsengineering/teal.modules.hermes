@@ -96,6 +96,60 @@ test_that("h_km_mae_to_adtte warns when patients are not in ADTTE and therefore 
   )
 })
 
+test_that("h_km_mae_to_adtte fails as expected if USUBJID in MAE colData is different from sample map", {
+  mae <- MultiAssayExperiment::MultiAssayExperiment(
+    experiments = list(
+      a = hermes::HermesDataFromMatrix(
+        matrix(1:4, 2, 2, dimnames = list(c("ENSG1", "ENSG2"), c("A", "B"))),
+        colData = data.frame(USUBJID = c("A", "B"))  # USUBJID on experiment.
+      )
+    ),
+    colData = data.frame(
+      USUBJID = c("C", "D"), # USUBJID on MAE.
+      row.names = c("A", "B")
+    )
+  )
+  adtte <- data.frame(USUBJID = c("A", "B"))
+
+  expect_error(
+    h_km_mae_to_adtte(
+      adtte,
+      mae,
+      genes = hermes::gene_spec("ENSG1"),
+      experiment_name = "a"
+    ),
+    "Must be a subset of {'C','D'}, but is {'A','B'}",
+    fixed = TRUE
+  )
+})
+
+test_that("h_km_mae_to_adtte fails as expected if USUBJID in experiment colData is different from sample map", {
+  mae <- MultiAssayExperiment::MultiAssayExperiment(
+    experiments = list(
+      a = hermes::HermesDataFromMatrix(
+        matrix(1:4, 2, 2, dimnames = list(c("ENSG1", "ENSG2"), c("E", "F"))),
+        colData = data.frame(USUBJID = c("A", "B"))  # USUBJID on experiment.
+      )
+    ),
+    colData = data.frame(
+      USUBJID = c("A", "B"),
+      row.names = c("E", "F") # USUBJID on sample map.
+    )
+  )
+  adtte <- data.frame(USUBJID = c("E", "F"))
+
+  expect_error(
+    h_km_mae_to_adtte(
+      adtte,
+      mae,
+      genes = hermes::gene_spec("ENSG1"),
+      experiment_name = "a"
+    ),
+    "Must be a subset of {'E','F'}, but is {'A','B'}",
+    fixed = TRUE
+  )
+})
+
 # ui_g_km ----
 
 test_that("ui_g_km creates expected HTML", {

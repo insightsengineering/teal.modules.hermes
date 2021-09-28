@@ -56,7 +56,6 @@ h_km_mae_to_adtte <- function(adtte,
   mae_samplemap <- MultiAssayExperiment::sampleMap(mae)
   samplemap_experiment <- mae_samplemap[mae_samplemap$assay == experiment_name, ]
   patients_in_experiment <- samplemap_experiment$primary
-
   assert_character(patients_in_experiment, unique = TRUE)
 
   merge_samplemap <- samplemap_experiment[, c("primary", "colname")]
@@ -65,6 +64,19 @@ h_km_mae_to_adtte <- function(adtte,
 
   hd <- suppressWarnings(MultiAssayExperiment::getWithColData(mae, experiment_name))
   assert_class(hd, "AnyHermesData")
+  hd_usubjid <- SummarizedExperiment::colData(hd)$USUBJID
+  assert_subset(
+    x = hd_usubjid,
+    choices = merge_samplemap$USUBJID
+  )
+  mae_coldata <- MultiAssayExperiment::colData(mae)
+  if ("USUBJID" %in% colnames(mae_coldata)) {
+    mae_usubjid <- mae_coldata$USUBJID
+    assert_subset(
+      x = merge_samplemap$USUBJID,
+      choices = mae_usubjid
+    )
+  }
 
   assay_matrix <- SummarizedExperiment::assay(hd, assay_name)
   gene_assay <- genes$extract(assay_matrix)
