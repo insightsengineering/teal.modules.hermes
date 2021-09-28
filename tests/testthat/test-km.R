@@ -96,24 +96,6 @@ test_that("h_km_mae_to_adtte warns when patients are not in ADTTE and therefore 
   )
 })
 
-# ui_g_km ----
-
-test_that("ui_g_km creates expected HTML", {
-  mae_name <- "MyMAE"
-  set.seed(123)
-  datasets <- mock_datasets(list(MyMAE = hermes::multi_assay_experiment))
-  expect_snapshot(ui_g_km(
-    id = "testid",
-    datasets = datasets,
-    mae_name = mae_name,
-    summary_funs = list(
-      Mean = colMeans
-    ),
-    pre_output = NULL,
-    post_output = NULL
-  ))
-})
-
 test_that("h_km_mae_to_adtte fails as expected if USUBJID in MAE colData is different from sample map", {
   mae <- MultiAssayExperiment::MultiAssayExperiment(
     experiments = list(
@@ -133,10 +115,10 @@ test_that("h_km_mae_to_adtte fails as expected if USUBJID in MAE colData is diff
     h_km_mae_to_adtte(
       adtte,
       mae,
-      gene_var = "ENSG1",
+      genes = hermes::gene_spec("ENSG1"),
       experiment_name = "a"
     ),
-    "Must be equal to set {'A','B'}, but is {'C','D'}",
+    "Must be a subset of {'C','D'}, but is {'A','B'}",
     fixed = TRUE
   )
 })
@@ -160,12 +142,32 @@ test_that("h_km_mae_to_adtte fails as expected if USUBJID in experiment colData 
     h_km_mae_to_adtte(
       adtte,
       mae,
-      gene_var = "ENSG1",
+      genes = hermes::gene_spec("ENSG1"),
       experiment_name = "a"
     ),
-    "Must be equal to set {'E','F'}, but is {'A','B'}",
+    "Must be a subset of {'E','F'}, but is {'A','B'}",
     fixed = TRUE
   )
+})
+
+# ui_g_km ----
+
+test_that("ui_g_km creates expected HTML", {
+  mae_name <- "MyMAE"
+  set.seed(123)
+  datasets <- mock_datasets(list(MyMAE = hermes::multi_assay_experiment))
+  expect_snapshot(ui_g_km(
+    id = "testid",
+    datasets = datasets,
+    mae_name = mae_name,
+    summary_funs = list(
+      Mean = colMeans
+    ),
+    pre_output = NULL,
+    post_output = NULL
+  ))
+})
+
 # tm_g_km ----
 
 test_that("tm_g_km works as expected in the sample app", {
