@@ -64,16 +64,17 @@ h_km_mae_to_adtte <- function(adtte,
 
   hd <- suppressWarnings(MultiAssayExperiment::getWithColData(mae, experiment_name))
   assert_class(hd, "AnyHermesData")
-  hd_usubjid <- SummarizedExperiment::colData(hd)$USUBJID
+  hd_usubjid <- as.character(SummarizedExperiment::colData(hd)$USUBJID)
+  sm_usubjid <- as.character(merge_samplemap$USUBJID)
   assert_subset(
     x = hd_usubjid,
-    choices = merge_samplemap$USUBJID
+    choices = sm_usubjid
   )
   mae_coldata <- MultiAssayExperiment::colData(mae)
   if ("USUBJID" %in% colnames(mae_coldata)) {
-    mae_usubjid <- mae_coldata$USUBJID
+    mae_usubjid <- as.character(mae_coldata$USUBJID)
     assert_subset(
-      x = merge_samplemap$USUBJID,
+      x = sm_usubjid,
       choices = mae_usubjid
     )
   }

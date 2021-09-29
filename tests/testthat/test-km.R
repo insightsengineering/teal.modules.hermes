@@ -15,6 +15,23 @@ test_that("h_km_mae_to_adtte function works as expected with a single gene", {
   expect_subset(c("SampleID", "GeneID1820_counts"), colnames(result))
 })
 
+test_that("h_km_mae_to_adtte function also works when some ID variables are factors", {
+  mae <- hermes::multi_assay_experiment
+  SummarizedExperiment::colData(mae)$USUBJID <-
+    factor(SummarizedExperiment::colData(mae)$USUBJID)
+  adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
+    dplyr::mutate(USUBJID = factor(USUBJID))
+
+  result <- h_km_mae_to_adtte(
+    adtte,
+    mae,
+    genes = hermes::gene_spec("GeneID:1820"),
+    experiment_name = "hd2"
+  )
+  expect_class(result, "data.frame")
+  expect_subset(c("SampleID", "GeneID1820_counts"), colnames(result))
+})
+
 test_that("h_km_mae_to_adtte function works as expected with multiple genes", {
   mae <- hermes::multi_assay_experiment
   adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
