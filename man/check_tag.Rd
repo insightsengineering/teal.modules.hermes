@@ -4,6 +4,7 @@
 \alias{check_tag}
 \alias{assert_tag}
 \alias{test_tag}
+\alias{expect_tag}
 \title{Check for Shiny Tag}
 \usage{
 check_tag(x, null.ok = FALSE)
@@ -11,6 +12,8 @@ check_tag(x, null.ok = FALSE)
 assert_tag(x, null.ok = FALSE, .var.name = checkmate::vname(x), add = NULL)
 
 test_tag(x, null.ok = FALSE)
+
+expect_tag(x, null.ok = FALSE, info = NULL, label = vname(x))
 }
 \arguments{
 \item{x}{an object to check.}
@@ -22,6 +25,12 @@ assertions; defaults to the heuristic implemented in \code{\link[checkmate:vname
 
 \item{add}{(\code{AssertCollection} or \code{NULL})\cr collection to store
 assertion messages, see \code{\link[checkmate:AssertCollection]{checkmate::AssertCollection}}.}
+
+\item{info}{(\code{string})\cr extra information to be included in the
+message for the testthat reporter, see \code{\link[testthat:expect_that]{testthat::expect_that()}}.}
+
+\item{label}{(\code{string})\cr name of the checked object to print in
+messages. Defaults to the heuristic implemented in \code{\link[checkmate:vname]{checkmate::vname()}}.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

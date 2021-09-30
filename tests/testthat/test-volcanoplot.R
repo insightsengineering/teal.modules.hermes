@@ -3,13 +3,14 @@
 test_that("ui_g_volcanoplot creates expected HTML", {
   mae_name <- "MyMAE"
   datasets <- mock_datasets(list(MyMAE = hermes::multi_assay_experiment))
-  expect_silent(ui_g_volcanoplot(
+  result <- ui_g_volcanoplot(
     id = "testid",
     datasets = datasets,
     mae_name = mae_name,
     pre_output = NULL,
     post_output = NULL
-  ))
+  )
+  expect_tag(result)
 })
 
 # tm_g_volcanoplot ----
@@ -23,8 +24,6 @@ test_that("tm_g_volcanoplot works as expected in the sample app", {
   app <- ShinyDriver$new("volcanoplot/", loadTimeout = 1e5, debug = "all", phantomTimeout = 1e5)
   app$getDebugLog()
   app$snapshotInit("test-app")
-
-  # nolint start
 
   ns <- NS("teal-main_ui-modules_ui-root_volcanoplot")
 

@@ -145,6 +145,10 @@
         position: absolute;
         top: -500vh;
         width: 100%;
+      }
+      
+      .dataTable-container table td{
+        white-space: unset !important;
       }</style>
                   </div>
                 </div>

@@ -229,7 +229,7 @@ experimentSpecServer <- function(inputId,
 
       mae <- datasets$get_data(mae_name, filtered = TRUE)
       orig_object <- mae[[name]]
-      object <- if (with_mae_col_data && !MultiAssayExperiment:::.isEmpty(orig_object)) {
+      object <- if (with_mae_col_data && !hermes::isEmpty(orig_object)) {
         MultiAssayExperiment::getWithColData(mae, name)
       } else {
         orig_object

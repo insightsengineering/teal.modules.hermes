@@ -52,6 +52,11 @@ assert_tag <- makeAssertionFunction(check_tag)
 #' @export
 test_tag <- makeTestFunction(check_tag)
 
+#' @rdname check_tag
+#' @inheritParams assertion_arguments
+#' @export
+expect_tag <- makeExpectationFunction(check_tag)
+
 # assert_reactive ----
 
 #' Check for Reactive Input

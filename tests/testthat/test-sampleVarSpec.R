@@ -116,8 +116,6 @@ test_that("sampleVarSpec module works as expected in the test app", {
   app$getDebugLog()
   app$snapshotInit("test-app")
 
-  # nolint start
-
   ns <- NS("teal-main_ui-modules_ui-root_sampleVarSpec_example")
 
   # Initially no variable is selected.
