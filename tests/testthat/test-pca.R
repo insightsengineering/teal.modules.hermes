@@ -3,13 +3,14 @@
 test_that("ui_g_pca creates HTML", {
   mae_name <- "MyMAE"
   datasets <- mock_datasets(list(MyMAE = hermes::multi_assay_experiment))
-  expect_silent(ui_g_pca(
+  result <- ui_g_pca(
     id = "testid",
     datasets = datasets,
     mae_name = mae_name,
     pre_output = NULL,
     post_output = NULL
-  ))
+  )
+  expect_tag(result)
 })
 
 test_that("tm_g_pca works as expected in the sample app", {
@@ -26,8 +27,6 @@ test_that("tm_g_pca works as expected in the sample app", {
   )
   app$getDebugLog()
   app$snapshotInit("test-app")
-
-  # nolint start
 
   ns <- NS("teal-main_ui-modules_ui-root_pca")
 
@@ -196,10 +195,10 @@ test_that("tm_g_pca works as expected in the sample app", {
   )
 
   ns2 <- NS("teal-main_ui-filter_panel-add_MAE_filter")
-  app$setValue(ns2("subjects-var_to_add"), "sex")
+  app$setValue(ns2("subjects-var_to_add"), "SEX")
   # Before selecting, it seems we need to wait a bit for the initial state.
-  app$waitForValue(ns2("subjects-var_sex-content-selection"))
-  app$setValue(ns2("subjects-var_sex-content-selection"), "M")
+  app$waitForValue(ns2("subjects-var_SEX-content-selection"))
+  app$setValue(ns2("subjects-var_SEX-content-selection"), "M")
 
   # Ensure xvar and yvar get resetted to pc1 and pc2.
   new_xvar <- app$waitForValue(ns("x_var"))
@@ -224,10 +223,6 @@ test_that("tm_g_pca works as expected in the sample app", {
   # Update to cor tab.
   app$setValue(ns("tab_selected"), "PC and Sample Correlation")
 
-  # Check that correct validation message is displayed.
-  plot_message <- app$waitForOutputElement(ns("plot_cor"), "message")
-  expect_identical(plot_message, "Obtained NA results in the correlation matrix, therefore no plot can be produced")
-
   expect_snapshot_screenshot(
     app,
     id = ns("table_cor"),
@@ -236,13 +231,13 @@ test_that("tm_g_pca works as expected in the sample app", {
 
   # Update filter to F, look at PCA plot, to get another validate msg.
   app$setValue(ns("tab_selected"), "PCA")
-  app$setValue(ns2("subjects-var_sex-content-selection"), "F")
+  app$setValue(ns2("subjects-var_SEX-content-selection"), "F")
 
   plot_message <- app$waitForOutputElement(ns("plot_pca"), "message")
   expect_identical(plot_message, "Sample size is too small. PCA needs more than 2 samples.")
 
   # Remove filter.
-  app$click(ns2("subjects-var_sex-remove"))
+  app$click(ns2("subjects-var_SEX-remove"))
 
   # Initiate the use of Top Variance Genes filtering functionality.
   app$setValue(ns("filter_top"), TRUE)
@@ -265,7 +260,7 @@ test_that("tm_g_pca works as expected in the sample app", {
   expect_identical(n_top_value2, 777L)
 
   # Increase number of top genes to maximum.
-  app$setValue(ns("n_top"), 2500L)
+  n_top_old <- app$setValue(ns("n_top"), 2500L)
 
   # Take screenshot of table.
   expect_snapshot_screenshot(
@@ -282,12 +277,12 @@ test_that("tm_g_pca works as expected in the sample app", {
     name = "update7_pca_table.png"
   )
 
-  # Go back to first experiment and check how n_top changed.
+  # Go back to first experiment and check that n_top stayed the same.
   app$setValue(ns("experiment-name"), "hd1")
   app$setValue(ns("filter_top"), TRUE)
   n_top_value3 <- app$waitForValue(
     ns("n_top"),
-    ignore = list(2500L)  # Ignore the old value so that we get the updated one.
+    ignore = list(2500L, 777L)
   )
   expect_identical(n_top_value3, 1000L)
 

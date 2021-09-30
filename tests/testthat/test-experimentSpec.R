@@ -93,8 +93,6 @@ test_that("experimentSpec module works as expected in the test app", {
   app$getDebugLog()
   app$snapshotInit("test-app")
 
-  # nolint start
-
   ns <- NS("teal-main_ui-modules_ui-root_experimentSpec_example")
 
   # Initially the first experiment is selected.
@@ -140,9 +138,9 @@ test_that("experimentSpec module works as expected in the test app", {
 
   # Filtering out all samples does not lead to an error but an empty experiment.
   ns2 <- NS("teal-main_ui-filter_panel-add_MAE_filter")
-  app$setValue(ns2("subjects-var_to_add"), "sex")
-  app$waitForValue(ns2("subjects-var_to_add"))
-  app$setValue(ns2("subjects-var_sex-content-selection"), character())
+  app$setValue(ns2("subjects-var_to_add"), "SEX")
+  app$waitForValue(ns2("subjects-var_SEX-remove"))
+  app$setValue(ns2("subjects-var_SEX-content-selection"), character())
   expect_match(
     app$waitForValue(ns("summary"), iotype = "output"),
     "HermesData object with 0 samples of 2500 genes"

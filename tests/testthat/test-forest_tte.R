@@ -4,7 +4,7 @@ test_that("ui_g_forest_tte creates expected HTML", {
   mae_name <- "MyMAE"
   set.seed(123)
   datasets <- mock_datasets(list(MyMAE = hermes::multi_assay_experiment))
-  expect_silent(ui_g_forest_tte(
+  result <- ui_g_forest_tte(
     id = "testid",
     datasets = datasets,
     mae_name = mae_name,
@@ -13,7 +13,8 @@ test_that("ui_g_forest_tte creates expected HTML", {
     ),
     pre_output = NULL,
     post_output = NULL
-  ))
+  )
+  expect_tag(result)
 })
 
 # tm_g_forest_tte ----

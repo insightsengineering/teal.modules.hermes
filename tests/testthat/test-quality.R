@@ -50,13 +50,6 @@ test_that("tm_g_quality works as expected in the sample app", {
   )
 
   # Choose another experiment.
-  app$setValue(ns("experiment-name"), "hd2")
-
-  # Check that warning message about already present quality flags works as expected.
-  plot_message <- app$waitForOutputElement(ns("plot"), "message")
-  expect_identical(plot_message, "Quality flags have already been added to this experiment")
-
-  # Choose another experiment.
   app$setValue(ns("experiment-name"), "hd3")
   app$setValue(ns("min_depth"), "Specify")
 
