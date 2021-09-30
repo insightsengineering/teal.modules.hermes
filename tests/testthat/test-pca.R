@@ -28,8 +28,6 @@ test_that("tm_g_pca works as expected in the sample app", {
   app$getDebugLog()
   app$snapshotInit("test-app")
 
-  # nolint start
-
   ns <- NS("teal-main_ui-modules_ui-root_pca")
 
   # Check initial state of encodings.
@@ -224,10 +222,6 @@ test_that("tm_g_pca works as expected in the sample app", {
 
   # Update to cor tab.
   app$setValue(ns("tab_selected"), "PC and Sample Correlation")
-
-  # # Check that correct validation message is displayed.
-  # plot_message <- app$waitForOutputElement(ns("plot_cor"), "message")
-  # expect_identical(plot_message, "Obtained NA results in the correlation matrix, therefore no plot can be produced")
 
   expect_snapshot_screenshot(
     app,

@@ -41,8 +41,6 @@ test_that("geneSpec module works as expected in the test app", {
   app$getDebugLog()
   app$snapshotInit("test-app")
 
-  # nolint start
-
   ns <- NS("teal-main_ui-modules_ui-root_GeneSpec_example")
 
   # Initially no genes are selected.

@@ -17,7 +17,7 @@ test_that("h_km_mae_to_adtte function works as expected with a single gene", {
 
 test_that("h_km_mae_to_adtte function also works when some ID variables are factors", {
   mae <- hermes::multi_assay_experiment
-  SummarizedExperiment::colData(mae)$USUBJID <-
+  SummarizedExperiment::colData(mae)$USUBJID <- # nolint
     factor(SummarizedExperiment::colData(mae)$USUBJID)
   adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
     dplyr::mutate(USUBJID = factor(USUBJID))

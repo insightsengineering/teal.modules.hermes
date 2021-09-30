@@ -93,8 +93,6 @@ test_that("experimentSpec module works as expected in the test app", {
   app$getDebugLog()
   app$snapshotInit("test-app")
 
-  # nolint start
-
   ns <- NS("teal-main_ui-modules_ui-root_experimentSpec_example")
 
   # Initially the first experiment is selected.
