@@ -140,6 +140,7 @@ test_that("sampleVarSpec module works as expected in the test app", {
 
   # Check the output and which levels are reported there.
   second_output <- app$waitForValue(ns("summary"), iotype = "output")
-  # At the moment it is not changed, see https://github.com/szelepke/shinyRadioMatrix/issues/2
-  expect_match(second_output, " < 18 >= 18 \n")
+  expect_match(second_output, "< 18/>= 18 \n")
+
+  app$stop
 })
