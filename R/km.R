@@ -46,30 +46,23 @@ h_km_mae_to_adtte <- function(adtte,
                               genes,
                               experiment_name = "hd1",
                               assay_name = "counts") {
-  assert_choice(
-    assay_name,
-    c("counts", "cpm", "rpkm", "tpm", "voom")
-  )
-  assert_class(genes, "GeneSpec")
+  assert_class(mae, "MultiAssayExperiment")
   assert_string(experiment_name)
 
+  # Check `USUBJID` across experiment, sample map, and MAE colData.
   mae_samplemap <- MultiAssayExperiment::sampleMap(mae)
   samplemap_experiment <- mae_samplemap[mae_samplemap$assay == experiment_name, ]
-  patients_in_experiment <- samplemap_experiment$primary
-  assert_character(patients_in_experiment, unique = TRUE)
-
-  merge_samplemap <- samplemap_experiment[, c("primary", "colname")]
-  merge_samplemap <- as.data.frame(merge_samplemap)
-  colnames(merge_samplemap) <- c("USUBJID", "SampleID")
+  sm_usubjid <- as.character(samplemap_experiment$primary)
 
   hd <- suppressWarnings(MultiAssayExperiment::getWithColData(mae, experiment_name))
   assert_class(hd, "AnyHermesData")
   hd_usubjid <- as.character(SummarizedExperiment::colData(hd)$USUBJID)
-  sm_usubjid <- as.character(merge_samplemap$USUBJID)
+
   assert_subset(
     x = hd_usubjid,
     choices = sm_usubjid
   )
+
   mae_coldata <- MultiAssayExperiment::colData(mae)
   if ("USUBJID" %in% colnames(mae_coldata)) {
     mae_usubjid <- as.character(mae_coldata$USUBJID)
@@ -79,61 +72,19 @@ h_km_mae_to_adtte <- function(adtte,
     )
   }
 
-  assay_matrix <- SummarizedExperiment::assay(hd, assay_name)
-  gene_assay <- genes$extract(assay_matrix)
-  if (!is.matrix(gene_assay)) {
-    gene_assay <- t(gene_assay)
-  }
-  colnames(gene_assay) <- colnames(hd)
-  gene_assay <- as.data.frame(gene_assay)
-  num_genes <- nrow(gene_assay)
-  gene_names <- if (num_genes == 1) {
-    genes$get_label()
-  } else {
-    genes$get_gene_labels()
-  }
-  gene_names <- tern::make_names(gene_names)
-  merged_names <- paste(gene_names, assay_name, sep = "_")
-  rownames(gene_assay) <- merged_names
-  gene_assay <- data.frame(
-    t(gene_assay),
-    SampleID = colnames(gene_assay)
+  gene_data <- hermes::col_data_with_genes(
+    object = hd,
+    assay_name = assay_name,
+    genes = genes
   )
-  se_col_data <- SummarizedExperiment::colData(hd)
-  se_col_data$SampleID <- rownames(se_col_data)
-  merge_se_data <- merge(merge_samplemap, gene_assay, by = "SampleID")
-  merge_se_data <- merge(merge_se_data, se_col_data, by = c("USUBJID", "SampleID"))
-
-  adtte_patients <- unique(adtte$USUBJID)
-  se_patients <- merge_se_data$USUBJID
-
-  patients_not_in_adtte <- setdiff(se_patients, adtte_patients)
-  if (length(patients_not_in_adtte) > 0) {
-    warn_message <- paste(
-      "Patients", paste(patients_not_in_adtte, collapse = ", "),
-      "removed from MAE because not contained in ADTTE."
-    )
-    if (is.null(getDefaultReactiveDomain())) {
-      warning(warn_message)
-    } else {
-      showNotification(warn_message, type = "warning")
-    }
-  }
-
-  # Now do the inner join.
-  cols_to_take_from_col_data <- setdiff(names(se_col_data), "USUBJID")
-  adtte_reduced <- adtte[, - which(names(adtte) %in% cols_to_take_from_col_data)]
-  merged_adtte <- merge(adtte_reduced, merge_se_data, by = "USUBJID")
-  merged_adtte <- tern::df_explicit_na(
-    merged_adtte,
-    char_as_factor = TRUE,
-    logical_as_factor = FALSE
+  merged_adtte <- hermes::inner_join_cdisc(
+    gene_data = gene_data,
+    cdisc_data = adtte
   )
-
   structure(
     merged_adtte,
     sample_id = "SampleID",
-    gene_cols = merged_names
+    gene_cols = attr(gene_data, "gene_cols")
   )
 }
 
