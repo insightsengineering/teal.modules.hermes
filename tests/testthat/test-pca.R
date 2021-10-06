@@ -67,6 +67,14 @@ test_that("tm_g_pca works as expected in the sample app", {
     name = "initial_pca_table.png"
   )
 
+  # Add a gene filter and deselect everything and check that it does not crash.
+  ns2 <- NS("teal-main_ui-filter_panel-add_MAE_filter")
+  app$setValue(ns2("hd1-row_to_add"), "symbol")
+  app$waitForValue(ns2("hd1-rowData_var_symbol-content-selection"))
+  app$setValue(ns2("hd1-rowData_var_symbol-content-selection"), character())  # Deselect everything.
+  app$waitForValue(ns("experiment-name"))  # This only works when the app is still alive.
+  app$click(ns2("hd1-rowData_var_symbol-remove"))  # Remove filter again.
+
   # Now update the tab selection.
   app$setValue(ns("tab_selected"), "PC and Sample Correlation")
 
@@ -194,7 +202,6 @@ test_that("tm_g_pca works as expected in the sample app", {
     "show_matrix" = TRUE
   )
 
-  ns2 <- NS("teal-main_ui-filter_panel-add_MAE_filter")
   app$setValue(ns2("subjects-var_to_add"), "SEX")
   # Before selecting, it seems we need to wait a bit for the initial state.
   app$waitForValue(ns2("subjects-var_SEX-content-selection"))
