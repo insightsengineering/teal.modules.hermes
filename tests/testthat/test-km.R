@@ -219,6 +219,7 @@ test_that("tm_g_km works as expected in the sample app", {
   app$setValue(ns("genes-genes"), c("GeneID:101927746", "GeneID:1820"))
 
   # Initial plot.
+  Sys.sleep(1)
   expect_snapshot_screenshot(
     app,
     id = ns("km_plot"),
