@@ -110,7 +110,8 @@ ui_g_pca <- function(id,
         )
       )
     ),
-    output = tagList(
+    output = div(
+      style = "display:flow-root",
       tabsetPanel(
         id = ns("tab_selected"),
         type = "tabs",
