@@ -196,8 +196,12 @@ srv_g_pca <- function(input,
     validate(need(hermes::is_hermes_data(experiment_data), "please use HermesData() on input experiments"))
     req(isTRUE(assay_name %in% SummarizedExperiment::assayNames(experiment_data)))
     validate(need(
-      ncol(SummarizedExperiment::assay(experiment_data)) > 2,
+      ncol(experiment_data) > 2,
       "Sample size is too small. PCA needs more than 2 samples."
+    ))
+    validate(need(
+      nrow(experiment_data) > 1,
+      "Number of genes is too small. PCA needs more than 1 gene."
     ))
 
     hermes::calc_pca(experiment_data, assay_name, n_top = if (filter_top) n_top else NULL)

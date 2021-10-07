@@ -9,11 +9,11 @@ shinytest::ShinyDriver$set(
                    ignore = list(NULL, ""),
                    timeout = 10000,
                    interval = 400) {
-    assert_string(name, min.chars = 1L)
-    assert_string(element, min.chars = 1L)
-    assert_list(ignore, types = c("null", "character"), min.len = 1L)
-    assert_number(timeout, lower = 1, finite = TRUE)
-    assert_number(interval, lower = 1, finite = TRUE)
+    checkmate::assert_string(name, min.chars = 1L)
+    checkmate::assert_string(element, min.chars = 1L)
+    checkmate::assert_list(ignore, types = c("null", "character"), min.len = 1L)
+    checkmate::assert_number(timeout, lower = 1, finite = TRUE)
+    checkmate::assert_number(interval, lower = 1, finite = TRUE)
 
     self$waitForShiny()
 
@@ -56,10 +56,10 @@ shinytest::ShinyDriver$set(
   which = "public",
   name = "setValues",
   value = function(..., ns = NULL, iotype = c("auto", "input", "output")) {
-    assert_function(ns, args = "id", null.ok = TRUE)
+    checkmate::assert_function(ns, args = "id", null.ok = TRUE)
     iotype <- match.arg(iotype)
     nm_val_pairs <- list(...)
-    assert_list(nm_val_pairs, names = "unique", min.len = 1L, null.ok = FALSE)
+    checkmate::assert_list(nm_val_pairs, names = "unique", min.len = 1L, null.ok = FALSE)
 
     for (nm in names(nm_val_pairs)) {
       val <- nm_val_pairs[[nm]]
