@@ -17,6 +17,9 @@ the ID used to call the teal module's UI function.}
 \item{inputId}{(\code{string})\cr
 the ID used to call the module input.}
 
+\item{adtte_name}{(\code{string})\cr
+name of the ADTTE dataset.}
+
 \item{mae_name}{(\code{string})\cr
 name of the MAE data used in the teal module.}
 

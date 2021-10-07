@@ -148,8 +148,8 @@ srv_g_boxplot <- function(input,
       assay,
       # Note: The following statements are important to make sure the UI inputs have been updated.
       isTRUE(assay %in% SummarizedExperiment::assayNames(experiment_data)),
-      is.null(facet) || isTRUE(facet_var %in% names(SummarizedExperiment::colData(experiment_data))),
-      is.null(color) || isTRUE(color_var %in% names(SummarizedExperiment::colData(experiment_data))),
+      is.null(facet) || isTRUE(facet %in% names(SummarizedExperiment::colData(experiment_data))),
+      is.null(color) || isTRUE(color %in% names(SummarizedExperiment::colData(experiment_data))),
       is.null(strat) || isTRUE(strat %in% names(SummarizedExperiment::colData(experiment_data))),
       cancelOutput = FALSE
     )

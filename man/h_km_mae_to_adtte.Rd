@@ -7,7 +7,7 @@
 h_km_mae_to_adtte(
   adtte,
   mae,
-  gene_var,
+  genes,
   experiment_name = "hd1",
   assay_name = "counts"
 )
@@ -17,7 +17,8 @@ h_km_mae_to_adtte(
 
 \item{mae}{(\code{MultiAssayExperiment})\cr contains \code{AnyHermesData} objects.}
 
-\item{gene_var}{(\code{character})\cr a gene(s) of interest.}
+\item{genes}{(\code{GeneSpec})\cr specification for gene(s) (signature), e.g.
+using \code{\link[hermes:gene_spec]{hermes::gene_spec()}}.}
 
 \item{experiment_name}{(\code{string})\cr the desired \code{HermesData} to use.}
 
@@ -38,7 +39,7 @@ A function to help with merging of MAE to \code{ADTTE} for use with \code{g_km}.
 We require that each patient only has one sample.
 
 The final gene column names can start with a different string than
-the original gene IDs, in particular white space, dots and colons are removed,
+the original gene IDs (or labels), in particular white space, dots and colons are removed,
 see \code{\link[tern:make_names]{tern::make_names()}} for details.
 }
 \examples{
@@ -49,13 +50,19 @@ adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte \%>\%
 new_adtte <- h_km_mae_to_adtte(
   adtte,
   mae,
-  gene_var = "GeneID:1820",
+  genes = hermes::gene_spec("GeneID:1820"),
   experiment_name = "hd2"
 )
 new_adtte2 <- h_km_mae_to_adtte(
   adtte,
   mae,
-  gene_var = c("GeneID:1820", "GeneID:94115"),
+  genes = hermes::gene_spec(c("GeneID:1820", "GeneID:94115"), fun = colMeans),
+  experiment_name = "hd2"
+)
+new_adtte3 <- h_km_mae_to_adtte(
+  adtte,
+  mae,
+  genes = hermes::gene_spec(c(A = "GeneID:1820", B = "GeneID:94115")),
   experiment_name = "hd2"
 )
 }

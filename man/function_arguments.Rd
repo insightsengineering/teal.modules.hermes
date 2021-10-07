@@ -10,7 +10,8 @@
 
 \item{object}{(\code{AnyHermesData})\cr contains RNA-seq values for one experiment.}
 
-\item{gene_var}{(\code{character})\cr a gene(s) of interest.}
+\item{genes}{(\code{GeneSpec})\cr specification for gene(s) (signature), e.g.
+using \code{\link[hermes:gene_spec]{hermes::gene_spec()}}.}
 
 \item{experiment_name}{(\code{string})\cr the desired \code{HermesData} to use.}
 
