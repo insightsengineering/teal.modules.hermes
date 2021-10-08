@@ -1,6 +1,6 @@
 # teal.modules.hermes 0.1.0
 * First release of the `teal.modules.hermes` package, which contains teal modules for RNA-seq analysis using the `hermes` package.
-* New users should first begin by reading the `ReadMe.md`of the `teal.modules.hermes` package to become familiar. 
+* New users should first begin by reading the `README.md`of the `teal.modules.hermes` package to become familiar. 
 
 ### New Features
 * `tm_g_barplot` is a barplot module for RNA-seq gene expression analysis.
