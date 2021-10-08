@@ -40,6 +40,13 @@
 tm_g_forest_tte <- function(label,
                             adtte_name,
                             mae_name,
+                            adtte_vars = list(
+                              aval = "AVAL",
+                              is_event = "is_event",
+                              paramcd = "PARAMCD",
+                              usubjid = "USUBJID",
+                              avalu = "AVALU"
+                            ),
                             exclude_assays = "counts",
                             summary_funs = list(
                               Mean = colMeans,
@@ -53,6 +60,7 @@ tm_g_forest_tte <- function(label,
   assert_string(label)
   assert_string(adtte_name)
   assert_string(mae_name)
+  assert_adtte_vars(adtte_vars)
   assert_character(exclude_assays, any.missing = FALSE)
   assert_summary_funs(summary_funs)
   assert_tag(pre_output, null.ok = TRUE)
@@ -64,6 +72,7 @@ tm_g_forest_tte <- function(label,
     server_args = list(
       adtte_name = adtte_name,
       mae_name = mae_name,
+      adtte_vars = adtte_vars,
       exclude_assays = exclude_assays,
       summary_funs = summary_funs,
       plot_height = plot_height,
@@ -96,7 +105,7 @@ ui_g_forest_tte <- function(id,
       helpText("Analysis of MAE:", tags$code(mae_name)),
       experimentSpecInput(ns("experiment"), datasets, mae_name),
       assaySpecInput(ns("assay")),
-      geneSpecInput(ns("genes"), summary_funs, label_genes = "Select Gene(s)"),
+      geneSpecInput(ns("genes"), summary_funs),
       selectizeInput(ns("paramcd"), "Select Endpoint", choices = ""),
       teal.devel::panel_group(
         teal.devel::panel_item(
@@ -123,6 +132,7 @@ srv_g_forest_tte <- function(input,
                              datasets,
                              adtte_name,
                              mae_name,
+                             adtte_vars,
                              exclude_assays,
                              summary_funs,
                              plot_height,
@@ -170,7 +180,8 @@ srv_g_forest_tte <- function(input,
       mae,
       genes = genes,
       experiment_name = experiment_name,
-      assay_name = assay
+      assay_name = assay,
+      usubjid_var = adtte_vars$usubjid
     )
   })
 
@@ -179,18 +190,23 @@ srv_g_forest_tte <- function(input,
     probs <- input$probs
     colname <- attr(adtte_counts, "gene_cols")
 
-    adtte_counts <- tern::df_explicit_na(adtte_counts)
-    adtte_counts <- dplyr::mutate(
-      adtte_counts,
-      AVAL = tern::day2month(.data$AVAL),
-      AVALU = "Months",
-      is_event = .data$CNSR == 0,
-      gene_bin = tern::cut_quantile_bins(
-        adtte_counts[[colname]],
-        probs = probs,
-        labels = c("Low", "High")
-      )
+    binned_adtte <- tryCatch({
+      dplyr::mutate(
+        adtte_data,
+        gene_factor = tern::cut_quantile_bins(
+          adtte_counts[, colname],
+          probs = probs
+        )
+      )},
+      error = function(e) {
+        if (grepl("Duplicate quantiles produced", e)) {
+          validate("please select (slightly) different quantiles to avoid duplicate quantiles")
+        } else {
+          stop(e)
+        }
+      }
     )
+    binned_adtte
   })
 
   # After post processing ADTTE, we recompute endpoints.
@@ -268,14 +284,14 @@ sample_tm_g_forest_tte <- function() { # nolint # nousage
 
   mae <- hermes::multi_assay_experiment
   adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
-    dplyr::mutate(CNSR = as.logical(.data$CNSR))
+    dplyr::mutate(is_event = .data$CNSR == 0)
 
   data <- teal_data(
     dataset(
       "ADTTE",
       adtte,
       code = 'adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
-        dplyr::mutate(CNSR = as.logical(.data$CNSR))'
+        dplyr::mutate(is_event = .data$CNSR == 0)'
     ),
     dataset("MAE", mae)
   )

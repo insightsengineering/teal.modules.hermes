@@ -62,6 +62,7 @@ reference:
   - title: Assertions
     contents:
       - assertions
+      - assert_adtte_vars
       - assert_reactive
       - assert_summary_funs
       - assert_tag

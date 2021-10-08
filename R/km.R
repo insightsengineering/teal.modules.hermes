@@ -9,13 +9,12 @@
 #' @inheritParams function_arguments
 #'
 #' @return A data frame containing all columns/rows from `adtte` that match
-#'   by `USUBJID` with the row names of the MAE and have the gene samples available
-#'   in the given experiment. The attributes `sample_id`
-#'   and `gene_cols` contain the column names for the sample ID and gene columns.
+#'   by subject ID with the row names of the MAE and have the gene samples available
+#'   in the given experiment. The attribute `gene_cols` contains the column names
+#'   for the gene columns.
 #'
 #' @note The final gene column names can start with a different string than
-#'   the original gene IDs (or labels), in particular white space, dots and colons are removed,
-#'   see [tern::make_names()] for details.
+#'   the original gene IDs (or labels), in particular white space and colons are removed.
 #'
 #' @export
 #' @examples
@@ -45,18 +44,21 @@ h_km_mae_to_adtte <- function(adtte,
                               mae,
                               genes,
                               experiment_name = "hd1",
-                              assay_name = "counts") {
+                              assay_name = "counts",
+                              usubjid_var = "USUBJID") {
   assert_class(mae, "MultiAssayExperiment")
   assert_string(experiment_name)
+  assert_string(usubjid_var)
+  assert_names(names(adtte), must.include = usubjid_var)
 
-  # Check `USUBJID` across experiment, sample map, and MAE colData.
+  # Check subject ID across experiment, sample map, and MAE colData.
   mae_samplemap <- MultiAssayExperiment::sampleMap(mae)
   samplemap_experiment <- mae_samplemap[mae_samplemap$assay == experiment_name, ]
   sm_usubjid <- as.character(samplemap_experiment$primary)
 
   hd <- suppressWarnings(MultiAssayExperiment::getWithColData(mae, experiment_name))
   assert_class(hd, "AnyHermesData")
-  hd_usubjid <- as.character(SummarizedExperiment::colData(hd)$USUBJID)
+  hd_usubjid <- as.character(SummarizedExperiment::colData(hd)[[usubjid_var]])
 
   assert_subset(
     x = hd_usubjid,
@@ -64,8 +66,8 @@ h_km_mae_to_adtte <- function(adtte,
   )
 
   mae_coldata <- MultiAssayExperiment::colData(mae)
-  if ("USUBJID" %in% colnames(mae_coldata)) {
-    mae_usubjid <- as.character(mae_coldata$USUBJID)
+  if (usubjid_var %in% colnames(mae_coldata)) {
+    mae_usubjid <- as.character(mae_coldata[[usubjid_var]])
     assert_subset(
       x = sm_usubjid,
       choices = mae_usubjid
@@ -79,11 +81,11 @@ h_km_mae_to_adtte <- function(adtte,
   )
   merged_adtte <- hermes::inner_join_cdisc(
     gene_data = gene_data,
-    cdisc_data = adtte
+    cdisc_data = adtte,
+    patient_key = usubjid_var
   )
   structure(
     merged_adtte,
-    sample_id = "SampleID",
     gene_cols = attr(gene_data, "gene_cols")
   )
 }
@@ -104,14 +106,14 @@ h_km_mae_to_adtte <- function(adtte,
 #' @examples
 #' mae <- hermes::multi_assay_experiment
 #' adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
-#'   dplyr::mutate(CNSR = as.logical(CNSR))
+#'   dplyr::mutate(is_event = (.data$CNSR == 0))
 #'
 #' data <- teal_data(
 #'   dataset(
 #'     "ADTTE",
 #'     adtte,
 #'     code = 'adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
-#'       dplyr::mutate(CNSR = as.logical(CNSR))'
+#'       dplyr::mutate(is_event = (.data$CNSR == 0))'
 #'   ),
 #'   dataset("MAE", mae)
 #' )
@@ -136,6 +138,13 @@ h_km_mae_to_adtte <- function(adtte,
 tm_g_km <- function(label,
                     adtte_name,
                     mae_name,
+                    adtte_vars = list(
+                      aval = "AVAL",
+                      is_event = "is_event",
+                      paramcd = "PARAMCD",
+                      usubjid = "USUBJID",
+                      avalu = "AVALU"
+                    ),
                     exclude_assays = "counts",
                     summary_funs = list(
                       Mean = colMeans,
@@ -148,6 +157,7 @@ tm_g_km <- function(label,
   assert_string(label)
   assert_string(adtte_name)
   assert_string(mae_name)
+  assert_adtte_vars(adtte_vars)
   assert_character(exclude_assays, any.missing = FALSE)
   assert_summary_funs(summary_funs)
   assert_tag(pre_output, null.ok = TRUE)
@@ -159,6 +169,7 @@ tm_g_km <- function(label,
     server_args = list(
       adtte_name = adtte_name,
       mae_name = mae_name,
+      adtte_vars = adtte_vars,
       exclude_assays = exclude_assays,
       summary_funs = summary_funs
     ),
@@ -223,6 +234,7 @@ srv_g_km <- function(input,
                      datasets,
                      adtte_name,
                      mae_name,
+                     adtte_vars,
                      summary_funs,
                      exclude_assays) {
   experiment <- experimentSpecServer(
@@ -264,7 +276,6 @@ srv_g_km <- function(input,
 
     mae <- datasets$get_data(mae_name, filtered = TRUE)
     adtte <- datasets$get_data(adtte_name, filtered = TRUE)
-    adtte$CNSR <- as.logical(adtte$CNSR)
 
     mae[[experiment_name]] <- experiment_data
     h_km_mae_to_adtte(
@@ -272,14 +283,15 @@ srv_g_km <- function(input,
       mae,
       genes = genes,
       experiment_name = experiment_name,
-      assay_name = assay
+      assay_name = assay,
+      usubjid_var = adtte_vars$usubjid
     )
   })
 
   # After post processing ADTTE, we recompute endpoints.
   endpoints <- reactive({
     adtte_data <- adtte_data()
-    unique(adtte_data$PARAMCD)
+    unique(adtte_data[[adtte_vars$paramcd]])
   })
 
   # When the endpoints are recomputed, update the choices for endpoints in the UI.
@@ -314,7 +326,7 @@ srv_g_km <- function(input,
     # variable in the list.
     arm_name <- attr(adtte_data, "gene_cols")
     adtte_data[, arm_name] <- as.numeric(adtte_data[, arm_name])
-    adtte_data <- dplyr::filter(adtte_data, .data$PARAMCD == endpoint)
+    adtte_data <- adtte_data[adtte_data[[adtte_vars$paramcd]] == endpoint, , drop = FALSE]
     adtte_data <- droplevels(adtte_data)
 
     percentiles_without_borders <- setdiff(percentiles, c(0, 1))
@@ -341,8 +353,8 @@ srv_g_km <- function(input,
     )
 
     variables <- list(
-      tte = "AVAL",
-      is_event = "CNSR",
+      tte = adtte_vars$aval,
+      is_event = adtte_vars$is_event,
       arm = "gene_factor",
       strat = strata_var
     )
@@ -361,14 +373,14 @@ sample_tm_g_km <- function() { # nolint # nousage
 
   mae <- hermes::multi_assay_experiment
   adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
-    dplyr::mutate(CNSR = as.logical(.data$CNSR))
+    dplyr::mutate(is_event = (.data$CNSR == 0))
 
   data <- teal_data(
     dataset(
       "ADTTE",
       adtte,
       code = 'adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
-        dplyr::mutate(CNSR = as.logical(.data$CNSR))'
+        dplyr::mutate(is_event = (.data$CNSR == 0))'
     ),
     dataset("MAE", mae)
   )
