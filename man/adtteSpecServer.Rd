@@ -44,6 +44,14 @@ type of time-to-event for selection in the module.
 \item \code{usubjid}: the subject ID variable.
 }}
 
+\item{experiment_data}{(reactive \code{AnyHermesData})\cr input experiment.}
+
+\item{experiment_name}{(reactive \code{string})\cr name of the input experiment.}
+
+\item{assay}{(reactive \code{string})\cr name of the assay.}
+
+\item{genes}{(reactive \code{GeneSpec})\cr gene specification.}
+
 \item{probs}{(reactive \code{numeric})\cr probabilities to bin the gene or gene signature
 into.}
 }
@@ -60,7 +68,11 @@ numeric gene variable.
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-This defines the server part for the ADTTE specification.
+This defines the server part for the ADTTE specification. The resulting data
+set \code{binned_adtte_subset} contains the subset of ADTTE selected by the time-to-event
+endpoint, joined together with the gene information extracted from specified assay
+and experiment, as numeric and factor columns. The factor column is created by binning
+the numeric column according to the quantile cutoffs specified in \code{probs}.
 }
 \examples{
 ui <- function(id,

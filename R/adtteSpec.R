@@ -118,9 +118,17 @@ adtteSpecInput <- function(inputId,
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
-#' This defines the server part for the ADTTE specification.
+#' This defines the server part for the ADTTE specification. The resulting data
+#' set `binned_adtte_subset` contains the subset of ADTTE selected by the time-to-event
+#' endpoint, joined together with the gene information extracted from specified assay
+#' and experiment, as numeric and factor columns. The factor column is created by binning
+#' the numeric column according to the quantile cutoffs specified in `probs`.
 #'
 #' @inheritParams module_arguments
+#' @param experiment_data (reactive `AnyHermesData`)\cr input experiment.
+#' @param experiment_name (reactive `string`)\cr name of the input experiment.
+#' @param assay (reactive `string`)\cr name of the assay.
+#' @param genes (reactive `GeneSpec`)\cr gene specification.
 #' @param probs (reactive `numeric`)\cr probabilities to bin the gene or gene signature
 #'   into.
 #'
