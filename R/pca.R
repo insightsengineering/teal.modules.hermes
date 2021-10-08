@@ -180,6 +180,7 @@ srv_g_pca <- function(input,
     if (filter_top) {
       n_top <- input$n_top
       updateSliderInput(
+        session = session,
         inputId = "n_top",
         value = min(n_top, n_genes),
         max = n_genes
