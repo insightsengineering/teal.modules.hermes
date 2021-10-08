@@ -3,6 +3,7 @@
 * New users should first begin by reading the `README.md`of the `teal.modules.hermes` package to become familiar. 
 
 ### New Features
+* `tm_g_barplot` is a barplot module for RNA-seq gene expression analysis.
 * `tm_g_boxplot` is a boxplot module for RNA-seq gene expression analysis.
 * `tm_g_forest_tte` is a survival forest plot module for RNA-seq gene expression analysis.
 * `tm_g_km` is a Kaplan-Meier plot module for data with ADaM structure.
