@@ -6,7 +6,7 @@
 * `tm_g_barplot` an interactive barplot module for RNA-seq gene expression analysis.
 * `tm_g_boxplot` an interactive boxplot module for RNA-seq gene expression analysis.
 * `tm_g_forest_tte` an interactive survival forest plot module for RNA-seq gene expression analysis.
-* `tm_g_km` an grid style Kaplan-Meier plot module for data with ADaM structure.
+* `tm_g_km` a Kaplan-Meier plot module.
 * `tm_g_pca` an interactive PCA plot module including an interactive heatmap with correlation of principal components with sample variables.
 * `tm_g_quality` a module that adds quality flags, filters by genes and/or samples, normalizes `AnyHermesData` objects and provides interactive plots for RNA-seq gene expression quality control.
 * `tm_g_scatterplot` interactive scatterplot module for RNA-seq gene expression analysis.
