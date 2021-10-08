@@ -20,10 +20,10 @@
 #' geneSpecInput("my_genes", list(mean = colMeans), label_funs = "Please select function")
 geneSpecInput <- function(inputId,
                           funs,
-                          label_genes = "Select gene(s)",
-                          label_funs = "Select gene summary",
+                          label_genes = "Select Gene(s)",
+                          label_funs = "Select Gene Summary",
                           label_text_button = "Enter list of genes",
-                          label_lock_button = "Lock gene selection") {
+                          label_lock_button = "Lock gene selection (so that it does not get updated when filtering)") {
   assert_string(inputId)
   assert_list(funs, names = "unique", min.len = 1L)
   assert_string(label_genes)

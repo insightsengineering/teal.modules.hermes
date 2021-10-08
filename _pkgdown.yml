@@ -33,6 +33,8 @@ reference:
       - h_update_gene_selection
   - title: Shiny Modules
     contents:
+      - adtteSpecInput
+      - adtteSpecServer
       - assaySpecInput
       - assaySpecServer
       - experimentSpecInput
@@ -48,7 +50,6 @@ reference:
       - tm_g_boxplot
       - tm_g_forest_tte
       - tm_g_scatterplot
-      - tm_g_boxplot
       - tm_g_km
       - tm_g_pca
       - tm_g_quality
@@ -62,6 +63,7 @@ reference:
   - title: Assertions
     contents:
       - assertions
+      - assert_adtte_vars
       - assert_reactive
       - assert_summary_funs
       - assert_tag

@@ -6,6 +6,8 @@
 \arguments{
 \item{adtte}{(\verb{data frame})\cr an \code{adtte} dataset.}
 
+\item{usubjid_var}{(\code{string})\cr variable name of the subject ID variable.}
+
 \item{mae}{(\code{MultiAssayExperiment})\cr contains \code{AnyHermesData} objects.}
 
 \item{object}{(\code{AnyHermesData})\cr contains RNA-seq values for one experiment.}

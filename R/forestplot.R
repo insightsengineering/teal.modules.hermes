@@ -13,14 +13,14 @@
 #' @examples
 #' mae <- hermes::multi_assay_experiment
 #' adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
-#'   dplyr::mutate(CNSR = as.logical(.data$CNSR))
+#'   dplyr::mutate(is_event = (.data$CNSR == 0))
 #'
 #' data <- teal_data(
 #'   dataset(
 #'     "ADTTE",
 #'     adtte,
 #'     code = 'adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
-#'       dplyr::mutate(CNSR = as.logical(.data$CNSR))'
+#'       dplyr::mutate(is_event = (.data$CNSR == 0))'
 #'   ),
 #'   dataset("MAE", mae)
 #' )
@@ -34,12 +34,19 @@
 #'     )
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(app$ui, app$server)
+#' if (interactive()) {
+#'   shinyApp(app$ui, app$server)
 #' }
 tm_g_forest_tte <- function(label,
                             adtte_name,
                             mae_name,
+                            adtte_vars = list(
+                              aval = "AVAL",
+                              is_event = "is_event",
+                              paramcd = "PARAMCD",
+                              usubjid = "USUBJID",
+                              avalu = "AVALU"
+                            ),
                             exclude_assays = "counts",
                             summary_funs = list(
                               Mean = colMeans,
@@ -53,6 +60,7 @@ tm_g_forest_tte <- function(label,
   assert_string(label)
   assert_string(adtte_name)
   assert_string(mae_name)
+  assert_adtte_vars(adtte_vars)
   assert_character(exclude_assays, any.missing = FALSE)
   assert_summary_funs(summary_funs)
   assert_tag(pre_output, null.ok = TRUE)
@@ -64,6 +72,7 @@ tm_g_forest_tte <- function(label,
     server_args = list(
       adtte_name = adtte_name,
       mae_name = mae_name,
+      adtte_vars = adtte_vars,
       exclude_assays = exclude_assays,
       summary_funs = summary_funs,
       plot_height = plot_height,
@@ -96,8 +105,8 @@ ui_g_forest_tte <- function(id,
       helpText("Analysis of MAE:", tags$code(mae_name)),
       experimentSpecInput(ns("experiment"), datasets, mae_name),
       assaySpecInput(ns("assay")),
-      geneSpecInput(ns("genes"), summary_funs, label_genes = "Select Gene(s)"),
-      selectizeInput(ns("paramcd"), "Select Endpoint", choices = ""),
+      geneSpecInput(ns("genes"), summary_funs),
+      adtteSpecInput(ns("adtte")),
       teal.devel::panel_group(
         teal.devel::panel_item(
           input_id = "settings_item",
@@ -108,7 +117,7 @@ ui_g_forest_tte <- function(id,
         )
       )
     ),
-    output = plotOutput(ns("plot")),
+    output = teal.devel::plot_with_settings_ui(ns("plot")),
     pre_output = pre_output,
     post_output = post_output
   )
@@ -123,6 +132,7 @@ srv_g_forest_tte <- function(input,
                              datasets,
                              adtte_name,
                              mae_name,
+                             adtte_vars,
                              exclude_assays,
                              summary_funs,
                              plot_height,
@@ -148,113 +158,65 @@ srv_g_forest_tte <- function(input,
     experiment_name = experiment$name,
     original_data = experiment$data
   )
-
-  adtte_counts <- reactive({
-    mae <- datasets$get_data(mae_name, filtered = TRUE)
-    adtte <- datasets$get_data(adtte_name, filtered = TRUE)
-    genes <- genes()
-    experiment_name <- experiment$name()
-    experiment_data <- subgroups$experiment_data()
-    assay <- assay()
-
-    validate(need(genes$get_genes(), "please select at least one gene"))
-    req(
-      genes$returns_vector(),
-      experiment_name,
-      assay
-    )
-
-    mae[[experiment_name]] <- experiment_data
-    h_km_mae_to_adtte(
-      adtte,
-      mae,
-      genes = genes,
-      experiment_name = experiment_name,
-      assay_name = assay
-    )
-  })
-
-  adtte_data <- reactive({
-    adtte_counts <- adtte_counts()
-    probs <- input$probs
-    colname <- attr(adtte_counts, "gene_cols")
-
-    adtte_counts <- tern::df_explicit_na(adtte_counts)
-    adtte_counts <- dplyr::mutate(
-      adtte_counts,
-      AVAL = tern::day2month(.data$AVAL),
-      AVALU = "Months",
-      is_event = .data$CNSR == 0,
-      gene_bin = tern::cut_quantile_bins(
-        adtte_counts[[colname]],
-        probs = probs,
-        labels = c("Low", "High")
-      )
-    )
-  })
-
-  # After post processing ADTTE, we recompute endpoints.
-  endpoints <- reactive({
-    adtte_data <- adtte_data()
-    unique(adtte_data$PARAMCD)
-  })
-
-  # When the endpoints are recomputed, update the choices for endpoints in the UI.
-  observeEvent(endpoints(), {
-    endpoints <- endpoints()
-
-    updateSelectizeInput(
-      session,
-      "paramcd",
-      choices = endpoints,
-      selected = endpoints[1],
-      server = TRUE
-    )
-  })
+  adtte <- adtteSpecServer(
+    "adtte",
+    datasets = datasets,
+    adtte_name = adtte_name,
+    mae_name = mae_name,
+    adtte_vars = adtte_vars,
+    experiment_data = subgroups$experiment_data,
+    experiment_name = experiment$name,
+    assay = assay,
+    genes = genes,
+    probs = reactive({input$probs})
+  )
 
   surv_subgroups <- reactive({
-    endpoint <- input$paramcd
-    adtte_data <- adtte_data()
+    binned_adtte <- adtte$binned_adtte_subset()
     subgroups_var <- subgroups$sample_var()
 
-    req(endpoint)
     validate(need(
-      nrow(adtte_data) > 0,
-      "ADTTE is empty - please relax the filter criteria"
-    ))
-    validate(need(
-      is.null(subgroups_var) || is.factor(adtte_data[[subgroups_var]]),
+      is.null(subgroups_var) || is.factor(binned_adtte[[subgroups_var]]),
       "please select a categorical variable"
     ))
-    adtte_final <- dplyr::filter(adtte_data, .data$PARAMCD == endpoint)
 
     tern::extract_survival_subgroups(
       variables = list(
-        tte = "AVAL",
-        is_event = "is_event",
-        arm = "gene_bin",
+        tte = adtte_vars$aval,
+        is_event = adtte_vars$is_event,
+        arm = adtte$gene_factor,
         subgroups = subgroups_var
       ),
       label_all = "All Patients",
-      data = adtte_final
+      data = binned_adtte
     )
   })
 
   result <- reactive({
     surv_subgroups <- surv_subgroups()
     lyt <- rtables::basic_table()
+    time_unit <- adtte$time_unit()
+
     tern::tabulate_survival_subgroups(
       lyt = lyt,
       df = surv_subgroups,
       vars = c("n_tot_events", "n", "n_events", "median", "hr", "ci"),
-      time_unit = adtte_data()$AVALU[1]
+      time_unit = time_unit
     )
   })
 
-  output$plot <- renderPlot({
+  forest_plot <- reactive({
     result <- result()
     tern::g_forest(result)
   })
+
+  callModule(
+    teal.devel::plot_with_settings_srv,
+    id = "plot",
+    plot_r = forest_plot,
+    height = plot_height,
+    width = plot_width
+  )
 }
 
 #' @describeIn tm_g_forest_tte sample module function.
@@ -268,14 +230,14 @@ sample_tm_g_forest_tte <- function() { # nolint # nousage
 
   mae <- hermes::multi_assay_experiment
   adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
-    dplyr::mutate(CNSR = as.logical(.data$CNSR))
+    dplyr::mutate(is_event = .data$CNSR == 0)
 
   data <- teal_data(
     dataset(
       "ADTTE",
       adtte,
       code = 'adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
-        dplyr::mutate(CNSR = as.logical(.data$CNSR))'
+        dplyr::mutate(is_event = .data$CNSR == 0)'
     ),
     dataset("MAE", mae)
   )

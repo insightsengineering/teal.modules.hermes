@@ -113,3 +113,23 @@ assert_summary_funs <- function(x, null.ok = FALSE) {
     names = "unique"
   )
 }
+
+# assert_adtte_vars ----
+
+#' Check for ADTTE Variables
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Check whether `x` is a list of ADTTE variables.
+#'
+#' @inheritParams assertion_arguments
+#' @seealso [`assertions`] for more details.
+#'
+#' @export
+#'
+#' @examples
+#' assert_adtte_vars(list(aval = "AV", is_event = "EV", paramcd = "PC", usubjid = "ID", avalu = "u"))
+assert_adtte_vars <- function(x) {
+  assert_list(x, types = "character", names = "unique", unique = TRUE)
+  assert_names(names(x), permutation.of = c("aval", "is_event", "paramcd", "usubjid", "avalu"))
+}
