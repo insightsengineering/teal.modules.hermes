@@ -1,95 +1,3 @@
-#' Data Preprocessing for KM Module
-#'
-#' @description `r lifecycle::badge("experimental")`
-#'
-#' A function to help with merging of MAE to `ADTTE` for use with `g_km`.
-#'
-#' @note We require that each patient only has one sample.
-#'
-#' @inheritParams function_arguments
-#'
-#' @return A data frame containing all columns/rows from `adtte` that match
-#'   by subject ID with the row names of the MAE and have the gene samples available
-#'   in the given experiment. The attribute `gene_cols` contains the column names
-#'   for the gene columns.
-#'
-#' @note The final gene column names can start with a different string than
-#'   the original gene IDs (or labels), in particular white space and colons are removed.
-#'
-#' @export
-#' @examples
-#' mae <- hermes::multi_assay_experiment
-#' adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
-#'   dplyr::mutate(CNSR = as.logical(CNSR))
-#'
-#' new_adtte <- h_km_mae_to_adtte(
-#'   adtte,
-#'   mae,
-#'   genes = hermes::gene_spec("GeneID:1820"),
-#'   experiment_name = "hd2"
-#' )
-#' new_adtte2 <- h_km_mae_to_adtte(
-#'   adtte,
-#'   mae,
-#'   genes = hermes::gene_spec(c("GeneID:1820", "GeneID:94115"), fun = colMeans),
-#'   experiment_name = "hd2"
-#' )
-#' new_adtte3 <- h_km_mae_to_adtte(
-#'   adtte,
-#'   mae,
-#'   genes = hermes::gene_spec(c(A = "GeneID:1820", B = "GeneID:94115")),
-#'   experiment_name = "hd2"
-#' )
-h_km_mae_to_adtte <- function(adtte,
-                              mae,
-                              genes,
-                              experiment_name = "hd1",
-                              assay_name = "counts",
-                              usubjid_var = "USUBJID") {
-  assert_class(mae, "MultiAssayExperiment")
-  assert_string(experiment_name)
-  assert_string(usubjid_var)
-  assert_names(names(adtte), must.include = usubjid_var)
-
-  # Check subject ID across experiment, sample map, and MAE colData.
-  mae_samplemap <- MultiAssayExperiment::sampleMap(mae)
-  samplemap_experiment <- mae_samplemap[mae_samplemap$assay == experiment_name, ]
-  sm_usubjid <- as.character(samplemap_experiment$primary)
-
-  hd <- suppressWarnings(MultiAssayExperiment::getWithColData(mae, experiment_name))
-  assert_class(hd, "AnyHermesData")
-  hd_usubjid <- as.character(SummarizedExperiment::colData(hd)[[usubjid_var]])
-
-  assert_subset(
-    x = hd_usubjid,
-    choices = sm_usubjid
-  )
-
-  mae_coldata <- MultiAssayExperiment::colData(mae)
-  if (usubjid_var %in% colnames(mae_coldata)) {
-    mae_usubjid <- as.character(mae_coldata[[usubjid_var]])
-    assert_subset(
-      x = sm_usubjid,
-      choices = mae_usubjid
-    )
-  }
-
-  gene_data <- hermes::col_data_with_genes(
-    object = hd,
-    assay_name = assay_name,
-    genes = genes
-  )
-  merged_adtte <- hermes::inner_join_cdisc(
-    gene_data = gene_data,
-    cdisc_data = adtte,
-    patient_key = usubjid_var
-  )
-  structure(
-    merged_adtte,
-    gene_cols = attr(gene_data, "gene_cols")
-  )
-}
-
 #' Teal Module for Kaplan-Meier Plot
 #'
 #' @description `r lifecycle::badge("experimental")`
@@ -202,7 +110,7 @@ ui_g_km <- function(id,
       experimentSpecInput(ns("experiment"), datasets, mae_name),
       assaySpecInput(ns("assay")),
       geneSpecInput(ns("genes"), summary_funs),
-      selectizeInput(ns("paramcd"), "Select Endpoint", choices = ""),
+      adtteSpecInput(ns("adtte")),
       teal.devel::panel_group(
         teal.devel::panel_item(
           input_id = "settings_item",
@@ -258,104 +166,37 @@ srv_g_km <- function(input,
     experiment_name = experiment$name,
     original_data = experiment$data
   )
-
-  # When the gene changes, post process ADTTE.
-  adtte_data <- reactive({
-    # Resolve all reactivity
-    experiment_data <- strata$experiment_data()
-    experiment_name <- experiment$name()
-    assay <- assay()
-    genes <- genes()
-
-    validate(need(genes$get_genes(), "please select at least one gene"))
-    req(
-      genes$returns_vector(),
-      experiment_name,
-      assay
-    )
-
-    mae <- datasets$get_data(mae_name, filtered = TRUE)
-    adtte <- datasets$get_data(adtte_name, filtered = TRUE)
-
-    mae[[experiment_name]] <- experiment_data
-    h_km_mae_to_adtte(
-      adtte,
-      mae,
-      genes = genes,
-      experiment_name = experiment_name,
-      assay_name = assay,
-      usubjid_var = adtte_vars$usubjid
-    )
-  })
-
-  # After post processing ADTTE, we recompute endpoints.
-  endpoints <- reactive({
-    adtte_data <- adtte_data()
-    unique(adtte_data[[adtte_vars$paramcd]])
-  })
-
-  # When the endpoints are recomputed, update the choices for endpoints in the UI.
-  observeEvent(endpoints(), {
-    endpoints <- endpoints()
-
-    updateSelectizeInput(
-      session,
-      "paramcd",
-      choices = endpoints,
-      selected = endpoints[1],
-      server = TRUE
-    )
-  })
-
-  output$km_plot <- renderPlot({
-    endpoint <- input$paramcd
-    strata_var <- strata$sample_var()
+  percentiles_without_borders <- reactive({
     percentiles <- input$percentiles
-    adtte_data <- adtte_data()
 
-    # Require endpoint for plot to generate.
-    req(endpoint)
-
-    # Validate that adtte_data is not empty.
+    result <- setdiff(percentiles, c(0, 1))
     validate(need(
-      nrow(adtte_data) > 0,
-      "ADTTE is empty - please relax the filter criteria"
-    ))
-
-    # We need the gene counts column name (the selected gene_var/x_var) to add to the 'arm'
-    # variable in the list.
-    arm_name <- attr(adtte_data, "gene_cols")
-    adtte_data[, arm_name] <- as.numeric(adtte_data[, arm_name])
-    adtte_data <- adtte_data[adtte_data[[adtte_vars$paramcd]] == endpoint, , drop = FALSE]
-    adtte_data <- droplevels(adtte_data)
-
-    percentiles_without_borders <- setdiff(percentiles, c(0, 1))
-    validate(need(
-      length(percentiles_without_borders) > 0,
+      length(result) > 0,
       "Please select at least one quantile other than 0 and 1"
     ))
+    result
+  })
+  adtte <- adtteSpecServer(
+    "adtte",
+    datasets = datasets,
+    adtte_name = adtte_name,
+    mae_name = mae_name,
+    adtte_vars = adtte_vars,
+    experiment_data = strata$experiment_data,
+    experiment_name = experiment$name,
+    assay = assay,
+    genes = genes,
+    probs = percentiles_without_borders
+  )
 
-    binned_adtte <- tryCatch({
-      dplyr::mutate(
-        adtte_data,
-        gene_factor = tern::cut_quantile_bins(
-          adtte_data[, arm_name],
-          probs = percentiles_without_borders
-        )
-      )},
-      error = function(e) {
-        if (grepl("Duplicate quantiles produced", e)) {
-          validate("please select (slightly) different quantiles to avoid duplicate quantiles")
-        } else {
-          stop(e)
-        }
-      }
-    )
+  output$km_plot <- renderPlot({
+    strata_var <- strata$sample_var()
+    binned_adtte <- adtte$binned_adtte_subset()
 
     variables <- list(
       tte = adtte_vars$aval,
       is_event = adtte_vars$is_event,
-      arm = "gene_factor",
+      arm = adtte$gene_factor,
       strat = strata_var
     )
     tern::g_km(binned_adtte, variables = variables, annot_coxph = TRUE)

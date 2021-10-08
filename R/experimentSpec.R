@@ -274,13 +274,12 @@ experimentSpecServer <- function(inputId,
       SummarizedExperiment::assayNames(data)
     })
 
-    return(
-      list(
-        data = data,
-        name = reactive({input$name}), # nolint
-        genes = genes,
-        assays = assays
-      )
+
+    list(
+      data = data,
+      name = reactive({input$name}), # nolint
+      genes = genes,
+      assays = assays
     )
   })
 }

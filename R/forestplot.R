@@ -13,14 +13,14 @@
 #' @examples
 #' mae <- hermes::multi_assay_experiment
 #' adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
-#'   dplyr::mutate(CNSR = as.logical(.data$CNSR))
+#'   dplyr::mutate(is_event = (.data$CNSR == 0))
 #'
 #' data <- teal_data(
 #'   dataset(
 #'     "ADTTE",
 #'     adtte,
 #'     code = 'adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
-#'       dplyr::mutate(CNSR = as.logical(.data$CNSR))'
+#'       dplyr::mutate(is_event = (.data$CNSR == 0))
 #'   ),
 #'   dataset("MAE", mae)
 #' )
@@ -106,7 +106,7 @@ ui_g_forest_tte <- function(id,
       experimentSpecInput(ns("experiment"), datasets, mae_name),
       assaySpecInput(ns("assay")),
       geneSpecInput(ns("genes"), summary_funs),
-      selectizeInput(ns("paramcd"), "Select Endpoint", choices = ""),
+      adtteSpecInput(ns("adtte")),
       teal.devel::panel_group(
         teal.devel::panel_item(
           input_id = "settings_item",
@@ -117,7 +117,7 @@ ui_g_forest_tte <- function(id,
         )
       )
     ),
-    output = plotOutput(ns("plot")),
+    output = teal.devel::plot_with_settings_ui(ns("plot")),
     pre_output = pre_output,
     post_output = post_output
   )
@@ -158,119 +158,65 @@ srv_g_forest_tte <- function(input,
     experiment_name = experiment$name,
     original_data = experiment$data
   )
-
-  adtte_counts <- reactive({
-    mae <- datasets$get_data(mae_name, filtered = TRUE)
-    adtte <- datasets$get_data(adtte_name, filtered = TRUE)
-    genes <- genes()
-    experiment_name <- experiment$name()
-    experiment_data <- subgroups$experiment_data()
-    assay <- assay()
-
-    validate(need(genes$get_genes(), "please select at least one gene"))
-    req(
-      genes$returns_vector(),
-      experiment_name,
-      assay
-    )
-
-    mae[[experiment_name]] <- experiment_data
-    h_km_mae_to_adtte(
-      adtte,
-      mae,
-      genes = genes,
-      experiment_name = experiment_name,
-      assay_name = assay,
-      usubjid_var = adtte_vars$usubjid
-    )
-  })
-
-  adtte_data <- reactive({
-    adtte_counts <- adtte_counts()
-    probs <- input$probs
-    colname <- attr(adtte_counts, "gene_cols")
-
-    binned_adtte <- tryCatch({
-      dplyr::mutate(
-        adtte_data,
-        gene_factor = tern::cut_quantile_bins(
-          adtte_counts[, colname],
-          probs = probs
-        )
-      )},
-      error = function(e) {
-        if (grepl("Duplicate quantiles produced", e)) {
-          validate("please select (slightly) different quantiles to avoid duplicate quantiles")
-        } else {
-          stop(e)
-        }
-      }
-    )
-    binned_adtte
-  })
-
-  # After post processing ADTTE, we recompute endpoints.
-  endpoints <- reactive({
-    adtte_data <- adtte_data()
-    unique(adtte_data$PARAMCD)
-  })
-
-  # When the endpoints are recomputed, update the choices for endpoints in the UI.
-  observeEvent(endpoints(), {
-    endpoints <- endpoints()
-
-    updateSelectizeInput(
-      session,
-      "paramcd",
-      choices = endpoints,
-      selected = endpoints[1],
-      server = TRUE
-    )
-  })
+  adtte <- adtteSpecServer(
+    "adtte",
+    datasets = datasets,
+    adtte_name = adtte_name,
+    mae_name = mae_name,
+    adtte_vars = adtte_vars,
+    experiment_data = subgroups$experiment_data,
+    experiment_name = experiment$name,
+    assay = assay,
+    genes = genes,
+    probs = reactive({input$probs})
+  )
 
   surv_subgroups <- reactive({
-    endpoint <- input$paramcd
-    adtte_data <- adtte_data()
+    binned_adtte <- adtte$binned_adtte_subset()
     subgroups_var <- subgroups$sample_var()
 
-    req(endpoint)
     validate(need(
-      nrow(adtte_data) > 0,
-      "ADTTE is empty - please relax the filter criteria"
-    ))
-    validate(need(
-      is.null(subgroups_var) || is.factor(adtte_data[[subgroups_var]]),
+      is.null(subgroups_var) || is.factor(binned_adtte[[subgroups_var]]),
       "please select a categorical variable"
     ))
-    adtte_final <- dplyr::filter(adtte_data, .data$PARAMCD == endpoint)
 
     tern::extract_survival_subgroups(
       variables = list(
-        tte = "AVAL",
-        is_event = "is_event",
-        arm = "gene_bin",
+        tte = adtte_vars$aval,
+        is_event = adtte_vars$is_event,
+        arm = adtte$gene_factor,
         subgroups = subgroups_var
       ),
       label_all = "All Patients",
-      data = adtte_final
+      data = binned_adtte
     )
   })
 
   result <- reactive({
     surv_subgroups <- surv_subgroups()
     lyt <- rtables::basic_table()
+    time_unit <- adtte$time_unit()
+
     tern::tabulate_survival_subgroups(
       lyt = lyt,
       df = surv_subgroups,
       vars = c("n_tot_events", "n", "n_events", "median", "hr", "ci"),
-      time_unit = adtte_data()$AVALU[1]
+      time_unit = time_unit
     )
   })
 
-  output$plot <- renderPlot({
+  forest_plot <- reactive({
     result <- result()
     tern::g_forest(result)
   })
+
+  callModule(
+    teal.devel::plot_with_settings_srv,
+    id = "plot",
+    plot_r = forest_plot,
+    height = plot_height,
+    width = plot_width
+  )
 }
 
 #' @describeIn tm_g_forest_tte sample module function.
