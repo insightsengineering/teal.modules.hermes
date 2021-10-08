@@ -12,7 +12,7 @@ test_that("h_km_mae_to_adtte function works as expected with a single gene", {
     experiment_name = "hd2"
   )
   expect_class(result, "data.frame")
-  expect_subset(c("SampleID", "GeneID1820_counts"), colnames(result))
+  expect_subset("GeneID.1820", colnames(result))
 })
 
 test_that("h_km_mae_to_adtte function also works when some ID variables are factors", {
@@ -29,7 +29,7 @@ test_that("h_km_mae_to_adtte function also works when some ID variables are fact
     experiment_name = "hd2"
   )
   expect_class(result, "data.frame")
-  expect_subset(c("SampleID", "GeneID1820_counts"), colnames(result))
+  expect_subset("GeneID.1820", colnames(result))
 })
 
 test_that("h_km_mae_to_adtte function works as expected with multiple genes", {
@@ -44,7 +44,7 @@ test_that("h_km_mae_to_adtte function works as expected with multiple genes", {
     experiment_name = "hd2"
   )
   expect_class(result, "data.frame")
-  expect_subset(c("SampleID", "GeneID1820_counts", "GeneID94115_counts"), colnames(result))
+  expect_subset(c("GeneID.1820", "GeneID.94115"), colnames(result))
 })
 
 test_that("h_km_mae_to_adtte function works as expected with a gene signature", {
@@ -60,7 +60,7 @@ test_that("h_km_mae_to_adtte function works as expected with a gene signature", 
     assay_name = "cpm"
   )
   expect_class(result, "data.frame")
-  expect_subset(c("SampleID", "colMeansGeneID1820GeneID94115_cpm"), colnames(result))
+  expect_subset("colMeans.GeneID.1820..GeneID.94115.", colnames(result))
 })
 
 test_that("h_km_mae_to_adtte fails as expected with invalid settings", {
@@ -109,7 +109,7 @@ test_that("h_km_mae_to_adtte warns when patients are not in ADTTE and therefore 
       genes = hermes::gene_spec("GeneID:1820"),
       experiment_name = "hd2"
     ),
-    "removed from MAE because not contained in ADTTE"
+    "from gene data set were lost"
   )
 })
 
@@ -219,6 +219,7 @@ test_that("tm_g_km works as expected in the sample app", {
   app$setValue(ns("genes-genes"), c("GeneID:101927746", "GeneID:1820"))
 
   # Initial plot.
+  Sys.sleep(1)
   expect_snapshot_screenshot(
     app,
     id = ns("km_plot"),

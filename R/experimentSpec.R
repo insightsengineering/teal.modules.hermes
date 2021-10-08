@@ -229,15 +229,19 @@ experimentSpecServer <- function(inputId,
 
       mae <- datasets$get_data(mae_name, filtered = TRUE)
       orig_object <- mae[[name]]
-      object <- if (with_mae_col_data && !hermes::isEmpty(orig_object)) {
+      validate(need(
+        hermes::is_hermes_data(orig_object),
+        "Please first convert your experiment to HermesData class"
+      ))
+      validate(need(
+        !hermes::isEmpty(orig_object),
+        "No genes or samples included in this experiment, please adjust filters"
+      ))
+      object <- if (with_mae_col_data) {
         MultiAssayExperiment::getWithColData(mae, name)
       } else {
         orig_object
       }
-      validate(need(
-        hermes::is_hermes_data(object),
-        "Please first convert your experiment to HermesData class"
-      ))
       if (sample_vars_as_factors) {
         SummarizedExperiment::colData(object) <-
           hermes::df_cols_to_factor(SummarizedExperiment::colData(object))

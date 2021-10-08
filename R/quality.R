@@ -282,7 +282,7 @@ srv_g_quality <- function(input,
 
     already_added <- ("control_quality_flags" %in% names(hermes::metadata(object)))
     validate(need(!already_added, "Quality flags have already been added to this experiment"))
-    if (any(c("cpm", "rpkm", "tpm", "voom") %in% SummarizedExperiment::assayNames(object))) {
+    if (any(c("cpm", "rpkm", "tpm", "voom", "vst") %in% SummarizedExperiment::assayNames(object))) {
       showNotification("Original normalized assays will be overwritten", type = "warning")
     }
 
