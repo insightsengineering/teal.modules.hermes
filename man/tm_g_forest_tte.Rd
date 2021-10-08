@@ -114,6 +114,32 @@ This module provides an interactive survival forest plot.
 }}
 
 \examples{
+mae <- hermes::multi_assay_experiment
+adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte \%>\%
+  dplyr::mutate(is_event = (.data$CNSR == 0))
+
+data <- teal_data(
+  dataset(
+    "ADTTE",
+    adtte,
+    code = 'adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte \%>\%
+      dplyr::mutate(is_event = (.data$CNSR == 0))'
+  ),
+  dataset("MAE", mae)
+)
+app <- init(
+  data = data,
+  modules = root_modules(
+    tm_g_forest_tte(
+      label = "forestplot",
+      adtte_name = "ADTTE",
+      mae_name = "MAE"
+    )
+  )
+)
+if (interactive()) {
+  shinyApp(app$ui, app$server)
+}
 \dontrun{
 # Alternatively you can run the sample module with this function call:
 sample_tm_g_forest_tte()

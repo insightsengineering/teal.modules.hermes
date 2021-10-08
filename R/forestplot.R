@@ -20,7 +20,7 @@
 #'     "ADTTE",
 #'     adtte,
 #'     code = 'adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
-#'       dplyr::mutate(is_event = (.data$CNSR == 0))
+#'       dplyr::mutate(is_event = (.data$CNSR == 0))'
 #'   ),
 #'   dataset("MAE", mae)
 #' )
@@ -34,8 +34,8 @@
 #'     )
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(app$ui, app$server)
+#' if (interactive()) {
+#'   shinyApp(app$ui, app$server)
 #' }
 tm_g_forest_tte <- function(label,
                             adtte_name,
