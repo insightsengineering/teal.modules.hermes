@@ -17,9 +17,14 @@
 top_gene_plot <- function(object, assay_name) {
   top_gene <- hermes::top_genes(
     object = object,
-    assay_name = assay_name
+    assay_name = assay_name,
+    summary_fun = rowMeans
   )
-  hermes::autoplot(top_gene)
+  hermes::autoplot(
+    top_gene,
+    x_lab = "Gene",
+    y_lab = paste("Mean", assay_name, "across samples")
+  )
 }
 
 #' Correlation Heatmap Plot

@@ -28,7 +28,7 @@
                 </div>
                 <div class="row">
                   <div class="col-sm-8">
-                    <label class="control-label">Select gene(s)</label>
+                    <label class="control-label">Select Gene(s)</label>
                   </div>
                   <div class="col-sm-4">
                     <button class="btn btn-default action-button pull-right list-genes" id="testid-genes-text_button" title="Enter list of genes" type="button">
@@ -36,7 +36,7 @@
                         <i class="fa fa-font fa-border" role="presentation" aria-label="font fa-border icon"></i>
                       </span>
                     </button>
-                    <div class="pull-right" title="Lock gene selection">
+                    <div class="pull-right" title="Lock gene selection (so that it does not get updated when filtering)">
                       <div class="form-group shiny-input-container">
                         <div class="pretty p-toggle p-plain p-icon p-pulse">
                           <input id="testid-genes-lock_button" type="checkbox"/>
@@ -156,7 +156,7 @@
                 </div>
                 <div data-display-if="input.genes.length &gt; 1" data-ns-prefix="testid-genes-">
                   <div class="form-group shiny-input-container">
-                    <label class="control-label" id="testid-genes-fun_name-label" for="testid-genes-fun_name">Select gene summary</label>
+                    <label class="control-label" id="testid-genes-fun_name-label" for="testid-genes-fun_name">Select Gene Summary</label>
                     <div>
                       <select id="testid-genes-fun_name"><option value="Mean" selected>Mean</option></select>
                       <script type="application/json" data-for="testid-genes-fun_name" data-nonempty="">{"plugins":["selectize-plugin-a11y"]}</script>
@@ -164,10 +164,10 @@
                   </div>
                 </div>
                 <div class="form-group shiny-input-container">
-                  <label class="control-label" id="testid-paramcd-label" for="testid-paramcd">Select Endpoint</label>
+                  <label class="control-label" id="testid-adtte-paramcd-label" for="testid-adtte-paramcd">Select Endpoint</label>
                   <div>
-                    <select id="testid-paramcd" class="form-control"><option value="" selected></option></select>
-                    <script type="application/json" data-for="testid-paramcd">{"plugins":["selectize-plugin-a11y"]}</script>
+                    <select id="testid-adtte-paramcd"><option value="" selected></option></select>
+                    <script type="application/json" data-for="testid-adtte-paramcd">{"plugins":["selectize-plugin-a11y"]}</script>
                   </div>
                 </div>
                 <div class="panel-group">

@@ -16,6 +16,16 @@
 #'   the ID used to call the module input.
 #' @param adtte_name (`string`)\cr
 #'   name of the ADTTE dataset.
+#' @param adtte_vars (named `list` of `string`)\cr
+#'   names of the variables to use in the ADTTE dataset. It should comprise elements:
+#'   - `aval`: the numeric time-to-event variable.
+#'   - `avalu`: the variable holding the unit of `aval`.
+#'   - `is_event`: the logical event variable. It needs to be `TRUE`
+#'        when there was an observed event, and `FALSE` if the time is censored without
+#'        observed event.
+#'   - `paramcd`: the character or factor parameter code variable, defining the
+#'       type of time-to-event for selection in the module.
+#'   - `usubjid`: the subject ID variable.
 #' @param mae_name (`string`)\cr
 #'   name of the MAE data used in the teal module.
 #' @param exclude_assays (`character`)\cr
@@ -68,6 +78,7 @@ NULL
 #' functions.
 #'
 #' @param adtte (`data frame`)\cr an `adtte` dataset.
+#' @param usubjid_var (`string`)\cr variable name of the subject ID variable.
 #' @param mae (`MultiAssayExperiment`)\cr contains `AnyHermesData` objects.
 #' @param object (`AnyHermesData`)\cr contains RNA-seq values for one experiment.
 #' @param genes (`GeneSpec`)\cr specification for gene(s) (signature), e.g.
