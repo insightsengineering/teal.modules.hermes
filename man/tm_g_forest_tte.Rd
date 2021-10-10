@@ -22,7 +22,15 @@ tm_g_forest_tte(
   plot_width = c(1360L, 500L, 2000L)
 )
 
-ui_g_forest_tte(id, datasets, mae_name, summary_funs, pre_output, post_output)
+ui_g_forest_tte(
+  id,
+  datasets,
+  adtte_name,
+  mae_name,
+  summary_funs,
+  pre_output,
+  post_output
+)
 
 srv_g_forest_tte(
   input,
