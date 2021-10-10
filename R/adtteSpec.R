@@ -300,12 +300,7 @@ adtteSpecServer <- function(id,
     observeEvent(paramcd_choices(), {
       paramcd_choices <- paramcd_choices()
 
-      new_selected <- if (is_blank(input$paramcd)) {
-        showNotification(paste(
-          "Endpoint", paramcd_choices[1L], "selected based on newly filtered data set"
-        ))
-        paramcd_choices[1L]
-      } else if (input$paramcd %in% paramcd_choices) {
+      new_selected <- if (is_blank(input$paramcd) || (input$paramcd %in% paramcd_choices)) {
         input$paramcd
       } else {
         showNotification(type = "warning", paste(
@@ -329,7 +324,7 @@ adtteSpecServer <- function(id,
 
       validate(need(
         endpoint,
-        "Please selected an endpoint"
+        "please select an endpoint"
       ))
       # Validate that adtte_data is not empty.
       validate(need(

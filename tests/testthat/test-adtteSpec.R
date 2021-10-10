@@ -189,9 +189,14 @@ test_that("adtteSpecServer module works as expected in the test app", {
 
   ns <- NS("teal-main_ui-modules_ui-root_adtteSpec_example")
 
+  msg <- app$waitForOutputElement(ns("summary"), "message")
   app$setValue(ns("genes-genes"), "GeneID:101927746")
-  paramcd <- app$waitForValue(ns("adtte-paramcd"))
-  expect_identical(paramcd, "CRSD")
+
+  # Upon initialization the endpoint is not selected automatically, the user
+  # has to do this actively.
+  msg <- app$waitForOutputElement(ns("summary"), "message", ignore = list(msg))
+  expect_identical(msg, "please select an endpoint")
+  app$setValue(ns("adtte-paramcd"), "CRSD")
 
   summary_result <- app$waitForValue(ns("summary"), iotype = "output")
   expect_match(summary_result, "CRSD:5")
@@ -208,15 +213,15 @@ test_that("adtteSpecServer module works as expected in the test app", {
 
   # We expect to get a validation message (also a notification box but we cannot test that).
   msg <- app$waitForOutputElement(ns("summary"), "message")
-  expect_identical(msg, "Please selected an endpoint")
+  expect_identical(msg, "please select an endpoint")
   paramcd <- app$waitForValue(ns("adtte-paramcd"), ignore = list(NULL))
   expect_identical(paramcd, "")
 
-  # Now we update the filter by adding CRSD. Since this is now the first one in
-  # the sorted order, it gets chosen since earlier we did not have any selection.
-  app$setValue(ns2("add_ADTTE_filter-filter-var_PARAMCD-content-selection"), c("CRSD", "OS"))
-  paramcd <- app$waitForValue(ns("adtte-paramcd"))
-  expect_identical(paramcd, "CRSD")
+  # Now we update the filter by adding PFS back. However the user would have to
+  # actively select it.
+  app$setValue(ns2("add_ADTTE_filter-filter-var_PARAMCD-content-selection"), c("PFS", "OS"))
+  msg <- app$waitForOutputElement(ns("summary"), "message")
+  expect_identical(msg, "please select an endpoint")
 
   app$stop()
 })
