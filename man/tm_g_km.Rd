@@ -140,12 +140,12 @@ app <- init(
   modules = modules
 )
 
-\dontrun{
-shinyApp(ui = app$ui, server = app$server)
+if (interactive()) {
+  shinyApp(ui = app$ui, server = app$server)
 }
 
-\dontrun{
 # Alternatively you can run the sample module with this function call:
-sample_tm_g_km()
+if (interactive()) {
+  sample_tm_g_km()
 }
 }

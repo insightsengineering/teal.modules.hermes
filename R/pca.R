@@ -24,8 +24,8 @@
 #'    )
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(app$ui, app$server)
+#' if (interactive()) {
+#'   shinyApp(app$ui, app$server)
 #' }
 tm_g_pca <- function(label,
                      mae_name,
@@ -332,9 +332,10 @@ srv_g_pca <- function(input,
 #' @describeIn tm_g_pca sample module function.
 #' @export
 #' @examples
-#' \dontrun{
+#'
 #' # Alternatively you can run the sample module with this function call:
-#' sample_tm_g_pca()
+#' if (interactive()) {
+#'   sample_tm_g_pca()
 #' }
 sample_tm_g_pca <- function() {
   mae <- hermes::multi_assay_experiment
