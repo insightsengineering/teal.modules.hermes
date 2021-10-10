@@ -72,12 +72,10 @@ heatmap_plot <- function(object, assay_name) {
 #' app <- init(
 #'   data = data,
 #'   modules = root_modules(
-#'     static = {
-#'       tm_g_quality(
-#'         label = "Quality Control",
-#'         mae_name = "MAE"
-#'       )
-#'     }
+#'     tm_g_quality(
+#'       label = "Quality Control",
+#'       mae_name = "MAE"
+#'     )
 #'   )
 #' )
 #' if (interactive()) {
@@ -350,12 +348,10 @@ sample_tm_g_quality <- function() {
   app <- init(
     data = data,
     modules = root_modules(
-      static = {
-        tm_g_quality(
-          label = "quality",
-          mae_name = "MAE"
-        )
-      }
+      tm_g_quality(
+        label = "quality",
+        mae_name = "MAE"
+      )
     )
   )
   shinyApp(app$ui, app$server)

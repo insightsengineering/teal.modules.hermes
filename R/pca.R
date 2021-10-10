@@ -344,12 +344,10 @@ sample_tm_g_pca <- function() {
   app <- init(
     data = data,
     modules = root_modules(
-      static = {
-        tm_g_pca(
-          label = "pca",
-          mae_name = "MAE"
-        )
-      }
+      tm_g_pca(
+        label = "pca",
+        mae_name = "MAE"
+      )
     )
   )
   shinyApp(app$ui, app$server)
