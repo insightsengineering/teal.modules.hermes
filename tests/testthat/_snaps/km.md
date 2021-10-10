@@ -1,8 +1,8 @@
 # ui_g_km creates expected HTML
 
     Code
-      ui_g_km(id = "testid", datasets = datasets, mae_name = mae_name, summary_funs = list(
-        Mean = colMeans), pre_output = NULL, post_output = NULL)
+      ui_g_km(id = "testid", datasets = datasets, adtte_name = "ADTTE", mae_name = mae_name,
+        summary_funs = list(Mean = colMeans), pre_output = NULL, post_output = NULL)
     Output
       <div class="row">
         <div>
@@ -10,6 +10,10 @@
             <div class="well">
               <div>
                 <label class="text-primary">Encodings</label>
+                <span class="help-block">
+                  Analysis of MAE:
+                  <code>MyMAE</code>
+                </span>
                 <div class="form-group shiny-input-container">
                   <label class="control-label" id="testid-experiment-name-label" for="testid-experiment-name">Select Experiment</label>
                   <div>
@@ -163,6 +167,10 @@
                     </div>
                   </div>
                 </div>
+                <span class="help-block">
+                  Analysis of ADTTE:
+                  <code>ADTTE</code>
+                </span>
                 <div class="form-group shiny-input-container">
                   <label class="control-label" id="testid-adtte-paramcd-label" for="testid-adtte-paramcd">Select Endpoint</label>
                   <div>

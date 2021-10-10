@@ -83,12 +83,13 @@ tm_g_km <- function(label,
     ),
     ui = ui_g_km,
     ui_args = list(
+      adtte_name = adtte_name,
       mae_name = mae_name,
       summary_funs = summary_funs,
       pre_output = pre_output,
       post_output = post_output
     ),
-    filters = "all"
+    filters = c(adtte_name, mae_name)
   )
 }
 
@@ -97,6 +98,7 @@ tm_g_km <- function(label,
 #' @export
 ui_g_km <- function(id,
                     datasets,
+                    adtte_name,
                     mae_name,
                     summary_funs,
                     pre_output,
@@ -107,9 +109,11 @@ ui_g_km <- function(id,
   teal.devel::standard_layout(
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
+      helpText("Analysis of MAE:", tags$code(mae_name)),
       experimentSpecInput(ns("experiment"), datasets, mae_name),
       assaySpecInput(ns("assay")),
       geneSpecInput(ns("genes"), summary_funs),
+      helpText("Analysis of ADTTE:", tags$code(adtte_name)),
       adtteSpecInput(ns("adtte")),
       teal.devel::panel_group(
         teal.devel::panel_item(

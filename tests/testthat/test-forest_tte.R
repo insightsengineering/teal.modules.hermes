@@ -7,6 +7,7 @@ test_that("ui_g_forest_tte creates expected HTML", {
   result <- ui_g_forest_tte(
     id = "testid",
     datasets = datasets,
+    adtte_name = "ADTTE",
     mae_name = mae_name,
     summary_funs = list(
       Mean = colMeans
