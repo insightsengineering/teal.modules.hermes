@@ -288,21 +288,32 @@ adtteSpecServer <- function(id,
       attr(adtte_joined(), "gene_cols")
     })
 
-    # After joining, we recompute endpoints.
+    # After joining, we recompute available endpoints.
     paramcd_choices <- reactive({
       adtte_joined <- adtte_joined()
-      unique(adtte_joined[[adtte_vars$paramcd]])
+      sort(unique(adtte_joined[[adtte_vars$paramcd]]))  # Order should not matter.
     })
 
-    # Update the choices for endpoints in the UI.
+    # Once available endpoints change, we update choices (and also the selection
+    # if nothing was selected earlier) and warn the user if previous endpoint is
+    # not available.
     observeEvent(paramcd_choices(), {
       paramcd_choices <- paramcd_choices()
 
+      new_selected <- if (is_blank(input$paramcd) || (input$paramcd %in% paramcd_choices)) {
+        input$paramcd
+      } else {
+        showNotification(type = "warning", paste(
+          "Endpoint", input$paramcd, "not available in this data subset, please",
+          "change filter options or select another endpoint"
+        ))
+        ""
+      }
       updateSelectInput(
         session,
         "paramcd",
         choices = paramcd_choices,
-        selected = paramcd_choices[1]
+        selected = new_selected
       )
     })
 
@@ -311,15 +322,18 @@ adtteSpecServer <- function(id,
       endpoint <- input$paramcd
       adtte_joined <- adtte_joined()
 
-      req(endpoint)
-
+      validate(need(
+        endpoint,
+        "please select an endpoint"
+      ))
       # Validate that adtte_data is not empty.
       validate(need(
         nrow(adtte_joined) > 0,
         "Joined ADTTE is empty - please relax the filter criteria"
       ))
 
-      result <- adtte_joined[adtte_joined[[adtte_vars$paramcd]] == endpoint, , drop = FALSE]
+      subset_rows <- adtte_joined[[adtte_vars$paramcd]] == endpoint
+      result <- adtte_joined[subset_rows, , drop = FALSE]
       droplevels(result)
     })
 
@@ -338,7 +352,10 @@ adtteSpecServer <- function(id,
         )},
         error = function(e) {
           if (grepl("Duplicate quantiles produced", e)) {
-            validate("please select (slightly) different quantiles to avoid duplicate quantiles")
+            validate(paste(
+              "please adjust filters or select (slightly) different quantiles",
+              "to avoid duplicate quantiles"
+            ))
           } else {
             stop(e)
           }
