@@ -193,7 +193,7 @@ test_that("adtteSpecServer module works as expected in the test app", {
   app$setValue(ns("genes-genes"), "GeneID:101927746")
 
   # Upon initialization the endpoint is not selected automatically, the user
-  # has to do this actively.
+  # has to click this actively.
   msg <- app$waitForOutputElement(ns("summary"), "message", ignore = list(msg))
   expect_identical(msg, "please select an endpoint")
   app$setValue(ns("adtte-paramcd"), "CRSD")
