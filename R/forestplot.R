@@ -85,7 +85,7 @@ tm_g_forest_tte <- function(label,
       pre_output = pre_output,
       post_output = post_output
     ),
-    filters = "all"
+    filters = c(adtte_name, mae_name)
   )
 }
 
@@ -106,6 +106,7 @@ ui_g_forest_tte <- function(id,
       experimentSpecInput(ns("experiment"), datasets, mae_name),
       assaySpecInput(ns("assay")),
       geneSpecInput(ns("genes"), summary_funs),
+      helpText("Analysis of ADTTE:", tags$code(adtte_name)),
       adtteSpecInput(ns("adtte")),
       teal.devel::panel_group(
         teal.devel::panel_item(
