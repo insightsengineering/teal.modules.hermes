@@ -7,6 +7,7 @@ test_that("ui_g_km creates expected HTML", {
   expect_snapshot(ui_g_km(
     id = "testid",
     datasets = datasets,
+    adtte_name = "ADTTE",
     mae_name = mae_name,
     summary_funs = list(
       Mean = colMeans

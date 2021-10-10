@@ -40,7 +40,7 @@
                         <i class="fa fa-font fa-border" role="presentation" aria-label="font fa-border icon"></i>
                       </span>
                     </button>
-                    <div class="pull-right" title="Lock gene selection">
+                    <div class="pull-right" title="Lock gene selection (so that it does not get updated when filtering)">
                       <div class="form-group shiny-input-container">
                         <div class="pretty p-toggle p-plain p-icon p-pulse">
                           <input id="testid-x_spec-lock_button" type="checkbox"/>
@@ -160,7 +160,7 @@
                 </div>
                 <div data-display-if="input.genes.length &gt; 1" data-ns-prefix="testid-x_spec-">
                   <div class="form-group shiny-input-container">
-                    <label class="control-label" id="testid-x_spec-fun_name-label" for="testid-x_spec-fun_name">Select gene summary</label>
+                    <label class="control-label" id="testid-x_spec-fun_name-label" for="testid-x_spec-fun_name">Select Gene Summary</label>
                     <div>
                       <select id="testid-x_spec-fun_name"><option value="Mean" selected>Mean</option></select>
                       <script type="application/json" data-for="testid-x_spec-fun_name" data-nonempty="">{"plugins":["selectize-plugin-a11y"]}</script>
@@ -177,7 +177,7 @@
                         <i class="fa fa-font fa-border" role="presentation" aria-label="font fa-border icon"></i>
                       </span>
                     </button>
-                    <div class="pull-right" title="Lock gene selection">
+                    <div class="pull-right" title="Lock gene selection (so that it does not get updated when filtering)">
                       <div class="form-group shiny-input-container">
                         <div class="pretty p-toggle p-plain p-icon p-pulse">
                           <input id="testid-y_spec-lock_button" type="checkbox"/>
@@ -206,7 +206,7 @@
                 </div>
                 <div data-display-if="input.genes.length &gt; 1" data-ns-prefix="testid-y_spec-">
                   <div class="form-group shiny-input-container">
-                    <label class="control-label" id="testid-y_spec-fun_name-label" for="testid-y_spec-fun_name">Select gene summary</label>
+                    <label class="control-label" id="testid-y_spec-fun_name-label" for="testid-y_spec-fun_name">Select Gene Summary</label>
                     <div>
                       <select id="testid-y_spec-fun_name"><option value="Mean" selected>Mean</option></select>
                       <script type="application/json" data-for="testid-y_spec-fun_name" data-nonempty="">{"plugins":["selectize-plugin-a11y"]}</script>
