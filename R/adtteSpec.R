@@ -263,7 +263,8 @@ adtteSpecServer <- function(id,
       assay <- assay()
       genes <- genes()
 
-      validate(need(genes$get_genes(), "please select at least one gene"))
+      validate_gene_spec(genes, rownames(experiment_data))
+
       req(
         genes$returns_vector(),
         experiment_name,
