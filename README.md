@@ -64,9 +64,7 @@ Now let's assume you want to spin up your app for an MAE.
 library(teal.modules.hermes)
 awesome_app <- function(mae, label = "My awesome app") {
   mae_name <- "MAE"
-  for (i in seq_along(mae)) {
-    mae[[i]] <- hermes::HermesData(mae[[i]])
-  }
+  mae <- hermes::lapply(mae, hermes::HermesData)
   mae_data <- dataset(mae_name, mae)
   data <- teal_data(mae_data)
   app <- init(
@@ -78,7 +76,7 @@ awesome_app <- function(mae, label = "My awesome app") {
         server_args = list(mae_name = mae_name),
         ui = ui,
         ui_args = list(mae_name = mae_name),
-        filters = "all"
+        filters = mae_name
       )
     )
   )
