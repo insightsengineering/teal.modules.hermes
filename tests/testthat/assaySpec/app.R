@@ -3,6 +3,7 @@ library(teal.modules.hermes)
 ui <- function(id,
                datasets) {
   ns <- NS(id)
+
   teal.devel::standard_layout(
     encoding = div(
       experimentSpecInput(
@@ -15,7 +16,7 @@ ui <- function(id,
         label_assays = "Please choose assay"
       )
     ),
-    output = textOutput(ns("result"))
+    output = verbatimTextOutput(ns("result"))
   )
 }
 
@@ -34,7 +35,8 @@ server <- function(input,
     exclude_assays = c("cpm", "tpm", "bla")
   )
   output$result <- renderPrint({
-    assay()
+    assay <- assay()
+    assay
   })
 }
 
@@ -50,7 +52,7 @@ my_app <- function() {
         label = "assaySpec example",
         server = server,
         ui = ui,
-        filters = mae_name
+        filters = "all"
       )
     )
   )
