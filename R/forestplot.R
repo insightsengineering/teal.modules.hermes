@@ -225,9 +225,10 @@ srv_g_forest_tte <- function(input,
 #' @describeIn tm_g_forest_tte sample module function.
 #' @export
 #' @examples
-#' \dontrun{
+#'
 #' # Alternatively you can run the sample module with this function call:
-#' sample_tm_g_forest_tte()
+#' if (interactive()) {
+#'   sample_tm_g_forest_tte()
 #' }
 sample_tm_g_forest_tte <- function() { # nolint # nousage
 

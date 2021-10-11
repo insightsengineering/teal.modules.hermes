@@ -50,12 +50,17 @@ test_that("tm_g_km works as expected in the sample app", {
   # Choose a gene signature.
   app$setValue(ns("genes-genes"), c("GeneID:101927746", "GeneID:1820"))
 
+  # Choose an endpoint.
+  msg <- app$waitForOutputElement(ns("km_plot"), "message")
+  expect_identical(msg, "please select an endpoint")
+  app$setValue(ns("adtte-paramcd"), "PFS")
+
   # Initial plot.
-  Sys.sleep(1)
   expect_snapshot_screenshot(
     app,
     id = ns("km_plot"),
-    name = "initial_plot.png"
+    name = "initial_plot.png",
+    wait_for_plot = TRUE
   )
 
   app$stop()

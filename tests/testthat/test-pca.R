@@ -73,7 +73,10 @@ test_that("tm_g_pca works as expected in the sample app", {
   app$waitForValue(ns2("hd1-rowData_var_symbol-content-selection"))
   app$setValue(ns2("hd1-rowData_var_symbol-content-selection"), character())  # Deselect everything.
   plot_message <- app$waitForOutputElement(ns("plot_pca"), "message")  # Only works without a crash.
-  expect_match(plot_message, "Number of genes is too small")  # Compare the validation message.
+  expect_match(
+    plot_message,
+    "No genes or samples included in this experiment, please adjust filters"
+  )
   app$click(ns2("hd1-rowData_var_symbol-remove"))  # Remove filter again.
 
   # Now update the tab selection.

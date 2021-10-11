@@ -51,7 +51,14 @@ test_that("tm_g_forest_tte works as expected in the sample app", {
   # Choose a gene signature.
   app$setValue(ns("genes-genes"), c("GeneID:101927746", "GeneID:1820"))
 
+  # Choose an endpoint.
+  msg <- app$waitForOutputElement(ns("plot-plot_main"), "message")
+  expect_identical(msg, "please select an endpoint")
+  app$setValue(ns("adtte-paramcd"), "PFS")
+
   # Initial plot.
+  app$waitForShiny()
+  Sys.sleep(1)
   expect_snapshot_screenshot(
     app,
     id = ns("plot-plot_out_main"),

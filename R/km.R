@@ -39,10 +39,9 @@
 #'   modules = modules
 #' )
 #'
-#' \dontrun{
-#' shinyApp(ui = app$ui, server = app$server)
+#' if (interactive()) {
+#'   shinyApp(ui = app$ui, server = app$server)
 #' }
-#'
 tm_g_km <- function(label,
                     adtte_name,
                     mae_name,
@@ -210,9 +209,10 @@ srv_g_km <- function(input,
 #' @describeIn tm_g_km sample module function.
 #' @export
 #' @examples
-#' \dontrun{
+#'
 #' # Alternatively you can run the sample module with this function call:
-#' sample_tm_g_km()
+#' if (interactive()) {
+#'   sample_tm_g_km()
 #' }
 sample_tm_g_km <- function() { # nolint # nousage
 

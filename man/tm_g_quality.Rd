@@ -77,19 +77,18 @@ data <- teal_data(mae_data)
 app <- init(
   data = data,
   modules = root_modules(
-    static = {
-      tm_g_quality(
-        label = "Quality Control",
-        mae_name = "MAE"
-      )
-    }
+    tm_g_quality(
+      label = "Quality Control",
+      mae_name = "MAE"
+    )
   )
 )
-\dontrun{
-shinyApp(app$ui, app$server)
+if (interactive()) {
+  shinyApp(app$ui, app$server)
 }
-\dontrun{
+
 # Alternatively you can run the sample module with this function call:
-sample_tm_g_quality()
+if (interactive()) {
+  sample_tm_g_quality()
 }
 }

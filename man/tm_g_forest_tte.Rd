@@ -148,8 +148,9 @@ app <- init(
 if (interactive()) {
   shinyApp(app$ui, app$server)
 }
-\dontrun{
+
 # Alternatively you can run the sample module with this function call:
-sample_tm_g_forest_tte()
+if (interactive()) {
+  sample_tm_g_forest_tte()
 }
 }
