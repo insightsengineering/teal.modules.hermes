@@ -41,7 +41,7 @@ h_extract_words <- function(x) {
   )[[1]]
 }
 
-# Don't export, see explanation in `teal::include_css_files`
+# Don't export, see explanation in `teal::include_css_files`.
 #' @inherit teal::include_css_files
 include_css_files <- function(pattern = "*") { # nolint # nousage
   css_files <- list.files(
@@ -52,7 +52,7 @@ include_css_files <- function(pattern = "*") { # nolint # nousage
 }
 
 
-# Don't export, see explanation in `teal::include_js_files`
+# Don't export, see explanation in `teal::include_js_files`.
 #' @inherit teal::include_js_files
 include_js_files <- function(pattern = "*") { # nolint # nousage
   js_files <- list.files(

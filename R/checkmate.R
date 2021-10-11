@@ -13,7 +13,7 @@
 #'   error message.
 #' - `test_` functions just return `TRUE` or `FALSE`.
 #'
-#' @seealso [check_tag()]
+#' @seealso [assert_tag()], [assert_reactive()], [assert_summary_funs()], [assert_adtte_vars()]
 #'
 #' @name assertions
 #' @import checkmate
@@ -112,6 +112,7 @@ assert_summary_funs <- function(x, null.ok = FALSE) {
     unique = TRUE,
     names = "unique"
   )
+  invisible(x)
 }
 
 # assert_adtte_vars ----
@@ -132,4 +133,5 @@ assert_summary_funs <- function(x, null.ok = FALSE) {
 assert_adtte_vars <- function(x) {
   assert_list(x, types = "character", names = "unique", unique = TRUE)
   assert_names(names(x), permutation.of = c("aval", "is_event", "paramcd", "usubjid", "avalu"))
+  invisible(x)
 }
