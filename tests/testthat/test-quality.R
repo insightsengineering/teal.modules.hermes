@@ -40,7 +40,10 @@ test_that("tm_g_quality works as expected in the sample app", {
   # Check that warning message for at least 2 genes works as expected.
   app$setValue(ns("min_cpm"), 54356)
   plot_message <- app$waitForOutputElement(ns("plot"), "message")
-  expect_identical(plot_message, "Please change gene filters to ensure that there are at least 2 genes")
+  expect_identical(
+    plot_message,
+    "Please change gene filters to ensure that there are at least 2 genes"
+  )
 
   # Initial plot.
   expect_snapshot_screenshot(

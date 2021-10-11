@@ -7,8 +7,8 @@ ui <- function(id,
     encoding = div(
       experimentSpecInput(
         ns("experiment"),
-        datasets,
-        "MAE"
+        datasets = datasets,
+        mae_name = "MAE"
       ),
       assaySpecInput(
         ns("assay"),
@@ -25,13 +25,13 @@ server <- function(input,
                    datasets) {
   experiment <- experimentSpecServer(
     "experiment",
-    datasets,
-    "MAE"
+    datasets = datasets,
+    mae_name = "MAE"
   )
   assay <- assaySpecServer(
     "assay",
-    experiment$assays,
-    exclude_assays = c("counts", "cpm", "tpm", "bla")
+    assays = experiment$assays,
+    exclude_assays = c("cpm", "tpm", "bla")
   )
   output$result <- renderPrint({
     assay()
@@ -50,7 +50,7 @@ my_app <- function() {
         label = "assaySpec example",
         server = server,
         ui = ui,
-        filters = "all"
+        filters = mae_name
       )
     )
   )
