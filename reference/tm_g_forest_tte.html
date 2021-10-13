@@ -83,7 +83,7 @@ This module provides an interactive survival forest plot." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.hermes</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
       </span>
     </div>
 
@@ -134,21 +134,39 @@ This module provides an interactive survival forest plot." />
 
     <pre class="usage"><span class='fu'>tm_g_forest_tte</span><span class='op'>(</span>
   <span class='va'>label</span>,
+  <span class='va'>adtte_name</span>,
   <span class='va'>mae_name</span>,
+  adtte_vars <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>aval <span class='op'>=</span> <span class='st'>"AVAL"</span>, is_event <span class='op'>=</span> <span class='st'>"is_event"</span>, paramcd <span class='op'>=</span> <span class='st'>"PARAMCD"</span>, usubjid
+    <span class='op'>=</span> <span class='st'>"USUBJID"</span>, avalu <span class='op'>=</span> <span class='st'>"AVALU"</span><span class='op'>)</span>,
+  exclude_assays <span class='op'>=</span> <span class='st'>"counts"</span>,
+  summary_funs <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>Mean <span class='op'>=</span> <span class='va'>colMeans</span>, Median <span class='op'>=</span> <span class='fu'>matrixStats</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/pkg/matrixStats/man/rowMedians.html'>colMedians</a></span>, Max <span class='op'>=</span>
+    <span class='fu'>matrixStats</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/pkg/matrixStats/man/rowRanges.html'>colMaxs</a></span><span class='op'>)</span>,
   pre_output <span class='op'>=</span> <span class='cn'>NULL</span>,
   post_output <span class='op'>=</span> <span class='cn'>NULL</span>,
   plot_height <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>600L</span>, <span class='fl'>200L</span>, <span class='fl'>2000L</span><span class='op'>)</span>,
   plot_width <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1360L</span>, <span class='fl'>500L</span>, <span class='fl'>2000L</span><span class='op'>)</span>
 <span class='op'>)</span>
 
-<span class='fu'>ui_g_forest_tte</span><span class='op'>(</span><span class='va'>id</span>, <span class='va'>datasets</span>, <span class='va'>mae_name</span>, <span class='va'>pre_output</span>, <span class='va'>post_output</span><span class='op'>)</span>
+<span class='fu'>ui_g_forest_tte</span><span class='op'>(</span>
+  <span class='va'>id</span>,
+  <span class='va'>datasets</span>,
+  <span class='va'>adtte_name</span>,
+  <span class='va'>mae_name</span>,
+  <span class='va'>summary_funs</span>,
+  <span class='va'>pre_output</span>,
+  <span class='va'>post_output</span>
+<span class='op'>)</span>
 
 <span class='fu'>srv_g_forest_tte</span><span class='op'>(</span>
   <span class='va'>input</span>,
   <span class='va'>output</span>,
   <span class='va'>session</span>,
   <span class='va'>datasets</span>,
+  <span class='va'>adtte_name</span>,
   <span class='va'>mae_name</span>,
+  <span class='va'>adtte_vars</span>,
+  <span class='va'>exclude_assays</span>,
+  <span class='va'>summary_funs</span>,
   <span class='va'>plot_height</span>,
   <span class='va'>plot_width</span>
 <span class='op'>)</span>
@@ -164,9 +182,39 @@ This module provides an interactive survival forest plot." />
 menu item label of the module in the teal app.</p></td>
     </tr>
     <tr>
+      <th>adtte_name</th>
+      <td><p>(<code>string</code>)<br />
+name of the ADTTE dataset.</p></td>
+    </tr>
+    <tr>
       <th>mae_name</th>
       <td><p>(<code>string</code>)<br />
 name of the MAE data used in the teal module.</p></td>
+    </tr>
+    <tr>
+      <th>adtte_vars</th>
+      <td><p>(named <code>list</code> of <code>string</code>)<br />
+names of the variables to use in the ADTTE dataset. It should comprise elements:</p><ul>
+<li><p><code>aval</code>: the numeric time-to-event variable.</p></li>
+<li><p><code>avalu</code>: the variable holding the unit of <code>aval</code>.</p></li>
+<li><p><code>is_event</code>: the logical event variable. It needs to be <code>TRUE</code>
+when there was an observed event, and <code>FALSE</code> if the time is censored without
+observed event.</p></li>
+<li><p><code>paramcd</code>: the character or factor parameter code variable, defining the
+type of time-to-event for selection in the module.</p></li>
+<li><p><code>usubjid</code>: the subject ID variable.</p></li>
+</ul></td>
+    </tr>
+    <tr>
+      <th>exclude_assays</th>
+      <td><p>(<code>character</code>)<br />
+names of the assays which should not be included in choices in the teal module.</p></td>
+    </tr>
+    <tr>
+      <th>summary_funs</th>
+      <td><p>(named <code>list</code> of functions or <code>NULL</code>)<br /> functions which can be used
+in the the gene signatures. For modules that support also multiple genes without
+summary, <code>NULL</code> can be included to not summarize the genes but provide all of them.</p></td>
     </tr>
     <tr>
       <th>pre_output</th>
@@ -228,25 +276,35 @@ functions, holding all the data sets provided in the app initialization.</p></td
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>mae</span> <span class='op'>&lt;-</span> <span class='fu'>hermes</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/pkg/hermes/man/multi_assay_experiment.html'>multi_assay_experiment</a></span>
-<span class='va'>mae_data</span> <span class='op'>&lt;-</span> <span class='fu'>dataset</span><span class='op'>(</span><span class='st'>"MAE"</span>, <span class='va'>mae</span><span class='op'>)</span>
-<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'>teal_data</span><span class='op'>(</span><span class='va'>mae_data</span><span class='op'>)</span>
+<span class='va'>adtte</span> <span class='op'>&lt;-</span> <span class='fu'>scda</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html'>synthetic_cdisc_data</a></span><span class='op'>(</span><span class='st'>"rcd_2021_07_07"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>adtte</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>is_event <span class='op'>=</span> <span class='op'>(</span><span class='va'>.data</span><span class='op'>$</span><span class='va'>CNSR</span> <span class='op'>==</span> <span class='fl'>0</span><span class='op'>)</span><span class='op'>)</span>
+
+<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'>teal_data</span><span class='op'>(</span>
+  <span class='fu'>dataset</span><span class='op'>(</span>
+    <span class='st'>"ADTTE"</span>,
+    <span class='va'>adtte</span>,
+    code <span class='op'>=</span> <span class='st'>'adtte &lt;- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %&gt;%
+      dplyr::mutate(is_event = (.data$CNSR == 0))'</span>
+  <span class='op'>)</span>,
+  <span class='fu'>dataset</span><span class='op'>(</span><span class='st'>"MAE"</span>, <span class='va'>mae</span><span class='op'>)</span>
+<span class='op'>)</span>
 <span class='va'>app</span> <span class='op'>&lt;-</span> <span class='fu'>init</span><span class='op'>(</span>
   data <span class='op'>=</span> <span class='va'>data</span>,
   modules <span class='op'>=</span> <span class='fu'>root_modules</span><span class='op'>(</span>
-    static <span class='op'>=</span> <span class='op'>{</span>
-      <span class='fu'>tm_g_forest_tte</span><span class='op'>(</span>
-        label <span class='op'>=</span> <span class='st'>"forestplot"</span>,
-        mae_name <span class='op'>=</span> <span class='st'>"MAE"</span>
-      <span class='op'>)</span>
-    <span class='op'>}</span>
+    <span class='fu'>tm_g_forest_tte</span><span class='op'>(</span>
+      label <span class='op'>=</span> <span class='st'>"forestplot"</span>,
+      adtte_name <span class='op'>=</span> <span class='st'>"ADTTE"</span>,
+      mae_name <span class='op'>=</span> <span class='st'>"MAE"</span>
+    <span class='op'>)</span>
   <span class='op'>)</span>
 <span class='op'>)</span>
-<span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='fu'>shinyApp</span><span class='op'>(</span><span class='va'>app</span><span class='op'>$</span><span class='va'>ui</span>, <span class='va'>app</span><span class='op'>$</span><span class='va'>server</span><span class='op'>)</span>
+<span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/interactive.html'>interactive</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
+  <span class='fu'>shinyApp</span><span class='op'>(</span><span class='va'>app</span><span class='op'>$</span><span class='va'>ui</span>, <span class='va'>app</span><span class='op'>$</span><span class='va'>server</span><span class='op'>)</span>
 <span class='op'>}</span>
-<span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+
 <span class='co'># Alternatively you can run the sample module with this function call:</span>
-<span class='fu'>sample_tm_g_forest_tte</span><span class='op'>(</span><span class='op'>)</span>
+<span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/interactive.html'>interactive</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
+  <span class='fu'>sample_tm_g_forest_tte</span><span class='op'>(</span><span class='op'>)</span>
 <span class='op'>}</span>
 </div></pre>
   </div>

@@ -4,10 +4,19 @@
     <loc>https://insightsengineering.github.io/teal.modules.hermes/index.html</loc>
   </url>
   <url>
+    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/adtteSpecInput.html</loc>
+  </url>
+  <url>
+    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/adtteSpecServer.html</loc>
+  </url>
+  <url>
     <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/assaySpecInput.html</loc>
   </url>
   <url>
     <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/assaySpecServer.html</loc>
+  </url>
+  <url>
+    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/assert_adtte_vars.html</loc>
   </url>
   <url>
     <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/assert_summary_funs.html</loc>

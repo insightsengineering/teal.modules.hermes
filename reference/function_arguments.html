@@ -83,7 +83,7 @@ functions." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.hermes</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
       </span>
     </div>
 
@@ -141,6 +141,10 @@ functions.</p>
       <td><p>(<code>data frame</code>)<br /> an <code>adtte</code> dataset.</p></td>
     </tr>
     <tr>
+      <th>usubjid_var</th>
+      <td><p>(<code>string</code>)<br /> variable name of the subject ID variable.</p></td>
+    </tr>
+    <tr>
       <th>mae</th>
       <td><p>(<code>MultiAssayExperiment</code>)<br /> contains <code>AnyHermesData</code> objects.</p></td>
     </tr>
@@ -149,8 +153,9 @@ functions.</p>
       <td><p>(<code>AnyHermesData</code>)<br /> contains RNA-seq values for one experiment.</p></td>
     </tr>
     <tr>
-      <th>gene_var</th>
-      <td><p>(<code>character</code>)<br /> a gene(s) of interest.</p></td>
+      <th>genes</th>
+      <td><p>(<code>GeneSpec</code>)<br /> specification for gene(s) (signature), e.g.
+using <code><a href='https://rdrr.io/pkg/hermes/man/gene_spec.html'>hermes::gene_spec()</a></code>.</p></td>
     </tr>
     <tr>
       <th>experiment_name</th>

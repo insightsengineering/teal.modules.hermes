@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Changelog • teal.modules.hermes</title>
+<title>Module Input for ADTTE Specification — adtteSpecInput • teal.modules.hermes</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,9 @@
 
 
 
-<meta property="og:title" content="Changelog" />
+<meta property="og:title" content="Module Input for ADTTE Specification — adtteSpecInput" />
+<meta property="og:description" content="
+This defines the input for the ADTTE specification." />
 
 
 
@@ -68,7 +70,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-news">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -120,52 +122,45 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-      <h1 data-toc-skip>Changelog <small></small></h1>
-      <small>Source: <a href='https://github.com/insightsengineering/teal.modules.hermes/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
+    <h1>Module Input for ADTTE Specification</h1>
+    <small class="dont-index">Source: <a href='https://github.com/insightsengineering/teal.modules.hermes/blob/master/R/adtteSpec.R'><code>R/adtteSpec.R</code></a></small>
+    <div class="hidden name"><code>adtteSpecInput.Rd</code></div>
     </div>
 
-    <div id="tealmoduleshermes-0109000" class="section level1">
-<h1 class="page-header" data-toc-text="0.1.0.9000">
-<a href="#tealmoduleshermes-0109000" class="anchor"></a>teal.modules.hermes 0.1.0.9000</h1>
-</div>
-    <div id="tealmoduleshermes-010" class="section level1">
-<h1 class="page-header" data-toc-text="0.1.0">
-<a href="#tealmoduleshermes-010" class="anchor"></a>teal.modules.hermes 0.1.0</h1>
-<ul>
-<li>First release of the <code>teal.modules.hermes</code> package, which contains teal modules for RNA-seq analysis using the <code>hermes</code> package.</li>
-<li>New users should first begin by reading the <code>README.md</code> of the <code>teal.modules.hermes</code> package to become familiar.</li>
-</ul>
-<div id="new-features" class="section level3">
-<h3 class="hasAnchor">
-<a href="#new-features" class="anchor"></a>New Features</h3>
-<ul>
-<li>
-<code>tm_g_barplot</code> is a barplot module for RNA-seq gene expression analysis.</li>
-<li>
-<code>tm_g_boxplot</code> is a boxplot module for RNA-seq gene expression analysis.</li>
-<li>
-<code>tm_g_forest_tte</code> is a survival forest plot module to analyze RNA-seq gene expression data together with survival data.</li>
-<li>
-<code>tm_g_km</code> is a Kaplan-Meier plot module to analyze RNA-seq gene expression data together with survival data.</li>
-<li>
-<code>tm_g_pca</code> is a principal components analysis plot module for RNA-seq gene expression analysis.</li>
-<li>
-<code>tm_g_quality</code> is a quality control module for RNA-seq gene expression data.</li>
-<li>
-<code>tm_g_scatterplot</code> is a scatterplot module for RNA-seq gene expression analysis.</li>
-<li>
-<code>tm_g_volcanoplot</code> is a differential gene expression analysis module.</li>
-</ul>
-</div>
-</div>
-  </div>
+    <div class="ref-description">
+    <p><a href='https://lifecycle.r-lib.org/articles/stages.html#experimental'><img src='figures/lifecycle-experimental.svg' alt='[Experimental]' /></a></p>
+<p>This defines the input for the ADTTE specification.</p>
+    </div>
 
+    <pre class="usage"><span class='fu'>adtteSpecInput</span><span class='op'>(</span><span class='va'>inputId</span>, label_paramcd <span class='op'>=</span> <span class='st'>"Select Endpoint"</span><span class='op'>)</span></pre>
+
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>inputId</th>
+      <td><p>(<code>string</code>)<br />
+the ID used to call the module input.</p></td>
+    </tr>
+    <tr>
+      <th>label_paramcd</th>
+      <td><p>(<code>string</code>)<br /> label for the endpoint (<code>PARAMCD</code>) selection.</p></td>
+    </tr>
+    </table>
+
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>The UI part.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='adtteSpecServer.html'>adtteSpecServer()</a></code> for the module server and a complete example.</p></div>
+
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>
     </nav>
   </div>
-
 </div>
 
 

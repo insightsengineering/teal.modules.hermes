@@ -83,7 +83,7 @@ additional checkmate assertions." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.hermes</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
       </span>
     </div>
 
@@ -153,6 +153,16 @@ assertions; defaults to the heuristic implemented in <code><a href='https://rdrr
       <th>add</th>
       <td><p>(<code>AssertCollection</code> or <code>NULL</code>)<br /> collection to store
 assertion messages, see <code><a href='https://rdrr.io/pkg/checkmate/man/AssertCollection.html'>checkmate::AssertCollection</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>info</th>
+      <td><p>(<code>string</code>)<br /> extra information to be included in the
+message for the testthat reporter, see <code><a href='https://testthat.r-lib.org/reference/expect_that.html'>testthat::expect_that()</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>label</th>
+      <td><p>(<code>string</code>)<br /> name of the checked object to print in
+messages. Defaults to the heuristic implemented in <code><a href='https://rdrr.io/pkg/checkmate/man/vname.html'>checkmate::vname()</a></code>.</p></td>
     </tr>
     </table>
 

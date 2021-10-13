@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Data Preprocessing for KM Module — h_km_mae_to_adtte • teal.modules.hermes</title>
+<title>Data Preprocessing for ADTTE Module — h_km_mae_to_adtte • teal.modules.hermes</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,9 @@
 
 
 
-<meta property="og:title" content="Data Preprocessing for KM Module — h_km_mae_to_adtte" />
+<meta property="og:title" content="Data Preprocessing for ADTTE Module — h_km_mae_to_adtte" />
 <meta property="og:description" content="
-A function to help with merging of MAE to ADTTE for use with g_km." />
+A function to help with merging of MAE to ADTTE." />
 
 
 
@@ -83,7 +83,7 @@ A function to help with merging of MAE to ADTTE for use with g_km." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.hermes</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
       </span>
     </div>
 
@@ -122,22 +122,23 @@ A function to help with merging of MAE to ADTTE for use with g_km." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Data Preprocessing for KM Module</h1>
-    <small class="dont-index">Source: <a href='https://github.com/insightsengineering/teal.modules.hermes/blob/master/R/km.R'><code>R/km.R</code></a></small>
+    <h1>Data Preprocessing for ADTTE Module</h1>
+    <small class="dont-index">Source: <a href='https://github.com/insightsengineering/teal.modules.hermes/blob/master/R/adtteSpec.R'><code>R/adtteSpec.R</code></a></small>
     <div class="hidden name"><code>h_km_mae_to_adtte.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p><a href='https://lifecycle.r-lib.org/articles/stages.html#experimental'><img src='figures/lifecycle-experimental.svg' alt='[Experimental]' /></a></p>
-<p>A function to help with merging of MAE to <code>ADTTE</code> for use with <code>g_km</code>.</p>
+<p>A function to help with merging of MAE to <code>ADTTE</code>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>h_km_mae_to_adtte</span><span class='op'>(</span>
   <span class='va'>adtte</span>,
   <span class='va'>mae</span>,
-  <span class='va'>gene_var</span>,
+  <span class='va'>genes</span>,
   experiment_name <span class='op'>=</span> <span class='st'>"hd1"</span>,
-  assay_name <span class='op'>=</span> <span class='st'>"counts"</span>
+  assay_name <span class='op'>=</span> <span class='st'>"counts"</span>,
+  usubjid_var <span class='op'>=</span> <span class='st'>"USUBJID"</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -152,8 +153,9 @@ A function to help with merging of MAE to ADTTE for use with g_km." />
       <td><p>(<code>MultiAssayExperiment</code>)<br /> contains <code>AnyHermesData</code> objects.</p></td>
     </tr>
     <tr>
-      <th>gene_var</th>
-      <td><p>(<code>character</code>)<br /> a gene(s) of interest.</p></td>
+      <th>genes</th>
+      <td><p>(<code>GeneSpec</code>)<br /> specification for gene(s) (signature), e.g.
+using <code><a href='https://rdrr.io/pkg/hermes/man/gene_spec.html'>hermes::gene_spec()</a></code>.</p></td>
     </tr>
     <tr>
       <th>experiment_name</th>
@@ -163,20 +165,22 @@ A function to help with merging of MAE to ADTTE for use with g_km." />
       <th>assay_name</th>
       <td><p>(<code>string</code>)<br /> the assay to define the groups.</p></td>
     </tr>
+    <tr>
+      <th>usubjid_var</th>
+      <td><p>(<code>string</code>)<br /> variable name of the subject ID variable.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A data frame containing all columns/rows from <code>adtte</code> that match
-by <code>USUBJID</code> with the row names of the MAE and have the gene samples available
-in the given experiment. The attributes <code>sample_id</code>
-and <code>gene_cols</code> contain the column names for the sample ID and gene columns.</p>
+by subject ID with the row names of the MAE and have the gene samples available
+in the given experiment. The attribute <code>gene_cols</code> contains the column names
+for the gene columns.</p>
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
-    <p>We require that each patient only has one sample.</p>
-<p>The final gene column names can start with a different string than
-the original gene IDs, in particular white space, dots and colons are removed,
-see <code><a href='https://rdrr.io/pkg/tern/man/make_names.html'>tern::make_names()</a></code> for details.</p>
+    <p>The final gene column names can start with a different string than
+the original gene IDs (or labels), in particular white space and colons are removed.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>mae</span> <span class='op'>&lt;-</span> <span class='fu'>hermes</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/pkg/hermes/man/multi_assay_experiment.html'>multi_assay_experiment</a></span>
@@ -186,18 +190,28 @@ see <code><a href='https://rdrr.io/pkg/tern/man/make_names.html'>tern::make_name
 <span class='va'>new_adtte</span> <span class='op'>&lt;-</span> <span class='fu'>h_km_mae_to_adtte</span><span class='op'>(</span>
   <span class='va'>adtte</span>,
   <span class='va'>mae</span>,
-  gene_var <span class='op'>=</span> <span class='st'>"GeneID:1820"</span>,
+  genes <span class='op'>=</span> <span class='fu'>hermes</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/hermes/man/gene_spec.html'>gene_spec</a></span><span class='op'>(</span><span class='st'>"GeneID:1820"</span><span class='op'>)</span>,
   experiment_name <span class='op'>=</span> <span class='st'>"hd2"</span>
 <span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Registered S3 method overwritten by 'tern':</span>
-#&gt; <span class='message'>  method   from </span>
-#&gt; <span class='message'>  tidy.glm broom</span></div><div class='input'><span class='va'>new_adtte2</span> <span class='op'>&lt;-</span> <span class='fu'>h_km_mae_to_adtte</span><span class='op'>(</span>
+</div><div class='output co'>#&gt; <span class='message'>harmonizing input:</span>
+#&gt; <span class='message'>  removing 11 sampleMap rows not in names(experiments)</span>
+#&gt; <span class='message'>  removing 9 colData rownames not in sampleMap 'primary'</span></div><div class='input'><span class='va'>new_adtte2</span> <span class='op'>&lt;-</span> <span class='fu'>h_km_mae_to_adtte</span><span class='op'>(</span>
   <span class='va'>adtte</span>,
   <span class='va'>mae</span>,
-  gene_var <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"GeneID:1820"</span>, <span class='st'>"GeneID:94115"</span><span class='op'>)</span>,
+  genes <span class='op'>=</span> <span class='fu'>hermes</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/hermes/man/gene_spec.html'>gene_spec</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"GeneID:1820"</span>, <span class='st'>"GeneID:94115"</span><span class='op'>)</span>, fun <span class='op'>=</span> <span class='va'>colMeans</span><span class='op'>)</span>,
   experiment_name <span class='op'>=</span> <span class='st'>"hd2"</span>
 <span class='op'>)</span>
-</div></pre>
+</div><div class='output co'>#&gt; <span class='message'>harmonizing input:</span>
+#&gt; <span class='message'>  removing 11 sampleMap rows not in names(experiments)</span>
+#&gt; <span class='message'>  removing 9 colData rownames not in sampleMap 'primary'</span></div><div class='input'><span class='va'>new_adtte3</span> <span class='op'>&lt;-</span> <span class='fu'>h_km_mae_to_adtte</span><span class='op'>(</span>
+  <span class='va'>adtte</span>,
+  <span class='va'>mae</span>,
+  genes <span class='op'>=</span> <span class='fu'>hermes</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/hermes/man/gene_spec.html'>gene_spec</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>A <span class='op'>=</span> <span class='st'>"GeneID:1820"</span>, B <span class='op'>=</span> <span class='st'>"GeneID:94115"</span><span class='op'>)</span><span class='op'>)</span>,
+  experiment_name <span class='op'>=</span> <span class='st'>"hd2"</span>
+<span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>harmonizing input:</span>
+#&gt; <span class='message'>  removing 11 sampleMap rows not in names(experiments)</span>
+#&gt; <span class='message'>  removing 9 colData rownames not in sampleMap 'primary'</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

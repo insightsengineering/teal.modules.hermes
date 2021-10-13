@@ -83,7 +83,7 @@ This defines the input for the gene signature specification." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.hermes</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
       </span>
     </div>
 
@@ -135,10 +135,11 @@ This defines the input for the gene signature specification." />
     <pre class="usage"><span class='fu'>geneSpecInput</span><span class='op'>(</span>
   <span class='va'>inputId</span>,
   <span class='va'>funs</span>,
-  label_genes <span class='op'>=</span> <span class='st'>"Select gene(s)"</span>,
-  label_funs <span class='op'>=</span> <span class='st'>"Select gene summary"</span>,
+  label_genes <span class='op'>=</span> <span class='st'>"Select Gene(s)"</span>,
+  label_funs <span class='op'>=</span> <span class='st'>"Select Gene Summary"</span>,
   label_text_button <span class='op'>=</span> <span class='st'>"Enter list of genes"</span>,
-  label_lock_button <span class='op'>=</span> <span class='st'>"Lock gene selection"</span>
+ 
+    label_lock_button <span class='op'>=</span> <span class='st'>"Lock gene selection (so that it does not get updated when filtering)"</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -189,7 +190,7 @@ selection drop down menu.</p></td>
 #&gt; <span class='message'>* if providing a custom `html_dependency` these `name` checks can </span>
 #&gt; <span class='message'>  be deactivated with `verify_fa = FALSE`</span></div><div class='output co'>#&gt; &lt;div class="row"&gt;
 #&gt;   &lt;div class="col-sm-8"&gt;
-#&gt;     &lt;label class="control-label"&gt;Select gene(s)&lt;/label&gt;
+#&gt;     &lt;label class="control-label"&gt;Select Gene(s)&lt;/label&gt;
 #&gt;   &lt;/div&gt;
 #&gt;   &lt;div class="col-sm-4"&gt;
 #&gt;     &lt;button class="btn btn-default action-button pull-right list-genes" id="my_genes-text_button" title="Enter list of genes" type="button"&gt;
@@ -197,7 +198,7 @@ selection drop down menu.</p></td>
 #&gt;         &lt;i class="fa fa-font fa-border" role="presentation" aria-label="font fa-border icon"&gt;&lt;/i&gt;
 #&gt;       &lt;/span&gt;
 #&gt;     &lt;/button&gt;
-#&gt;     &lt;div class="pull-right" title="Lock gene selection"&gt;
+#&gt;     &lt;div class="pull-right" title="Lock gene selection (so that it does not get updated when filtering)"&gt;
 #&gt;       &lt;div class="form-group shiny-input-container"&gt;
 #&gt;         &lt;div class="pretty p-toggle p-plain p-icon p-pulse"&gt;
 #&gt;           &lt;input id="my_genes-lock_button" type="checkbox"/&gt;
