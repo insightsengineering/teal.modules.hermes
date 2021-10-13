@@ -24,8 +24,8 @@
 #'     )
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(app$ui, app$server)
+#' if (interactive()) {
+#'   shinyApp(app$ui, app$server)
 #' }
 tm_g_volcanoplot <- function(label,
                              mae_name,
@@ -51,7 +51,7 @@ tm_g_volcanoplot <- function(label,
       pre_output = pre_output,
       post_output = post_output
     ),
-    filters = "all"
+    filters = mae_name
   )
 }
 
@@ -74,6 +74,8 @@ ui_g_volcanoplot <- function(id,
     pre_output = pre_output,
     post_output = post_output,
     encoding = div(
+      tags$label("Encodings", class = "text-primary"),
+      helpText("Analysis of MAE:", tags$code(mae_name)),
       experimentSpecInput(ns("experiment"), datasets, mae_name),
       assaySpecInput(ns("assay")),
       sampleVarSpecInput(ns("compare_group"), "Compare Groups", "Please group here into 2 levels"),
@@ -193,9 +195,10 @@ srv_g_volcanoplot <- function(input,
 #' @describeIn tm_g_volcanoplot sample module function.
 #' @export
 #' @examples
-#' \dontrun{
+#'
 #' # Alternatively you can run the sample module with this function call:
-#'  sample_tm_g_volcanoplot()
+#' if (interactive()) {
+#'   sample_tm_g_volcanoplot()
 #' }
 sample_tm_g_volcanoplot <- function() {
   mae <- hermes::multi_assay_experiment

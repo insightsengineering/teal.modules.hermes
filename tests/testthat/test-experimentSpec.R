@@ -93,8 +93,6 @@ test_that("experimentSpec module works as expected in the test app", {
   app$getDebugLog()
   app$snapshotInit("test-app")
 
-  # nolint start
-
   ns <- NS("teal-main_ui-modules_ui-root_experimentSpec_example")
 
   # Initially the first experiment is selected.
@@ -138,14 +136,15 @@ test_that("experimentSpec module works as expected in the test app", {
     "HermesData object with 9 samples of 2500 genes"
   )
 
-  # Filtering out all samples does not lead to an error but an empty experiment.
+  # Filtering out all samples does give a validation message, so we are safe
+  # downstream.
   ns2 <- NS("teal-main_ui-filter_panel-add_MAE_filter")
-  app$setValue(ns2("subjects-var_to_add"), "sex")
-  app$waitForValue(ns2("subjects-var_to_add"))
-  app$setValue(ns2("subjects-var_sex-content-selection"), character())
+  app$setValue(ns2("subjects-var_to_add"), "SEX")
+  app$waitForValue(ns2("subjects-var_SEX-remove"))
+  app$setValue(ns2("subjects-var_SEX-content-selection"), character())
   expect_match(
-    app$waitForValue(ns("summary"), iotype = "output"),
-    "HermesData object with 0 samples of 2500 genes"
+    app$waitForOutputElement(ns("summary"), "message"),
+    "No genes or samples included in this experiment, please adjust filters"
   )
   app$click("teal-main_ui-filter_panel-MAE_filter-remove_filters")
 
@@ -154,8 +153,8 @@ test_that("experimentSpec module works as expected in the test app", {
   app$waitForValue(ns2("hd2-rowData_var_chromosome-content-selection"))
   app$setValue(ns2("hd2-rowData_var_chromosome-content-selection"), character())
   expect_match(
-    app$waitForValue(ns("summary"), iotype = "output"),
-    "HermesData object with 9 samples of 0 genes"
+    app$waitForOutputElement(ns("summary"), "message"),
+    "No genes or samples included in this experiment, please adjust filters"
   )
   app$click("teal-main_ui-filter_panel-MAE_filter-remove_filters")
 

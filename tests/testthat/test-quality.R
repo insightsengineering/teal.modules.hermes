@@ -40,7 +40,10 @@ test_that("tm_g_quality works as expected in the sample app", {
   # Check that warning message for at least 2 genes works as expected.
   app$setValue(ns("min_cpm"), 54356)
   plot_message <- app$waitForOutputElement(ns("plot"), "message")
-  expect_identical(plot_message, "Please change gene filters to ensure that there are at least 2 genes")
+  expect_identical(
+    plot_message,
+    "Please change gene filters to ensure that there are at least 2 genes"
+  )
 
   # Initial plot.
   expect_snapshot_screenshot(
@@ -48,13 +51,6 @@ test_that("tm_g_quality works as expected in the sample app", {
     id = ns("plot"),
     name = "initial_plot.png"
   )
-
-  # Choose another experiment.
-  app$setValue(ns("experiment-name"), "hd2")
-
-  # Check that warning message about already present quality flags works as expected.
-  plot_message <- app$waitForOutputElement(ns("plot"), "message")
-  expect_identical(plot_message, "Quality flags have already been added to this experiment")
 
   # Choose another experiment.
   app$setValue(ns("experiment-name"), "hd3")

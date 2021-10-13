@@ -6,11 +6,14 @@
 \arguments{
 \item{adtte}{(\verb{data frame})\cr an \code{adtte} dataset.}
 
+\item{usubjid_var}{(\code{string})\cr variable name of the subject ID variable.}
+
 \item{mae}{(\code{MultiAssayExperiment})\cr contains \code{AnyHermesData} objects.}
 
 \item{object}{(\code{AnyHermesData})\cr contains RNA-seq values for one experiment.}
 
-\item{gene_var}{(\code{character})\cr a gene(s) of interest.}
+\item{genes}{(\code{GeneSpec})\cr specification for gene(s) (signature), e.g.
+using \code{\link[hermes:gene_spec]{hermes::gene_spec()}}.}
 
 \item{experiment_name}{(\code{string})\cr the desired \code{HermesData} to use.}
 

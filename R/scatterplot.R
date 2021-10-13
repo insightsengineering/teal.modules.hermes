@@ -24,8 +24,8 @@
 #'     )
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(app$ui, app$server)
+#' if (interactive()) {
+#'   shinyApp(app$ui, app$server)
 #' }
 tm_g_scatterplot <- function(label,
                              mae_name,
@@ -59,7 +59,7 @@ tm_g_scatterplot <- function(label,
       pre_output = pre_output,
       post_output = post_output
     ),
-    filters = "all"
+    filters = mae_name
   )
 }
 
@@ -171,9 +171,10 @@ srv_g_scatterplot <- function(input,
 #' @describeIn tm_g_scatterplot sample module function.
 #' @export
 #' @examples
-#' \dontrun{
+#'
 #' # Alternatively you can run the sample module with this function call:
-#' sample_tm_g_scatterplot()
+#' if (interactive()) {
+#'   sample_tm_g_scatterplot()
 #' }
 sample_tm_g_scatterplot <- function() {
   mae <- hermes::multi_assay_experiment

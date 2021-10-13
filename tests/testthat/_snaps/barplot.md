@@ -141,7 +141,7 @@
                 </div>
                 <div class="row">
                   <div class="col-sm-8">
-                    <label class="control-label">Select gene(s)</label>
+                    <label class="control-label">Select Gene(s)</label>
                   </div>
                   <div class="col-sm-4">
                     <button class="btn btn-default action-button pull-right list-genes" id="testid-x-text_button" title="Enter list of genes" type="button">
@@ -149,7 +149,7 @@
                         <i class="fa fa-font fa-border" role="presentation" aria-label="font fa-border icon"></i>
                       </span>
                     </button>
-                    <div class="pull-right" title="Lock gene selection">
+                    <div class="pull-right" title="Lock gene selection (so that it does not get updated when filtering)">
                       <div class="form-group shiny-input-container">
                         <div class="pretty p-toggle p-plain p-icon p-pulse">
                           <input id="testid-x-lock_button" type="checkbox"/>
@@ -178,7 +178,7 @@
                 </div>
                 <div data-display-if="input.genes.length &gt; 1" data-ns-prefix="testid-x-">
                   <div class="form-group shiny-input-container">
-                    <label class="control-label" id="testid-x-fun_name-label" for="testid-x-fun_name">Select gene summary</label>
+                    <label class="control-label" id="testid-x-fun_name-label" for="testid-x-fun_name">Select Gene Summary</label>
                     <div>
                       <select id="testid-x-fun_name"><option value="Mean" selected>Mean</option></select>
                       <script type="application/json" data-for="testid-x-fun_name" data-nonempty="">{"plugins":["selectize-plugin-a11y"]}</script>

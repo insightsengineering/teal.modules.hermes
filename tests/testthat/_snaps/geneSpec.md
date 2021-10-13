@@ -5,7 +5,7 @@
     Output
       <div class="row">
         <div class="col-sm-8">
-          <label class="control-label">Select gene(s)</label>
+          <label class="control-label">Select Gene(s)</label>
         </div>
         <div class="col-sm-4">
           <button class="btn btn-default action-button pull-right list-genes" id="my_genes-text_button" title="Enter list of genes" type="button">
@@ -13,7 +13,7 @@
               <i class="fa fa-font fa-border" role="presentation" aria-label="font fa-border icon"></i>
             </span>
           </button>
-          <div class="pull-right" title="Lock gene selection">
+          <div class="pull-right" title="Lock gene selection (so that it does not get updated when filtering)">
             <div class="form-group shiny-input-container">
               <div class="pretty p-toggle p-plain p-icon p-pulse">
                 <input id="my_genes-lock_button" type="checkbox"/>
@@ -118,6 +118,10 @@
         position: absolute;
         top: -500vh;
         width: 100%;
+      }
+      
+      .dataTable-container table td{
+        white-space: unset !important;
       }</style>
         </div>
       </div>

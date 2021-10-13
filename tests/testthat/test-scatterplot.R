@@ -27,8 +27,6 @@ test_that("tm_g_scatterplot works as expected in the sample app", {
   app$getDebugLog()
   app$snapshotInit("test-app")
 
-  # nolint start
-
   ns <- NS("teal-main_ui-modules_ui-root_scatterplot")
 
   # Check initial state of encodings.

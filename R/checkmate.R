@@ -13,7 +13,7 @@
 #'   error message.
 #' - `test_` functions just return `TRUE` or `FALSE`.
 #'
-#' @seealso [check_tag()]
+#' @seealso [assert_tag()], [assert_reactive()], [assert_summary_funs()], [assert_adtte_vars()]
 #'
 #' @name assertions
 #' @import checkmate
@@ -51,6 +51,11 @@ assert_tag <- makeAssertionFunction(check_tag)
 #' @rdname check_tag
 #' @export
 test_tag <- makeTestFunction(check_tag)
+
+#' @rdname check_tag
+#' @inheritParams assertion_arguments
+#' @export
+expect_tag <- makeExpectationFunction(check_tag)
 
 # assert_reactive ----
 
@@ -107,4 +112,26 @@ assert_summary_funs <- function(x, null.ok = FALSE) {
     unique = TRUE,
     names = "unique"
   )
+  invisible(x)
+}
+
+# assert_adtte_vars ----
+
+#' Check for ADTTE Variables
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Check whether `x` is a list of ADTTE variables.
+#'
+#' @inheritParams assertion_arguments
+#' @seealso [`assertions`] for more details.
+#'
+#' @export
+#'
+#' @examples
+#' assert_adtte_vars(list(aval = "AV", is_event = "EV", paramcd = "PC", usubjid = "ID", avalu = "u"))
+assert_adtte_vars <- function(x) {
+  assert_list(x, types = "character", names = "unique", unique = TRUE)
+  assert_names(names(x), permutation.of = c("aval", "is_event", "paramcd", "usubjid", "avalu"))
+  invisible(x)
 }

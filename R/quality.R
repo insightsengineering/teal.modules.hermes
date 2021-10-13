@@ -17,9 +17,14 @@
 top_gene_plot <- function(object, assay_name) {
   top_gene <- hermes::top_genes(
     object = object,
-    assay_name = assay_name
+    assay_name = assay_name,
+    summary_fun = rowMeans
   )
-  hermes::autoplot(top_gene)
+  hermes::autoplot(
+    top_gene,
+    x_lab = "Gene",
+    y_lab = paste("Mean", assay_name, "across samples")
+  )
 }
 
 #' Correlation Heatmap Plot
@@ -67,16 +72,14 @@ heatmap_plot <- function(object, assay_name) {
 #' app <- init(
 #'   data = data,
 #'   modules = root_modules(
-#'     static = {
-#'       tm_g_quality(
-#'         label = "Quality Control",
-#'         mae_name = "MAE"
-#'       )
-#'     }
+#'     tm_g_quality(
+#'       label = "Quality Control",
+#'       mae_name = "MAE"
+#'     )
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(app$ui, app$server)
+#' if (interactive()) {
+#'   shinyApp(app$ui, app$server)
 #' }
 tm_g_quality <- function(label,
                          mae_name,
@@ -102,7 +105,7 @@ tm_g_quality <- function(label,
       pre_output = pre_output,
       post_output = post_output
     ),
-    filters = "all"
+    filters = mae_name
   )
 }
 
@@ -282,7 +285,7 @@ srv_g_quality <- function(input,
 
     already_added <- ("control_quality_flags" %in% names(hermes::metadata(object)))
     validate(need(!already_added, "Quality flags have already been added to this experiment"))
-    if (any(c("cpm", "rpkm", "tpm", "voom") %in% SummarizedExperiment::assayNames(object))) {
+    if (any(c("cpm", "rpkm", "tpm", "voom", "vst") %in% SummarizedExperiment::assayNames(object))) {
       showNotification("Original normalized assays will be overwritten", type = "warning")
     }
 
@@ -333,9 +336,10 @@ srv_g_quality <- function(input,
 #' @describeIn tm_g_quality sample module function.
 #' @export
 #' @examples
-#' \dontrun{
+#'
 #' # Alternatively you can run the sample module with this function call:
-#' sample_tm_g_quality()
+#' if (interactive()) {
+#'   sample_tm_g_quality()
 #' }
 sample_tm_g_quality <- function() {
   mae <- hermes::multi_assay_experiment
@@ -344,12 +348,10 @@ sample_tm_g_quality <- function() {
   app <- init(
     data = data,
     modules = root_modules(
-      static = {
-        tm_g_quality(
-          label = "quality",
-          mae_name = "MAE"
-        )
-      }
+      tm_g_quality(
+        label = "quality",
+        mae_name = "MAE"
+      )
     )
   )
   shinyApp(app$ui, app$server)

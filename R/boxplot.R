@@ -24,8 +24,8 @@
 #'     )
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(app$ui, app$server)
+#' if (interactive()) {
+#'   shinyApp(app$ui, app$server)
 #' }
 tm_g_boxplot <- function(label,
                          mae_name,
@@ -60,7 +60,7 @@ tm_g_boxplot <- function(label,
       pre_output = pre_output,
       post_output = post_output
     ),
-    filters = "all"
+    filters = mae_name
   )
 }
 
@@ -148,8 +148,8 @@ srv_g_boxplot <- function(input,
       assay,
       # Note: The following statements are important to make sure the UI inputs have been updated.
       isTRUE(assay %in% SummarizedExperiment::assayNames(experiment_data)),
-      is.null(facet) || isTRUE(facet_var %in% names(SummarizedExperiment::colData(experiment_data))),
-      is.null(color) || isTRUE(color_var %in% names(SummarizedExperiment::colData(experiment_data))),
+      is.null(facet) || isTRUE(facet %in% names(SummarizedExperiment::colData(experiment_data))),
+      is.null(color) || isTRUE(color %in% names(SummarizedExperiment::colData(experiment_data))),
       is.null(strat) || isTRUE(strat %in% names(SummarizedExperiment::colData(experiment_data))),
       cancelOutput = FALSE
     )
@@ -172,9 +172,10 @@ srv_g_boxplot <- function(input,
 #' @describeIn tm_g_boxplot sample module function.
 #' @export
 #' @examples
-#' \dontrun{
+#'
 #' # Alternatively you can run the sample module with this function call:
-#' sample_tm_g_boxplot()
+#' if (interactive()) {
+#'   sample_tm_g_boxplot()
 #' }
 sample_tm_g_boxplot <- function() {
   mae <- hermes::multi_assay_experiment

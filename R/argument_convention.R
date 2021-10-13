@@ -14,6 +14,18 @@
 #'   the ID used to call the teal module's UI function.
 #' @param inputId (`string`)\cr
 #'   the ID used to call the module input.
+#' @param adtte_name (`string`)\cr
+#'   name of the ADTTE dataset.
+#' @param adtte_vars (named `list` of `string`)\cr
+#'   names of the variables to use in the ADTTE dataset. It should comprise elements:
+#'   - `aval`: the numeric time-to-event variable.
+#'   - `avalu`: the variable holding the unit of `aval`.
+#'   - `is_event`: the logical event variable. It needs to be `TRUE`
+#'        when there was an observed event, and `FALSE` if the time is censored without
+#'        observed event.
+#'   - `paramcd`: the character or factor parameter code variable, defining the
+#'       type of time-to-event for selection in the module.
+#'   - `usubjid`: the subject ID variable.
 #' @param mae_name (`string`)\cr
 #'   name of the MAE data used in the teal module.
 #' @param exclude_assays (`character`)\cr
@@ -50,6 +62,10 @@ NULL
 #'   assertions; defaults to the heuristic implemented in [checkmate::vname()].
 #' @param add (`AssertCollection` or `NULL`)\cr collection to store
 #'   assertion messages, see [`checkmate::AssertCollection`].
+#' @param info (`string`)\cr extra information to be included in the
+#'   message for the testthat reporter, see [testthat::expect_that()].
+#' @param label (`string`)\cr name of the checked object to print in
+#'   messages. Defaults to the heuristic implemented in [checkmate::vname()].
 #'
 #' @name assertion_arguments
 NULL
@@ -62,9 +78,11 @@ NULL
 #' functions.
 #'
 #' @param adtte (`data frame`)\cr an `adtte` dataset.
+#' @param usubjid_var (`string`)\cr variable name of the subject ID variable.
 #' @param mae (`MultiAssayExperiment`)\cr contains `AnyHermesData` objects.
 #' @param object (`AnyHermesData`)\cr contains RNA-seq values for one experiment.
-#' @param gene_var (`character`)\cr a gene(s) of interest.
+#' @param genes (`GeneSpec`)\cr specification for gene(s) (signature), e.g.
+#'   using [hermes::gene_spec()].
 #' @param experiment_name (`string`)\cr the desired `HermesData` to use.
 #' @param assay_name (`string`)\cr the assay to define the groups.
 #'

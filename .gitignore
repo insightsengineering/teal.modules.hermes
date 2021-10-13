@@ -46,3 +46,4 @@ design/*.html
 # Test results
 tests/unit_testing_results.rds
 tests/testthat/testthat-problems.rds
+coverage.*

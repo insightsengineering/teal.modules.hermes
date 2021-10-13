@@ -24,8 +24,8 @@
 #'    )
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(app$ui, app$server)
+#' if (interactive()) {
+#'   shinyApp(app$ui, app$server)
 #' }
 tm_g_pca <- function(label,
                      mae_name,
@@ -50,7 +50,7 @@ tm_g_pca <- function(label,
       pre_output = pre_output,
       post_output = post_output
     ),
-    filters = "all"
+    filters = mae_name
   )
 }
 
@@ -110,7 +110,8 @@ ui_g_pca <- function(id,
         )
       )
     ),
-    output = tagList(
+    output = div(
+      style = "display:flow-root",
       tabsetPanel(
         id = ns("tab_selected"),
         type = "tabs",
@@ -179,6 +180,7 @@ srv_g_pca <- function(input,
     if (filter_top) {
       n_top <- input$n_top
       updateSliderInput(
+        session = session,
         inputId = "n_top",
         value = min(n_top, n_genes),
         max = n_genes
@@ -196,8 +198,12 @@ srv_g_pca <- function(input,
     validate(need(hermes::is_hermes_data(experiment_data), "please use HermesData() on input experiments"))
     req(isTRUE(assay_name %in% SummarizedExperiment::assayNames(experiment_data)))
     validate(need(
-      ncol(SummarizedExperiment::assay(experiment_data)) > 2,
+      ncol(experiment_data) > 2,
       "Sample size is too small. PCA needs more than 2 samples."
+    ))
+    validate(need(
+      nrow(experiment_data) > 1,
+      "Number of genes is too small. PCA needs more than 1 gene."
     ))
 
     hermes::calc_pca(experiment_data, assay_name, n_top = if (filter_top) n_top else NULL)
@@ -326,9 +332,10 @@ srv_g_pca <- function(input,
 #' @describeIn tm_g_pca sample module function.
 #' @export
 #' @examples
-#' \dontrun{
+#'
 #' # Alternatively you can run the sample module with this function call:
-#' sample_tm_g_pca()
+#' if (interactive()) {
+#'   sample_tm_g_pca()
 #' }
 sample_tm_g_pca <- function() {
   mae <- hermes::multi_assay_experiment
@@ -337,12 +344,10 @@ sample_tm_g_pca <- function() {
   app <- init(
     data = data,
     modules = root_modules(
-      static = {
-        tm_g_pca(
-          label = "pca",
-          mae_name = "MAE"
-        )
-      }
+      tm_g_pca(
+        label = "pca",
+        mae_name = "MAE"
+      )
     )
   )
   shinyApp(app$ui, app$server)

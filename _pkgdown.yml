@@ -18,21 +18,23 @@ reference:
     contents:
   - title: Utility Functions
     contents:
-      - is_blank
-      - h_km_mae_to_adtte
-      - include_css_files
-      - include_js_files
-  - title: Internal Helper Functions
-    contents:
       - h_assign_to_group_list
       - h_collapse_levels
       - h_extract_words
       - h_gene_data
+      - h_km_mae_to_adtte
       - h_order_genes
       - h_parse_genes
       - h_update_gene_selection
+      - is_blank
+  - title: Internal Helper Functions
+    contents:
+      - include_css_files
+      - include_js_files
   - title: Shiny Modules
     contents:
+      - adtteSpecInput
+      - adtteSpecServer
       - assaySpecInput
       - assaySpecServer
       - experimentSpecInput
@@ -47,21 +49,19 @@ reference:
       - tm_g_barplot
       - tm_g_boxplot
       - tm_g_forest_tte
-      - tm_g_scatterplot
-      - tm_g_boxplot
       - tm_g_km
       - tm_g_pca
       - tm_g_quality
+      - tm_g_scatterplot
       - tm_g_volcanoplot
-  - title: Graphs
+  - title: Graph Functions
     contents:
       - heatmap_plot
       - top_gene_plot
-  - title: Control Functions
-    contents:
   - title: Assertions
     contents:
       - assertions
+      - assert_adtte_vars
       - assert_reactive
       - assert_summary_funs
       - assert_tag
@@ -74,4 +74,3 @@ reference:
       - assertion_arguments
       - function_arguments
       - module_arguments
-

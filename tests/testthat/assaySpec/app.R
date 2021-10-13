@@ -3,19 +3,20 @@ library(teal.modules.hermes)
 ui <- function(id,
                datasets) {
   ns <- NS(id)
+
   teal.devel::standard_layout(
     encoding = div(
       experimentSpecInput(
         ns("experiment"),
-        datasets,
-        "MAE"
+        datasets = datasets,
+        mae_name = "MAE"
       ),
       assaySpecInput(
         ns("assay"),
         label_assays = "Please choose assay"
       )
     ),
-    output = textOutput(ns("result"))
+    output = verbatimTextOutput(ns("result"))
   )
 }
 
@@ -25,16 +26,17 @@ server <- function(input,
                    datasets) {
   experiment <- experimentSpecServer(
     "experiment",
-    datasets,
-    "MAE"
+    datasets = datasets,
+    mae_name = "MAE"
   )
   assay <- assaySpecServer(
     "assay",
-    experiment$assays,
-    exclude_assays = c("counts", "cpm", "tpm", "bla")
+    assays = experiment$assays,
+    exclude_assays = c("cpm", "tpm", "bla")
   )
   output$result <- renderPrint({
-    assay()
+    assay <- assay()
+    assay
   })
 }
 

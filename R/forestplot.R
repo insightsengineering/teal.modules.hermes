@@ -12,30 +12,57 @@
 #'
 #' @examples
 #' mae <- hermes::multi_assay_experiment
-#' mae_data <- dataset("MAE", mae)
-#' data <- teal_data(mae_data)
+#' adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
+#'   dplyr::mutate(is_event = (.data$CNSR == 0))
+#'
+#' data <- teal_data(
+#'   dataset(
+#'     "ADTTE",
+#'     adtte,
+#'     code = 'adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
+#'       dplyr::mutate(is_event = (.data$CNSR == 0))'
+#'   ),
+#'   dataset("MAE", mae)
+#' )
 #' app <- init(
 #'   data = data,
 #'   modules = root_modules(
-#'     static = {
-#'       tm_g_forest_tte(
-#'         label = "forestplot",
-#'         mae_name = "MAE"
-#'       )
-#'     }
+#'     tm_g_forest_tte(
+#'       label = "forestplot",
+#'       adtte_name = "ADTTE",
+#'       mae_name = "MAE"
+#'     )
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(app$ui, app$server)
+#' if (interactive()) {
+#'   shinyApp(app$ui, app$server)
 #' }
 tm_g_forest_tte <- function(label,
+                            adtte_name,
                             mae_name,
+                            adtte_vars = list(
+                              aval = "AVAL",
+                              is_event = "is_event",
+                              paramcd = "PARAMCD",
+                              usubjid = "USUBJID",
+                              avalu = "AVALU"
+                            ),
+                            exclude_assays = "counts",
+                            summary_funs = list(
+                              Mean = colMeans,
+                              Median = matrixStats::colMedians,
+                              Max = matrixStats::colMaxs
+                            ),
                             pre_output = NULL,
                             post_output = NULL,
                             plot_height = c(600L, 200L, 2000L),
                             plot_width = c(1360L, 500L, 2000L)) {
   assert_string(label)
+  assert_string(adtte_name)
   assert_string(mae_name)
+  assert_adtte_vars(adtte_vars)
+  assert_character(exclude_assays, any.missing = FALSE)
+  assert_summary_funs(summary_funs)
   assert_tag(pre_output, null.ok = TRUE)
   assert_tag(post_output, null.ok = TRUE)
 
@@ -43,36 +70,55 @@ tm_g_forest_tte <- function(label,
     label = label,
     server = srv_g_forest_tte,
     server_args = list(
+      adtte_name = adtte_name,
       mae_name = mae_name,
+      adtte_vars = adtte_vars,
+      exclude_assays = exclude_assays,
+      summary_funs = summary_funs,
       plot_height = plot_height,
       plot_width = plot_width
     ),
     ui = ui_g_forest_tte,
     ui_args = list(
+      adtte_name = adtte_name,
       mae_name = mae_name,
+      summary_funs = summary_funs,
       pre_output = pre_output,
       post_output = post_output
     ),
-    filters = "all"
+    filters = c(adtte_name, mae_name)
   )
 }
 
 #' @describeIn tm_g_forest_tte sets up the user interface.
 #' @inheritParams module_arguments
 #' @export
-ui_g_forest_tte <- function(id, datasets, mae_name,pre_output, post_output) {
+ui_g_forest_tte <- function(id,
+                            datasets,
+                            adtte_name,
+                            mae_name,
+                            summary_funs,
+                            pre_output,
+                            post_output) {
   ns <- NS(id)
-  mae <- datasets$get_data(mae_name, filtered = FALSE)
-  experiment_name_choices <- names(mae)
   teal.devel::standard_layout(
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
-      selectInput(ns("experiment_name"), "Select Experiment", experiment_name_choices),
-      selectInput(ns("assay_name"), "Select Assay", choices = ""),
-      selectizeInput(ns("geneid"), "Gene ID", choices = ""),
-      sliderInput(ns("probs"), label = ("Probability Cutoff"), min = 0.01, max = 0.99, value = 0.5),
-      optionalSelectInput(ns("subgroups"), label = "Subgroups", choices = "", selected = "", multiple = TRUE)
+      experimentSpecInput(ns("experiment"), datasets, mae_name),
+      assaySpecInput(ns("assay")),
+      geneSpecInput(ns("genes"), summary_funs),
+      helpText("Analysis of ADTTE:", tags$code(adtte_name)),
+      adtteSpecInput(ns("adtte")),
+      teal.devel::panel_group(
+        teal.devel::panel_item(
+          input_id = "settings_item",
+          collapsed = TRUE,
+          title = "Additional Settings",
+          sliderInput(ns("probs"), label = ("Probability Cutoff"), min = 0.01, max = 0.99, value = 0.5),
+          sampleVarSpecInput(ns("subgroups"), "Select Subgroup Variable")
+        )
+      )
     ),
     output = teal.devel::plot_with_settings_ui(ns("plot")),
     pre_output = pre_output,
@@ -87,135 +133,78 @@ srv_g_forest_tte <- function(input,
                              output,
                              session,
                              datasets,
+                             adtte_name,
                              mae_name,
+                             adtte_vars,
+                             exclude_assays,
+                             summary_funs,
                              plot_height,
                              plot_width) {
 
-  # When the filtered data set of the chosen experiment changes, update the
-  # experiment data object.
-  experiment_data <- reactive({
-    experiment_name <- input$experiment_name
-    req(input$experiment_name) # Important to avoid running into NULL here.
+  experiment <- experimentSpecServer(
+    "experiment",
+    datasets = datasets,
+    mae_name = mae_name
+  )
+  assay <- assaySpecServer(
+    "assay",
+    assays = experiment$assays,
+    exclude_assays = exclude_assays
+  )
+  genes <- geneSpecServer(
+    "genes",
+    funs = summary_funs,
+    gene_choices = experiment$genes
+  )
+  subgroups <- sampleVarSpecServer(
+    "subgroups",
+    experiment_name = experiment$name,
+    original_data = experiment$data
+  )
+  adtte <- adtteSpecServer(
+    "adtte",
+    datasets = datasets,
+    adtte_name = adtte_name,
+    mae_name = mae_name,
+    adtte_vars = adtte_vars,
+    experiment_data = subgroups$experiment_data,
+    experiment_name = experiment$name,
+    assay = assay,
+    genes = genes,
+    probs = reactive({input$probs})
+  )
 
-    mae <- datasets$get_data(mae_name, filtered = TRUE)
-    mae[[input$experiment_name]]
-  })
+  surv_subgroups <- reactive({
+    binned_adtte <- adtte$binned_adtte_subset()
+    subgroups_var <- subgroups$sample_var()
 
-  # When the chosen experiment changes, recompute the available assay.
-  assay_names <- eventReactive(input$experiment_name, ignoreNULL = FALSE, {
-    object <- experiment_data()
-    SummarizedExperiment::assayNames(object)
-  })
-
-  # When the chosen experiment changes, recompute the available genes.
-  genes <- eventReactive(input$experiment_name, ignoreNULL = FALSE, {
-    object <- experiment_data()
-    rownames(object)
-  })
-
-  # When the chosen experiment changes, recompute the available colData.
-  subgroups <- eventReactive(input$experiment_name, {
-    adtte <- datasets$get_data("ADTTE", filtered = TRUE)
-    colnames(adtte)
-  })
-
-  # When the assay names change, update the choices for assay.
-  observeEvent(assay_names(), {
-    assay_name_choices <- assay_names()
-
-    updateSelectInput(
-      session,
-      "assay_name",
-      choices = assay_name_choices,
-      selected = assay_name_choices[1]
-    )
-  })
-
-  # When the genes are recomputed, update the choice for genes in the UI.
-  observeEvent(genes(), {
-    gene_choices <- genes()
-
-    updateSelectizeInput(
-      session,
-      "geneid",
-      choices = gene_choices,
-      selected = gene_choices[1],
-      server = TRUE
-    )
-  })
-
-  observeEvent(subgroups(), {
-    subgroup_choices <- subgroups()
-
-    updateOptionalSelectInput(
-      session,
-      "subgroups",
-      choices = subgroup_choices,
-      selected = subgroup_choices[1]
-    )
-  })
-
-  adtte_counts <- reactive({
-    mae <- datasets$get_data(mae_name, filtered = TRUE)
-    adtte <- datasets$get_data("ADTTE", filtered = TRUE)
-    geneid <- input$geneid
-    experiment_name <- input$experiment_name
-    assay_name <- input$assay_name
-
-    req(geneid, experiment_name, assay_name)
-
-    h_km_mae_to_adtte(
-      adtte,
-      mae,
-      gene_var = geneid,
-      experiment_name = experiment_name,
-      assay_name = assay_name
-    )
-  })
-
-  adtte_final <- reactive({
-    adtte_counts <- adtte_counts()
-    probs <- input$probs
-    colname <- attr(adtte_counts, "gene_cols")
-
-    adtte_counts <- tern::df_explicit_na(adtte_counts)
-    adtte_counts <- dplyr::mutate(
-      adtte_counts,
-      AVAL = tern::day2month(.data$AVAL),
-      AVALU = "Months",
-      is_event = .data$CNSR == 0,
-      gene_bin = tern::cut_quantile_bins(
-        adtte_counts[[colname]],
-        probs = probs,
-        labels = c("Low", "High")
-      )
-    )
-  })
-
-  tbl <- reactive({
-    adtte_final <- adtte_final()
-    subgroups <- input$subgroups
+    validate(need(
+      is.null(subgroups_var) || is.factor(binned_adtte[[subgroups_var]]),
+      "please select a categorical variable"
+    ))
 
     tern::extract_survival_subgroups(
       variables = list(
-        tte = "AVAL",
-        is_event = "is_event",
-        arm = "gene_bin",
-        subgroups = subgroups
+        tte = adtte_vars$aval,
+        is_event = adtte_vars$is_event,
+        arm = adtte$gene_factor,
+        subgroups = subgroups_var
       ),
       label_all = "All Patients",
-      data = adtte_final
+      data = binned_adtte
     )
   })
 
   result <- reactive({
-    tbl <- tbl()
+    surv_subgroups <- surv_subgroups()
     lyt <- rtables::basic_table()
+    time_unit <- adtte$time_unit()
+
     tern::tabulate_survival_subgroups(
       lyt = lyt,
-      df = tbl,
+      df = surv_subgroups,
       vars = c("n_tot_events", "n", "n_events", "median", "hr", "ci"),
-      time_unit = adtte_final()$AVALU[1]
+      time_unit = time_unit
     )
   })
 
@@ -236,26 +225,35 @@ srv_g_forest_tte <- function(input,
 #' @describeIn tm_g_forest_tte sample module function.
 #' @export
 #' @examples
-#' \dontrun{
+#'
 #' # Alternatively you can run the sample module with this function call:
-#' sample_tm_g_forest_tte()
+#' if (interactive()) {
+#'   sample_tm_g_forest_tte()
 #' }
 sample_tm_g_forest_tte <- function() { # nolint # nousage
+
   mae <- hermes::multi_assay_experiment
-  mae_data <- dataset("MAE", mae)
-  adsl <- cdisc_dataset("ADSL", rtables::ex_adsl)
-  adtte <- cdisc_dataset("ADTTE", rtables::ex_adtte)
-  data <- teal_data(mae_data, adsl, adtte)
-  data <- mutate_join_keys(data, "MAE", "MAE", c("STUDYID", "USUBJID"))
+  adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
+    dplyr::mutate(is_event = .data$CNSR == 0)
+
+  data <- teal_data(
+    dataset(
+      "ADTTE",
+      adtte,
+      code = 'adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
+        dplyr::mutate(is_event = .data$CNSR == 0)'
+    ),
+    dataset("MAE", mae)
+  )
+
   app <- init(
     data = data,
     modules = root_modules(
-      static = {
-        tm_g_forest_tte(
-          label = "forestplot",
-          mae_name = "MAE"
-        )
-      }
+      tm_g_forest_tte(
+        label = "forest",
+        adtte_name = "ADTTE",
+        mae_name = "MAE"
+      )
     )
   )
   shinyApp(app$ui, app$server)
