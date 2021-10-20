@@ -1,5 +1,8 @@
 # teal.modules.hermes 0.1.0.9000
 
+### Miscellaneous
+* Updated R version requirement to >= 3.6.
+
 # teal.modules.hermes 0.1.0
 * First release of the `teal.modules.hermes` package, which contains teal modules for RNA-seq analysis using the `hermes` package.
 * New users should first begin by reading the `README.md` of the `teal.modules.hermes` package to become familiar. 
