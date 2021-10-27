@@ -135,16 +135,14 @@ h_update_gene_selection <- function(session,
                                     choices) {
   is_new_selected <- selected %in% choices$id
   is_removed <- !is_new_selected
-  updateOptionalSelectInput(
-    session,
+  updateSelectizeInput(
+    session = session,
     inputId = inputId,
     selected = selected[is_new_selected],
-    choices = value_choices(
-      data = choices,
-      var_choices = "id",
-      var_label = "name"
-    )
+    choices = stats::setNames(choices$id, choices$name),
+    server = TRUE
   )
+
   n_removed <- sum(is_removed)
   if (n_removed > 0) {
     showNotification(paste(
