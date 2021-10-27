@@ -11,6 +11,8 @@
 #' @param label_funs (`string`)\cr label for the function selection.
 #' @param label_text_button (`string`)\cr label for the text input button.
 #' @param label_lock_button (`string`)\cr label for the lock button.
+#' @param label_select_all_button (`string`)\cr label for the selecting all genes button.
+#' @param label_select_none_button (`string`)\cr label for the selecting no genes button.
 #'
 #' @return The UI part.
 #' @seealso [geneSpecServer()] for the module server and a complete example.
@@ -32,6 +34,8 @@ geneSpecInput <- function(inputId,
   assert_string(label_funs)
   assert_string(label_text_button)
   assert_string(label_lock_button)
+  assert_string(label_select_all_button)
+  assert_string(label_select_none_button)
 
   ns <- NS(inputId)
   tagList(
@@ -99,7 +103,8 @@ geneSpecInput <- function(inputId,
           render = I("{
         option: function(item, escape) { return '<div>' + item.value + '-' + item.label + '</div>'; }
       }"),
-          searchField = c('value', 'label')
+          searchField = c('value', 'label'),
+          maxOptions = 100
         )
       )
     ),

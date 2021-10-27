@@ -13,6 +13,7 @@
 
 .custom-select-input .bootstrap-select .dropdown-menu {
   min-width: fit-content;
+  max-block-size: 3;
 }
 
 div.shiny-radiomatrix input[type="radio"] {
