@@ -1,53 +1,54 @@
+Type: Package
 Package: teal.modules.hermes
 Title: RNA-seq analysis modules to add to a teal application
-Type: Package
+Version: 0.1.0.9001
 Date: 2021-10-13
-Version: 0.1.0.9000
-Authors@R: c(
-  person("NEST", email = "nestcicd@roche.com", role = c("aut", "cre"))
-  )
+Authors@R: 
+    person("NEST", , , "nestcicd@roche.com", role = c("aut", "cre"))
 Description: RNA-seq analysis teal modules based on the `hermes` package.
 License: Apache License 2.0 | file LICENSE
+URL: https://github.com/insightsengineering/teal.modules.hermes/
+BugReports: 
+    https://github.com/insightsengineering/teal.modules.hermes/issues
+Depends: 
+    ggplot2,
+    R (>= 3.6),
+    shiny,
+    teal (>= 0.10.0)
+Imports:
+    checkmate,
+    DT,
+    edgeR,
+    forcats,
+    hermes,
+    lifecycle,
+    MultiAssayExperiment,
+    rtables,
+    scda,
+    shinyRadioMatrix,
+    shinyWidgets,
+    stats,
+    stringr,
+    SummarizedExperiment,
+    teal.devel (>= 0.2.12),
+    tern (>= 0.7.5),
+    utils.nest (>= 0.2.11)
+Suggests:
+    dplyr,
+    globals,
+    knitr,
+    matrixStats,
+    R6,
+    shinytest (>= 1.5.0),
+    test.nest (>= 0.2.11),
+    testthat (>= 2.0)
+RdMacros: 
+    lifecycle
+Remotes:
+    szelepke/shinyRadioMatrix
+biocViews:
+Config/testthat/edition: 3
 Encoding: UTF-8
+Language: en-US
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
-RdMacros: lifecycle
-Language: en-US
-URL: https://github.com/insightsengineering/teal.modules.hermes/
-BugReports: https://github.com/insightsengineering/teal.modules.hermes/issues
-Config/testthat/edition: 3
-biocViews:
-Depends: 
-  R (>= 3.6),
-  ggplot2,
-  shiny,
-  teal (>= 0.10.0)
-Imports:
-  checkmate,
-  DT,
-  edgeR,
-  forcats,
-  hermes,
-  lifecycle,
-  MultiAssayExperiment,
-  rtables,
-  scda,
-  shinyRadioMatrix,
-  shinyWidgets,
-  stats,
-  stringr,
-  SummarizedExperiment,
-  teal.devel (>= 0.2.12),
-  tern (>= 0.7.5),
-  utils.nest (>= 0.2.11)
-Suggests:
-  dplyr,
-  globals,
-  knitr,
-  matrixStats,
-  R6,
-  shinytest (>= 1.5.0),
-  test.nest (>= 0.2.11),
-  testthat (>= 2.0)
-Remotes:
-  szelepke/shinyRadioMatrix

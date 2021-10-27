@@ -1,4 +1,4 @@
-# teal.modules.hermes 0.1.0.9000
+# teal.modules.hermes 0.1.0.9001
 
 ### Miscellaneous
 * Updated R version requirement to >= 3.6.
