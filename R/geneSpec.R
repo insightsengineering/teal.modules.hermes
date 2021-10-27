@@ -23,7 +23,9 @@ geneSpecInput <- function(inputId,
                           label_genes = "Select Gene(s)",
                           label_funs = "Select Gene Summary",
                           label_text_button = "Enter list of genes",
-                          label_lock_button = "Lock gene selection (so that it does not get updated when filtering)") {
+                          label_lock_button = "Lock gene selection (so that it does not get updated when filtering)",
+                          label_select_all_button = "Select All Genes",
+                          label_select_none_button = "Select None") {
   assert_string(inputId)
   assert_list(funs, names = "unique", min.len = 1L)
   assert_string(label_genes)
@@ -43,7 +45,22 @@ geneSpecInput <- function(inputId,
         )
       ),
       div(
-        class = "col-sm-4",
+        class = "col-sm-2",
+        actionButton(
+          ns("select_none_button"),
+          span(icon("remove-circle", lib = "glyphicon")),
+          title = label_select_none_button,
+          class = "pull-right list-genes"
+        ),
+        actionButton(
+          ns("select_all_button"),
+          span(icon("ok-circle", lib = "glyphicon")),
+          title = label_select_all_button,
+          class = "pull-right list-genes"
+        )
+      ),
+      div(
+        class = "col-sm-2",
         actionButton(
           ns("text_button"),
           span(icon("font fa-border")),
@@ -72,13 +89,17 @@ geneSpecInput <- function(inputId,
     ),
     div(
       class = "custom-select-input",
-      optionalSelectInput(
+      selectizeInput(
         ns("genes"),
         label = NULL,
         choices = "",
         multiple = TRUE,
-        options = shinyWidgets::pickerOptions(
-          liveSearch = TRUE
+        selected = 1,
+        options = list(
+          render = I("{
+        option: function(item, escape) { return '<div>' + item.value + '-' + item.label + '</div>'; }
+      }"),
+          searchField = c('value', 'label')
         )
       )
     ),
