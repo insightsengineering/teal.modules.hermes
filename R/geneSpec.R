@@ -109,7 +109,7 @@ geneSpecInput <- function(inputId,
         options = list(
           render = I("{
           option: function(item, escape) {
-              return '<div> <div style = \"font-size: initial; display: inline\">' + item.label + '</div>' +
+              return '<div> <div style = \"font-size: inherit; display: inline\">' + item.label + '</div>' +
                 ' <div style=\"color: #808080; font-size: xx-small; display: inline\" >' + item.value + '</div> </div>'
             }
           }"),
