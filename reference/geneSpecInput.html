@@ -83,7 +83,7 @@ This defines the input for the gene signature specification." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.hermes</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9001</span>
       </span>
     </div>
 
@@ -139,7 +139,11 @@ This defines the input for the gene signature specification." />
   label_funs <span class='op'>=</span> <span class='st'>"Select Gene Summary"</span>,
   label_text_button <span class='op'>=</span> <span class='st'>"Enter list of genes"</span>,
  
-    label_lock_button <span class='op'>=</span> <span class='st'>"Lock gene selection (so that it does not get updated when filtering)"</span>
+    label_lock_button <span class='op'>=</span> <span class='st'>"Lock gene selection (so that it does not get updated when filtering)"</span>,
+  label_select_all_button <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"Select All Genes (first "</span>, <span class='va'>max_options</span>, <span class='st'>")"</span><span class='op'>)</span>,
+  label_select_none_button <span class='op'>=</span> <span class='st'>"Select None"</span>,
+  max_options <span class='op'>=</span> <span class='fl'>200L</span>,
+  max_selected <span class='op'>=</span> <span class='va'>max_options</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -171,6 +175,23 @@ selection drop down menu.</p></td>
       <th>label_lock_button</th>
       <td><p>(<code>string</code>)<br /> label for the lock button.</p></td>
     </tr>
+    <tr>
+      <th>label_select_all_button</th>
+      <td><p>(<code>string</code>)<br /> label for the selecting all genes button.</p></td>
+    </tr>
+    <tr>
+      <th>label_select_none_button</th>
+      <td><p>(<code>string</code>)<br /> label for the selecting no genes button.</p></td>
+    </tr>
+    <tr>
+      <th>max_options</th>
+      <td><p>(<code>count</code>)<br /> maximum number of gene options rendering and selected via
+"Select All".</p></td>
+    </tr>
+    <tr>
+      <th>max_selected</th>
+      <td><p>(<code>count</code>)<br /> maximum number of genes which can be selected.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -192,7 +213,19 @@ selection drop down menu.</p></td>
 #&gt;   &lt;div class="col-sm-8"&gt;
 #&gt;     &lt;label class="control-label"&gt;Select Gene(s)&lt;/label&gt;
 #&gt;   &lt;/div&gt;
-#&gt;   &lt;div class="col-sm-4"&gt;
+#&gt;   &lt;div class="col-sm-2"&gt;
+#&gt;     &lt;button class="btn btn-default action-button pull-right list-genes" id="my_genes-select_none_button" title="Select None" type="button"&gt;
+#&gt;       &lt;span&gt;
+#&gt;         &lt;i aria-label="remove-circle icon" class="glyphicon glyphicon-remove-circle" role="presentation"&gt;&lt;/i&gt;
+#&gt;       &lt;/span&gt;
+#&gt;     &lt;/button&gt;
+#&gt;     &lt;button class="btn btn-default action-button pull-right list-genes" id="my_genes-select_all_button" title="Select All Genes (first 200)" type="button"&gt;
+#&gt;       &lt;span&gt;
+#&gt;         &lt;i aria-label="ok-circle icon" class="glyphicon glyphicon-ok-circle" role="presentation"&gt;&lt;/i&gt;
+#&gt;       &lt;/span&gt;
+#&gt;     &lt;/button&gt;
+#&gt;   &lt;/div&gt;
+#&gt;   &lt;div class="col-sm-2"&gt;
 #&gt;     &lt;button class="btn btn-default action-button pull-right list-genes" id="my_genes-text_button" title="Enter list of genes" type="button"&gt;
 #&gt;       &lt;span&gt;
 #&gt;         &lt;i class="fa fa-font fa-border" role="presentation" aria-label="font fa-border icon"&gt;&lt;/i&gt;
@@ -232,6 +265,11 @@ selection drop down menu.</p></td>
 #&gt; 
 #&gt; .custom-select-input .bootstrap-select .dropdown-menu {
 #&gt;   min-width: fit-content;
+#&gt; }
+#&gt; 
+#&gt; .selectize-input {
+#&gt;   max-height: 102px;
+#&gt;   overflow-y: auto;
 #&gt; }
 #&gt; 
 #&gt; div.shiny-radiomatrix input[type="radio"] {
@@ -312,8 +350,11 @@ selection drop down menu.</p></td>
 #&gt; &lt;/div&gt;
 #&gt; &lt;div class="custom-select-input"&gt;
 #&gt;   &lt;div class="form-group shiny-input-container"&gt;
-#&gt;     &lt;label class="control-label shiny-label-null" for="my_genes-genes"&gt;&lt;/label&gt;
-#&gt;     &lt;select data-live-search="true" data-actions-box="true" data-none-selected-text="- Nothing selected -" data-max-options="Inf" data-show-subtext="true" id="my_genes-genes" class="selectpicker form-control" multiple="multiple"&gt;&lt;option value=""&gt;&lt;/option&gt;&lt;/select&gt;
+#&gt;     &lt;label class="control-label shiny-label-null" for="my_genes-genes" id="my_genes-genes-label"&gt;&lt;/label&gt;
+#&gt;     &lt;div&gt;
+#&gt;       &lt;select id="my_genes-genes" class="form-control" multiple="multiple"&gt;&lt;option value=""&gt;&lt;/option&gt;&lt;/select&gt;
+#&gt;       &lt;script type="application/json" data-for="my_genes-genes" data-eval="[&amp;quot;render&amp;quot;]"&gt;{"render":"{\n          option: function(item, escape) {\n              return '&lt;div&gt; &lt;div style = \"font-size: inherit; display: inline\"&gt;' + item.label + '&lt;\/div&gt;' +\n                ' &lt;div style=\"color: #808080; font-size: xx-small; display: inline\" &gt;' + item.value + '&lt;\/div&gt; &lt;\/div&gt;'\n            }\n          }","searchField":["value","label"],"maxOptions":200,"maxItems":200,"plugins":["selectize-plugin-a11y"]}&lt;/script&gt;
+#&gt;     &lt;/div&gt;
 #&gt;   &lt;/div&gt;
 #&gt; &lt;/div&gt;
 #&gt; &lt;div data-display-if="input.genes.length &amp;gt; 1" data-ns-prefix="my_genes-"&gt;
