@@ -2,12 +2,34 @@
 
     Code
       geneSpecInput("my_genes", funs = list(mean = colMeans), label_funs = "Please select function")
+    Message <simpleMessage>
+      This Font Awesome icon ('font fa-border') does not exist:
+      * if providing a custom `html_dependency` these `name` checks can 
+        be deactivated with `verify_fa = FALSE`
+      This Font Awesome icon ('lock fa-border') does not exist:
+      * if providing a custom `html_dependency` these `name` checks can 
+        be deactivated with `verify_fa = FALSE`
+      This Font Awesome icon ('unlock-alt fa-border') does not exist:
+      * if providing a custom `html_dependency` these `name` checks can 
+        be deactivated with `verify_fa = FALSE`
     Output
       <div class="row">
         <div class="col-sm-8">
           <label class="control-label">Select Gene(s)</label>
         </div>
-        <div class="col-sm-4">
+        <div class="col-sm-2">
+          <button class="btn btn-default action-button pull-right list-genes" id="my_genes-select_none_button" title="Select None" type="button">
+            <span>
+              <i aria-label="remove-circle icon" class="glyphicon glyphicon-remove-circle" role="presentation"></i>
+            </span>
+          </button>
+          <button class="btn btn-default action-button pull-right list-genes" id="my_genes-select_all_button" title="Select All Genes (first 200)" type="button">
+            <span>
+              <i aria-label="ok-circle icon" class="glyphicon glyphicon-ok-circle" role="presentation"></i>
+            </span>
+          </button>
+        </div>
+        <div class="col-sm-2">
           <button class="btn btn-default action-button pull-right list-genes" id="my_genes-text_button" title="Enter list of genes" type="button">
             <span>
               <i class="fa fa-font fa-border" role="presentation" aria-label="font fa-border icon"></i>
@@ -45,8 +67,9 @@
         border: 0;
       }
       
-      .custom-select-input .bootstrap-select .dropdown-menu {
+      .custom-select-input .selectize-dropdown-content .bootstrap-select .dropdown-menu {
         min-width: fit-content;
+        max-height: 500px;
       }
       
       div.shiny-radiomatrix input[type="radio"] {
@@ -127,8 +150,11 @@
       </div>
       <div class="custom-select-input">
         <div class="form-group shiny-input-container">
-          <label class="control-label shiny-label-null" for="my_genes-genes"></label>
-          <select data-live-search="true" data-actions-box="true" data-none-selected-text="- Nothing selected -" data-max-options="Inf" data-show-subtext="true" id="my_genes-genes" class="selectpicker form-control" multiple="multiple"><option value=""></option></select>
+          <label class="control-label shiny-label-null" for="my_genes-genes" id="my_genes-genes-label"></label>
+          <div>
+            <select id="my_genes-genes" class="form-control" multiple="multiple"><option value=""></option></select>
+            <script type="application/json" data-for="my_genes-genes" data-eval="[&quot;render&quot;]">{"render":"{\n          option: function(item, escape) {\n              return '<div>' + item.label +\n                ' <sup><span style=\"color: #808080;\">' + item.value + '<\/span><\/sup>' +\n                '<\/div>';\n            }\n          }","searchField":["value","label"],"maxOptions":200,"maxItems":200,"plugins":["selectize-plugin-a11y"]}</script>
+          </div>
         </div>
       </div>
       <div data-display-if="input.genes.length &gt; 1" data-ns-prefix="my_genes-">
