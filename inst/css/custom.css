@@ -15,6 +15,11 @@
   min-width: fit-content;
 }
 
+.selectize-input {
+  max-height: 102px;
+  overflow-y: auto;
+}
+
 div.shiny-radiomatrix input[type="radio"] {
   display: none;
 }

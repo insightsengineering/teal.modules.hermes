@@ -85,7 +85,7 @@ h_order_genes <- function(genes) {
 #' h_gene_data(object, "symbol")
 h_gene_data <- function(object, name_annotation) {
   assert_true(hermes::is_hermes_data(object))
-  assert_string(name_annotation)
+  assert_string(name_annotation, null.ok = TRUE)
 
   gene_ids <- hermes::genes(object)
   gene_names <- if (!is.null(name_annotation)) {

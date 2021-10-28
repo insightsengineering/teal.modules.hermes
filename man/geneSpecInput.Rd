@@ -11,7 +11,11 @@ geneSpecInput(
   label_funs = "Select Gene Summary",
   label_text_button = "Enter list of genes",
  
-    label_lock_button = "Lock gene selection (so that it does not get updated when filtering)"
+    label_lock_button = "Lock gene selection (so that it does not get updated when filtering)",
+  label_select_all_button = paste0("Select All Genes (first ", max_options, ")"),
+  label_select_none_button = "Select None",
+  max_options = 200L,
+  max_selected = max_options
 )
 }
 \arguments{
@@ -28,6 +32,15 @@ selection drop down menu.}
 \item{label_text_button}{(\code{string})\cr label for the text input button.}
 
 \item{label_lock_button}{(\code{string})\cr label for the lock button.}
+
+\item{label_select_all_button}{(\code{string})\cr label for the selecting all genes button.}
+
+\item{label_select_none_button}{(\code{string})\cr label for the selecting no genes button.}
+
+\item{max_options}{(\code{count})\cr maximum number of gene options rendering and selected via
+"Select All".}
+
+\item{max_selected}{(\code{count})\cr maximum number of genes which can be selected.}
 }
 \value{
 The UI part.

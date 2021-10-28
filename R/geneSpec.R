@@ -11,6 +11,11 @@
 #' @param label_funs (`string`)\cr label for the function selection.
 #' @param label_text_button (`string`)\cr label for the text input button.
 #' @param label_lock_button (`string`)\cr label for the lock button.
+#' @param label_select_all_button (`string`)\cr label for the selecting all genes button.
+#' @param label_select_none_button (`string`)\cr label for the selecting no genes button.
+#' @param max_options (`count`)\cr maximum number of gene options rendering and selected via
+#'   "Select All".
+#' @param max_selected (`count`)\cr maximum number of genes which can be selected.
 #'
 #' @return The UI part.
 #' @seealso [geneSpecServer()] for the module server and a complete example.
@@ -23,13 +28,21 @@ geneSpecInput <- function(inputId,
                           label_genes = "Select Gene(s)",
                           label_funs = "Select Gene Summary",
                           label_text_button = "Enter list of genes",
-                          label_lock_button = "Lock gene selection (so that it does not get updated when filtering)") {
+                          label_lock_button = "Lock gene selection (so that it does not get updated when filtering)",
+                          label_select_all_button = paste0("Select All Genes (first ", max_options, ")"),
+                          label_select_none_button = "Select None",
+                          max_options = 200L,
+                          max_selected = max_options) {
   assert_string(inputId)
   assert_list(funs, names = "unique", min.len = 1L)
   assert_string(label_genes)
   assert_string(label_funs)
   assert_string(label_text_button)
   assert_string(label_lock_button)
+  assert_string(label_select_all_button)
+  assert_string(label_select_none_button)
+  assert_count(max_options, positive = TRUE)
+  assert_count(max_selected, positive = TRUE)
 
   ns <- NS(inputId)
   tagList(
@@ -43,7 +56,22 @@ geneSpecInput <- function(inputId,
         )
       ),
       div(
-        class = "col-sm-4",
+        class = "col-sm-2",
+        actionButton(
+          ns("select_none_button"),
+          span(icon("remove-circle", lib = "glyphicon")),
+          title = label_select_none_button,
+          class = "pull-right list-genes"
+        ),
+        actionButton(
+          ns("select_all_button"),
+          span(icon("ok-circle", lib = "glyphicon")),
+          title = label_select_all_button,
+          class = "pull-right list-genes"
+        )
+      ),
+      div(
+        class = "col-sm-2",
         actionButton(
           ns("text_button"),
           span(icon("font fa-border")),
@@ -72,13 +100,22 @@ geneSpecInput <- function(inputId,
     ),
     div(
       class = "custom-select-input",
-      optionalSelectInput(
+      selectizeInput(
         ns("genes"),
         label = NULL,
         choices = "",
         multiple = TRUE,
-        options = shinyWidgets::pickerOptions(
-          liveSearch = TRUE
+        selected = 1,
+        options = list(
+          render = I("{
+          option: function(item, escape) {
+              return '<div> <div style = \"font-size: inherit; display: inline\">' + item.label + '</div>' +
+                ' <div style=\"color: #808080; font-size: xx-small; display: inline\" >' + item.value + '</div> </div>'
+            }
+          }"),
+          searchField = c("value", "label"),
+          maxOptions = max_options,
+          maxItems = max_selected
         )
       )
     ),
@@ -114,16 +151,14 @@ h_update_gene_selection <- function(session,
                                     choices) {
   is_new_selected <- selected %in% choices$id
   is_removed <- !is_new_selected
-  updateOptionalSelectInput(
-    session,
+  updateSelectizeInput(
+    session = session,
     inputId = inputId,
     selected = selected[is_new_selected],
-    choices = value_choices(
-      data = choices,
-      var_choices = "id",
-      var_label = "name"
-    )
+    choices = stats::setNames(choices$id, choices$name),
+    server = TRUE
   )
+
   n_removed <- sum(is_removed)
   if (n_removed > 0) {
     showNotification(paste(
@@ -297,6 +332,46 @@ geneSpecServer <- function(inputId,
           inputId = "genes",
           selected = old_selected,
           choices = gene_choices
+        )
+      }
+    })
+
+    # When the Select All button is pressed and not locked, select all genes.
+    observeEvent(input$select_all_button, {
+      gene_choices <- gene_choices()
+      lock_button <- input$lock_button
+
+      if (isFALSE(lock_button)) {
+        h_update_gene_selection(
+          session,
+          inputId = "genes",
+          selected = gene_choices$id,
+          choices = gene_choices
+        )
+      } else {
+        showNotification(
+          "Please unlock if you would like to select all genes",
+          type = "warning"
+        )
+      }
+    })
+
+    # When the Select None button is pressed and not locked, select none.
+    observeEvent(input$select_none_button, {
+      gene_choices <- gene_choices()
+      lock_button <- input$lock_button
+
+      if (isFALSE(lock_button)) {
+        h_update_gene_selection(
+          session,
+          inputId = "genes",
+          selected = character(),
+          choices = gene_choices
+        )
+      } else {
+        showNotification(
+          "Please unlock if you would like to select none",
+          type = "warning"
         )
       }
     })
