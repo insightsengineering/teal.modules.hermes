@@ -1,4 +1,4 @@
-nrows <- 50000
+nrows <- 500000
 ncols <- 10
 set.seed(123)
 mat <- matrix(
