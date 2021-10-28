@@ -1,7 +1,8 @@
 library(shiny)
 
 # choices: 97,310 names
-baby_names <- sort(unique(babynames::babynames$name))
+set.seed(123)
+baby_names <- replicate(n = 97310, paste(sample(letters, size = 10), collapse = ""))
 baby_names <- setNames(baby_names, seq_along(baby_names))
 
 # ui
