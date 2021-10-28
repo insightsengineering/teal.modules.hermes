@@ -11,9 +11,13 @@
   border: 0;
 }
 
-.custom-select-input .selectize-dropdown-content .bootstrap-select .dropdown-menu {
+.custom-select-input .bootstrap-select .dropdown-menu {
   min-width: fit-content;
-  max-height: 500px;
+}
+
+.selectize-input {
+  max-height: 102px;
+  overflow-y: auto;
 }
 
 div.shiny-radiomatrix input[type="radio"] {
