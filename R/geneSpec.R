@@ -41,6 +41,8 @@ geneSpecInput <- function(inputId,
   assert_string(label_lock_button)
   assert_string(label_select_all_button)
   assert_string(label_select_none_button)
+  assert_count(max_options, positive = TRUE)
+  assert_count(max_selected, positive = TRUE)
 
   ns <- NS(inputId)
   tagList(
