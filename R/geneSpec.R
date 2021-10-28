@@ -114,7 +114,7 @@ geneSpecInput <- function(inputId,
                 '</div>';
             }
           }"),
-          searchField = c('value', 'label'),
+          searchField = c("value", "label"),
           maxOptions = max_options,
           maxItems = max_selected
         )

@@ -16,7 +16,7 @@ ui <- fluidPage(
       render = I("{
         option: function(item, escape) { return '<div>' + item.value + '-' + item.label + '</div>'; }
       }"),
-      searchField = c('value', 'label')
+      searchField = c("value", "label")
     )
   )
 )
