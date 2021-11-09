@@ -1,4 +1,4 @@
-# teal.modules.hermes 0.1.0.9003
+# teal.modules.hermes 0.1.0.9004
 
 ### Bug Fixes
 * Gene selection with more than a few thousand genes no longer hangs the application. This is achieved through a different selection input in the corresponding `geneSpec` shiny module.
