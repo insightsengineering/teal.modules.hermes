@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">teal.modules.hermes</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9006</span>
       </span>
     </div>
 
@@ -122,7 +122,7 @@
   <span class="va">output</span><span class="op">$</span><span class="va">awesome_plot</span> <span class="op">&lt;-</span> <span class="fu">renderPlot</span><span class="op">(</span><span class="op">{</span>
     <span class="va">data</span> <span class="op">&lt;-</span> <span class="va">experiment</span><span class="op">$</span><span class="fu">data</span><span class="op">(</span><span class="op">)</span>
     <span class="va">assay</span> <span class="op">&lt;-</span> <span class="fu">assay</span><span class="op">(</span><span class="op">)</span>
-    <span class="fu">req</span><span class="op">(</span><span class="va">assay</span> <span class="op">%in%</span> <span class="fu">SummarizedExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">assayNames</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">)</span>
+    <span class="fu">req</span><span class="op">(</span><span class="va">assay</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu">SummarizedExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">assayNames</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">)</span>
     <span class="va">counts</span> <span class="op">&lt;-</span> <span class="fu">SummarizedExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">assay</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">assay</span><span class="op">)</span>
     <span class="fu">awesome_plot</span><span class="op">(</span><span class="va">counts</span><span class="op">)</span>
   <span class="op">}</span><span class="op">)</span>
@@ -137,12 +137,12 @@
 <span class="va">awesome_app</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">mae</span>, <span class="va">label</span> <span class="op">=</span> <span class="st">"My awesome app"</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">mae_name</span> <span class="op">&lt;-</span> <span class="st">"MAE"</span>
   <span class="va">mae</span> <span class="op">&lt;-</span> <span class="fu">hermes</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/hermes/man/lapply.html">lapply</a></span><span class="op">(</span><span class="va">mae</span>, <span class="fu">hermes</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/hermes/man/HermesData-class.html">HermesData</a></span><span class="op">)</span>
-  <span class="va">mae_data</span> <span class="op">&lt;-</span> <span class="fu">dataset</span><span class="op">(</span><span class="va">mae_name</span>, <span class="va">mae</span><span class="op">)</span>
-  <span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">teal_data</span><span class="op">(</span><span class="va">mae_data</span><span class="op">)</span>
-  <span class="va">app</span> <span class="op">&lt;-</span> <span class="fu">init</span><span class="op">(</span>
+  <span class="va">mae_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/teal/man/dataset.html">dataset</a></span><span class="op">(</span><span class="va">mae_name</span>, <span class="va">mae</span><span class="op">)</span>
+  <span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/teal/man/teal_data.html">teal_data</a></span><span class="op">(</span><span class="va">mae_data</span><span class="op">)</span>
+  <span class="va">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/teal/man/init.html">init</a></span><span class="op">(</span>
     data <span class="op">=</span> <span class="va">data</span>,
-    modules <span class="op">=</span> <span class="fu">root_modules</span><span class="op">(</span>
-      <span class="fu">module</span><span class="op">(</span>
+    modules <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/teal/man/root_modules.html">root_modules</a></span><span class="op">(</span>
+      <span class="fu"><a href="https://rdrr.io/pkg/teal/man/module.html">module</a></span><span class="op">(</span>
         label <span class="op">=</span> <span class="va">label</span>,
         server <span class="op">=</span> <span class="va">srv</span>,
         server_args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>mae_name <span class="op">=</span> <span class="va">mae_name</span><span class="op">)</span>,
@@ -152,7 +152,7 @@
       <span class="op">)</span>
     <span class="op">)</span>
   <span class="op">)</span>
-  <span class="fu">shinyApp</span><span class="op">(</span><span class="va">app</span><span class="op">$</span><span class="va">ui</span>, <span class="va">app</span><span class="op">$</span><span class="va">server</span><span class="op">)</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html">shinyApp</a></span><span class="op">(</span><span class="va">app</span><span class="op">$</span><span class="va">ui</span>, <span class="va">app</span><span class="op">$</span><span class="va">server</span><span class="op">)</span>
 <span class="op">}</span></code></pre></div>
 </div>
 <div id="testing-it" class="section level3">

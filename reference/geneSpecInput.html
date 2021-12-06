@@ -83,7 +83,7 @@ This defines the input for the gene signature specification." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.hermes</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9006</span>
       </span>
     </div>
 
@@ -202,170 +202,165 @@ selection drop down menu.</p></td>
     <div class='dont-index'><p><code><a href='geneSpecServer.html'>geneSpecServer()</a></code> for the module server and a complete example.</p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>geneSpecInput</span><span class='op'>(</span><span class='st'>"my_genes"</span>, <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>mean <span class='op'>=</span> <span class='va'>colMeans</span><span class='op'>)</span>, label_funs <span class='op'>=</span> <span class='st'>"Please select function"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>This Font Awesome icon ('font fa-border') does not exist:</span>
-#&gt; <span class='message'>* if providing a custom `html_dependency` these `name` checks can </span>
-#&gt; <span class='message'>  be deactivated with `verify_fa = FALSE`</span></div><div class='output co'>#&gt; <span class='message'>This Font Awesome icon ('lock fa-border') does not exist:</span>
-#&gt; <span class='message'>* if providing a custom `html_dependency` these `name` checks can </span>
-#&gt; <span class='message'>  be deactivated with `verify_fa = FALSE`</span></div><div class='output co'>#&gt; <span class='message'>This Font Awesome icon ('unlock-alt fa-border') does not exist:</span>
-#&gt; <span class='message'>* if providing a custom `html_dependency` these `name` checks can </span>
-#&gt; <span class='message'>  be deactivated with `verify_fa = FALSE`</span></div><div class='output co'>#&gt; &lt;div class="row"&gt;
-#&gt;   &lt;div class="col-sm-8"&gt;
-#&gt;     &lt;label class="control-label"&gt;Select Gene(s)&lt;/label&gt;
-#&gt;   &lt;/div&gt;
-#&gt;   &lt;div class="col-sm-2"&gt;
-#&gt;     &lt;button class="btn btn-default action-button pull-right list-genes" id="my_genes-select_none_button" title="Select None" type="button"&gt;
-#&gt;       &lt;span&gt;
-#&gt;         &lt;i aria-label="remove-circle icon" class="glyphicon glyphicon-remove-circle" role="presentation"&gt;&lt;/i&gt;
-#&gt;       &lt;/span&gt;
-#&gt;     &lt;/button&gt;
-#&gt;     &lt;button class="btn btn-default action-button pull-right list-genes" id="my_genes-select_all_button" title="Select All Genes (first 200)" type="button"&gt;
-#&gt;       &lt;span&gt;
-#&gt;         &lt;i aria-label="ok-circle icon" class="glyphicon glyphicon-ok-circle" role="presentation"&gt;&lt;/i&gt;
-#&gt;       &lt;/span&gt;
-#&gt;     &lt;/button&gt;
-#&gt;   &lt;/div&gt;
-#&gt;   &lt;div class="col-sm-2"&gt;
-#&gt;     &lt;button class="btn btn-default action-button pull-right list-genes" id="my_genes-text_button" title="Enter list of genes" type="button"&gt;
-#&gt;       &lt;span&gt;
-#&gt;         &lt;i class="fa fa-font fa-border" role="presentation" aria-label="font fa-border icon"&gt;&lt;/i&gt;
-#&gt;       &lt;/span&gt;
-#&gt;     &lt;/button&gt;
-#&gt;     &lt;div class="pull-right" title="Lock gene selection (so that it does not get updated when filtering)"&gt;
-#&gt;       &lt;div class="form-group shiny-input-container"&gt;
-#&gt;         &lt;div class="pretty p-toggle p-plain p-icon p-pulse"&gt;
-#&gt;           &lt;input id="my_genes-lock_button" type="checkbox"/&gt;
-#&gt;           &lt;div class="state p-on"&gt;
-#&gt;             &lt;i class="icon fa fa-lock fa-border" role="presentation" aria-label="lock fa-border icon"&gt;&lt;/i&gt;
-#&gt;             &lt;label&gt;
-#&gt;               &lt;span&gt;&lt;/span&gt;
-#&gt;             &lt;/label&gt;
-#&gt;           &lt;/div&gt;
-#&gt;           &lt;div class="state p-off"&gt;
-#&gt;             &lt;i class="icon fa fa-unlock-alt fa-border" role="presentation" aria-label="unlock-alt fa-border icon"&gt;&lt;/i&gt;
-#&gt;             &lt;label&gt;
-#&gt;               &lt;span&gt;&lt;/span&gt;
-#&gt;             &lt;/label&gt;
-#&gt;           &lt;/div&gt;
-#&gt;         &lt;/div&gt;
-#&gt;       &lt;/div&gt;
-#&gt;     &lt;/div&gt;
-#&gt;     &lt;style type="text/css"&gt;.pretty {
-#&gt;   margin-right: 0;
-#&gt; }
-#&gt; 
-#&gt; .list-genes {
-#&gt;   padding: 0;
-#&gt;   margin: 0 0 0 0.5rem;
-#&gt;   background: transparent !important;
-#&gt;   outline: none !important;
-#&gt;   box-shadow: none !important;
-#&gt;   border: 0;
-#&gt; }
-#&gt; 
-#&gt; .custom-select-input .bootstrap-select .dropdown-menu {
-#&gt;   min-width: fit-content;
-#&gt; }
-#&gt; 
-#&gt; .selectize-input {
-#&gt;   max-height: 102px;
-#&gt;   overflow-y: auto;
-#&gt; }
-#&gt; 
-#&gt; div.shiny-radiomatrix input[type="radio"] {
-#&gt;   display: none;
-#&gt; }
-#&gt; 
-#&gt; div.shiny-radiomatrix .radio-parent {
-#&gt;   display: block;
-#&gt;   position: relative;
-#&gt;   cursor: pointer;
-#&gt;   -webkit-user-select: none;
-#&gt;   -moz-user-select: none;
-#&gt;   -ms-user-select: none;
-#&gt;   user-select: none;
-#&gt;   top: -10px;
-#&gt;   left: -13px;
-#&gt; }
-#&gt; 
-#&gt; /* Hide the browser's default radio button */
-#&gt; div.shiny-radiomatrix .radio-parent input {
-#&gt;   position: absolute;
-#&gt;   opacity: 0;
-#&gt;   cursor: pointer;
-#&gt;   height: 0;
-#&gt;   width: 0;
-#&gt; }
-#&gt; 
-#&gt; /* Create a custom radio button */
-#&gt; div.shiny-radiomatrix .checkmark {
-#&gt;   position: absolute;
-#&gt;   height: 25px;
-#&gt;   width: 25px;
-#&gt;   background-color: #eee;
-#&gt;   z-index: 25;
-#&gt;   transition: 0.5s all ease-in-out;
-#&gt; }
-#&gt; 
-#&gt; div.shiny-radiomatrix .radio-parent:hover input ~ .checkmark {
-#&gt;   background-color: #2195f34b;
-#&gt; }
-#&gt; 
-#&gt; div.shiny-radiomatrix .radio-parent input:checked ~ .checkmark {
-#&gt;   background-color: #2196f3;
-#&gt; }
-#&gt; 
-#&gt; div.shiny-radiomatrix table {
-#&gt;   border-spacing: 0;
-#&gt;   border-collapse: collapse;
-#&gt;   overflow: hidden;
-#&gt; }
-#&gt; 
-#&gt; div.shiny-radiomatrix td,
-#&gt; div.shiny-radiomatrix th {
-#&gt;   padding: 10px;
-#&gt;   position: relative;
-#&gt;   transition: 0.5s all ease-in-out;
-#&gt; }
-#&gt; 
-#&gt; div.shiny-radiomatrix tr:hover {
-#&gt;   background-color: rgba(151, 151, 151, 0.1);
-#&gt; }
-#&gt; 
-#&gt; div.shiny-radiomatrix td:hover::before,
-#&gt; div.shiny-radiomatrix th:hover::before {
-#&gt;   background-color: rgba(151, 151, 151, 0.1);
-#&gt;   content: "\00a0";
-#&gt;   height: 1000vh;
-#&gt;   left: 0;
-#&gt;   position: absolute;
-#&gt;   top: -500vh;
-#&gt;   width: 100%;
-#&gt; }
-#&gt; 
-#&gt; .dataTable-container table td{
-#&gt;   white-space: unset !important;
-#&gt; }&lt;/style&gt;
-#&gt;   &lt;/div&gt;
-#&gt; &lt;/div&gt;
-#&gt; &lt;div class="custom-select-input"&gt;
-#&gt;   &lt;div class="form-group shiny-input-container"&gt;
-#&gt;     &lt;label class="control-label shiny-label-null" for="my_genes-genes" id="my_genes-genes-label"&gt;&lt;/label&gt;
-#&gt;     &lt;div&gt;
-#&gt;       &lt;select id="my_genes-genes" class="form-control" multiple="multiple"&gt;&lt;option value=""&gt;&lt;/option&gt;&lt;/select&gt;
-#&gt;       &lt;script type="application/json" data-for="my_genes-genes" data-eval="[&amp;quot;render&amp;quot;]"&gt;{"render":"{\n          option: function(item, escape) {\n              return '&lt;div&gt; &lt;div style = \"font-size: inherit; display: inline\"&gt;' + item.label + '&lt;\/div&gt;' +\n                ' &lt;div style=\"color: #808080; font-size: xx-small; display: inline\" &gt;' + item.value + '&lt;\/div&gt; &lt;\/div&gt;'\n            }\n          }","searchField":["value","label"],"maxOptions":200,"maxItems":200,"plugins":["selectize-plugin-a11y"]}&lt;/script&gt;
-#&gt;     &lt;/div&gt;
-#&gt;   &lt;/div&gt;
-#&gt; &lt;/div&gt;
-#&gt; &lt;div data-display-if="input.genes.length &amp;gt; 1" data-ns-prefix="my_genes-"&gt;
-#&gt;   &lt;div class="form-group shiny-input-container"&gt;
-#&gt;     &lt;label class="control-label" id="my_genes-fun_name-label" for="my_genes-fun_name"&gt;Please select function&lt;/label&gt;
-#&gt;     &lt;div&gt;
-#&gt;       &lt;select id="my_genes-fun_name"&gt;&lt;option value="mean" selected&gt;mean&lt;/option&gt;&lt;/select&gt;
-#&gt;       &lt;script type="application/json" data-for="my_genes-fun_name" data-nonempty=""&gt;{"plugins":["selectize-plugin-a11y"]}&lt;/script&gt;
-#&gt;     &lt;/div&gt;
-#&gt;   &lt;/div&gt;
-#&gt; &lt;/div&gt;</div></pre>
+    <pre class="examples"><span class='r-in'><span class='fu'>geneSpecInput</span><span class='op'>(</span><span class='st'>"my_genes"</span>, <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>mean <span class='op'>=</span> <span class='va'>colMeans</span><span class='op'>)</span>, label_funs <span class='op'>=</span> <span class='st'>"Please select function"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;div class="row"&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   &lt;div class="col-sm-8"&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     &lt;label class="control-label"&gt;Select Gene(s)&lt;/label&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   &lt;/div&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   &lt;div class="col-sm-2"&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     &lt;button class="btn btn-default action-button pull-right list-genes" id="my_genes-select_none_button" title="Select None" type="button"&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       &lt;span&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         &lt;i aria-label="remove-circle icon" class="glyphicon glyphicon-remove-circle" role="presentation"&gt;&lt;/i&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       &lt;/span&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     &lt;/button&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     &lt;button class="btn btn-default action-button pull-right list-genes" id="my_genes-select_all_button" title="Select All Genes (first 200)" type="button"&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       &lt;span&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         &lt;i aria-label="ok-circle icon" class="glyphicon glyphicon-ok-circle" role="presentation"&gt;&lt;/i&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       &lt;/span&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     &lt;/button&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   &lt;/div&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   &lt;div class="col-sm-2"&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     &lt;button class="btn btn-default action-button pull-right list-genes" id="my_genes-text_button" title="Enter list of genes" type="button"&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       &lt;span&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         &lt;i class="fa fa-fas fa-font" role="presentation" aria-label="fas fa-font icon"&gt;&lt;/i&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       &lt;/span&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     &lt;/button&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     &lt;div class="pull-right" title="Lock gene selection (so that it does not get updated when filtering)"&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       &lt;div class="form-group shiny-input-container"&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         &lt;div class="pretty p-toggle p-plain p-icon p-pulse"&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>           &lt;input id="my_genes-lock_button" type="checkbox"/&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>           &lt;div class="state p-on"&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>             &lt;i class="icon fa fa-fas fa-lock" role="presentation" aria-label="fas fa-lock icon"&gt;&lt;/i&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>             &lt;label&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>               &lt;span&gt;&lt;/span&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>             &lt;/label&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>           &lt;/div&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>           &lt;div class="state p-off"&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>             &lt;i class="icon fa fa-fas fa-lock-open" role="presentation" aria-label="fas fa-lock-open icon"&gt;&lt;/i&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>             &lt;label&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>               &lt;span&gt;&lt;/span&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>             &lt;/label&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>           &lt;/div&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         &lt;/div&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       &lt;/div&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     &lt;/div&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     &lt;style type="text/css"&gt;.pretty {</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   margin-right: 0;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> }</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> .list-genes {</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   padding: 0;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   margin: 0 0 0 0.5rem;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   background: transparent !important;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   outline: none !important;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   box-shadow: none !important;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   border: 0;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> }</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> .custom-select-input .bootstrap-select .dropdown-menu {</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   min-width: fit-content;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> }</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> .selectize-input {</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   max-height: 102px;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   overflow-y: auto;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> }</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> div.shiny-radiomatrix input[type="radio"] {</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   display: none;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> }</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> div.shiny-radiomatrix .radio-parent {</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   display: block;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   position: relative;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   cursor: pointer;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   -webkit-user-select: none;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   -moz-user-select: none;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   -ms-user-select: none;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   user-select: none;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   top: -10px;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   left: -13px;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> }</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> /* Hide the browser's default radio button */</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> div.shiny-radiomatrix .radio-parent input {</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   position: absolute;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   opacity: 0;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   cursor: pointer;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   height: 0;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   width: 0;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> }</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> /* Create a custom radio button */</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> div.shiny-radiomatrix .checkmark {</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   position: absolute;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   height: 25px;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   width: 25px;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   background-color: #eee;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   z-index: 25;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   transition: 0.5s all ease-in-out;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> }</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> div.shiny-radiomatrix .radio-parent:hover input ~ .checkmark {</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   background-color: #2195f34b;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> }</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> div.shiny-radiomatrix .radio-parent input:checked ~ .checkmark {</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   background-color: #2196f3;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> }</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> div.shiny-radiomatrix table {</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   border-spacing: 0;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   border-collapse: collapse;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   overflow: hidden;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> }</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> div.shiny-radiomatrix td,</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> div.shiny-radiomatrix th {</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   padding: 10px;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   position: relative;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   transition: 0.5s all ease-in-out;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> }</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> div.shiny-radiomatrix tr:hover {</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   background-color: rgba(151, 151, 151, 0.1);</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> }</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> div.shiny-radiomatrix td:hover::before,</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> div.shiny-radiomatrix th:hover::before {</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   background-color: rgba(151, 151, 151, 0.1);</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   content: "\00a0";</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   height: 1000vh;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   left: 0;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   position: absolute;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   top: -500vh;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   width: 100%;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> }</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> .dataTable-container table td{</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   white-space: unset !important;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> }&lt;/style&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   &lt;/div&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;/div&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;div class="custom-select-input"&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   &lt;div class="form-group shiny-input-container"&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     &lt;label class="control-label shiny-label-null" for="my_genes-genes" id="my_genes-genes-label"&gt;&lt;/label&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     &lt;div&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       &lt;select id="my_genes-genes" class="form-control" multiple="multiple"&gt;&lt;option value=""&gt;&lt;/option&gt;&lt;/select&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       &lt;script type="application/json" data-for="my_genes-genes" data-eval="[&amp;quot;render&amp;quot;]"&gt;{"render":"{\n          option: function(item, escape) {\n              return '&lt;div&gt; &lt;div style = \"font-size: inherit; display: inline\"&gt;' + item.label + '&lt;\/div&gt;' +\n                ' &lt;div style=\"color: #808080; font-size: xx-small; display: inline\" &gt;' + item.value + '&lt;\/div&gt; &lt;\/div&gt;'\n            }\n          }","searchField":["value","label"],"maxOptions":200,"maxItems":200,"plugins":["selectize-plugin-a11y"]}&lt;/script&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     &lt;/div&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   &lt;/div&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;/div&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;div data-display-if="input.genes.length &amp;gt; 1" data-ns-prefix="my_genes-"&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   &lt;div class="form-group shiny-input-container"&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     &lt;label class="control-label" id="my_genes-fun_name-label" for="my_genes-fun_name"&gt;Please select function&lt;/label&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     &lt;div&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       &lt;select id="my_genes-fun_name"&gt;&lt;option value="mean" selected&gt;mean&lt;/option&gt;&lt;/select&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       &lt;script type="application/json" data-for="my_genes-fun_name" data-nonempty=""&gt;{"plugins":["selectize-plugin-a11y"]}&lt;/script&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     &lt;/div&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   &lt;/div&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;/div&gt;</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -83,7 +83,7 @@ A function to help with merging of MAE to ADTTE." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.hermes</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9006</span>
       </span>
     </div>
 
@@ -183,35 +183,30 @@ for the gene columns.</p>
 the original gene IDs (or labels), in particular white space and colons are removed.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>mae</span> <span class='op'>&lt;-</span> <span class='fu'>hermes</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/pkg/hermes/man/multi_assay_experiment.html'>multi_assay_experiment</a></span>
-<span class='va'>adtte</span> <span class='op'>&lt;-</span> <span class='fu'>scda</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html'>synthetic_cdisc_data</a></span><span class='op'>(</span><span class='st'>"rcd_2021_07_07"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>adtte</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>CNSR <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/logical.html'>as.logical</a></span><span class='op'>(</span><span class='va'>CNSR</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; </div><div class='input'>
-<span class='va'>new_adtte</span> <span class='op'>&lt;-</span> <span class='fu'>h_km_mae_to_adtte</span><span class='op'>(</span>
-  <span class='va'>adtte</span>,
-  <span class='va'>mae</span>,
-  genes <span class='op'>=</span> <span class='fu'>hermes</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/hermes/man/gene_spec.html'>gene_spec</a></span><span class='op'>(</span><span class='st'>"GeneID:1820"</span><span class='op'>)</span>,
-  experiment_name <span class='op'>=</span> <span class='st'>"hd2"</span>
-<span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>harmonizing input:</span>
-#&gt; <span class='message'>  removing 11 sampleMap rows not in names(experiments)</span>
-#&gt; <span class='message'>  removing 9 colData rownames not in sampleMap 'primary'</span></div><div class='input'><span class='va'>new_adtte2</span> <span class='op'>&lt;-</span> <span class='fu'>h_km_mae_to_adtte</span><span class='op'>(</span>
-  <span class='va'>adtte</span>,
-  <span class='va'>mae</span>,
-  genes <span class='op'>=</span> <span class='fu'>hermes</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/hermes/man/gene_spec.html'>gene_spec</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"GeneID:1820"</span>, <span class='st'>"GeneID:94115"</span><span class='op'>)</span>, fun <span class='op'>=</span> <span class='va'>colMeans</span><span class='op'>)</span>,
-  experiment_name <span class='op'>=</span> <span class='st'>"hd2"</span>
-<span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>harmonizing input:</span>
-#&gt; <span class='message'>  removing 11 sampleMap rows not in names(experiments)</span>
-#&gt; <span class='message'>  removing 9 colData rownames not in sampleMap 'primary'</span></div><div class='input'><span class='va'>new_adtte3</span> <span class='op'>&lt;-</span> <span class='fu'>h_km_mae_to_adtte</span><span class='op'>(</span>
-  <span class='va'>adtte</span>,
-  <span class='va'>mae</span>,
-  genes <span class='op'>=</span> <span class='fu'>hermes</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/hermes/man/gene_spec.html'>gene_spec</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>A <span class='op'>=</span> <span class='st'>"GeneID:1820"</span>, B <span class='op'>=</span> <span class='st'>"GeneID:94115"</span><span class='op'>)</span><span class='op'>)</span>,
-  experiment_name <span class='op'>=</span> <span class='st'>"hd2"</span>
-<span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>harmonizing input:</span>
-#&gt; <span class='message'>  removing 11 sampleMap rows not in names(experiments)</span>
-#&gt; <span class='message'>  removing 9 colData rownames not in sampleMap 'primary'</span></div></pre>
+    <pre class="examples"><span class='r-in'><span class='va'>mae</span> <span class='op'>&lt;-</span> <span class='fu'>hermes</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/pkg/hermes/man/multi_assay_experiment.html'>multi_assay_experiment</a></span></span>
+<span class='r-in'><span class='va'>adtte</span> <span class='op'>&lt;-</span> <span class='fu'>scda</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html'>synthetic_cdisc_data</a></span><span class='op'>(</span><span class='st'>"rcd_2021_07_07"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>adtte</span> <span class='op'><a href='https://rdrr.io/pkg/teal/man/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>  <span class='fu'>dplyr</span><span class='fu'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>CNSR <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/logical.html'>as.logical</a></span><span class='op'>(</span><span class='va'>CNSR</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>new_adtte</span> <span class='op'>&lt;-</span> <span class='fu'>h_km_mae_to_adtte</span><span class='op'>(</span></span>
+<span class='r-in'>  <span class='va'>adtte</span>,</span>
+<span class='r-in'>  <span class='va'>mae</span>,</span>
+<span class='r-in'>  genes <span class='op'>=</span> <span class='fu'>hermes</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/hermes/man/gene_spec.html'>gene_spec</a></span><span class='op'>(</span><span class='st'>"GeneID:1820"</span><span class='op'>)</span>,</span>
+<span class='r-in'>  experiment_name <span class='op'>=</span> <span class='st'>"hd2"</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>new_adtte2</span> <span class='op'>&lt;-</span> <span class='fu'>h_km_mae_to_adtte</span><span class='op'>(</span></span>
+<span class='r-in'>  <span class='va'>adtte</span>,</span>
+<span class='r-in'>  <span class='va'>mae</span>,</span>
+<span class='r-in'>  genes <span class='op'>=</span> <span class='fu'>hermes</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/hermes/man/gene_spec.html'>gene_spec</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"GeneID:1820"</span>, <span class='st'>"GeneID:94115"</span><span class='op'>)</span>, fun <span class='op'>=</span> <span class='va'>colMeans</span><span class='op'>)</span>,</span>
+<span class='r-in'>  experiment_name <span class='op'>=</span> <span class='st'>"hd2"</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>new_adtte3</span> <span class='op'>&lt;-</span> <span class='fu'>h_km_mae_to_adtte</span><span class='op'>(</span></span>
+<span class='r-in'>  <span class='va'>adtte</span>,</span>
+<span class='r-in'>  <span class='va'>mae</span>,</span>
+<span class='r-in'>  genes <span class='op'>=</span> <span class='fu'>hermes</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/hermes/man/gene_spec.html'>gene_spec</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>A <span class='op'>=</span> <span class='st'>"GeneID:1820"</span>, B <span class='op'>=</span> <span class='st'>"GeneID:94115"</span><span class='op'>)</span><span class='op'>)</span>,</span>
+<span class='r-in'>  experiment_name <span class='op'>=</span> <span class='st'>"hd2"</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

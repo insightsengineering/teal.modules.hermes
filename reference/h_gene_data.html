@@ -85,7 +85,7 @@ as a data.frame ready for consumption in h_order_genes() e.g." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.hermes</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9006</span>
       </span>
     </div>
 
@@ -164,19 +164,20 @@ are replaced by empty strings for consistency and better labeling in the
 UI downstream</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>object</span> <span class='op'>&lt;-</span> <span class='fu'>hermes</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/pkg/hermes/man/hermes_data.html'>hermes_data</a></span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span>, <span class='op'>]</span>
-<span class='fu'>h_gene_data</span><span class='op'>(</span><span class='va'>object</span>, <span class='st'>"symbol"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;                  id         name
-#&gt; 1      GeneID:11185         INMT
-#&gt; 2      GeneID:10677         AVIL
-#&gt; 3  GeneID:101928428 LOC101928428
-#&gt; 4  GeneID:100422835      MIR3183
-#&gt; 5  GeneID:102466731     MIR6769A
-#&gt; 6      GeneID:64881       PCDH20
-#&gt; 7     GeneID:286205         SCAI
-#&gt; 8       GeneID:8365     HIST1H4H
-#&gt; 9       GeneID:6804        STX1A
-#&gt; 10 GeneID:100423018    MIR3156-3</div></pre>
+    <pre class="examples"><span class='r-in'><span class='va'>object</span> <span class='op'>&lt;-</span> <span class='fu'>hermes</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/pkg/hermes/man/hermes_data.html'>hermes_data</a></span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span>, <span class='op'>]</span></span>
+<span class='r-in'><span class='fu'>h_gene_data</span><span class='op'>(</span><span class='va'>object</span>, <span class='st'>"symbol"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                  id         name</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1      GeneID:11185         INMT</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2      GeneID:10677         AVIL</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3  GeneID:101928428 LOC101928428</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4  GeneID:100422835      MIR3183</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 5  GeneID:102466731     MIR6769A</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 6      GeneID:64881       PCDH20</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 7     GeneID:286205         SCAI</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 8       GeneID:8365     HIST1H4H</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 9       GeneID:6804        STX1A</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 10 GeneID:100423018    MIR3156-3</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

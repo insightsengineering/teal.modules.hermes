@@ -83,7 +83,7 @@ This defines the server part for the gene signature specification." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.hermes</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9006</span>
       </span>
     </div>
 
@@ -179,75 +179,75 @@ populate in the UI, as a <code>data.frame</code> with columns <code>id</code> an
     <div class='dont-index'><p><code><a href='geneSpecInput.html'>geneSpecInput()</a></code> for the module UI.</p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>ui</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>id</span>,
-               <span class='va'>datasets</span>,
-               <span class='va'>funs</span><span class='op'>)</span> <span class='op'>{</span>
-  <span class='va'>ns</span> <span class='op'>&lt;-</span> <span class='fu'>NS</span><span class='op'>(</span><span class='va'>id</span><span class='op'>)</span>
-  <span class='fu'>teal.devel</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/teal.devel/man/standard_layout.html'>standard_layout</a></span><span class='op'>(</span>
-    encoding <span class='op'>=</span> <span class='fu'>div</span><span class='op'>(</span>
-      <span class='fu'><a href='geneSpecInput.html'>geneSpecInput</a></span><span class='op'>(</span>
-        <span class='fu'>ns</span><span class='op'>(</span><span class='st'>"my_genes"</span><span class='op'>)</span>,
-        funs <span class='op'>=</span> <span class='va'>funs</span>,
-        label_funs <span class='op'>=</span> <span class='st'>"Please select function"</span>
-      <span class='op'>)</span>
-    <span class='op'>)</span>,
-    output <span class='op'>=</span> <span class='fu'>textOutput</span><span class='op'>(</span><span class='fu'>ns</span><span class='op'>(</span><span class='st'>"result"</span><span class='op'>)</span><span class='op'>)</span>
-  <span class='op'>)</span>
-<span class='op'>}</span>
-<span class='va'>server</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>input</span>,
-                   <span class='va'>output</span>,
-                   <span class='va'>session</span>,
-                   <span class='va'>datasets</span>,
-                   <span class='va'>funs</span><span class='op'>)</span> <span class='op'>{</span>
-  <span class='va'>gene_choices</span> <span class='op'>&lt;-</span> <span class='fu'>reactive</span><span class='op'>(</span><span class='op'>{</span>
-    <span class='va'>mae</span> <span class='op'>&lt;-</span> <span class='va'>datasets</span><span class='op'>$</span><span class='fu'>get_data</span><span class='op'>(</span><span class='st'>"MAE"</span>, filtered <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-    <span class='va'>object</span> <span class='op'>&lt;-</span> <span class='va'>mae</span><span class='op'>[[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span>
-    <span class='va'>gene_ids</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span><span class='op'>(</span><span class='va'>object</span><span class='op'>)</span>
-    <span class='va'>gene_names</span> <span class='op'>&lt;-</span> <span class='fu'>SummarizedExperiment</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html'>rowData</a></span><span class='op'>(</span><span class='va'>object</span><span class='op'>)</span><span class='op'>$</span><span class='va'>symbol</span>
-    <span class='va'>gene_data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>
-      id <span class='op'>=</span> <span class='va'>gene_ids</span>,
-      name <span class='op'>=</span> <span class='va'>gene_names</span>
-    <span class='op'>)</span>
-    <span class='va'>gene_data</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/order.html'>order</a></span><span class='op'>(</span><span class='va'>gene_data</span><span class='op'>$</span><span class='va'>name</span><span class='op'>)</span>, <span class='op'>]</span>
-  <span class='op'>}</span><span class='op'>)</span>
-  <span class='va'>gene_spec</span> <span class='op'>&lt;-</span> <span class='fu'>geneSpecServer</span><span class='op'>(</span>
-    <span class='st'>"my_genes"</span>,
-    funs <span class='op'>=</span> <span class='va'>funs</span>,
-    gene_choices <span class='op'>=</span> <span class='va'>gene_choices</span>
-  <span class='op'>)</span>
-  <span class='va'>output</span><span class='op'>$</span><span class='va'>result</span> <span class='op'>&lt;-</span> <span class='fu'>renderText</span><span class='op'>(</span><span class='op'>{</span>
-    <span class='fu'><a href='validate_gene_spec.html'>validate_gene_spec</a></span><span class='op'>(</span>
-      <span class='fu'>gene_spec</span><span class='op'>(</span><span class='op'>)</span>,
-      <span class='fu'>gene_choices</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='va'>id</span>
-    <span class='op'>)</span>
-    <span class='va'>gene_spec</span> <span class='op'>&lt;-</span> <span class='fu'>gene_spec</span><span class='op'>(</span><span class='op'>)</span>
-    <span class='va'>gene_spec</span><span class='op'>$</span><span class='fu'>get_label</span><span class='op'>(</span><span class='op'>)</span>
-  <span class='op'>}</span><span class='op'>)</span>
-<span class='op'>}</span>
-<span class='va'>funs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>mean <span class='op'>=</span> <span class='va'>colMeans</span><span class='op'>)</span>
-<span class='va'>my_app</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>{</span>
-  <span class='va'>mae</span> <span class='op'>&lt;-</span> <span class='fu'>hermes</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/pkg/hermes/man/multi_assay_experiment.html'>multi_assay_experiment</a></span>
-  <span class='va'>mae_data</span> <span class='op'>&lt;-</span> <span class='fu'>dataset</span><span class='op'>(</span><span class='st'>"MAE"</span>, <span class='va'>mae</span><span class='op'>)</span>
-  <span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'>teal_data</span><span class='op'>(</span><span class='va'>mae_data</span><span class='op'>)</span>
-  <span class='va'>app</span> <span class='op'>&lt;-</span> <span class='fu'>init</span><span class='op'>(</span>
-    data <span class='op'>=</span> <span class='va'>data</span>,
-    modules <span class='op'>=</span> <span class='fu'>root_modules</span><span class='op'>(</span>
-      <span class='fu'>module</span><span class='op'>(</span>
-        label <span class='op'>=</span> <span class='st'>"GeneSpec example"</span>,
-        server <span class='op'>=</span> <span class='va'>server</span>,
-        server_args <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>funs <span class='op'>=</span> <span class='va'>funs</span><span class='op'>)</span>,
-        ui <span class='op'>=</span> <span class='va'>ui</span>,
-        ui_args <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>funs <span class='op'>=</span> <span class='va'>funs</span><span class='op'>)</span>,
-        filters <span class='op'>=</span> <span class='st'>"all"</span>
-      <span class='op'>)</span>
-    <span class='op'>)</span>
-  <span class='op'>)</span>
-  <span class='fu'>shinyApp</span><span class='op'>(</span><span class='va'>app</span><span class='op'>$</span><span class='va'>ui</span>, <span class='va'>app</span><span class='op'>$</span><span class='va'>server</span><span class='op'>)</span>
-<span class='op'>}</span>
-<span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/interactive.html'>interactive</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
-  <span class='fu'>my_app</span><span class='op'>(</span><span class='op'>)</span>
-<span class='op'>}</span>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='va'>ui</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>id</span>,</span>
+<span class='r-in'>               <span class='va'>datasets</span>,</span>
+<span class='r-in'>               <span class='va'>funs</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span class='r-in'>  <span class='va'>ns</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/NS.html'>NS</a></span><span class='op'>(</span><span class='va'>id</span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='fu'>teal.devel</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/teal.devel/man/standard_layout.html'>standard_layout</a></span><span class='op'>(</span></span>
+<span class='r-in'>    encoding <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/htmltools/man/builder.html'>div</a></span><span class='op'>(</span></span>
+<span class='r-in'>      <span class='fu'><a href='geneSpecInput.html'>geneSpecInput</a></span><span class='op'>(</span></span>
+<span class='r-in'>        <span class='fu'>ns</span><span class='op'>(</span><span class='st'>"my_genes"</span><span class='op'>)</span>,</span>
+<span class='r-in'>        funs <span class='op'>=</span> <span class='va'>funs</span>,</span>
+<span class='r-in'>        label_funs <span class='op'>=</span> <span class='st'>"Please select function"</span></span>
+<span class='r-in'>      <span class='op'>)</span></span>
+<span class='r-in'>    <span class='op'>)</span>,</span>
+<span class='r-in'>    output <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/textOutput.html'>textOutput</a></span><span class='op'>(</span><span class='fu'>ns</span><span class='op'>(</span><span class='st'>"result"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='op'>)</span></span>
+<span class='r-in'><span class='op'>}</span></span>
+<span class='r-in'><span class='va'>server</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>input</span>,</span>
+<span class='r-in'>                   <span class='va'>output</span>,</span>
+<span class='r-in'>                   <span class='va'>session</span>,</span>
+<span class='r-in'>                   <span class='va'>datasets</span>,</span>
+<span class='r-in'>                   <span class='va'>funs</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span class='r-in'>  <span class='va'>gene_choices</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/reactive.html'>reactive</a></span><span class='op'>(</span><span class='op'>{</span></span>
+<span class='r-in'>    <span class='va'>mae</span> <span class='op'>&lt;-</span> <span class='va'>datasets</span><span class='op'>$</span><span class='fu'>get_data</span><span class='op'>(</span><span class='st'>"MAE"</span>, filtered <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span>
+<span class='r-in'>    <span class='va'>object</span> <span class='op'>&lt;-</span> <span class='va'>mae</span><span class='op'>[[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span></span>
+<span class='r-in'>    <span class='va'>gene_ids</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span><span class='op'>(</span><span class='va'>object</span><span class='op'>)</span></span>
+<span class='r-in'>    <span class='va'>gene_names</span> <span class='op'>&lt;-</span> <span class='fu'>SummarizedExperiment</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html'>rowData</a></span><span class='op'>(</span><span class='va'>object</span><span class='op'>)</span><span class='op'>$</span><span class='va'>symbol</span></span>
+<span class='r-in'>    <span class='va'>gene_data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span></span>
+<span class='r-in'>      id <span class='op'>=</span> <span class='va'>gene_ids</span>,</span>
+<span class='r-in'>      name <span class='op'>=</span> <span class='va'>gene_names</span></span>
+<span class='r-in'>    <span class='op'>)</span></span>
+<span class='r-in'>    <span class='va'>gene_data</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/order.html'>order</a></span><span class='op'>(</span><span class='va'>gene_data</span><span class='op'>$</span><span class='va'>name</span><span class='op'>)</span>, <span class='op'>]</span></span>
+<span class='r-in'>  <span class='op'>}</span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='va'>gene_spec</span> <span class='op'>&lt;-</span> <span class='fu'>geneSpecServer</span><span class='op'>(</span></span>
+<span class='r-in'>    <span class='st'>"my_genes"</span>,</span>
+<span class='r-in'>    funs <span class='op'>=</span> <span class='va'>funs</span>,</span>
+<span class='r-in'>    gene_choices <span class='op'>=</span> <span class='va'>gene_choices</span></span>
+<span class='r-in'>  <span class='op'>)</span></span>
+<span class='r-in'>  <span class='va'>output</span><span class='op'>$</span><span class='va'>result</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/renderPrint.html'>renderText</a></span><span class='op'>(</span><span class='op'>{</span></span>
+<span class='r-in'>    <span class='fu'><a href='validate_gene_spec.html'>validate_gene_spec</a></span><span class='op'>(</span></span>
+<span class='r-in'>      <span class='fu'>gene_spec</span><span class='op'>(</span><span class='op'>)</span>,</span>
+<span class='r-in'>      <span class='fu'>gene_choices</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='va'>id</span></span>
+<span class='r-in'>    <span class='op'>)</span></span>
+<span class='r-in'>    <span class='va'>gene_spec</span> <span class='op'>&lt;-</span> <span class='fu'>gene_spec</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-in'>    <span class='va'>gene_spec</span><span class='op'>$</span><span class='fu'>get_label</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='op'>}</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>}</span></span>
+<span class='r-in'><span class='va'>funs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>mean <span class='op'>=</span> <span class='va'>colMeans</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>my_app</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span class='r-in'>  <span class='va'>mae</span> <span class='op'>&lt;-</span> <span class='fu'>hermes</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/pkg/hermes/man/multi_assay_experiment.html'>multi_assay_experiment</a></span></span>
+<span class='r-in'>  <span class='va'>mae_data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/teal/man/dataset.html'>dataset</a></span><span class='op'>(</span><span class='st'>"MAE"</span>, <span class='va'>mae</span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/teal/man/teal_data.html'>teal_data</a></span><span class='op'>(</span><span class='va'>mae_data</span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='va'>app</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/teal/man/init.html'>init</a></span><span class='op'>(</span></span>
+<span class='r-in'>    data <span class='op'>=</span> <span class='va'>data</span>,</span>
+<span class='r-in'>    modules <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/teal/man/root_modules.html'>root_modules</a></span><span class='op'>(</span></span>
+<span class='r-in'>      <span class='fu'><a href='https://rdrr.io/pkg/teal/man/module.html'>module</a></span><span class='op'>(</span></span>
+<span class='r-in'>        label <span class='op'>=</span> <span class='st'>"GeneSpec example"</span>,</span>
+<span class='r-in'>        server <span class='op'>=</span> <span class='va'>server</span>,</span>
+<span class='r-in'>        server_args <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>funs <span class='op'>=</span> <span class='va'>funs</span><span class='op'>)</span>,</span>
+<span class='r-in'>        ui <span class='op'>=</span> <span class='va'>ui</span>,</span>
+<span class='r-in'>        ui_args <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>funs <span class='op'>=</span> <span class='va'>funs</span><span class='op'>)</span>,</span>
+<span class='r-in'>        filters <span class='op'>=</span> <span class='st'>"all"</span></span>
+<span class='r-in'>      <span class='op'>)</span></span>
+<span class='r-in'>    <span class='op'>)</span></span>
+<span class='r-in'>  <span class='op'>)</span></span>
+<span class='r-in'>  <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/shinyApp.html'>shinyApp</a></span><span class='op'>(</span><span class='va'>app</span><span class='op'>$</span><span class='va'>ui</span>, <span class='va'>app</span><span class='op'>$</span><span class='va'>server</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>}</span></span>
+<span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/interactive.html'>interactive</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span class='r-in'>  <span class='fu'>my_app</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>}</span></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

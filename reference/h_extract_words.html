@@ -85,7 +85,7 @@ characters are considered separators." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.hermes</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9006</span>
       </span>
     </div>
 
@@ -152,10 +152,12 @@ characters are considered separators.</p>
     <p>Character vector with the extracted words.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>h_extract_words</span><span class='op'>(</span><span class='st'>"a, b, , c, 234; 34562 - GeneID:bla"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "a"          "b"          "c"          "234"        "34562"     
-#&gt; [6] "GeneID:bla"</div><div class='input'><span class='fu'>h_extract_words</span><span class='op'>(</span><span class='st'>"GeneID:1820, sdf.393; 32596"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "GeneID:1820" "sdf.393"     "32596"      </div></pre>
+    <pre class="examples"><span class='r-in'><span class='fu'>h_extract_words</span><span class='op'>(</span><span class='st'>"a, b, , c, 234; 34562 - GeneID:bla"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "a"          "b"          "c"          "234"        "34562"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [6] "GeneID:bla"</span>
+<span class='r-in'><span class='fu'>h_extract_words</span><span class='op'>(</span><span class='st'>"GeneID:1820, sdf.393; 32596"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "GeneID:1820" "sdf.393"     "32596"      </span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

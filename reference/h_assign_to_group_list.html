@@ -84,7 +84,7 @@ group list." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.hermes</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9006</span>
       </span>
     </div>
 
@@ -150,21 +150,21 @@ group list.</p>
     <p>A combination list.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>assign_list</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
-  <span class='st'>"ASIAN"</span> <span class='op'>=</span> <span class='st'>"1"</span>,
-  <span class='st'>"BLACK OR AFRICAN AMERICAN"</span> <span class='op'>=</span> <span class='st'>"1"</span>,
-  <span class='st'>"MULTIPLE"</span> <span class='op'>=</span> <span class='st'>"2"</span>,
-  <span class='st'>"UNKNOWN"</span> <span class='op'>=</span> <span class='st'>"2"</span>,
-  <span class='st'>"WHITE"</span> <span class='op'>=</span> <span class='st'>"4"</span>
-<span class='op'>)</span>
-<span class='va'>objective_list</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
-  <span class='st'>"ASIAN/BLACK OR AFRICAN AMERICAN"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ASIAN"</span>, <span class='st'>"BLACK OR AFRICAN AMERICAN"</span><span class='op'>)</span>,
-  <span class='st'>"MULTIPLE/UNKNOWN"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"MULTIPLE"</span>, <span class='st'>"UNKNOWN"</span><span class='op'>)</span>,
-  <span class='st'>"WHITE"</span> <span class='op'>=</span> <span class='st'>"WHITE"</span>
-<span class='op'>)</span>
-<span class='va'>result_list</span> <span class='op'>&lt;-</span> <span class='fu'>h_assign_to_group_list</span><span class='op'>(</span><span class='va'>assign_list</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/stopifnot.html'>stopifnot</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/identical.html'>identical</a></span><span class='op'>(</span><span class='va'>result_list</span>, <span class='va'>objective_list</span><span class='op'>)</span><span class='op'>)</span>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='va'>assign_list</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span></span>
+<span class='r-in'>  <span class='st'>"ASIAN"</span> <span class='op'>=</span> <span class='st'>"1"</span>,</span>
+<span class='r-in'>  <span class='st'>"BLACK OR AFRICAN AMERICAN"</span> <span class='op'>=</span> <span class='st'>"1"</span>,</span>
+<span class='r-in'>  <span class='st'>"MULTIPLE"</span> <span class='op'>=</span> <span class='st'>"2"</span>,</span>
+<span class='r-in'>  <span class='st'>"UNKNOWN"</span> <span class='op'>=</span> <span class='st'>"2"</span>,</span>
+<span class='r-in'>  <span class='st'>"WHITE"</span> <span class='op'>=</span> <span class='st'>"4"</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>objective_list</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span></span>
+<span class='r-in'>  <span class='st'>"ASIAN/BLACK OR AFRICAN AMERICAN"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ASIAN"</span>, <span class='st'>"BLACK OR AFRICAN AMERICAN"</span><span class='op'>)</span>,</span>
+<span class='r-in'>  <span class='st'>"MULTIPLE/UNKNOWN"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"MULTIPLE"</span>, <span class='st'>"UNKNOWN"</span><span class='op'>)</span>,</span>
+<span class='r-in'>  <span class='st'>"WHITE"</span> <span class='op'>=</span> <span class='st'>"WHITE"</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>result_list</span> <span class='op'>&lt;-</span> <span class='fu'>h_assign_to_group_list</span><span class='op'>(</span><span class='va'>assign_list</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/stopifnot.html'>stopifnot</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/identical.html'>identical</a></span><span class='op'>(</span><span class='va'>result_list</span>, <span class='va'>objective_list</span><span class='op'>)</span><span class='op'>)</span></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

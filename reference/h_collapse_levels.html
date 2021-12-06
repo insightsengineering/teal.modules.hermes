@@ -85,7 +85,7 @@ levels are in the order given in the group list." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.hermes</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9006</span>
       </span>
     </div>
 
@@ -157,20 +157,20 @@ specification.</p></td>
     <p>The transformed factor <code>x</code> with new levels.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>123</span><span class='op'>)</span>
-<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span>
-  <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ASIAN"</span>, <span class='st'>"BLACK OR AFRICAN AMERICAN"</span>, <span class='st'>"MULTIPLE"</span>, <span class='st'>"UNKNOWN"</span>, <span class='st'>"WHITE"</span><span class='op'>)</span>,
-  size <span class='op'>=</span> <span class='fl'>30L</span>,
-  replace <span class='op'>=</span> <span class='cn'>TRUE</span>
-<span class='op'>)</span><span class='op'>)</span>
-<span class='va'>group_list</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
-  <span class='st'>"ASIAN/BLACK OR AFRICAN AMERICAN"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ASIAN"</span>, <span class='st'>"BLACK OR AFRICAN AMERICAN"</span><span class='op'>)</span>,
-  <span class='st'>"MULTIPLE/UNKNOWN"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"MULTIPLE"</span>, <span class='st'>"UNKNOWN"</span><span class='op'>)</span>,
-  <span class='st'>"WHITE"</span> <span class='op'>=</span> <span class='st'>"WHITE"</span>
-<span class='op'>)</span>
-<span class='va'>x_collapsed</span> <span class='op'>&lt;-</span> <span class='fu'>h_collapse_levels</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>group_list</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/stopifnot.html'>stopifnot</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/identical.html'>identical</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/levels.html'>levels</a></span><span class='op'>(</span><span class='va'>x_collapsed</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>group_list</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>123</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span></span>
+<span class='r-in'>  <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ASIAN"</span>, <span class='st'>"BLACK OR AFRICAN AMERICAN"</span>, <span class='st'>"MULTIPLE"</span>, <span class='st'>"UNKNOWN"</span>, <span class='st'>"WHITE"</span><span class='op'>)</span>,</span>
+<span class='r-in'>  size <span class='op'>=</span> <span class='fl'>30L</span>,</span>
+<span class='r-in'>  replace <span class='op'>=</span> <span class='cn'>TRUE</span></span>
+<span class='r-in'><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>group_list</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span></span>
+<span class='r-in'>  <span class='st'>"ASIAN/BLACK OR AFRICAN AMERICAN"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ASIAN"</span>, <span class='st'>"BLACK OR AFRICAN AMERICAN"</span><span class='op'>)</span>,</span>
+<span class='r-in'>  <span class='st'>"MULTIPLE/UNKNOWN"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"MULTIPLE"</span>, <span class='st'>"UNKNOWN"</span><span class='op'>)</span>,</span>
+<span class='r-in'>  <span class='st'>"WHITE"</span> <span class='op'>=</span> <span class='st'>"WHITE"</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>x_collapsed</span> <span class='op'>&lt;-</span> <span class='fu'>h_collapse_levels</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>group_list</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/stopifnot.html'>stopifnot</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/identical.html'>identical</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/levels.html'>levels</a></span><span class='op'>(</span><span class='va'>x_collapsed</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>group_list</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
