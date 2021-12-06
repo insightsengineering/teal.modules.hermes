@@ -74,7 +74,7 @@ geneSpecInput <- function(inputId,
         class = "col-sm-2",
         actionButton(
           ns("text_button"),
-          span(icon("font fa-border")),
+          span(icon("fas fa-font")),
           title = label_text_button,
           class = "pull-right list-genes"
         ),
@@ -90,8 +90,8 @@ geneSpecInput <- function(inputId,
             status_off = "default",
             outline = FALSE,
             plain = TRUE,
-            icon_on = icon("lock fa-border"),
-            icon_off = icon("unlock-alt fa-border"),
+            icon_on = icon("fas fa-lock"),
+            icon_off = icon("fas fa-lock-open"),
             animation = "pulse"
           )
         ),
