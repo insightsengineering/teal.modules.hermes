@@ -34,7 +34,7 @@ test_that("h_parse_genes correctly returns empty data frame when no genes match"
 
 test_that("geneSpec module works as expected in the test app", {
   skip_if_covr()
-  test.nest::skip_if_too_deep(5)
+  utils.nest::skip_if_too_deep(5)
 
   library(shinytest)
   app <- ShinyDriver$new("geneSpec/", loadTimeout = 1e5, debug = "all", phantomTimeout = 1e5)

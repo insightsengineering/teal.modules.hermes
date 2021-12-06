@@ -86,7 +86,7 @@ test_that("h_gene_data does not fail when object does not contain any genes", {
 
 test_that("experimentSpec module works as expected in the test app", {
   skip_if_covr()
-  test.nest::skip_if_too_deep(5)
+  utils.nest::skip_if_too_deep(5)
 
   library(shinytest)
   app <- ShinyDriver$new("experimentSpec/", loadTimeout = 1e5, debug = "all", phantomTimeout = 1e5)

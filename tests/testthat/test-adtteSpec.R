@@ -180,7 +180,7 @@ test_that("adtteSpecInput creates expected HTML", {
 
 test_that("adtteSpecServer module works as expected in the test app", {
   skip_if_covr()
-  test.nest::skip_if_too_deep(5)
+  utils.nest::skip_if_too_deep(5)
 
   library(shinytest)
   app <- ShinyDriver$new("adtteSpec/", loadTimeout = 1e5, debug = "all", phantomTimeout = 1e5)

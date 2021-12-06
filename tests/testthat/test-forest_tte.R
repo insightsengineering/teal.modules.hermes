@@ -21,7 +21,7 @@ test_that("ui_g_forest_tte creates expected HTML", {
 # tm_g_forest_tte ----
 
 test_that("tm_g_forest_tte works as expected in the sample app", {
-  test.nest::skip_if_too_deep(5)
+  utils.nest::skip_if_too_deep(5)
 
   skip_if_covr()
 

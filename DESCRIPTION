@@ -3,14 +3,14 @@ Package: teal.modules.hermes
 Title: RNA-seq analysis modules to add to a teal application
 Version: 0.1.0.9006
 Date: 2021-10-13
-Authors@R: 
+Authors@R:
     person("NEST", , , "nestcicd@roche.com", role = c("aut", "cre"))
 Description: RNA-seq analysis teal modules based on the `hermes` package.
 License: Apache License 2.0 | file LICENSE
 URL: https://github.com/insightsengineering/teal.modules.hermes/
-BugReports: 
+BugReports:
     https://github.com/insightsengineering/teal.modules.hermes/issues
-Depends: 
+Depends:
     ggplot2,
     R (>= 3.6),
     shiny,
@@ -40,9 +40,8 @@ Suggests:
     matrixStats,
     R6,
     shinytest (>= 1.5.0),
-    test.nest (>= 0.2.11),
     testthat (>= 2.0)
-RdMacros: 
+RdMacros:
     lifecycle
 Remotes:
     szelepke/shinyRadioMatrix

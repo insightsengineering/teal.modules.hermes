@@ -16,7 +16,7 @@ test_that("ui_g_quality creates expected HTML", {
 # tm_g_quality ----
 
 test_that("tm_g_quality works as expected in the sample app", {
-  test.nest::skip_if_too_deep(5)
+  utils.nest::skip_if_too_deep(5)
 
   skip_if_covr()
 
