@@ -17,9 +17,6 @@ upstream_repos:
   insightsengineering/teal:
     repo: insightsengineering/teal
     host: https://github.com
-  insightsengineering/test.nest:
-    repo: insightsengineering/test.nest
-    host: https://github.com
   insightsengineering/tern:
     repo: insightsengineering/tern
     host: https://github.com
