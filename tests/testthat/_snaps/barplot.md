@@ -3,22 +3,6 @@
     Code
       ui_g_barplot(id = "testid", datasets = datasets, mae_name = mae_name,
         summary_funs = list(Mean = colMeans), pre_output = NULL, post_output = NULL)
-    Message <simpleMessage>
-      This Font Awesome icon ('font fa-object-ungroup') does not exist:
-      * if providing a custom `html_dependency` these `name` checks can 
-        be deactivated with `verify_fa = FALSE`
-      This Font Awesome icon ('font fa-border') does not exist:
-      * if providing a custom `html_dependency` these `name` checks can 
-        be deactivated with `verify_fa = FALSE`
-      This Font Awesome icon ('lock fa-border') does not exist:
-      * if providing a custom `html_dependency` these `name` checks can 
-        be deactivated with `verify_fa = FALSE`
-      This Font Awesome icon ('unlock-alt fa-border') does not exist:
-      * if providing a custom `html_dependency` these `name` checks can 
-        be deactivated with `verify_fa = FALSE`
-      This Font Awesome icon ('font fa-object-ungroup') does not exist:
-      * if providing a custom `html_dependency` these `name` checks can 
-        be deactivated with `verify_fa = FALSE`
     Output
       <div class="row">
         <div>
@@ -53,7 +37,7 @@
                   <div class="col-sm-4">
                     <button class="btn btn-default action-button pull-right list-genes" id="testid-facet-levels_button" title="Combine factor levels" type="button">
                       <span>
-                        <i class="fa fa-font fa-object-ungroup" role="presentation" aria-label="font fa-object-ungroup icon"></i>
+                        <i class="fa fa-fas fa-table" role="presentation" aria-label="fas fa-table icon"></i>
                       </span>
                     </button>
                     <style type="text/css">.pretty {
@@ -179,7 +163,7 @@
                   <div class="col-sm-2">
                     <button class="btn btn-default action-button pull-right list-genes" id="testid-x-text_button" title="Enter list of genes" type="button">
                       <span>
-                        <i class="fa fa-font fa-border" role="presentation" aria-label="font fa-border icon"></i>
+                        <i class="fa fa-fas fa-font" role="presentation" aria-label="fas fa-font icon"></i>
                       </span>
                     </button>
                     <div class="pull-right" title="Lock gene selection (so that it does not get updated when filtering)">
@@ -187,13 +171,13 @@
                         <div class="pretty p-toggle p-plain p-icon p-pulse">
                           <input id="testid-x-lock_button" type="checkbox"/>
                           <div class="state p-on">
-                            <i class="icon fa fa-lock fa-border" role="presentation" aria-label="lock fa-border icon"></i>
+                            <i class="icon fa fa-fas fa-lock" role="presentation" aria-label="fas fa-lock icon"></i>
                             <label>
                               <span></span>
                             </label>
                           </div>
                           <div class="state p-off">
-                            <i class="icon fa fa-unlock-alt fa-border" role="presentation" aria-label="unlock-alt fa-border icon"></i>
+                            <i class="icon fa fa-fas fa-lock-open" role="presentation" aria-label="fas fa-lock-open icon"></i>
                             <label>
                               <span></span>
                             </label>
@@ -243,7 +227,7 @@
                           <div class="col-sm-4">
                             <button class="btn btn-default action-button pull-right list-genes" id="testid-fill-levels_button" title="Combine factor levels" type="button">
                               <span>
-                                <i class="fa fa-font fa-object-ungroup" role="presentation" aria-label="font fa-object-ungroup icon"></i>
+                                <i class="fa fa-fas fa-table" role="presentation" aria-label="fas fa-table icon"></i>
                               </span>
                             </button>
                           </div>
