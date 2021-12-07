@@ -36,7 +36,7 @@ sampleVarSpecInput <- function(inputId,
         class = "col-sm-4",
         actionButton(
           ns("levels_button"),
-          span(icon("font fa-object-ungroup")),
+          span(icon("fas fa-table")),
           title = label_levels_button,
           class = "pull-right list-genes"
         ),

@@ -11,7 +11,7 @@
         <div class="col-sm-4">
           <button class="btn btn-default action-button pull-right list-genes" id="my_sample_var-levels_button" title="Combine those levels" type="button">
             <span>
-              <i class="fa fa-font fa-object-ungroup" role="presentation" aria-label="font fa-object-ungroup icon"></i>
+              <i class="fa fa-fas fa-table" role="presentation" aria-label="fas fa-table icon"></i>
             </span>
           </button>
           <style type="text/css">.pretty {
@@ -29,6 +29,11 @@
       
       .custom-select-input .bootstrap-select .dropdown-menu {
         min-width: fit-content;
+      }
+      
+      .selectize-input {
+        max-height: 102px;
+        overflow-y: auto;
       }
       
       div.shiny-radiomatrix input[type="radio"] {
