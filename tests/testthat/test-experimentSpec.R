@@ -89,11 +89,16 @@ test_that("experimentSpec module works as expected in the test app", {
   utils.nest::skip_if_too_deep(5)
 
   library(shinytest)
-  app <- ShinyDriver$new("experimentSpec/", loadTimeout = 1e5, debug = "all", phantomTimeout = 1e5)
+  app <- ShinyDriver$new(testthat::test_path("experimentSpec"), loadTimeout = 1e5, debug = "all", phantomTimeout = 1e5, seed = 123)
+  on.exit(app$stop())
   app$getDebugLog()
   app$snapshotInit("test-app")
-
-  ns <- NS("teal-main_ui-modules_ui-root_experimentSpec_example")
+  Sys.sleep(2.5)
+  module_id <- rvest::html_attr(
+    rvest::html_node(rvest::read_html(app$getSource()), css = ".teal_module"),
+    "id"
+  )
+  ns <- NS(module_id)
 
   # Initially the first experiment is selected.
   initial_experiment <- app$waitForValue(ns("my_experiment-name"))
@@ -157,6 +162,4 @@ test_that("experimentSpec module works as expected in the test app", {
     "No genes or samples included in this experiment, please adjust filters"
   )
   app$click("teal-main_ui-filter_panel-MAE_filter-remove_filters")
-
-  app$stop()
 })

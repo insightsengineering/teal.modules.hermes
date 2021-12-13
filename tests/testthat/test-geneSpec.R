@@ -37,11 +37,16 @@ test_that("geneSpec module works as expected in the test app", {
   utils.nest::skip_if_too_deep(5)
 
   library(shinytest)
-  app <- ShinyDriver$new("geneSpec/", loadTimeout = 1e5, debug = "all", phantomTimeout = 1e5)
+  app <- ShinyDriver$new(testthat::test_path("geneSpec"), loadTimeout = 1e5, debug = "all", phantomTimeout = 1e5, seed = 123)
+  on.exit(app$stop())
   app$getDebugLog()
   app$snapshotInit("test-app")
-
-  ns <- NS("teal-main_ui-modules_ui-root_GeneSpec_example")
+  Sys.sleep(2.5)
+  module_id <- rvest::html_attr(
+    rvest::html_node(rvest::read_html(app$getSource()), css = ".teal_module"),
+    "id"
+  )
+  ns <- NS(module_id)
 
   # Initially no genes are selected.
   initial_genes <- app$waitForValue(ns("my_genes"), ignore = "")
@@ -124,8 +129,6 @@ test_that("geneSpec module works as expected in the test app", {
   Sys.sleep(1) # Need this here otherwise we don't get latest update below.
   genes_after_text <- app$waitForValue(ns("my_genes-genes"))
   expect_set_equal(genes_after_text, c("GeneID:100303749", "GeneID:4608"))
-
-  app$stop()
 })
 
 # validate_gene_spec ----

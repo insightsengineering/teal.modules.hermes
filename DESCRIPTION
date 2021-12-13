@@ -39,6 +39,7 @@ Suggests:
     knitr,
     matrixStats,
     R6,
+    rvest,
     shinytest (>= 1.5.0),
     testthat (>= 2.0)
 RdMacros:

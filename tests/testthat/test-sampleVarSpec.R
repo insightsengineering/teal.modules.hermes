@@ -112,11 +112,16 @@ test_that("sampleVarSpec module works as expected in the test app", {
   utils.nest::skip_if_too_deep(5)
 
   library(shinytest)
-  app <- ShinyDriver$new("sampleVarSpec/", loadTimeout = 1e5, debug = "all", phantomTimeout = 1e5)
+  app <- ShinyDriver$new(testthat::test_path("sampleVarSpec"), loadTimeout = 1e5, debug = "all", phantomTimeout = 1e5, seed = 123)
+  on.exit(app$stop())
   app$getDebugLog()
   app$snapshotInit("test-app")
-
-  ns <- NS("teal-main_ui-modules_ui-root_sampleVarSpec_example")
+  Sys.sleep(2.5)
+  module_id <- rvest::html_attr(
+    rvest::html_node(rvest::read_html(app$getSource()), css = ".teal_module"),
+    "id"
+  )
+  ns <- NS(module_id)
 
   # Initially no variable is selected.
   initial_var <- app$waitForValue(ns("facet_var"), ignore = "")
@@ -141,6 +146,4 @@ test_that("sampleVarSpec module works as expected in the test app", {
   # Check the output and which levels are reported there.
   second_output <- app$waitForValue(ns("summary"), iotype = "output")
   expect_match(second_output, "< 18/>= 18 \n")
-
-  app$stop
 })

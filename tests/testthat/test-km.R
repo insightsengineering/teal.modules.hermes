@@ -25,11 +25,16 @@ test_that("tm_g_km works as expected in the sample app", {
   skip_if_covr()
 
   library(shinytest)
-  app <- ShinyDriver$new("km/", loadTimeout = 1e5, debug = "all", phantomTimeout = 1e5)
+  app <- ShinyDriver$new(testthat::test_path("km"), loadTimeout = 1e5, debug = "all", phantomTimeout = 1e5, seed = 123)
+  on.exit(app$stop())
   app$getDebugLog()
   app$snapshotInit("test-app")
-
-  ns <- NS("teal-main_ui-modules_ui-root_kaplan_meier")
+  Sys.sleep(2.5)
+  module_id <- rvest::html_attr(
+    rvest::html_node(rvest::read_html(app$getSource()), css = ".teal_module"),
+    "id"
+  )
+  ns <- NS(module_id)
 
   # Check initial state of encodings.
   initial_experiment_name <- app$waitForValue(ns("experiment-name"))
@@ -62,6 +67,4 @@ test_that("tm_g_km works as expected in the sample app", {
     name = "initial_plot.png",
     wait_for_plot = TRUE
   )
-
-  app$stop()
 })

@@ -16,16 +16,21 @@ test_that("ui_g_volcanoplot creates expected HTML", {
 # tm_g_volcanoplot ----
 
 test_that("tm_g_volcanoplot works as expected in the sample app", {
-  utils.nest::skip_if_too_deep(5)
+  # utils.nest::skip_if_too_deep(5)
 
   skip_if_covr()
 
   library(shinytest)
-  app <- ShinyDriver$new("volcanoplot/", loadTimeout = 1e5, debug = "all", phantomTimeout = 1e5)
+  app <- ShinyDriver$new(testthat::test_path("volcanoplot"), loadTimeout = 1e5, debug = "all", phantomTimeout = 1e5, seed = 123)
+  on.exit(app$stop())
   app$getDebugLog()
   app$snapshotInit("test-app")
-
-  ns <- NS("teal-main_ui-modules_ui-root_volcanoplot")
+  Sys.sleep(2.5)
+  module_id <- rvest::html_attr(
+    rvest::html_node(rvest::read_html(app$getSource()), css = ".teal_module"),
+    "id"
+  )
+  ns <- NS(module_id)
 
   # Check initial state of encodings.
   initial_experiment_name <- app$waitForValue(ns("experiment-name"))
@@ -56,6 +61,4 @@ test_that("tm_g_volcanoplot works as expected in the sample app", {
     id = ns("plot"),
     name = "final_plot.png"
   )
-
-  app$stop()
 })
