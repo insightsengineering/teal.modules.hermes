@@ -82,6 +82,5 @@ module_ns <- function(app) {
     rvest::html_node(rvest::read_html(source), css = ".teal_module"),
     "id"
   )
-  ns <- NS(module_id)
-
+  NS(module_id)
 }
