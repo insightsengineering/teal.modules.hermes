@@ -188,14 +188,8 @@ test_that("adtteSpecServer module works as expected in the test app", {
   app$getDebugLog()
   app$snapshotInit("test-app")
   app$waitForShiny()
-  module_id <- rvest::html_attr(
-    rvest::html_node(
-      rvest::read_html(app$getSource()),
-      xpath = "//div[contains(@id,'adtteSpec')]"
-    ),
-    "id"
-  )
-  ns <- NS(module_id)
+  Sys.sleep(2.5)
+  ns <- shiny_elem_ns(app$getSource())
 
   msg <- app$waitForOutputElement(ns("summary"), "message")
   app$setValue(ns("genes-genes"), "GeneID:101927746")

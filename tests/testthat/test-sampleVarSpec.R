@@ -118,11 +118,7 @@ test_that("sampleVarSpec module works as expected in the test app", {
   app$getDebugLog()
   app$snapshotInit("test-app")
   Sys.sleep(2.5)
-  module_id <- rvest::html_attr(
-    rvest::html_node(rvest::read_html(app$getSource()), css = ".teal_module"),
-    "id"
-  )
-  ns <- NS(module_id)
+  ns <- shiny_elem_ns(app$getSource())
 
   # Initially no variable is selected.
   initial_var <- app$waitForValue(ns("facet_var"), ignore = "")

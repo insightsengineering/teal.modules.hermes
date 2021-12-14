@@ -23,11 +23,7 @@ test_that("tm_g_pca works as expected in the sample app", {
   app$getDebugLog()
   app$snapshotInit("test-app")
   Sys.sleep(2.5)
-  module_id <- rvest::html_attr(
-    rvest::html_node(rvest::read_html(app$getSource()), css = ".teal_module"),
-    "id"
-  )
-  ns <- NS(module_id)
+  ns <- shiny_elem_ns(app$getSource())
 
   # Check initial state of encodings.
   initial_experiment_name <- app$waitForValue(ns("experiment-name"))

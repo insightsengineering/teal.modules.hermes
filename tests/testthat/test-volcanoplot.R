@@ -16,7 +16,7 @@ test_that("ui_g_volcanoplot creates expected HTML", {
 # tm_g_volcanoplot ----
 
 test_that("tm_g_volcanoplot works as expected in the sample app", {
-  # utils.nest::skip_if_too_deep(5)
+  utils.nest::skip_if_too_deep(5)
 
   skip_if_covr()
 
@@ -27,11 +27,7 @@ test_that("tm_g_volcanoplot works as expected in the sample app", {
   app$getDebugLog()
   app$snapshotInit("test-app")
   Sys.sleep(2.5)
-  module_id <- rvest::html_attr(
-    rvest::html_node(rvest::read_html(app$getSource()), css = ".teal_module"),
-    "id"
-  )
-  ns <- NS(module_id)
+  ns <- shiny_elem_ns(app$getSource())
 
   # Check initial state of encodings.
   initial_experiment_name <- app$waitForValue(ns("experiment-name"))
