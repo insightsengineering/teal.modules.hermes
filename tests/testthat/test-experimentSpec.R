@@ -95,7 +95,7 @@ test_that("experimentSpec module works as expected in the test app", {
   app$getDebugLog()
   app$snapshotInit("test-app")
   Sys.sleep(2.5)
-  ns <- shiny_elem_ns(app$getSource())
+  ns <- module_ns(app)
 
   # Initially the first experiment is selected.
   initial_experiment <- app$waitForValue(ns("my_experiment-name"))

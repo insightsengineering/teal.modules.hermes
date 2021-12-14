@@ -43,7 +43,7 @@ test_that("geneSpec module works as expected in the test app", {
   app$getDebugLog()
   app$snapshotInit("test-app")
   Sys.sleep(2.5)
-  ns <- shiny_elem_ns(app$getSource())
+  ns <- module_ns(app)
 
   # Initially no genes are selected.
   initial_genes <- app$waitForValue(ns("my_genes"), ignore = "")

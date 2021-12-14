@@ -189,7 +189,7 @@ test_that("adtteSpecServer module works as expected in the test app", {
   app$snapshotInit("test-app")
   app$waitForShiny()
   Sys.sleep(2.5)
-  ns <- shiny_elem_ns(app$getSource())
+  ns <- module_ns(app)
 
   msg <- app$waitForOutputElement(ns("summary"), "message")
   app$setValue(ns("genes-genes"), "GeneID:101927746")

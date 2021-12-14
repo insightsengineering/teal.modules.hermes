@@ -75,3 +75,13 @@ shinytest::ShinyDriver$set(
   },
   overwrite = TRUE
 )
+
+module_ns <- function(app) {
+  source <- app$getSource()
+  module_id <- rvest::html_attr(
+    rvest::html_node(rvest::read_html(source), css = ".teal_module"),
+    "id"
+  )
+  ns <- NS(module_id)
+
+}

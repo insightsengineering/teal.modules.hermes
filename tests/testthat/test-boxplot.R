@@ -28,7 +28,7 @@ test_that("tm_g_boxplot works as expected in the sample app", {
   app$getDebugLog()
   app$snapshotInit("test-app")
   Sys.sleep(2.5)
-  ns <- shiny_elem_ns(app$getSource())
+  ns <- module_ns(app)
 
   # Check initial state of encodings.
   initial_experiment_name <- app$waitForValue(ns("experiment-name"))

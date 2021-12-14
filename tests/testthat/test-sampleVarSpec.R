@@ -118,7 +118,7 @@ test_that("sampleVarSpec module works as expected in the test app", {
   app$getDebugLog()
   app$snapshotInit("test-app")
   Sys.sleep(2.5)
-  ns <- shiny_elem_ns(app$getSource())
+  ns <- module_ns(app)
 
   # Initially no variable is selected.
   initial_var <- app$waitForValue(ns("facet_var"), ignore = "")
