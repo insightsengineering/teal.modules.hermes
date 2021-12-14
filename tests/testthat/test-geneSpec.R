@@ -37,7 +37,8 @@ test_that("geneSpec module works as expected in the test app", {
   utils.nest::skip_if_too_deep(5)
 
   library(shinytest)
-  app <- ShinyDriver$new(testthat::test_path("geneSpec"), loadTimeout = 1e5, debug = "all", phantomTimeout = 1e5, seed = 123)
+  app <- ShinyDriver$new(testthat::test_path("geneSpec"), loadTimeout = 1e5,
+                         debug = "all", phantomTimeout = 1e5, seed = 123)
   on.exit(app$stop())
   app$getDebugLog()
   app$snapshotInit("test-app")
