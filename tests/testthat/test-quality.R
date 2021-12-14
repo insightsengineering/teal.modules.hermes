@@ -20,7 +20,8 @@ test_that("tm_g_quality works as expected in the sample app", {
   skip_if_covr()
 
   library(shinytest)
-  app <- ShinyDriver$new(testthat::test_path("quality"), loadTimeout = 1e5, debug = "all", phantomTimeout = 1e5, seed = 123)
+  app <- ShinyDriver$new(testthat::test_path("quality"), loadTimeout = 1e5,
+                         debug = "all", phantomTimeout = 1e5, seed = 123)
   on.exit(app$stop())
   app$getDebugLog()
   app$snapshotInit("test-app")
