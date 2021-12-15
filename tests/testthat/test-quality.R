@@ -17,15 +17,16 @@ test_that("ui_g_quality creates expected HTML", {
 
 test_that("tm_g_quality works as expected in the sample app", {
   utils.nest::skip_if_too_deep(5)
-
   skip_if_covr()
 
   library(shinytest)
-  app <- ShinyDriver$new("quality/", loadTimeout = 1e5, debug = "all", phantomTimeout = 1e5)
+  app <- ShinyDriver$new(testthat::test_path("quality"), loadTimeout = 1e5,
+                         debug = "all", phantomTimeout = 1e5, seed = 123)
+  on.exit(app$stop())
   app$getDebugLog()
   app$snapshotInit("test-app")
-
-  ns <- NS("teal-main_ui-modules_ui-root_quality")
+  Sys.sleep(2.5)
+  ns <- module_ns(app)
 
   # Check initial state of encodings.
   initial_experiment_name <- app$waitForValue(ns("experiment-name"))
@@ -69,6 +70,4 @@ test_that("tm_g_quality works as expected in the sample app", {
     id = ns("plot"),
     name = "final_plot.png"
   )
-
-  app$stop()
 })

@@ -183,11 +183,13 @@ test_that("adtteSpecServer module works as expected in the test app", {
   utils.nest::skip_if_too_deep(5)
 
   library(shinytest)
-  app <- ShinyDriver$new("adtteSpec/", loadTimeout = 1e5, debug = "all", phantomTimeout = 1e5)
+  app <- ShinyDriver$new(testthat::test_path("adtteSpec"), loadTimeout = 1e5, debug = "all", phantomTimeout = 1e5)
+  on.exit(app$stop())
   app$getDebugLog()
   app$snapshotInit("test-app")
-
-  ns <- NS("teal-main_ui-modules_ui-root_adtteSpec_example")
+  app$waitForShiny()
+  Sys.sleep(2.5)
+  ns <- module_ns(app)
 
   msg <- app$waitForOutputElement(ns("summary"), "message")
   app$setValue(ns("genes-genes"), "GeneID:101927746")
@@ -222,8 +224,6 @@ test_that("adtteSpecServer module works as expected in the test app", {
   app$setValue(ns2("add_ADTTE_filter-filter-var_PARAMCD-content-selection"), c("PFS", "OS"))
   msg <- app$waitForOutputElement(ns("summary"), "message")
   expect_identical(msg, "please select an endpoint")
-
-  app$stop()
 })
 
 test_that("results from adtteSpecServer are as expected", {
