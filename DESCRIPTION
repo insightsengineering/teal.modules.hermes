@@ -4,7 +4,7 @@ Title: RNA-seq analysis modules to add to a teal application
 Version: 0.1.0.9007
 Date: 2021-10-13
 Authors@R:
-    person("NEST", , , "basel.nestcicd@roche.com", role = c("aut", "cre"))
+    person("NEST", , , "basel.basel.nestcicd@roche.com", role = c("aut", "cre"))
 Description: RNA-seq analysis teal modules based on the `hermes` package.
 License: Apache License 2.0 | file LICENSE
 URL: https://github.com/insightsengineering/teal.modules.hermes/
