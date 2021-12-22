@@ -48,9 +48,11 @@ test_that("h_assign_to_group_list retains the order of the collapsed levels", {
 
 test_that("h_collapse_levels works as expected when a group_list is provided", {
   x <- factor(
-    c("MULTIPLE", "MULTIPLE", "BLACK OR AFRICAN AMERICAN", "BLACK OR AFRICAN AMERICAN",
+    c(
+      "MULTIPLE", "MULTIPLE", "BLACK OR AFRICAN AMERICAN", "BLACK OR AFRICAN AMERICAN",
       "MULTIPLE", "WHITE", "UNKNOWN", "ASIAN", "BLACK OR AFRICAN AMERICAN",
-      "MULTIPLE")
+      "MULTIPLE"
+    )
   )
   group_list <- list(
     "ASIAN/BLACK OR AFRICAN AMERICAN" = c("ASIAN", "BLACK OR AFRICAN AMERICAN"),
@@ -59,10 +61,12 @@ test_that("h_collapse_levels works as expected when a group_list is provided", {
   )
   result <- h_collapse_levels(x, group_list)
   expected <- factor(
-    c("MULTIPLE/UNKNOWN", "MULTIPLE/UNKNOWN", "ASIAN/BLACK OR AFRICAN AMERICAN",
+    c(
+      "MULTIPLE/UNKNOWN", "MULTIPLE/UNKNOWN", "ASIAN/BLACK OR AFRICAN AMERICAN",
       "ASIAN/BLACK OR AFRICAN AMERICAN", "MULTIPLE/UNKNOWN", "WHITE",
       "MULTIPLE/UNKNOWN", "ASIAN/BLACK OR AFRICAN AMERICAN", "ASIAN/BLACK OR AFRICAN AMERICAN",
-      "MULTIPLE/UNKNOWN"),
+      "MULTIPLE/UNKNOWN"
+    ),
     levels = names(group_list)
   )
   expect_identical(result, expected)
@@ -112,8 +116,10 @@ test_that("sampleVarSpec module works as expected in the test app", {
   utils.nest::skip_if_too_deep(5)
 
   library(shinytest)
-  app <- ShinyDriver$new(testthat::test_path("sampleVarSpec"), loadTimeout = 1e5,
-                         debug = "all", phantomTimeout = 1e5, seed = 123)
+  app <- ShinyDriver$new(testthat::test_path("sampleVarSpec"),
+    loadTimeout = 1e5,
+    debug = "all", phantomTimeout = 1e5, seed = 123
+  )
   on.exit(app$stop())
   app$getDebugLog()
   app$snapshotInit("test-app")
@@ -134,7 +140,7 @@ test_that("sampleVarSpec module works as expected in the test app", {
 
   # Now click on the levels button, set combination and click ok.
   app$click(ns("facet_var-levels_button"))
-  first_combination <- list("< 18" = "2", ">= 18" = "2")  # Click on second column in both rows.
+  first_combination <- list("< 18" = "2", ">= 18" = "2") # Click on second column in both rows.
   app$waitForValue(ns("facet_var-comb_assignment"))
   app$setValue(ns("facet_var-comb_assignment"), first_combination)
   app$waitForValue(ns("facet_var-comb_assignment"))

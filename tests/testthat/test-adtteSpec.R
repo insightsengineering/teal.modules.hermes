@@ -118,7 +118,7 @@ test_that("h_km_mae_to_adtte fails as expected if USUBJID in MAE colData is diff
     experiments = list(
       a = hermes::HermesDataFromMatrix(
         matrix(1:4, 2, 2, dimnames = list(c("ENSG1", "ENSG2"), c("A", "B"))),
-        colData = data.frame(USUBJID = c("A", "B"))  # USUBJID on experiment.
+        colData = data.frame(USUBJID = c("A", "B")) # USUBJID on experiment.
       )
     ),
     colData = data.frame(
@@ -145,7 +145,7 @@ test_that("h_km_mae_to_adtte fails as expected if USUBJID in experiment colData 
     experiments = list(
       a = hermes::HermesDataFromMatrix(
         matrix(1:4, 2, 2, dimnames = list(c("ENSG1", "ENSG2"), c("E", "F"))),
-        colData = data.frame(USUBJID = c("A", "B"))  # USUBJID on experiment.
+        colData = data.frame(USUBJID = c("A", "B")) # USUBJID on experiment.
       )
     ),
     colData = data.frame(

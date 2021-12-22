@@ -42,5 +42,5 @@ test_that("assaySpec module works as expected in the test app", {
 
   app$setValue(ns("assay-name"), "cpm")
   assay4 <- app$waitForValue(ns("assay-name"), ignore = NULL)
-  expect_identical(assay4, "")  # Because cpm should not be available.
+  expect_identical(assay4, "") # Because cpm should not be available.
 })

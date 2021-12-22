@@ -60,7 +60,6 @@ tm_g_km <- function(label,
                     ),
                     pre_output = NULL,
                     post_output = NULL) {
-
   assert_string(label)
   assert_string(adtte_name)
   assert_string(mae_name)
@@ -102,7 +101,6 @@ ui_g_km <- function(id,
                     summary_funs,
                     pre_output,
                     post_output) {
-
   ns <- NS(id)
 
   teal.devel::standard_layout(
@@ -152,7 +150,7 @@ srv_g_km <- function(input,
     "experiment",
     datasets = datasets,
     mae_name = mae_name,
-    sample_vars_as_factors = FALSE  # To avoid converting logical `event` to factor.
+    sample_vars_as_factors = FALSE # To avoid converting logical `event` to factor.
   )
   assay <- assaySpecServer(
     "assay",

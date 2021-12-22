@@ -165,8 +165,7 @@ h_gene_data <- function(object, name_annotation) {
 #'     mae_name
 #'   )
 #'   result <- reactive({
-#'     switch(
-#'       input$property,
+#'     switch(input$property,
 #'       data = experiment$data(),
 #'       name = experiment$name(),
 #'       genes = experiment$genes(),
@@ -277,7 +276,9 @@ experimentSpecServer <- function(inputId,
 
     list(
       data = data,
-      name = reactive({input$name}), # nolint
+      name = reactive({
+        input$name
+      }), # nolint
       genes = genes,
       assays = assays
     )

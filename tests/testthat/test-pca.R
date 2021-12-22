@@ -66,13 +66,13 @@ test_that("tm_g_pca works as expected in the sample app", {
   ns2 <- NS("teal-main_ui-filter_panel-add_MAE_filter")
   app$setValue(ns2("hd1-row_to_add"), "symbol")
   app$waitForValue(ns2("hd1-rowData_var_symbol-content-selection"))
-  app$setValue(ns2("hd1-rowData_var_symbol-content-selection"), character())  # Deselect everything.
-  plot_message <- app$waitForOutputElement(ns("plot_pca"), "message")  # Only works without a crash.
+  app$setValue(ns2("hd1-rowData_var_symbol-content-selection"), character()) # Deselect everything.
+  plot_message <- app$waitForOutputElement(ns("plot_pca"), "message") # Only works without a crash.
   expect_match(
     plot_message,
     "No genes or samples included in this experiment, please adjust filters"
   )
-  app$click(ns2("hd1-rowData_var_symbol-remove"))  # Remove filter again.
+  app$click(ns2("hd1-rowData_var_symbol-remove")) # Remove filter again.
 
   # Now update the tab selection.
   app$setValue(ns("tab_selected"), "PC and Sample Correlation")
