@@ -124,7 +124,9 @@ server <- function(input,
     experiment_name = experiment$name,
     assay = assay,
     genes = genes,
-    probs = reactive({0.5})
+    probs = reactive({
+      0.5
+    })
   )
   output$summary <- renderPrint({
     binned_adtte_subset <- adtte$binned_adtte_subset()

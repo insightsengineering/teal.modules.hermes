@@ -85,8 +85,7 @@ server <- function(input,
     mae_name
   )
   result <- reactive({
-    switch(
-      input$property,
+    switch(input$property,
       data = experiment$data(),
       name = experiment$name(),
       genes = experiment$genes(),
