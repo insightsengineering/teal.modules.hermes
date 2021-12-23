@@ -35,7 +35,9 @@ wrapper makes it much easier to specify in the server function.
 # In the server use:
 sample_var_specs <- multiSampleVarSpecServer(
   inputIds = c("facet_var", "color_var"),
-  experiment_name = reactive({input$experiment_name}),
+  experiment_name = reactive({
+    input$experiment_name
+  }),
   original_data = experiment_data
 )
 # Then can extract the transformed data and selected variables later:

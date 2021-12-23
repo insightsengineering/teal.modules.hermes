@@ -140,7 +140,6 @@ srv_g_forest_tte <- function(input,
                              summary_funs,
                              plot_height,
                              plot_width) {
-
   experiment <- experimentSpecServer(
     "experiment",
     datasets = datasets,
@@ -171,7 +170,9 @@ srv_g_forest_tte <- function(input,
     experiment_name = experiment$name,
     assay = assay,
     genes = genes,
-    probs = reactive({input$probs})
+    probs = reactive({
+      input$probs
+    })
   )
 
   surv_subgroups <- reactive({

@@ -191,5 +191,3 @@ sample_tm_g_scatterplot <- function() {
   )
   shinyApp(app$ui, app$server)
 }
-
-

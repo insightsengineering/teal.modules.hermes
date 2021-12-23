@@ -71,7 +71,9 @@ server <- function(input,
   })
   facet_var_spec <- sampleVarSpecServer(
     "facet_var",
-    experiment_name = reactive({input$experiment_name}),
+    experiment_name = reactive({
+      input$experiment_name
+    }),
     original_data = experiment_data
   )
   output$plot <- renderPlot({

@@ -193,7 +193,9 @@ adtteSpecInput <- function(inputId,
 #'     experiment_name = experiment$name,
 #'     assay = assay,
 #'     genes = genes,
-#'     probs = reactive({0.5})
+#'     probs = reactive({
+#'       0.5
+#'     })
 #'   )
 #'   output$summary <- renderPrint({
 #'     binned_adtte_subset <- adtte$binned_adtte_subset()
@@ -292,7 +294,7 @@ adtteSpecServer <- function(id,
     # After joining, we recompute available endpoints.
     paramcd_choices <- reactive({
       adtte_joined <- adtte_joined()
-      sort(unique(adtte_joined[[adtte_vars$paramcd]]))  # Order should not matter.
+      sort(unique(adtte_joined[[adtte_vars$paramcd]])) # Order should not matter.
     })
 
     # Once available endpoints change, we update choices (and also the selection
@@ -343,14 +345,16 @@ adtteSpecServer <- function(id,
       probs <- probs()
       adtte_subset <- adtte_subset()
 
-      result <- tryCatch({
-        dplyr::mutate(
-          adtte_subset,
-          gene_factor = tern::cut_quantile_bins(
-            adtte_subset[, gene_col],
-            probs = probs
+      result <- tryCatch(
+        expr = {
+          dplyr::mutate(
+            adtte_subset,
+            gene_factor = tern::cut_quantile_bins(
+              adtte_subset[, gene_col],
+              probs = probs
+            )
           )
-        )},
+        },
         error = function(e) {
           if (grepl("Duplicate quantiles produced", e)) {
             validate(paste(

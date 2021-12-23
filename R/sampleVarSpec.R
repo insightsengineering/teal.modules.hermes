@@ -218,7 +218,9 @@ validate_n_levels <- function(x, name, n_levels) {
 #'   })
 #'   facet_var_spec <- sampleVarSpecServer(
 #'     "facet_var",
-#'     experiment_name = reactive({input$experiment_name}),
+#'     experiment_name = reactive({
+#'       input$experiment_name
+#'     }),
 #'     original_data = experiment_data
 #'   )
 #'   output$plot <- renderPlot({
@@ -421,7 +423,9 @@ sampleVarSpecServer <- function(inputId,
     # Return both the reactives with the experiment data as well as the sample variable.
     list(
       experiment_data = final_data,
-      sample_var = reactive({input$sample_var})
+      sample_var = reactive({
+        input$sample_var
+      })
     )
   })
 }
@@ -451,7 +455,9 @@ sampleVarSpecServer <- function(inputId,
 #' # In the server use:
 #' sample_var_specs <- multiSampleVarSpecServer(
 #'   inputIds = c("facet_var", "color_var"),
-#'   experiment_name = reactive({input$experiment_name}),
+#'   experiment_name = reactive({
+#'     input$experiment_name
+#'   }),
 #'   original_data = experiment_data
 #' )
 #' # Then can extract the transformed data and selected variables later:

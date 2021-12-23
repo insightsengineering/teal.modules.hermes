@@ -197,7 +197,6 @@ srv_g_quality <- function(input,
                           datasets,
                           mae_name,
                           exclude_assays) {
-
   experiment <- experimentSpecServer(
     "experiment",
     datasets = datasets,
@@ -321,8 +320,7 @@ srv_g_quality <- function(input,
     plot_type <- input$plot_type
     assay_name <- assay()
 
-    switch(
-      plot_type,
+    switch(plot_type,
       "Histogram" = hermes::draw_libsize_hist(object_final),
       "Density" = hermes::draw_libsize_densities(object_final),
       "Q-Q Plot" = hermes::draw_libsize_qq(object_final),

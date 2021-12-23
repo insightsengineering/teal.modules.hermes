@@ -30,7 +30,7 @@ test_that("h_order_genes works as expected to sort only by id", {
     name = rep("", 5)
   )
   result <- h_order_genes(genes)
-  expected <- genes[c(5, 2, 3, 4, 1), ]  # Note: alphabetical sorting.
+  expected <- genes[c(5, 2, 3, 4, 1), ] # Note: alphabetical sorting.
   expect_identical(result, expected)
 })
 
@@ -89,8 +89,10 @@ test_that("experimentSpec module works as expected in the test app", {
   utils.nest::skip_if_too_deep(5)
 
   library(shinytest)
-  app <- ShinyDriver$new(testthat::test_path("experimentSpec"), loadTimeout = 1e5,
-                         debug = "all", phantomTimeout = 1e5, seed = 123)
+  app <- ShinyDriver$new(testthat::test_path("experimentSpec"),
+    loadTimeout = 1e5,
+    debug = "all", phantomTimeout = 1e5, seed = 123
+  )
   on.exit(app$stop())
   app$getDebugLog()
   app$snapshotInit("test-app")

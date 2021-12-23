@@ -104,92 +104,91 @@ srv_g_volcanoplot <- function(input,
                               datasets,
                               mae_name,
                               exclude_assays) {
+  experiment_data <- experimentSpecServer(
+    "experiment",
+    datasets = datasets,
+    mae_name = mae_name
+  )
+  assay <- assaySpecServer(
+    "assay",
+    assays = experiment_data$assays,
+    exclude_assays = exclude_assays
+  )
+  compare_group <- sampleVarSpecServer(
+    "compare_group",
+    experiment_name = experiment_data$name,
+    original_data = experiment_data$data,
+    num_levels = 2L,
+    label_modal_title = "Please click to group into exactly 2 levels, first level is reference"
+  )
 
-   experiment_data <- experimentSpecServer(
-     "experiment",
-     datasets = datasets,
-     mae_name = mae_name
-   )
-   assay <- assaySpecServer(
-     "assay",
-     assays = experiment_data$assays,
-     exclude_assays = exclude_assays
-   )
-   compare_group <- sampleVarSpecServer(
-     "compare_group",
-     experiment_name = experiment_data$name,
-     original_data = experiment_data$data,
-     num_levels = 2L,
-     label_modal_title = "Please click to group into exactly 2 levels, first level is reference"
-   )
+  # When the filtered data set or the chosen experiment changes, update
+  # the differential expression results.
+  diff_expr <- reactive({
+    object <- compare_group$experiment_data()
+    compare_group <- compare_group$sample_var()
+    method <- input$method
 
-   # When the filtered data set or the chosen experiment changes, update
-   # the differential expression results.
-   diff_expr <- reactive({
-     object <- compare_group$experiment_data()
-     compare_group <- compare_group$sample_var()
-     method <- input$method
+    req(
+      object,
+      method
+    )
+    validate(need(
+      !is.null(compare_group),
+      "Please select a group variable"
+    ))
 
-     req(
-       object,
-       method
-     )
-     validate(need(
-       !is.null(compare_group),
-       "Please select a group variable"
-     ))
+    hermes::diff_expression(
+      object,
+      group = compare_group,
+      method = method
+    )
+  })
 
-     hermes::diff_expression(
-       object,
-       group = compare_group,
-       method = method
-     )
-   })
+  output$plot <- renderPlot({
+    diff_expr_result <- diff_expr()
+    log2_fc_thresh <- input$log2_fc_thresh
+    adj_p_val_thresh <- input$adj_p_val_thresh
 
-   output$plot <- renderPlot({
-     diff_expr_result <- diff_expr()
-     log2_fc_thresh <- input$log2_fc_thresh
-     adj_p_val_thresh <- input$adj_p_val_thresh
+    req(
+      log2_fc_thresh,
+      adj_p_val_thresh
+    )
 
-     req(
-       log2_fc_thresh,
-       adj_p_val_thresh
-     )
+    hermes::autoplot(
+      diff_expr_result,
+      adj_p_val_thresh = adj_p_val_thresh,
+      log2_fc_thresh = log2_fc_thresh
+    )
+  })
 
-     hermes::autoplot(
-       diff_expr_result,
-       adj_p_val_thresh = adj_p_val_thresh,
-       log2_fc_thresh = log2_fc_thresh
-     )
-   })
+  # Display top genes if switched on.
+  show_top_gene_diffexpr <- reactive({
+    if (input$show_top_gene) {
+      result <- diff_expr()
+      with(
+        result,
+        data.frame(
+          log2_fc = round(log2_fc, 2),
+          stat = round(stat, 2),
+          p_val = format.pval(p_val),
+          adj_p_val = format.pval(adj_p_val),
+          row.names = rownames(result)
+        )
+      )
+    } else {
+      NULL
+    }
+  })
 
-   # Display top genes if switched on.
-   show_top_gene_diffexpr <- reactive({
-     if (input$show_top_gene) {
-       result <- diff_expr()
-       with(
-         result,
-         data.frame(
-           log2_fc = round(log2_fc, 2),
-           stat = round(stat, 2),
-           p_val = format.pval(p_val),
-           adj_p_val = format.pval(adj_p_val),
-           row.names = rownames(result)
-         )
-       )
-     } else {
-       NULL
-     }
-   })
-
-   output$table <- DT::renderDT({
-     DT::datatable(
-       show_top_gene_diffexpr(),
-       rownames = TRUE,
-       options = list(scrollX = TRUE, pageLength = 30, lengthMenu = c(5, 15, 30, 100)),
-       caption = "Top Differentiated Genes"
-     )
-   })
+  output$table <- DT::renderDT({
+    DT::datatable(
+      show_top_gene_diffexpr(),
+      rownames = TRUE,
+      options = list(scrollX = TRUE, pageLength = 30, lengthMenu = c(5, 15, 30, 100)),
+      caption = "Top Differentiated Genes"
+    )
+  })
 }
 
 #' @describeIn tm_g_volcanoplot sample module function.
