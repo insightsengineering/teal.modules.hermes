@@ -346,7 +346,7 @@ adtteSpecServer <- function(id,
       adtte_subset <- adtte_subset()
 
       result <- tryCatch(
-        {
+        expr = {
           dplyr::mutate(
             adtte_subset,
             gene_factor = tern::cut_quantile_bins(
