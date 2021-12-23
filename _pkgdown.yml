@@ -14,8 +14,6 @@ reference:
   - title: Package
     contents:
       - teal.modules.hermes-package
-  - title: Classes
-    contents:
   - title: Utility Functions
     contents:
       - h_assign_to_group_list
