@@ -1,7 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://insightsengineering.github.io/teal.modules.hermes/404.html</loc>
+  </url>
+  <url>
+    <loc>https://insightsengineering.github.io/teal.modules.hermes/LICENSE-text.html</loc>
+  </url>
+  <url>
+    <loc>https://insightsengineering.github.io/teal.modules.hermes/authors.html</loc>
+  </url>
+  <url>
     <loc>https://insightsengineering.github.io/teal.modules.hermes/index.html</loc>
+  </url>
+  <url>
+    <loc>https://insightsengineering.github.io/teal.modules.hermes/news/index.html</loc>
+  </url>
+  <url>
+    <loc>https://insightsengineering.github.io/teal.modules.hermes/pull_request_template.html</loc>
   </url>
   <url>
     <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/adtteSpecInput.html</loc>
@@ -80,6 +95,9 @@
   </url>
   <url>
     <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/include_js_files.html</loc>
+  </url>
+  <url>
+    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/index.html</loc>
   </url>
   <url>
     <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/is_blank.html</loc>

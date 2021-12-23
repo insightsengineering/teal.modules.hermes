@@ -25,6 +25,8 @@
 </script>
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -37,38 +39,22 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">teal.modules.hermes</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9007</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0.9008</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="reference/index.html">Reference</a>
 </li>
 <li>
   <a href="news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="index.html">latest</a></li>
-   <li><a href="pre-release/index.html">pre-release</a></li>
-   <li><a href="v0.1.0/index.html">v0.1.0</a></li>
-</ul></li>
-<!-- end_releases -->
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/insightsengineering/teal.modules.hermes">
+  <a href="https://github.com/insightsengineering/teal.modules.hermes" class="external-link">
     <span class="fa fa-github"></span>
      
   </a>
@@ -85,17 +71,17 @@ Other releases
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="tealmoduleshermes-teal-modules-for-rnaseq-data-analysis" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#tealmoduleshermes-teal-modules-for-rnaseq-data-analysis" class="anchor"></a>teal.modules.hermes: Teal Modules for RNAseq Data Analysis</h1></div>
+<div class="section level1">
+<div class="page-header"><h1 id="tealmoduleshermes-teal-modules-for-rnaseq-data-analysis">teal.modules.hermes: Teal Modules for RNAseq Data Analysis<a class="anchor" aria-label="anchor" href="#tealmoduleshermes-teal-modules-for-rnaseq-data-analysis"></a>
+</h1></div>
 <p>Welcome to <code>teal.modules.hermes</code>! Jump right into an ad-hoc module example or read a bit more about what is what, i.e. how the pieces fit together.</p>
-<div id="ad-hoc-module-example" class="section level2">
-<h2 class="hasAnchor">
-<a href="#ad-hoc-module-example" class="anchor"></a>Ad-hoc module example</h2>
+<div class="section level2">
+<h2 id="ad-hoc-module-example">Ad-hoc module example<a class="anchor" aria-label="anchor" href="#ad-hoc-module-example"></a>
+</h2>
 <p>Let’s assume you have a function <code>awesome_plot()</code> which takes a count matrix and makes an awesome plot out of it. Now you would like to make a Shiny app where you can filter patients, samples, select the experiment out of your <code>MultiAssayExperiment</code> (MAE), select the count matrix from the experiment, etc. Nothing is easier than that with <code>teal.modules.hermes</code>! We show you below how to quickly spin up your UI, server and put them together into a nice little app.</p>
-<div id="ui-function" class="section level3">
-<h3 class="hasAnchor">
-<a href="#ui-function" class="anchor"></a>UI function</h3>
+<div class="section level3">
+<h3 id="ui-function">UI function<a class="anchor" aria-label="anchor" href="#ui-function"></a>
+</h3>
 <p>In <code>teal.modules.hermes</code> we provide modules that make the experiment and assay selection super easy, see here for the UI part:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ui</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">id</span>,
@@ -103,7 +89,7 @@ Other releases
                <span class="va">mae_name</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">ns</span> <span class="op">&lt;-</span> <span class="fu">NS</span><span class="op">(</span><span class="va">id</span><span class="op">)</span>
 
-  <span class="fu">teal.devel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.devel/man/standard_layout.html">standard_layout</a></span><span class="op">(</span>
+  <span class="fu">teal.devel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.devel/man/standard_layout.html" class="external-link">standard_layout</a></span><span class="op">(</span>
     encoding <span class="op">=</span> <span class="fu">div</span><span class="op">(</span>
       <span class="fu"><a href="reference/experimentSpecInput.html">experimentSpecInput</a></span><span class="op">(</span><span class="fu">ns</span><span class="op">(</span><span class="st">"experiment"</span><span class="op">)</span>, <span class="va">datasets</span>, <span class="va">mae_name</span><span class="op">)</span>,
       <span class="fu"><a href="reference/assaySpecInput.html">assaySpecInput</a></span><span class="op">(</span><span class="fu">ns</span><span class="op">(</span><span class="st">"assay"</span><span class="op">)</span><span class="op">)</span>
@@ -112,9 +98,9 @@ Other releases
   <span class="op">)</span>
 <span class="op">}</span></code></pre></div>
 </div>
-<div id="server-function" class="section level3">
-<h3 class="hasAnchor">
-<a href="#server-function" class="anchor"></a>Server function</h3>
+<div class="section level3">
+<h3 id="server-function">Server function<a class="anchor" aria-label="anchor" href="#server-function"></a>
+</h3>
 <p>Similarly for the server we use the modules, and call then our awesome plotting function.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">srv</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>,
@@ -132,64 +118,64 @@ Other releases
   <span class="va">output</span><span class="op">$</span><span class="va">awesome_plot</span> <span class="op">&lt;-</span> <span class="fu">renderPlot</span><span class="op">(</span><span class="op">{</span>
     <span class="va">data</span> <span class="op">&lt;-</span> <span class="va">experiment</span><span class="op">$</span><span class="fu">data</span><span class="op">(</span><span class="op">)</span>
     <span class="va">assay</span> <span class="op">&lt;-</span> <span class="fu">assay</span><span class="op">(</span><span class="op">)</span>
-    <span class="fu">req</span><span class="op">(</span><span class="va">assay</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu">SummarizedExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">assayNames</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">)</span>
-    <span class="va">counts</span> <span class="op">&lt;-</span> <span class="fu">SummarizedExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">assay</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">assay</span><span class="op">)</span>
+    <span class="fu">req</span><span class="op">(</span><span class="va">assay</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu">SummarizedExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assayNames</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">)</span>
+    <span class="va">counts</span> <span class="op">&lt;-</span> <span class="fu">SummarizedExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assay</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">assay</span><span class="op">)</span>
     <span class="fu">awesome_plot</span><span class="op">(</span><span class="va">counts</span><span class="op">)</span>
   <span class="op">}</span><span class="op">)</span>
 <span class="op">}</span></code></pre></div>
 </div>
-<div id="app-function" class="section level3">
-<h3 class="hasAnchor">
-<a href="#app-function" class="anchor"></a>App function</h3>
+<div class="section level3">
+<h3 id="app-function">App function<a class="anchor" aria-label="anchor" href="#app-function"></a>
+</h3>
 <p>Now let’s assume you want to spin up your app for an MAE.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/insightsengineering/teal.modules.hermes/">teal.modules.hermes</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/insightsengineering/teal.modules.hermes/" class="external-link">teal.modules.hermes</a></span><span class="op">)</span>
 <span class="va">awesome_app</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">mae</span>, <span class="va">label</span> <span class="op">=</span> <span class="st">"My awesome app"</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">mae_name</span> <span class="op">&lt;-</span> <span class="st">"MAE"</span>
-  <span class="va">mae</span> <span class="op">&lt;-</span> <span class="fu">hermes</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/hermes/man/lapply.html">lapply</a></span><span class="op">(</span><span class="va">mae</span>, <span class="fu">hermes</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/hermes/man/HermesData-class.html">HermesData</a></span><span class="op">)</span>
-  <span class="va">mae_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/teal/man/dataset.html">dataset</a></span><span class="op">(</span><span class="va">mae_name</span>, <span class="va">mae</span><span class="op">)</span>
-  <span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/teal/man/teal_data.html">teal_data</a></span><span class="op">(</span><span class="va">mae_data</span><span class="op">)</span>
-  <span class="va">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/teal/man/init.html">init</a></span><span class="op">(</span>
+  <span class="va">mae</span> <span class="op">&lt;-</span> <span class="fu">hermes</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/hermes/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">mae</span>, <span class="fu">hermes</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/hermes/man/HermesData-class.html" class="external-link">HermesData</a></span><span class="op">)</span>
+  <span class="va">mae_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/teal/man/dataset.html" class="external-link">dataset</a></span><span class="op">(</span><span class="va">mae_name</span>, <span class="va">mae</span><span class="op">)</span>
+  <span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/teal/man/teal_data.html" class="external-link">teal_data</a></span><span class="op">(</span><span class="va">mae_data</span><span class="op">)</span>
+  <span class="va">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/teal/man/init.html" class="external-link">init</a></span><span class="op">(</span>
     data <span class="op">=</span> <span class="va">data</span>,
-    modules <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/teal/man/root_modules.html">root_modules</a></span><span class="op">(</span>
-      <span class="fu"><a href="https://rdrr.io/pkg/teal/man/module.html">module</a></span><span class="op">(</span>
+    modules <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/teal/man/root_modules.html" class="external-link">root_modules</a></span><span class="op">(</span>
+      <span class="fu"><a href="https://rdrr.io/pkg/teal/man/module.html" class="external-link">module</a></span><span class="op">(</span>
         label <span class="op">=</span> <span class="va">label</span>,
         server <span class="op">=</span> <span class="va">srv</span>,
-        server_args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>mae_name <span class="op">=</span> <span class="va">mae_name</span><span class="op">)</span>,
+        server_args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mae_name <span class="op">=</span> <span class="va">mae_name</span><span class="op">)</span>,
         ui <span class="op">=</span> <span class="va">ui</span>,
-        ui_args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>mae_name <span class="op">=</span> <span class="va">mae_name</span><span class="op">)</span>,
+        ui_args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mae_name <span class="op">=</span> <span class="va">mae_name</span><span class="op">)</span>,
         filters <span class="op">=</span> <span class="va">mae_name</span>
       <span class="op">)</span>
     <span class="op">)</span>
   <span class="op">)</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html">shinyApp</a></span><span class="op">(</span><span class="va">app</span><span class="op">$</span><span class="va">ui</span>, <span class="va">app</span><span class="op">$</span><span class="va">server</span><span class="op">)</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html" class="external-link">shinyApp</a></span><span class="op">(</span><span class="va">app</span><span class="op">$</span><span class="va">ui</span>, <span class="va">app</span><span class="op">$</span><span class="va">server</span><span class="op">)</span>
 <span class="op">}</span></code></pre></div>
 </div>
-<div id="testing-it" class="section level3">
-<h3 class="hasAnchor">
-<a href="#testing-it" class="anchor"></a>Testing it</h3>
+<div class="section level3">
+<h3 id="testing-it">Testing it<a class="anchor" aria-label="anchor" href="#testing-it"></a>
+</h3>
 <p>Let’s test this.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">awesome_plot</span> <span class="op">&lt;-</span> <span class="va">image</span>
-<span class="fu">awesome_app</span><span class="op">(</span><span class="fu">hermes</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/hermes/man/multi_assay_experiment.html">multi_assay_experiment</a></span><span class="op">)</span></code></pre></div>
+<span class="fu">awesome_app</span><span class="op">(</span><span class="fu">hermes</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/hermes/man/multi_assay_experiment.html" class="external-link">multi_assay_experiment</a></span><span class="op">)</span></code></pre></div>
 </div>
 </div>
-<div id="what-is-what" class="section level2">
-<h2 class="hasAnchor">
-<a href="#what-is-what" class="anchor"></a>What is what</h2>
-<div id="what-is-teal" class="section level3">
-<h3 class="hasAnchor">
-<a href="#what-is-teal" class="anchor"></a>What is <code>teal</code>?</h3>
-<p><code>teal</code> is a shiny-based interactive exploration framework for analyzing clinical trials data. <code>teal</code> currently provides a dynamic filtering facility and diverse data viewers. <code>teal</code> shiny applications are built using standard <a href="https://shiny.rstudio.com/articles/modules.html">shiny modules</a>. See <a href="https://github.com/insightsengineering/teal">github</a> for more details.</p>
+<div class="section level2">
+<h2 id="what-is-what">What is what<a class="anchor" aria-label="anchor" href="#what-is-what"></a>
+</h2>
+<div class="section level3">
+<h3 id="what-is-teal">What is <code>teal</code>?<a class="anchor" aria-label="anchor" href="#what-is-teal"></a>
+</h3>
+<p><code>teal</code> is a shiny-based interactive exploration framework for analyzing clinical trials data. <code>teal</code> currently provides a dynamic filtering facility and diverse data viewers. <code>teal</code> shiny applications are built using standard <a href="https://shiny.rstudio.com/articles/modules.html" class="external-link">shiny modules</a>. See <a href="https://github.com/insightsengineering/teal" class="external-link">github</a> for more details.</p>
 </div>
-<div id="what-is-hermes" class="section level3">
-<h3 class="hasAnchor">
-<a href="#what-is-hermes" class="anchor"></a>What is <code>hermes</code>?</h3>
-<p><code>hermes</code> facilitates preprocessing, analyzing, and reporting of RNA-seq data. The core functionality is built on the BioConductor ecosystem, especially the <code>SummarizedExperiment</code> class from which the <code>HermesData</code> class inherits. See the <a href="https://insightsengineering.github.io/hermes/articles/introduction.html">vignette</a> for more details.</p>
+<div class="section level3">
+<h3 id="what-is-hermes">What is <code>hermes</code>?<a class="anchor" aria-label="anchor" href="#what-is-hermes"></a>
+</h3>
+<p><code>hermes</code> facilitates preprocessing, analyzing, and reporting of RNA-seq data. The core functionality is built on the BioConductor ecosystem, especially the <code>SummarizedExperiment</code> class from which the <code>HermesData</code> class inherits. See the <a href="https://insightsengineering.github.io/hermes/articles/introduction.html" class="external-link">vignette</a> for more details.</p>
 </div>
-<div id="so-what-is-then-tealmoduleshermes" class="section level3">
-<h3 class="hasAnchor">
-<a href="#so-what-is-then-tealmoduleshermes" class="anchor"></a>So what is then <code>teal.modules.hermes</code>?</h3>
+<div class="section level3">
+<h3 id="so-what-is-then-tealmoduleshermes">So what is then <code>teal.modules.hermes</code>?<a class="anchor" aria-label="anchor" href="#so-what-is-then-tealmoduleshermes"></a>
+</h3>
 <p><code>teal.modules.hermes</code> provides <code>teal</code> modules (which can be used as part of any <code>teal</code> app), for interactive RNA-seq data analysis using <code>hermes</code>. Again it is heavily built on the BioConductor classes, in particular <code>MultiAssayExperiment</code> (MAE) which is expected to contain the <code>HermesData</code> experiments.</p>
 </div>
 </div>
@@ -198,39 +184,50 @@ Other releases
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Browse source code at <br><a href="https://github.com/insightsengineering/teal.modules.hermes/">https://​github.com/​insightsengineering/​teal.modules.hermes/​</a>
-</li>
-<li>Report a bug at <br><a href="https://github.com/insightsengineering/teal.modules.hermes/issues">
-    https://​github.com/​insightsengineering/​teal.modules.hermes/​issues</a>
-</li>
+<li><a href="https://github.com/insightsengineering/teal.modules.hermes/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/insightsengineering/teal.modules.hermes/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
+
 <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li>Apache License 2.0 | file <a href="LICENSE-text.html">LICENSE</a>
 </li>
 </ul>
 </div>
+
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html#citation">Citing teal.modules.hermes</a></li>
+</ul>
+</div>
+
 <div class="developers">
-<h2>Developers</h2>
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>NEST <br><small class="roles"> Author, maintainer </small>  </li>
 </ul>
 </div>
+
+
 
   </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by NEST.</p>
+  <p></p>
+<p>Developed by NEST.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer>
@@ -238,6 +235,8 @@ Other releases
 
   
 
+
+  
 
   </body>
 </html>

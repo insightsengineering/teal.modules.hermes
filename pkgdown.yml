@@ -1,8 +1,8 @@
 pandoc: 2.14.0.3
-pkgdown: 1.6.1
+pkgdown: 2.0.1
 pkgdown_sha: ~
 articles: {}
-last_built: 2021-12-21T00:41Z
+last_built: 2021-12-23T15:26Z
 urls:
   reference: https://insightsengineering.github.io/teal.modules.hermes/reference
   article: https://insightsengineering.github.io/teal.modules.hermes/articles
