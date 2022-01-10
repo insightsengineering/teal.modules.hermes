@@ -231,7 +231,7 @@ srv_g_forest_tte <- function(input,
 #' if (interactive()) {
 #'   sample_tm_g_forest_tte()
 #' }
-sample_tm_g_forest_tte <- function() { # nolint # nousage
+sample_tm_g_forest_tte <- function() { # nolint
 
   mae <- hermes::multi_assay_experiment
   adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%

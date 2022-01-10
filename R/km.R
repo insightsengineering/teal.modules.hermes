@@ -212,7 +212,7 @@ srv_g_km <- function(input,
 #' if (interactive()) {
 #'   sample_tm_g_km()
 #' }
-sample_tm_g_km <- function() { # nolint # nousage
+sample_tm_g_km <- function() { # nolint
 
   mae <- hermes::multi_assay_experiment
   adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
