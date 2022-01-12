@@ -113,7 +113,7 @@ test_that(paste(
 
 test_that("sampleVarSpec module works as expected in the test app", {
   skip_if_covr()
-  utils.nest::skip_if_too_deep(5)
+  skip_if_too_deep(5)
 
   library(shinytest)
   app <- ShinyDriver$new(testthat::test_path("sampleVarSpec"),

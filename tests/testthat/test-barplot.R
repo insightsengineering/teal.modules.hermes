@@ -19,7 +19,7 @@ test_that("ui_g_barplot creates expected HTML", {
 # tm_g_barplot ----
 
 test_that("tm_g_barplot works as expected in the sample app", {
-  utils.nest::skip_if_too_deep(5)
+  skip_if_too_deep(5)
   skip_if_covr()
 
   library(shinytest)
