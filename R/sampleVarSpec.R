@@ -392,7 +392,7 @@ sampleVarSpecServer <- function(inputId,
 
           showModal(combModal(
             sample_var_levels = sample_var_levels,
-            n_max_groups = utils.nest::if_null(num_levels, length(sample_var_levels)),
+            n_max_groups = `if`(!is.null(num_levels), num_levels, length(sample_var_levels)),
             selected_groups = selected_groups
           ))
         } else {

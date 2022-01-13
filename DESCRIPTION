@@ -31,8 +31,7 @@ Imports:
     stringr,
     SummarizedExperiment,
     teal.devel (>= 0.2.12),
-    tern (>= 0.7.5),
-    utils.nest (>= 0.2.11)
+    tern (>= 0.7.5)
 Suggests:
     dplyr,
     globals,

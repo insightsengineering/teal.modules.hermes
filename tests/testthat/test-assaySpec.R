@@ -11,7 +11,7 @@ test_that("assaySpecInput creates expected HTML", {
 
 test_that("assaySpec module works as expected in the test app", {
   skip_if_covr()
-  utils.nest::skip_if_too_deep(5)
+  skip_if_too_deep(5)
 
   library(shinytest)
   app <- ShinyDriver$new(testthat::test_path("assaySpec"), loadTimeout = 1e5, debug = "all", phantomTimeout = 1e5)

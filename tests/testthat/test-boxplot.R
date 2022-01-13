@@ -17,7 +17,7 @@ test_that("ui_g_boxplot creates expected HTML", {
 # tm_g_boxplot ----
 
 test_that("tm_g_boxplot works as expected in the sample app", {
-  utils.nest::skip_if_too_deep(5)
+  skip_if_too_deep(5)
 
   skip_if_covr()
 
