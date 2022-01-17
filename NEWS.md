@@ -6,6 +6,7 @@
 ### Miscellaneous
 * Updated R version requirement to >= 3.6.
 * Updated `sampleVarSpec` and `geneSpec` modules with new icons to remove warnings when using shiny version >= 1.7.
+* Removed dependencies on deprecated packages `utils.nest` and `test.nest`.
 
 # teal.modules.hermes 0.1.0
 * First release of the `teal.modules.hermes` package, which contains teal modules for RNA-seq analysis using the `hermes` package.
