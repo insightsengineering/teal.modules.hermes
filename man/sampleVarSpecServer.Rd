@@ -5,7 +5,7 @@
 \title{Module Server for Sample Variable Specification}
 \usage{
 sampleVarSpecServer(
-  inputId,
+  id,
   experiment_name,
   original_data,
   transformed_data = original_data,
@@ -15,8 +15,8 @@ sampleVarSpecServer(
 )
 }
 \arguments{
-\item{inputId}{(\code{string})\cr
-the ID used to call the module input.}
+\item{id}{(\code{string})\cr
+the ID used to call the teal module's UI function.}
 
 \item{experiment_name}{(reactive \code{string})\cr name of the input experiment.}
 
@@ -43,6 +43,11 @@ input for the relevant \code{hermes} functions.
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 This defines the server part for the sample variable specification.
+}
+\note{
+Only atomic columns (e.g. not \code{DataFrame} columns) of the \code{colData}
+which are not completely missing (\code{NA}) will be shown for selection.
+If \code{num_levels} is specified then only factor columns will be available.
 }
 \examples{
 ui <- function(id,

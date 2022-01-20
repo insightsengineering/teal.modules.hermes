@@ -111,6 +111,59 @@ test_that(paste(
 
 # sampleVarSpecServer ----
 
+test_that("sampleVarSpecServer only gives atomic columns with at least one value in col_data_vars", {
+  object <- hermes::hermes_data
+  new_col_data <- S4Vectors::DataFrame(
+    ok = rep("a", ncol(object)),
+    ok_too = c(NA, rep("b", ncol(object) - 1)),
+    all_na = NA,
+    row.names = colnames(object)
+  )
+  new_col_data$non_atomic_col <- S4Vectors::DataFrame(a = 1, b = 2)
+  colData(object) <- new_col_data
+
+  experiment_name <- reactiveVal("bla")
+  original_data <- reactiveVal(object)
+  testServer(
+    sampleVarSpecServer,
+    args = list(
+      experiment_name = experiment_name,
+      original_data = original_data
+    ),
+    expr = {
+      col_data_vars <- col_data_vars()
+      expect_set_equal(col_data_vars, c("ok", "ok_too"))
+      expect_disjunct(col_data_vars, c("non_atomic_col", "all_na"))
+    }
+  )
+})
+
+test_that("sampleVarSpecServer only gives factor columns in col_data_vars when num_levels specified", {
+  object <- hermes::hermes_data
+  colData(object) <- S4Vectors::DataFrame(
+    char = rep("a", ncol(object)),
+    num = 1,
+    fac = factor("a"),
+    row.names = colnames(object)
+  )
+
+  experiment_name <- reactiveVal("bla")
+  original_data <- reactiveVal(object)
+  testServer(
+    sampleVarSpecServer,
+    args = list(
+      experiment_name = experiment_name,
+      original_data = original_data,
+      num_levels = 2
+    ),
+    expr = {
+      col_data_vars <- col_data_vars()
+      expect_identical(col_data_vars, "fac")
+      expect_disjunct(col_data_vars, c("char", "num"))
+    }
+  )
+})
+
 test_that("sampleVarSpec module works as expected in the test app", {
   skip_if_covr()
   skip_if_too_deep(5)

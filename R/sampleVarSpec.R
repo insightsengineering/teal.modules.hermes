@@ -189,6 +189,10 @@ validate_n_levels <- function(x, name, n_levels) {
 #'   input for the relevant `hermes` functions.
 #' @seealso [sampleVarSpecInput()] for the module UI.
 #'
+#' @note Only atomic columns (e.g. not `DataFrame` columns) of the `colData`
+#'   which are not completely missing (`NA`) will be shown for selection.
+#'   If `num_levels` is specified then only factor columns will be available.
+#'
 #' @export
 #'
 #' @examples
@@ -254,14 +258,14 @@ validate_n_levels <- function(x, name, n_levels) {
 #' if (interactive()) {
 #'   my_app()
 #' }
-sampleVarSpecServer <- function(inputId,
+sampleVarSpecServer <- function(id,
                                 experiment_name,
                                 original_data,
                                 transformed_data = original_data,
                                 assign_lists = reactiveValues(),
                                 num_levels = NULL,
                                 label_modal_title = "Please click to group the original factor levels") {
-  assert_string(inputId)
+  assert_string(id)
   assert_reactive(experiment_name)
   assert_reactive(original_data)
   assert_reactive(transformed_data)
@@ -269,19 +273,21 @@ sampleVarSpecServer <- function(inputId,
   assert_count(num_levels, null.ok = TRUE, positive = TRUE)
   assert_string(label_modal_title)
 
-  moduleServer(inputId, function(input, output, session) {
+  moduleServer(id, function(input, output, session) {
 
     # The colData variables to choose the sample variable from.
-    # if num_levels is specified then only take factors.
     col_data_vars <- eventReactive(experiment_name(), {
       object <- original_data()
       col_data <- SummarizedExperiment::colData(object)
-      if (is.null(num_levels)) {
-        names(col_data)
-      } else {
-        can_be_used <- sapply(col_data, is.factor)
-        names(col_data)[can_be_used]
+      is_atomic_col <- vapply(col_data, FUN = is.atomic, FUN.VALUE = logical(1))
+      is_atomic_col_all_missing <- vapply(col_data[, is_atomic_col], FUN = allMissing, FUN.VALUE = logical(1))
+      can_be_used <- is_atomic_col
+      can_be_used[is_atomic_col] <- !is_atomic_col_all_missing
+      if (!is.null(num_levels)) {
+        col_is_factor <- vapply(col_data, FUN = is.factor, FUN.VALUE = logical(1))
+        can_be_used <- can_be_used & col_is_factor
       }
+      names(col_data)[can_be_used]
     })
 
     # When the colData variables change, update the choices for sample_var.
@@ -474,7 +480,7 @@ multiSampleVarSpecServer <- function(inputIds,
   transformed_data <- original_data
   for (id in inputIds) {
     spec_list[[id]] <- sampleVarSpecServer(
-      inputId = id,
+      id,
       original_data = original_data,
       transformed_data = transformed_data,
       assign_lists = assign_lists,

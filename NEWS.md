@@ -2,6 +2,7 @@
 
 ### Bug Fixes
 * Gene selection with more than a few thousand genes no longer hangs the application. This is achieved through a different selection input in the corresponding `geneSpec` shiny module.
+* Only atomic columns of `colData` with at least one value can now be selected in the `sampleVarSpecModule`.
 
 ### Miscellaneous
 * Updated R version requirement to >= 3.6.
