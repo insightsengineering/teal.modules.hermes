@@ -120,7 +120,7 @@ test_that("sampleVarSpecServer only gives atomic columns with at least one value
     row.names = colnames(object)
   )
   new_col_data$non_atomic_col <- S4Vectors::DataFrame(a = 1, b = 2)
-  colData(object) <- new_col_data
+  SummarizedExperiment::colData(object) <- new_col_data
 
   experiment_name <- reactiveVal("bla")
   original_data <- reactiveVal(object)
@@ -140,7 +140,7 @@ test_that("sampleVarSpecServer only gives atomic columns with at least one value
 
 test_that("sampleVarSpecServer only gives factor columns in col_data_vars when num_levels specified", {
   object <- hermes::hermes_data
-  colData(object) <- S4Vectors::DataFrame(
+  SummarizedExperiment::colData(object) <- S4Vectors::DataFrame(
     char = rep("a", ncol(object)),
     num = 1,
     fac = factor("a"),
