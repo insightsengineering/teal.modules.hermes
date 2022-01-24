@@ -15,7 +15,7 @@ mae <- wrap_in_mae(object)
 library(teal.modules.hermes)
 app <- init(
   data = teal_data(
-    mae_dataset("MAE", mae)
+    dataset("MAE", mae)
   ),
   modules = root_modules(
     tm_g_boxplot(
