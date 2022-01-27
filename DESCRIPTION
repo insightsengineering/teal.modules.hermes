@@ -22,6 +22,7 @@ Imports:
     forcats,
     hermes (>= 0.99.5),
     lifecycle,
+    logger (>= 0.2.0),
     MultiAssayExperiment,
     rtables (>= 0.4.0.2.1),
     scda,
