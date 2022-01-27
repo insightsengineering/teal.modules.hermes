@@ -4,11 +4,10 @@
 \alias{assaySpecServer}
 \title{Module Server for Assay Specification}
 \usage{
-assaySpecServer(inputId, assays, exclude_assays = character())
+assaySpecServer(id, assays, exclude_assays = character())
 }
 \arguments{
-\item{inputId}{(\code{string})\cr
-the ID used to call the module input.}
+\item{id}{(\code{string}) the shiny module id.}
 
 \item{assays}{(reactive \code{character})\cr available assays in the currently selected experiment.}
 

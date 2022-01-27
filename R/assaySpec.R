@@ -96,14 +96,14 @@ assaySpecInput <- function(inputId,
 #' if (interactive()) {
 #'   my_app()
 #' }
-assaySpecServer <- function(inputId,
+assaySpecServer <- function(id,
                             assays,
                             exclude_assays = character()) {
-  assert_string(inputId)
+  assert_string(id)
   assert_reactive(assays)
   assert_character(exclude_assays, any.missing = FALSE)
 
-  moduleServer(inputId, function(input, output, session) {
+  moduleServer(id, function(input, output, session) {
 
     # When the assay names change, update the choices for assay.
     choices <- reactive({

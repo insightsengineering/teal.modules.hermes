@@ -205,20 +205,20 @@ h_gene_data <- function(object, name_annotation) {
 #' if (interactive()) {
 #'   my_app()
 #' }
-experimentSpecServer <- function(inputId,
+experimentSpecServer <- function(id,
                                  datasets,
                                  mae_name,
                                  name_annotation = "symbol",
                                  sample_vars_as_factors = TRUE,
                                  with_mae_col_data = TRUE) {
-  assert_string(inputId)
+  assert_string(id)
   assert_r6(datasets)
   assert_string(mae_name, min.chars = 1L)
   assert_string(name_annotation, min.chars = 1L, null.ok = TRUE)
   assert_flag(sample_vars_as_factors)
   assert_flag(with_mae_col_data)
 
-  moduleServer(inputId, function(input, output, session) {
+  moduleServer(id, function(input, output, session) {
 
     # When the filtered data set of the chosen experiment changes, update the
     # experiment data object.

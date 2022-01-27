@@ -285,7 +285,7 @@ h_parse_genes <- function(words, choices) {
 #' if (interactive()) {
 #'   my_app()
 #' }
-geneSpecServer <- function(inputId,
+geneSpecServer <- function(id,
                            funs,
                            gene_choices,
                            label_modal_title = "Enter list of genes",
@@ -293,13 +293,13 @@ geneSpecServer <- function(inputId,
                              "Please enter a comma-separated list of gene IDs and/or names.",
                              "(Note that genes not included in current choices will be removed)"
                            )) {
-  assert_string(inputId)
+  assert_string(id)
   assert_list(funs, names = "unique", min.len = 1L)
   assert_reactive(gene_choices)
   assert_string(label_modal_title)
   assert_character(label_modal_footer)
 
-  moduleServer(inputId, function(input, output, session) {
+  moduleServer(id, function(input, output, session) {
     # The `reactiveValues` object for storing current gene text input.
     # This will also be a data frame with id and name columns.
     parsed_genes <- reactiveVal(NULL, label = "Parsed genes")

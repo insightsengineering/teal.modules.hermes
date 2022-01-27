@@ -5,7 +5,7 @@
 \title{Module Server for Experiment Specification}
 \usage{
 experimentSpecServer(
-  inputId,
+  id,
   datasets,
   mae_name,
   name_annotation = "symbol",
@@ -14,8 +14,7 @@ experimentSpecServer(
 )
 }
 \arguments{
-\item{inputId}{(\code{string})\cr
-the ID used to call the module input.}
+\item{id}{(\code{string}) the shiny module id.}
 
 \item{datasets}{(\code{Datasets})\cr
 teal specific argument which is automatically passed to the UI and server

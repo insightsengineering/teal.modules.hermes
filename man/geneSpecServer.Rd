@@ -5,7 +5,7 @@
 \title{Module Server for Gene Signature Specification}
 \usage{
 geneSpecServer(
-  inputId,
+  id,
   funs,
   gene_choices,
   label_modal_title = "Enter list of genes",
@@ -15,8 +15,7 @@ geneSpecServer(
 )
 }
 \arguments{
-\item{inputId}{(\code{string})\cr
-the ID used to call the module input.}
+\item{id}{(\code{string}) the shiny module id.}
 
 \item{funs}{(static named \code{list})\cr names of this list will be used for the function
 selection drop down menu.}
