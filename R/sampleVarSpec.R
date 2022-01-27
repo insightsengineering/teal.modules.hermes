@@ -209,7 +209,7 @@ validate_n_levels <- function(x, name, n_levels) {
 #'     output = plotOutput(ns("plot"))
 #'   )
 #' }
-#' server <- function(id
+#' server <- function(id,
 #'                    datasets) {
 #'   moduleServer(id, function(input, output, session) {
 #'     experiment_data <- reactive({
