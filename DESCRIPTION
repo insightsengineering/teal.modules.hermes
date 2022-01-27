@@ -1,7 +1,7 @@
 Type: Package
 Package: teal.modules.hermes
 Title: RNA-seq analysis modules to add to a teal application
-Version: 0.1.1
+Version: 0.1.1.9000
 Date: 2022-01-27
 Authors@R:
     person("NEST", , , "basel.nestcicd@roche.com", role = c("aut", "cre"))
@@ -24,7 +24,7 @@ Imports:
     lifecycle,
     logger (>= 0.2.0),
     MultiAssayExperiment,
-    rtables (>= 0.4.0.2.1),
+    rtables (>= 0.4.1),
     scda,
     shinyRadioMatrix,
     shinyWidgets,
