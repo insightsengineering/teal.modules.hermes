@@ -154,31 +154,31 @@ h_gene_data <- function(object, name_annotation) {
 #'   )
 #' }
 #'
-#' server <- function(input,
-#'                    output,
-#'                    session,
+#' server <- function(id,
 #'                    datasets,
 #'                    mae_name) {
-#'   experiment <- experimentSpecServer(
-#'     "my_experiment",
-#'     datasets,
-#'     mae_name
-#'   )
-#'   result <- reactive({
-#'     switch(input$property,
-#'       data = experiment$data(),
-#'       name = experiment$name(),
-#'       genes = experiment$genes(),
-#'       assays = experiment$assays()
+#'   moduleServer(id,function(input, output, session){
+#'     experiment <- experimentSpecServer(
+#'       "my_experiment",
+#'       datasets,
+#'       mae_name
 #'     )
-#'   })
-#'   output$summary <- renderPrint({
-#'     result <- result()
-#'     hermes::summary(result)
-#'   })
-#'   output$head <- renderPrint({
-#'     result <- result()
-#'     utils::head(result)
+#'     result <- reactive({
+#'       switch(input$property,
+#'         data = experiment$data(),
+#'         name = experiment$name(),
+#'         genes = experiment$genes(),
+#'         assays = experiment$assays()
+#'       )
+#'     })
+#'     output$summary <- renderPrint({
+#'       result <- result()
+#'       hermes::summary(result)
+#'     })
+#'     output$head <- renderPrint({
+#'       result <- result()
+#'       utils::head(result)
+#'     })
 #'   })
 #' }
 #'

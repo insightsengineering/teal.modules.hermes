@@ -145,187 +145,187 @@ ui_g_pca <- function(id,
 #' @describeIn tm_g_pca sets up the server with reactive graph.
 #' @inheritParams module_arguments
 #' @export
-srv_g_pca <- function(input,
-                      output,
-                      session,
+srv_g_pca <- function(id,
                       datasets,
                       mae_name,
                       exclude_assays) {
-  experiment <- experimentSpecServer(
-    "experiment",
-    datasets = datasets,
-    mae_name = mae_name
-  )
-  assay <- assaySpecServer(
-    "assay",
-    assays = experiment$assays,
-    exclude_assays = exclude_assays
-  )
-  color <- sampleVarSpecServer(
-    "color",
-    experiment_name = experiment$name,
-    original_data = experiment$data
-  )
+  moduleServer(id, function(input, output, session) {
+    experiment <- experimentSpecServer(
+      "experiment",
+      datasets = datasets,
+      mae_name = mae_name
+    )
+    assay <- assaySpecServer(
+      "assay",
+      assays = experiment$assays,
+      exclude_assays = exclude_assays
+    )
+    color <- sampleVarSpecServer(
+      "color",
+      experiment_name = experiment$name,
+      original_data = experiment$data
+    )
 
-  # Total number of genes at the moment.
-  n_genes <- reactive({
-    experiment_data <- color$experiment_data()
-    nrow(experiment_data)
-  })
+    # Total number of genes at the moment.
+    n_genes <- reactive({
+      experiment_data <- color$experiment_data()
+      nrow(experiment_data)
+    })
 
-  # When the total number changes or gene filter is activated, update slider max.
-  observeEvent(list(n_genes(), input$filter_top), {
-    n_genes <- n_genes()
-    filter_top <- input$filter_top
-    if (filter_top) {
+    # When the total number changes or gene filter is activated, update slider max.
+    observeEvent(list(n_genes(), input$filter_top), {
+      n_genes <- n_genes()
+      filter_top <- input$filter_top
+      if (filter_top) {
+        n_top <- input$n_top
+        updateSliderInput(
+          session = session,
+          inputId = "n_top",
+          value = min(n_top, n_genes),
+          max = n_genes
+        )
+      }
+    })
+
+    # When the chosen experiment or assay name changes, recompute the PC.
+    pca_result <- reactive({
+      experiment_data <- color$experiment_data()
+      filter_top <- input$filter_top
       n_top <- input$n_top
-      updateSliderInput(
-        session = session,
-        inputId = "n_top",
-        value = min(n_top, n_genes),
-        max = n_genes
-      )
-    }
-  })
+      assay_name <- assay()
 
-  # When the chosen experiment or assay name changes, recompute the PC.
-  pca_result <- reactive({
-    experiment_data <- color$experiment_data()
-    filter_top <- input$filter_top
-    n_top <- input$n_top
-    assay_name <- assay()
+      validate(need(hermes::is_hermes_data(experiment_data), "please use HermesData() on input experiments"))
+      req(isTRUE(assay_name %in% SummarizedExperiment::assayNames(experiment_data)))
+      validate(need(
+        ncol(experiment_data) > 2,
+        "Sample size is too small. PCA needs more than 2 samples."
+      ))
+      validate(need(
+        nrow(experiment_data) > 1,
+        "Number of genes is too small. PCA needs more than 1 gene."
+      ))
 
-    validate(need(hermes::is_hermes_data(experiment_data), "please use HermesData() on input experiments"))
-    req(isTRUE(assay_name %in% SummarizedExperiment::assayNames(experiment_data)))
-    validate(need(
-      ncol(experiment_data) > 2,
-      "Sample size is too small. PCA needs more than 2 samples."
-    ))
-    validate(need(
-      nrow(experiment_data) > 1,
-      "Number of genes is too small. PCA needs more than 1 gene."
-    ))
+      hermes::calc_pca(experiment_data, assay_name, n_top = if (filter_top) n_top else NULL)
+    })
 
-    hermes::calc_pca(experiment_data, assay_name, n_top = if (filter_top) n_top else NULL)
-  })
-
-  # When experiment or assay name changes, update choices for PCs in x_var and y_var.
-  observeEvent(pca_result(), {
-    pca_result_x <- pca_result()$x
-    pc_choices <- seq_len(ncol(pca_result_x))
-
-    id_names <- c("x_var", "y_var")
-    for (i in seq_along(id_names)) {
-      updateSelectizeInput(
-        session,
-        id_names[i],
-        choices = pc_choices,
-        selected = pc_choices[i]
-      )
-    }
-  })
-
-  # Compute correlation of PC with sample variables.
-  cor_result <- reactive({
-    pca_result <- pca_result()
-    experiment_data <- color$experiment_data()
-
-    hermes::correlate(pca_result, experiment_data)
-  })
-
-  # Compute & display PCA matrix table if show_matrix is TRUE.
-  show_matrix_pca <- reactive({
-    if (input$show_matrix) {
+    # When experiment or assay name changes, update choices for PCs in x_var and y_var.
+    observeEvent(pca_result(), {
       pca_result_x <- pca_result()$x
-      pca_result_x <- round(pca_result_x, 3)
-      as.data.frame(pca_result_x)
-    } else {
-      NULL
-    }
-  })
+      pc_choices <- seq_len(ncol(pca_result_x))
 
-  output$table_pca <- DT::renderDT({
-    show_matrix_pca <- show_matrix_pca()
-    DT::datatable(
-      show_matrix_pca,
-      rownames = TRUE,
-      options = list(scrollX = TRUE, pageLength = 30, lengthMenu = c(5, 15, 30, 100)),
-      caption = "PCA Matrix"
-    )
-  })
+      id_names <- c("x_var", "y_var")
+      for (i in seq_along(id_names)) {
+        updateSelectizeInput(
+          session,
+          id_names[i],
+          choices = pc_choices,
+          selected = pc_choices[i]
+        )
+      }
+    })
 
-  # Compute & display correlation matrix if show_matrix is TRUE
-  show_matrix_cor <- reactive({
-    if (input$show_matrix) {
+    # Compute correlation of PC with sample variables.
+    cor_result <- reactive({
+      pca_result <- pca_result()
+      experiment_data <- color$experiment_data()
+
+      hermes::correlate(pca_result, experiment_data)
+    })
+
+    # Compute & display PCA matrix table if show_matrix is TRUE.
+    show_matrix_pca <- reactive({
+      if (input$show_matrix) {
+        pca_result_x <- pca_result()$x
+        pca_result_x <- round(pca_result_x, 3)
+        as.data.frame(pca_result_x)
+      } else {
+        NULL
+      }
+    })
+
+    output$table_pca <- DT::renderDT({
+      show_matrix_pca <- show_matrix_pca()
+      DT::datatable(
+        show_matrix_pca,
+        rownames = TRUE,
+        options = list(scrollX = TRUE, pageLength = 30, lengthMenu = c(5, 15, 30, 100)),
+        caption = "PCA Matrix"
+      )
+    })
+
+    # Compute & display correlation matrix if show_matrix is TRUE
+    show_matrix_cor <- reactive({
+      if (input$show_matrix) {
+        cor_result <- cor_result()
+        cor_result <- round(cor_result, 3)
+        as.data.frame(cor_result)
+      } else {
+        NULL
+      }
+    })
+    output$table_cor <- DT::renderDT({
+      show_matrix_cor <- show_matrix_cor()
+      DT::datatable(
+        show_matrix_cor,
+        rownames = TRUE,
+        options = list(scrollX = TRUE, pageLength = 30, lengthMenu = c(5, 15, 30, 100)),
+        caption = "PC and Sample Correlation Matrix"
+      )
+    })
+
+    # Render plot PCA output.
+    output$plot_pca <- renderPlot({
+      # Resolve all reactivity.
+      pca_result <- pca_result()
+      experiment_data <- color$experiment_data()
+      x_var <- as.numeric(input$x_var)
+      y_var <- as.numeric(input$y_var)
+      data <- as.data.frame(SummarizedExperiment::colData(color$experiment_data()))
+      color_var <- color$sample_var()
+      assay_name <- assay()
+      var_pct <- input$var_pct
+      label <- input$label
+
+      # Require which states need to be truthy.
+      req(
+        assay_name,
+        # Note: The following statements are important to make sure the UI inputs have been updated.
+        isTRUE(assay_name %in% SummarizedExperiment::assayNames(experiment_data)),
+        is.null(color_var) || isTRUE(color_var %in% names(SummarizedExperiment::colData(experiment_data))),
+        cancelOutput = FALSE
+      )
+
+      # Validate and give useful messages to the user. Note: no need to duplicate here req() from above.
+      validate(need(x_var != y_var, "please select two different principal components"))
+
+      hermes::autoplot(
+        object = pca_result,
+        assay_name = assay_name,
+        x = x_var,
+        y = y_var,
+        data = data,
+        colour = color_var,
+        variance_percentage = var_pct,
+        label = label,
+        label.repel = label
+      )
+    })
+
+    # render correlation heatmap
+    output$plot_cor <- renderPlot({
+      # Resolve all reactivity.
       cor_result <- cor_result()
-      cor_result <- round(cor_result, 3)
-      as.data.frame(cor_result)
-    } else {
-      NULL
-    }
-  })
-  output$table_cor <- DT::renderDT({
-    show_matrix_cor <- show_matrix_cor()
-    DT::datatable(
-      show_matrix_cor,
-      rownames = TRUE,
-      options = list(scrollX = TRUE, pageLength = 30, lengthMenu = c(5, 15, 30, 100)),
-      caption = "PC and Sample Correlation Matrix"
-    )
-  })
+      cluster_columns <- input$cluster_columns
 
-  # Render plot PCA output.
-  output$plot_pca <- renderPlot({
-    # Resolve all reactivity.
-    pca_result <- pca_result()
-    experiment_data <- color$experiment_data()
-    x_var <- as.numeric(input$x_var)
-    y_var <- as.numeric(input$y_var)
-    data <- as.data.frame(SummarizedExperiment::colData(color$experiment_data()))
-    color_var <- color$sample_var()
-    assay_name <- assay()
-    var_pct <- input$var_pct
-    label <- input$label
-
-    # Require which states need to be truthy.
-    req(
-      assay_name,
-      # Note: The following statements are important to make sure the UI inputs have been updated.
-      isTRUE(assay_name %in% SummarizedExperiment::assayNames(experiment_data)),
-      is.null(color_var) || isTRUE(color_var %in% names(SummarizedExperiment::colData(experiment_data))),
-      cancelOutput = FALSE
-    )
-
-    # Validate and give useful messages to the user. Note: no need to duplicate here req() from above.
-    validate(need(x_var != y_var, "please select two different principal components"))
-
-    hermes::autoplot(
-      object = pca_result,
-      assay_name = assay_name,
-      x = x_var,
-      y = y_var,
-      data = data,
-      colour = color_var,
-      variance_percentage = var_pct,
-      label = label,
-      label.repel = label
-    )
-  })
-
-  # render correlation heatmap
-  output$plot_cor <- renderPlot({
-    # Resolve all reactivity.
-    cor_result <- cor_result()
-    cluster_columns <- input$cluster_columns
-
-    validate(need(
-      !any(is.na(cor_result)),
-      "Obtained NA results in the correlation matrix, therefore no plot can be produced"
-    ))
-    hermes::autoplot(
-      object = cor_result,
-      cluster_columns = cluster_columns
-    )
+      validate(need(
+        !any(is.na(cor_result)),
+        "Obtained NA results in the correlation matrix, therefore no plot can be produced"
+      ))
+      hermes::autoplot(
+        object = cor_result,
+        cluster_columns = cluster_columns
+      )
+    })
   })
 }
 

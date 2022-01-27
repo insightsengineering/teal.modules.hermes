@@ -191,143 +191,143 @@ ui_g_quality <- function(id,
 #' @describeIn tm_g_quality sets up the server with reactive graphs.
 #' @inheritParams module_arguments
 #' @export
-srv_g_quality <- function(input,
-                          output,
-                          session,
+srv_g_quality <- function(id,
                           datasets,
                           mae_name,
                           exclude_assays) {
-  experiment <- experimentSpecServer(
-    "experiment",
-    datasets = datasets,
-    mae_name = mae_name
-  )
-
-  assay <- assaySpecServer(
-    "assay",
-    assays = experiment$assays,
-    exclude_assays = exclude_assays
-  )
-
-  experiment_properties <- eventReactive(experiment$name(), {
-    data <- experiment$data()
-    cpm <- edgeR::cpm(hermes::counts(data))
-    depth <- colSums(hermes::counts(data))
-    list(
-      annotations = names(hermes::annotation(data)),
-      min_cpm_calc = floor(min(cpm)),
-      max_cpm_calc = floor(max(cpm)),
-      min_depth_calc = min(depth),
-      max_depth_calc = max(depth)
-    )
-  })
-
-  observeEvent(experiment_properties(), {
-    properties <- experiment_properties()
-
-    updateOptionalSelectInput(
-      session,
-      "annotate",
-      choices = properties$annotations,
-      selected = "WidthBP"
-    )
-    updateSliderInput(
-      session,
-      "min_cpm",
-      min = properties$min_cpm_calc,
-      max = properties$max_cpm_calc,
-      value = properties$min_cpm_calc
-    )
-    updateSliderInput(
-      session,
-      "min_depth_continuous",
-      min = properties$min_depth_calc,
-      max = properties$max_depth_calc,
-      value = properties$min_depth_calc
-    )
-  })
-
-  min_depth_final <- reactive({
-    min_depth <- input$min_depth
-    min_depth_continuous <- input$min_depth_continuous
-    if (min_depth == "Specify") {
-      req(min_depth_continuous)
-      min_depth_continuous
-    } else {
-      NULL
-    }
-  })
-
-  control <- reactive({
-    min_cpm <- input$min_cpm
-    min_cpm_prop <- input$min_cpm_prop
-    min_corr <- input$min_corr
-    min_depth_final <- min_depth_final()
-
-    req(
-      min_cpm,
-      min_cpm_prop,
-      min_corr
+  moduleServer(id, function(input, output, session) {
+    experiment <- experimentSpecServer(
+      "experiment",
+      datasets = datasets,
+      mae_name = mae_name
     )
 
-    hermes::control_quality(
-      min_cpm = min_cpm,
-      min_cpm_prop = min_cpm_prop,
-      min_corr = min_corr,
-      min_depth = min_depth_final
-    )
-  })
-
-  object_flagged <- reactive({
-    control <- control()
-    object <- experiment$data()
-
-    already_added <- ("control_quality_flags" %in% names(hermes::metadata(object)))
-    validate(need(!already_added, "Quality flags have already been added to this experiment"))
-    if (any(c("cpm", "rpkm", "tpm", "voom", "vst") %in% SummarizedExperiment::assayNames(object))) {
-      showNotification("Original normalized assays will be overwritten", type = "warning")
-    }
-
-    hermes::add_quality_flags(
-      object,
-      control = control
-    )
-  })
-
-  object_final <- reactive({
-    object_flagged <- object_flagged()
-    filter <- input$filter
-    annotate <- input$annotate
-
-    req(!is_blank(annotate))
-
-    result <- hermes::filter(
-      object_flagged,
-      what = filter,
-      annotation_required = annotate
+    assay <- assaySpecServer(
+      "assay",
+      assays = experiment$assays,
+      exclude_assays = exclude_assays
     )
 
-    validate(need(
-      nrow(result) >= 2,
-      "Please change gene filters to ensure that there are at least 2 genes"
-    ))
+    experiment_properties <- eventReactive(experiment$name(), {
+      data <- experiment$data()
+      cpm <- edgeR::cpm(hermes::counts(data))
+      depth <- colSums(hermes::counts(data))
+      list(
+        annotations = names(hermes::annotation(data)),
+        min_cpm_calc = floor(min(cpm)),
+        max_cpm_calc = floor(max(cpm)),
+        min_depth_calc = min(depth),
+        max_depth_calc = max(depth)
+      )
+    })
 
-    hermes::normalize(result)
-  })
+    observeEvent(experiment_properties(), {
+      properties <- experiment_properties()
 
-  output$plot <- renderPlot({
-    object_final <- object_final()
-    plot_type <- input$plot_type
-    assay_name <- assay()
+      updateOptionalSelectInput(
+        session,
+        "annotate",
+        choices = properties$annotations,
+        selected = "WidthBP"
+      )
+      updateSliderInput(
+        session,
+        "min_cpm",
+        min = properties$min_cpm_calc,
+        max = properties$max_cpm_calc,
+        value = properties$min_cpm_calc
+      )
+      updateSliderInput(
+        session,
+        "min_depth_continuous",
+        min = properties$min_depth_calc,
+        max = properties$max_depth_calc,
+        value = properties$min_depth_calc
+      )
+    })
 
-    switch(plot_type,
-      "Histogram" = hermes::draw_libsize_hist(object_final),
-      "Density" = hermes::draw_libsize_densities(object_final),
-      "Q-Q Plot" = hermes::draw_libsize_qq(object_final),
-      "Boxplot" = hermes::draw_nonzero_boxplot(object_final),
-      "Top Genes Plot" = top_gene_plot(object_final, assay_name = assay_name),
-      "Correlation Heatmap" = heatmap_plot(object_final, assay_name = assay_name)
-    )
+    min_depth_final <- reactive({
+      min_depth <- input$min_depth
+      min_depth_continuous <- input$min_depth_continuous
+      if (min_depth == "Specify") {
+        req(min_depth_continuous)
+        min_depth_continuous
+      } else {
+        NULL
+      }
+    })
+
+    control <- reactive({
+      min_cpm <- input$min_cpm
+      min_cpm_prop <- input$min_cpm_prop
+      min_corr <- input$min_corr
+      min_depth_final <- min_depth_final()
+
+      req(
+        min_cpm,
+        min_cpm_prop,
+        min_corr
+      )
+
+      hermes::control_quality(
+        min_cpm = min_cpm,
+        min_cpm_prop = min_cpm_prop,
+        min_corr = min_corr,
+        min_depth = min_depth_final
+      )
+    })
+
+    object_flagged <- reactive({
+      control <- control()
+      object <- experiment$data()
+
+      already_added <- ("control_quality_flags" %in% names(hermes::metadata(object)))
+      validate(need(!already_added, "Quality flags have already been added to this experiment"))
+      if (any(c("cpm", "rpkm", "tpm", "voom", "vst") %in% SummarizedExperiment::assayNames(object))) {
+        showNotification("Original normalized assays will be overwritten", type = "warning")
+      }
+
+      hermes::add_quality_flags(
+        object,
+        control = control
+      )
+    })
+
+    object_final <- reactive({
+      object_flagged <- object_flagged()
+      filter <- input$filter
+      annotate <- input$annotate
+
+      req(!is_blank(annotate))
+
+      result <- hermes::filter(
+        object_flagged,
+        what = filter,
+        annotation_required = annotate
+      )
+
+      validate(need(
+        nrow(result) >= 2,
+        "Please change gene filters to ensure that there are at least 2 genes"
+      ))
+
+      hermes::normalize(result)
+    })
+
+    output$plot <- renderPlot({
+      object_final <- object_final()
+      plot_type <- input$plot_type
+      assay_name <- assay()
+
+      switch(plot_type,
+        "Histogram" = hermes::draw_libsize_hist(object_final),
+        "Density" = hermes::draw_libsize_densities(object_final),
+        "Q-Q Plot" = hermes::draw_libsize_qq(object_final),
+        "Boxplot" = hermes::draw_nonzero_boxplot(object_final),
+        "Top Genes Plot" = top_gene_plot(object_final, assay_name = assay_name),
+        "Correlation Heatmap" = heatmap_plot(object_final, assay_name = assay_name)
+      )
+    })
   })
 }
 

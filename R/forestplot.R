@@ -129,9 +129,7 @@ ui_g_forest_tte <- function(id,
 #' @describeIn tm_g_forest_tte sets up the server with reactive graph.
 #' @inheritParams module_arguments
 #' @export
-srv_g_forest_tte <- function(input,
-                             output,
-                             session,
+srv_g_forest_tte <- function(id,
                              datasets,
                              adtte_name,
                              mae_name,
@@ -140,87 +138,88 @@ srv_g_forest_tte <- function(input,
                              summary_funs,
                              plot_height,
                              plot_width) {
-  experiment <- experimentSpecServer(
-    "experiment",
-    datasets = datasets,
-    mae_name = mae_name
-  )
-  assay <- assaySpecServer(
-    "assay",
-    assays = experiment$assays,
-    exclude_assays = exclude_assays
-  )
-  genes <- geneSpecServer(
-    "genes",
-    funs = summary_funs,
-    gene_choices = experiment$genes
-  )
-  subgroups <- sampleVarSpecServer(
-    "subgroups",
-    experiment_name = experiment$name,
-    original_data = experiment$data
-  )
-  adtte <- adtteSpecServer(
-    "adtte",
-    datasets = datasets,
-    adtte_name = adtte_name,
-    mae_name = mae_name,
-    adtte_vars = adtte_vars,
-    experiment_data = subgroups$experiment_data,
-    experiment_name = experiment$name,
-    assay = assay,
-    genes = genes,
-    probs = reactive({
-      input$probs
+  moduleServer(id, function(input, output, session) {
+    experiment <- experimentSpecServer(
+      "experiment",
+      datasets = datasets,
+      mae_name = mae_name
+    )
+    assay <- assaySpecServer(
+      "assay",
+      assays = experiment$assays,
+      exclude_assays = exclude_assays
+    )
+    genes <- geneSpecServer(
+      "genes",
+      funs = summary_funs,
+      gene_choices = experiment$genes
+    )
+    subgroups <- sampleVarSpecServer(
+      "subgroups",
+      experiment_name = experiment$name,
+      original_data = experiment$data
+    )
+    adtte <- adtteSpecServer(
+      "adtte",
+      datasets = datasets,
+      adtte_name = adtte_name,
+      mae_name = mae_name,
+      adtte_vars = adtte_vars,
+      experiment_data = subgroups$experiment_data,
+      experiment_name = experiment$name,
+      assay = assay,
+      genes = genes,
+      probs = reactive({
+        input$probs
+      })
+    )
+
+    surv_subgroups <- reactive({
+      binned_adtte <- adtte$binned_adtte_subset()
+      subgroups_var <- subgroups$sample_var()
+
+      validate(need(
+        is.null(subgroups_var) || is.factor(binned_adtte[[subgroups_var]]),
+        "please select a categorical variable"
+      ))
+
+      tern::extract_survival_subgroups(
+        variables = list(
+          tte = adtte_vars$aval,
+          is_event = adtte_vars$is_event,
+          arm = adtte$gene_factor,
+          subgroups = subgroups_var
+        ),
+        label_all = "All Patients",
+        data = binned_adtte
+      )
     })
-  )
 
-  surv_subgroups <- reactive({
-    binned_adtte <- adtte$binned_adtte_subset()
-    subgroups_var <- subgroups$sample_var()
+    result <- reactive({
+      surv_subgroups <- surv_subgroups()
+      lyt <- rtables::basic_table()
+      time_unit <- adtte$time_unit()
 
-    validate(need(
-      is.null(subgroups_var) || is.factor(binned_adtte[[subgroups_var]]),
-      "please select a categorical variable"
-    ))
+      tern::tabulate_survival_subgroups(
+        lyt = lyt,
+        df = surv_subgroups,
+        vars = c("n_tot_events", "n", "n_events", "median", "hr", "ci"),
+        time_unit = time_unit
+      )
+    })
 
-    tern::extract_survival_subgroups(
-      variables = list(
-        tte = adtte_vars$aval,
-        is_event = adtte_vars$is_event,
-        arm = adtte$gene_factor,
-        subgroups = subgroups_var
-      ),
-      label_all = "All Patients",
-      data = binned_adtte
+    forest_plot <- reactive({
+      result <- result()
+      tern::g_forest(result)
+    })
+
+    teal.devel::plot_with_settings_srv(
+      id = "plot",
+      plot_r = forest_plot,
+      height = plot_height,
+      width = plot_width
     )
   })
-
-  result <- reactive({
-    surv_subgroups <- surv_subgroups()
-    lyt <- rtables::basic_table()
-    time_unit <- adtte$time_unit()
-
-    tern::tabulate_survival_subgroups(
-      lyt = lyt,
-      df = surv_subgroups,
-      vars = c("n_tot_events", "n", "n_events", "median", "hr", "ci"),
-      time_unit = time_unit
-    )
-  })
-
-  forest_plot <- reactive({
-    result <- result()
-    tern::g_forest(result)
-  })
-
-  callModule(
-    teal.devel::plot_with_settings_srv,
-    id = "plot",
-    plot_r = forest_plot,
-    height = plot_height,
-    width = plot_width
-  )
 }
 
 #' @describeIn tm_g_forest_tte sample module function.

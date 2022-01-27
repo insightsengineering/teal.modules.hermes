@@ -18,8 +18,7 @@ adtteSpecServer(
 )
 }
 \arguments{
-\item{id}{(\code{string})\cr
-the ID used to call the teal module's UI function.}
+\item{id}{(\code{string}) the shiny module id.}
 
 \item{datasets}{(\code{Datasets})\cr
 teal specific argument which is automatically passed to the UI and server
@@ -90,48 +89,47 @@ ui <- function(id,
   )
 }
 
-server <- function(input,
-                   output,
-                   session,
-                   datasets) {
-  experiment <- experimentSpecServer(
-    "experiment",
-    datasets = datasets,
-    mae_name = "MAE"
-  )
-  assay <- assaySpecServer(
-    "assay",
-    assays = experiment$assays
-  )
-  genes <- geneSpecServer(
-    "genes",
-    funs = list(Mean = colMeans),
-    gene_choices = experiment$genes
-  )
-  adtte <- adtteSpecServer(
-    "adtte",
-    datasets = datasets,
-    adtte_name = "ADTTE",
-    mae_name = "MAE",
-    adtte_vars = list(
-      aval = "AVAL",
-      avalu = "AVALU",
-      is_event = "is_event",
-      paramcd = "PARAMCD",
-      usubjid = "USUBJID"
-    ),
-    experiment_data = experiment$data,
-    experiment_name = experiment$name,
-    assay = assay,
-    genes = genes,
-    probs = reactive({
-      0.5
+server <- function(id, datasets) {
+  moduleServer(id, function(input, output, session) {
+    experiment <- experimentSpecServer(
+      "experiment",
+      datasets = datasets,
+      mae_name = "MAE"
+    )
+    assay <- assaySpecServer(
+      "assay",
+      assays = experiment$assays
+    )
+    genes <- geneSpecServer(
+      "genes",
+       funs = list(Mean = colMeans),
+       gene_choices = experiment$genes
+    )
+    adtte <- adtteSpecServer(
+      "adtte",
+      datasets = datasets,
+      adtte_name = "ADTTE",
+      mae_name = "MAE",
+      adtte_vars = list(
+        aval = "AVAL",
+        avalu = "AVALU",
+        is_event = "is_event",
+        paramcd = "PARAMCD",
+        usubjid = "USUBJID"
+      ),
+      experiment_data = experiment$data,
+      experiment_name = experiment$name,
+      assay = assay,
+      genes = genes,
+      probs = reactive({
+        0.5
+      })
+    )
+    output$summary <- renderPrint({
+      binned_adtte_subset <- adtte$binned_adtte_subset()
+      summary(binned_adtte_subset)
     })
-  )
-  output$summary <- renderPrint({
-    binned_adtte_subset <- adtte$binned_adtte_subset()
-    summary(binned_adtte_subset)
-  })
+ })
 }
 
 my_app <- function() {

@@ -38,9 +38,7 @@
 #' @param post_output (`shiny.tag` or `NULL`)\cr
 #'   placed after the output to put the output into context (for example the [shiny::helpText()]
 #'   elements can be useful).
-#' @param input (`ReactiveValues`)\cr the session's input object.
-#' @param output (`shinyoutput`)\cr the session's output object.
-#' @param session (`ShinySession`)\cr the session object.
+#' @param id (`string`) the shiny module id.
 #' @param plot_height (`list`)\cr list of integers to set the default, minimum,
 #'   and maximum plot height.
 #' @param plot_width (`list`)\cr list of integers to set the default, minimum,

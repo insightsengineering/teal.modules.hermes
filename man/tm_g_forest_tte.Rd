@@ -33,9 +33,7 @@ ui_g_forest_tte(
 )
 
 srv_g_forest_tte(
-  input,
-  output,
-  session,
+  id,
   datasets,
   adtte_name,
   mae_name,
@@ -91,18 +89,11 @@ and maximum plot height.}
 \item{plot_width}{(\code{list})\cr list of integers to set the default, minimum,
 and maximum plot width.}
 
-\item{id}{(\code{string})\cr
-the ID used to call the teal module's UI function.}
+\item{id}{(\code{string}) the shiny module id.}
 
 \item{datasets}{(\code{Datasets})\cr
 teal specific argument which is automatically passed to the UI and server
 functions, holding all the data sets provided in the app initialization.}
-
-\item{input}{(\code{ReactiveValues})\cr the session's input object.}
-
-\item{output}{(\code{shinyoutput})\cr the session's output object.}
-
-\item{session}{(\code{ShinySession})\cr the session object.}
 }
 \value{
 Shiny module to be used in the teal app.
