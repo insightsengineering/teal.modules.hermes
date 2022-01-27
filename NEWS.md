@@ -1,11 +1,13 @@
-# teal.modules.hermes 0.1.0.9011
+# teal.modules.hermes 0.1.1
 
 ### Bug Fixes
 * Gene selection with more than a few thousand genes no longer hangs the application. This is achieved through a different selection input in the corresponding `geneSpec` shiny module.
+* Only atomic columns of `colData` with at least one value can now be selected in the `sampleVarSpecModule`.
 
 ### Miscellaneous
 * Updated R version requirement to >= 3.6.
 * Updated `sampleVarSpec` and `geneSpec` modules with new icons to remove warnings when using shiny version >= 1.7.
+* Removed dependencies on deprecated packages `utils.nest` and `test.nest`.
 
 # teal.modules.hermes 0.1.0
 * First release of the `teal.modules.hermes` package, which contains teal modules for RNA-seq analysis using the `hermes` package.
