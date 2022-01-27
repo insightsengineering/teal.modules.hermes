@@ -24,7 +24,7 @@ This defines the server part for the sample variable specification."><!-- mathja
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.hermes</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0.9010</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.1</span>
       </span>
     </div>
 
@@ -35,15 +35,6 @@ This defines the server part for the sample variable specification."><!-- mathja
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/insightsengineering/teal.modules.hermes" class="external-link">
     <span class="fa fa-github"></span>
@@ -71,7 +62,7 @@ Other releases
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">sampleVarSpecServer</span><span class="op">(</span>
-  <span class="va">inputId</span>,
+  <span class="va">id</span>,
   <span class="va">experiment_name</span>,
   <span class="va">original_data</span>,
   transformed_data <span class="op">=</span> <span class="va">original_data</span>,
@@ -83,9 +74,9 @@ Other releases
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>inputId</dt>
+    <dl><dt>id</dt>
 <dd><p>(<code>string</code>)<br>
-the ID used to call the module input.</p></dd>
+the ID used to call the teal module's UI function.</p></dd>
 <dt>experiment_name</dt>
 <dd><p>(reactive <code>string</code>)<br> name of the input experiment.</p></dd>
 <dt>original_data</dt>
@@ -108,6 +99,12 @@ If <code>NULL</code> then all numbers of levels are allowed.</p></dd>
     <h2>Value</h2>
     <p>Reactive <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/RangedSummarizedExperiment-class.html" class="external-link">SummarizedExperiment::SummarizedExperiment</a></code> which can be used as
 input for the relevant <code>hermes</code> functions.</p>
+    </div>
+    <div id="note">
+    <h2>Note</h2>
+    <p>Only atomic columns (e.g. not <code>DataFrame</code> columns) of the <code>colData</code>
+which are not completely missing (<code>NA</code>) will be shown for selection.
+If <code>num_levels</code> is specified then only factor columns will be available.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -192,7 +189,7 @@ input for the relevant <code>hermes</code> functions.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer></div>
