@@ -1,4 +1,4 @@
-# teal.modules.hermes 0.1.1.9000
+# teal.modules.hermes 0.1.1.9001
 
 * Added basic logging to the modules.
 
