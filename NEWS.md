@@ -1,5 +1,7 @@
 # teal.modules.hermes 0.1.1.9001
 
+* Rewrite modules to use `moduleServer` and update call to `plot_with_settings_srv` after changes in `teal.devel`.
+
 * Added basic logging to the modules.
 
 # teal.modules.hermes 0.1.1
