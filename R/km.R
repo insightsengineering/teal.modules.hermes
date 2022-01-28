@@ -60,6 +60,7 @@ tm_g_km <- function(label,
                     ),
                     pre_output = NULL,
                     post_output = NULL) {
+  logger::log_info("Initializing tm_g_km")
   assert_string(label)
   assert_string(adtte_name)
   assert_string(mae_name)
