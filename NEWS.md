@@ -1,5 +1,9 @@
 # teal.modules.hermes 0.1.1.9000
 
+* Added basic logging to the modules.
+
+# teal.modules.hermes 0.1.1
+
 ### Bug Fixes
 * Gene selection with more than a few thousand genes no longer hangs the application. This is achieved through a different selection input in the corresponding `geneSpec` shiny module.
 * Only atomic columns of `colData` with at least one value can now be selected in the `sampleVarSpecModule`.
@@ -11,7 +15,7 @@
 
 # teal.modules.hermes 0.1.0
 * First release of the `teal.modules.hermes` package, which contains teal modules for RNA-seq analysis using the `hermes` package.
-* New users should first begin by reading the `README.md` of the `teal.modules.hermes` package to become familiar. 
+* New users should first begin by reading the `README.md` of the `teal.modules.hermes` package to become familiar.
 
 ### New Features
 * `tm_g_barplot` is a barplot module for RNA-seq gene expression analysis.
