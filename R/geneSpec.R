@@ -140,6 +140,7 @@ geneSpecInput <- function(inputId,
 #' shows a notification if not all `selected` genes were available.
 #'
 #' @inheritParams module_arguments
+#' @param session (`ShinySession`)\cr the session object.
 #' @param selected (`character`)\cr currently selected gene IDs.
 #' @param choices (`data.frame`)\cr containing `id` and `name` columns of the
 #'   new choices.

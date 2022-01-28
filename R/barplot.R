@@ -115,7 +115,7 @@ srv_g_barplot <- function(id,
                           mae_name,
                           exclude_assays,
                           summary_funs) {
-  moduleServer(id, function(inptu, output, session) {
+  moduleServer(id, function(input, output, session) {
     experiment <- experimentSpecServer(
       "experiment",
       datasets = datasets,

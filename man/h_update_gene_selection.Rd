@@ -7,6 +7,8 @@
 h_update_gene_selection(session, inputId, selected, choices)
 }
 \arguments{
+\item{session}{(\code{ShinySession})\cr the session object.}
+
 \item{inputId}{(\code{string})\cr
 the ID used to call the module input.}
 
