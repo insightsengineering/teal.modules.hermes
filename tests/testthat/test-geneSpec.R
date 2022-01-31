@@ -57,11 +57,8 @@ test_that("geneSpec module works as expected in the test app", {
 
   # Set genes manually.
   selected_genes <- c(
-    "GeneID:101927746", "GeneID:1820", "GeneID:101929818", "GeneID:94115", "GeneID:25959",
-    "GeneID:140459", "GeneID:6618", "GeneID:51264", "GeneID:127254", "GeneID:139604",
-    "GeneID:102724552", "GeneID:356", "GeneID:101928458", "GeneID:2576", "GeneID:84651",
-    "GeneID:3423", "GeneID:5810", "GeneID:9302", "GeneID:285847", "GeneID:9166", "GeneID:101927628",
-    "GeneID:1499", "GeneID:6098", "GeneID:83858", "GeneID:100303749", "GeneID:4608"
+    "GeneID:10061", "GeneID:28", "GeneID:47", "GeneID:8310",
+    "GeneID:52", "GeneID:88", "GeneID:11096"
   )
   app$setValue(ns("my_genes-genes"), selected_genes)
 
@@ -71,7 +68,7 @@ test_that("geneSpec module works as expected in the test app", {
 
   # Then we get the expected result.
   output_text <- app$waitForValue(ns("result"), iotype = "output")
-  expect_identical(output_text, "mean(ARID3A, ASB6, ..., SPINK7)")
+  expect_identical(output_text, "mean(ABCF2, ABO, ..., ADAMTS5)")
 
   # Now we add chromosome filters for the first experiment.
   ns2 <- NS("teal-main_ui-filter_panel")
@@ -87,19 +84,19 @@ test_that("geneSpec module works as expected in the test app", {
   app$waitForValue(ns2("MAE_filter-hd1-rowData_var_chromosome-content-selection"))
   app$setValue(
     ns2("MAE_filter-hd1-rowData_var_chromosome-content-selection"),
-    c("X", "Y")
+    c("1", "2")
   )
 
   # Confirm that gene selection was not changed.
   genes_while_locked <- app$waitForValue(ns("my_genes-genes"))
   expect_set_equal(genes_while_locked, selected_genes)
-  # Note: Due to sorting by gene name the order is not the same.
+  # Note: Due to sorting by gene name the order might not be the same.
 
   # Check validation message.
   output_message <- app$waitForOutputElement(ns("result"), "message")
   expect_identical(
     output_message,
-    "23 genes (GeneID:1820, GeneID:140459, ..., GeneID:84651) not included, please unlock or change filters"
+    "5 genes (GeneID:10061, GeneID:28, ..., GeneID:11096) not included, please unlock or change filters"
   )
 
   # Now we unlock.
@@ -107,27 +104,27 @@ test_that("geneSpec module works as expected in the test app", {
 
   # Check that gene selection was reduced accordingly.
   genes_after_unlock <- app$waitForValue(ns("my_genes-genes"))
-  expect_set_equal(genes_after_unlock, c("GeneID:139604", "GeneID:2576", "GeneID:3423"))
+  expect_set_equal(genes_after_unlock, c("GeneID:52", "GeneID:88"))
   expect_true(all(genes_after_unlock %in% selected_genes))
-  expect_length(setdiff(selected_genes, genes_after_unlock), 23L)
+  expect_length(setdiff(selected_genes, genes_after_unlock), 5)
 
   # Then we get the expected result.
   output_text <- app$waitForValue(ns("result"), iotype = "output")
-  expect_identical(output_text, "mean(GAGE4, IDS, MAGEB16)")
+  expect_identical(output_text, "mean(ACP1, ACTN2)")
 
   # Now we remove the filter.
-  app$click(ns2("rowData_var_chromosome-remove"))
+  app$click(ns2("MAE_filter-hd1-rowData_var_chromosome-remove"))
 
   # We select a gene via text input.
   app$click(ns("my_genes-text_button"))
   app$waitForValue(ns("my_genes-ok_button"))
-  app$setValue(ns("my_genes-gene_text"), "GeneID:100303749; GeneID:4608")
+  app$setValue(ns("my_genes-gene_text"), "GeneID:10061; GeneID:28")
   app$click(ns("my_genes-ok_button"))
 
   # Confirm that they are now selected.
   Sys.sleep(1) # Need this here otherwise we don't get latest update below.
   genes_after_text <- app$waitForValue(ns("my_genes-genes"))
-  expect_set_equal(genes_after_text, c("GeneID:100303749", "GeneID:4608"))
+  expect_set_equal(genes_after_text, c("GeneID:10061", "GeneID:28"))
 })
 
 # validate_gene_spec ----
