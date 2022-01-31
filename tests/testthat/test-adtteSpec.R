@@ -192,7 +192,8 @@ test_that("adtteSpecServer module works as expected in the test app", {
   ns <- module_ns(app)
 
   msg <- app$waitForOutputElement(ns("summary"), "message")
-  app$setValue(ns("genes-genes"), "GeneID:101927746")
+
+  app$setValue(ns("genes-genes"), "GeneID:28")
 
   # Upon initialization the endpoint is not selected automatically, the user
   # has to click this actively.
@@ -210,8 +211,8 @@ test_that("adtteSpecServer module works as expected in the test app", {
   # Test what happens if selected endpoint (here PFS) is no longer in filtered data.
   ns2 <- NS("teal-main_ui-filter_panel")
   app$setValue(ns2("add_ADTTE_filter-filter-var_to_add"), "PARAMCD")
-  app$waitForValue(ns2("add_ADTTE_filter-filter-var_PARAMCD-content-selection"))
-  app$setValue(ns2("add_ADTTE_filter-filter-var_PARAMCD-content-selection"), "OS")
+  app$waitForValue(ns2("ADTTE_filter-filter-_var_PARAMCD-content-selection"))
+  app$setValue(ns2("ADTTE_filter-filter-_var_PARAMCD-content-selection"), "OS")
 
   # We expect to get a validation message (also a notification box but we cannot test that).
   msg <- app$waitForOutputElement(ns("summary"), "message")
@@ -221,7 +222,7 @@ test_that("adtteSpecServer module works as expected in the test app", {
 
   # Now we update the filter by adding PFS back. However the user would have to
   # actively select it.
-  app$setValue(ns2("add_ADTTE_filter-filter-var_PARAMCD-content-selection"), c("PFS", "OS"))
+  app$setValue(ns2("ADTTE_filter-filter-_var_PARAMCD-content-selection"), c("PFS", "OS"))
   msg <- app$waitForOutputElement(ns("summary"), "message")
   expect_identical(msg, "please select an endpoint")
 })

@@ -32,7 +32,7 @@ shinytest::ShinyDriver$set(
           export = FALSE
         )[["output"]]
         output_res[[name]][[element]]
-      })
+      }, silent = TRUE)
 
       if (!inherits(result, "try-error")) {
         invalid_match <- vapply(ignore, identical, logical(1L), x = result)

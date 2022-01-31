@@ -74,9 +74,9 @@ test_that("geneSpec module works as expected in the test app", {
   expect_identical(output_text, "mean(ARID3A, ASB6, ..., SPINK7)")
 
   # Now we add chromosome filters for the first experiment.
-  ns2 <- NS("teal-main_ui-filter_panel-add_MAE_filter-hd1")
+  ns2 <- NS("teal-main_ui-filter_panel")
   app$setValue(
-    ns2("row_to_add"),
+    ns2("add_MAE_filter-hd1-row_to_add"),
     "chromosome"
   )
 
@@ -84,9 +84,9 @@ test_that("geneSpec module works as expected in the test app", {
   app$setValue(ns("my_genes-lock_button"), TRUE)
 
   # Now we just select a small subset of chromosomes.
-  app$waitForValue(ns2("rowData_var_chromosome-content-selection"))
+  app$waitForValue(ns2("MAE_filter-hd1-rowData_var_chromosome-content-selection"))
   app$setValue(
-    ns2("rowData_var_chromosome-content-selection"),
+    ns2("MAE_filter-hd1-rowData_var_chromosome-content-selection"),
     c("X", "Y")
   )
 
