@@ -26,7 +26,7 @@ variables."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.hermes</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.1.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.1.9002</span>
       </span>
     </div>
 
@@ -37,15 +37,6 @@ variables."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/insightsengineering/teal.modules.hermes" class="external-link">
     <span class="fa fa-github"></span>
@@ -84,7 +75,7 @@ variables.</p>
 
 <span class="fu">ui_g_pca</span><span class="op">(</span><span class="va">id</span>, <span class="va">datasets</span>, <span class="va">mae_name</span>, <span class="va">pre_output</span>, <span class="va">post_output</span><span class="op">)</span>
 
-<span class="fu">srv_g_pca</span><span class="op">(</span><span class="va">input</span>, <span class="va">output</span>, <span class="va">session</span>, <span class="va">datasets</span>, <span class="va">mae_name</span>, <span class="va">exclude_assays</span><span class="op">)</span>
+<span class="fu">srv_g_pca</span><span class="op">(</span><span class="va">id</span>, <span class="va">datasets</span>, <span class="va">mae_name</span>, <span class="va">exclude_assays</span><span class="op">)</span>
 
 <span class="fu">sample_tm_g_pca</span><span class="op">(</span><span class="op">)</span></code></pre></div>
     </div>
@@ -108,18 +99,11 @@ placed before the output to put the output into context (for example a title).</
 placed after the output to put the output into context (for example the <code><a href="https://rdrr.io/pkg/shiny/man/helpText.html" class="external-link">shiny::helpText()</a></code>
 elements can be useful).</p></dd>
 <dt>id</dt>
-<dd><p>(<code>string</code>)<br>
-the ID used to call the teal module's UI function.</p></dd>
+<dd><p>(<code>string</code>) the shiny module id.</p></dd>
 <dt>datasets</dt>
 <dd><p>(<code>Datasets</code>)<br>
 teal specific argument which is automatically passed to the UI and server
 functions, holding all the data sets provided in the app initialization.</p></dd>
-<dt>input</dt>
-<dd><p>(<code>ReactiveValues</code>)<br> the session's input object.</p></dd>
-<dt>output</dt>
-<dd><p>(<code>shinyoutput</code>)<br> the session's output object.</p></dd>
-<dt>session</dt>
-<dd><p>(<code>ShinySession</code>)<br> the session object.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -147,7 +131,7 @@ functions, holding all the data sets provided in the app initialization.</p></dd
 <span class="r-in">    <span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2022-01-28 09:08:20.0802 pid:1541 token:[] teal.modules.hermes Initializing tm_g_pca</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2022-02-01 16:14:52.1470 pid:1568 token:[] teal.modules.hermes Initializing tm_g_pca</span>
 <span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in">  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html" class="external-link">shinyApp</a></span><span class="op">(</span><span class="va">app</span><span class="op">$</span><span class="va">ui</span>, <span class="va">app</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">}</span></span>

@@ -24,7 +24,7 @@ This defines the server part for the assay specification."><!-- mathjax --><scri
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.hermes</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.1.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.1.9002</span>
       </span>
     </div>
 
@@ -35,15 +35,6 @@ This defines the server part for the assay specification."><!-- mathjax --><scri
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/insightsengineering/teal.modules.hermes" class="external-link">
     <span class="fa fa-github"></span>
@@ -70,14 +61,13 @@ Other releases
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">assaySpecServer</span><span class="op">(</span><span class="va">inputId</span>, <span class="va">assays</span>, exclude_assays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">assaySpecServer</span><span class="op">(</span><span class="va">id</span>, <span class="va">assays</span>, exclude_assays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>inputId</dt>
-<dd><p>(<code>string</code>)<br>
-the ID used to call the module input.</p></dd>
+    <dl><dt>id</dt>
+<dd><p>(<code>string</code>) the shiny module id.</p></dd>
 <dt>assays</dt>
 <dd><p>(reactive <code>character</code>)<br> available assays in the currently selected experiment.</p></dd>
 <dt>exclude_assays</dt>
@@ -114,22 +104,21 @@ names of the assays which should not be included in choices in the teal module.<
 <span class="r-in">  <span class="op">)</span></span>
 <span class="r-in"><span class="op">}</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="va">server</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>,</span>
-<span class="r-in">                   <span class="va">output</span>,</span>
-<span class="r-in">                   <span class="va">session</span>,</span>
-<span class="r-in">                   <span class="va">datasets</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in">  <span class="va">experiment</span> <span class="op">&lt;-</span> <span class="fu"><a href="experimentSpecServer.html">experimentSpecServer</a></span><span class="op">(</span></span>
-<span class="r-in">    <span class="st">"experiment"</span>,</span>
-<span class="r-in">    <span class="va">datasets</span>,</span>
-<span class="r-in">    <span class="st">"MAE"</span></span>
-<span class="r-in">  <span class="op">)</span></span>
-<span class="r-in">  <span class="va">assay</span> <span class="op">&lt;-</span> <span class="fu">assaySpecServer</span><span class="op">(</span></span>
-<span class="r-in">    <span class="st">"assay"</span>,</span>
-<span class="r-in">    <span class="va">experiment</span><span class="op">$</span><span class="va">assays</span>,</span>
-<span class="r-in">    exclude_assays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"counts"</span>, <span class="st">"cpm"</span>, <span class="st">"tpm"</span>, <span class="st">"bla"</span><span class="op">)</span></span>
-<span class="r-in">  <span class="op">)</span></span>
-<span class="r-in">  <span class="va">output</span><span class="op">$</span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/renderPrint.html" class="external-link">renderPrint</a></span><span class="op">(</span><span class="op">{</span></span>
-<span class="r-in">    <span class="fu">assay</span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">server</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">id</span>, <span class="va">datasets</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in">  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/moduleServer.html" class="external-link">moduleServer</a></span><span class="op">(</span><span class="va">id</span>, module <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">output</span>, <span class="va">session</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in">    <span class="va">experiment</span> <span class="op">&lt;-</span> <span class="fu"><a href="experimentSpecServer.html">experimentSpecServer</a></span><span class="op">(</span></span>
+<span class="r-in">      <span class="st">"experiment"</span>,</span>
+<span class="r-in">      <span class="va">datasets</span>,</span>
+<span class="r-in">      <span class="st">"MAE"</span></span>
+<span class="r-in">    <span class="op">)</span></span>
+<span class="r-in">    <span class="va">assay</span> <span class="op">&lt;-</span> <span class="fu">assaySpecServer</span><span class="op">(</span></span>
+<span class="r-in">      <span class="st">"assay"</span>,</span>
+<span class="r-in">      <span class="va">experiment</span><span class="op">$</span><span class="va">assays</span>,</span>
+<span class="r-in">      exclude_assays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"counts"</span>, <span class="st">"cpm"</span>, <span class="st">"tpm"</span>, <span class="st">"bla"</span><span class="op">)</span></span>
+<span class="r-in">    <span class="op">)</span></span>
+<span class="r-in">    <span class="va">output</span><span class="op">$</span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/renderPrint.html" class="external-link">renderPrint</a></span><span class="op">(</span><span class="op">{</span></span>
+<span class="r-in">      <span class="fu">assay</span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in">    <span class="op">}</span><span class="op">)</span></span>
 <span class="r-in">  <span class="op">}</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">}</span></span>
 <span class="r-in"></span>
