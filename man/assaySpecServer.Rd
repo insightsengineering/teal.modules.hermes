@@ -4,11 +4,10 @@
 \alias{assaySpecServer}
 \title{Module Server for Assay Specification}
 \usage{
-assaySpecServer(inputId, assays, exclude_assays = character())
+assaySpecServer(id, assays, exclude_assays = character())
 }
 \arguments{
-\item{inputId}{(\code{string})\cr
-the ID used to call the module input.}
+\item{id}{(\code{string}) the shiny module id.}
 
 \item{assays}{(reactive \code{character})\cr available assays in the currently selected experiment.}
 
@@ -43,22 +42,21 @@ ui <- function(id,
   )
 }
 
-server <- function(input,
-                   output,
-                   session,
-                   datasets) {
-  experiment <- experimentSpecServer(
-    "experiment",
-    datasets,
-    "MAE"
-  )
-  assay <- assaySpecServer(
-    "assay",
-    experiment$assays,
-    exclude_assays = c("counts", "cpm", "tpm", "bla")
-  )
-  output$result <- renderPrint({
-    assay()
+server <- function(id, datasets) {
+  moduleServer(id, module = function(input, output, session) {
+    experiment <- experimentSpecServer(
+      "experiment",
+      datasets,
+      "MAE"
+    )
+    assay <- assaySpecServer(
+      "assay",
+      experiment$assays,
+      exclude_assays = c("counts", "cpm", "tpm", "bla")
+    )
+    output$result <- renderPrint({
+      assay()
+    })
   })
 }
 

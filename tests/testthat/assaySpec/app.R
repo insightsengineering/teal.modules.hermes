@@ -20,23 +20,23 @@ ui <- function(id,
   )
 }
 
-server <- function(input,
-                   output,
-                   session,
+server <- function(id,
                    datasets) {
-  experiment <- experimentSpecServer(
-    "experiment",
-    datasets = datasets,
-    mae_name = "MAE"
-  )
-  assay <- assaySpecServer(
-    "assay",
-    assays = experiment$assays,
-    exclude_assays = c("counts", "cpm", "tpm", "bla")
-  )
-  output$result <- renderPrint({
-    assay <- assay()
-    assay
+  moduleServer(id, function(input, output, session) {
+    experiment <- experimentSpecServer(
+      "experiment",
+      datasets = datasets,
+      mae_name = "MAE"
+    )
+    assay <- assaySpecServer(
+      "assay",
+      assays = experiment$assays,
+      exclude_assays = c("counts", "cpm", "tpm", "bla")
+    )
+    output$result <- renderPrint({
+      assay <- assay()
+      assay
+    })
   })
 }
 

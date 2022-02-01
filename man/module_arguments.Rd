@@ -11,9 +11,6 @@ functions, holding all the data sets provided in the app initialization.}
 \item{label}{(\code{string})\cr
 menu item label of the module in the teal app.}
 
-\item{id}{(\code{string})\cr
-the ID used to call the teal module's UI function.}
-
 \item{inputId}{(\code{string})\cr
 the ID used to call the module input.}
 
@@ -50,11 +47,7 @@ placed before the output to put the output into context (for example a title).}
 placed after the output to put the output into context (for example the \code{\link[shiny:helpText]{shiny::helpText()}}
 elements can be useful).}
 
-\item{input}{(\code{ReactiveValues})\cr the session's input object.}
-
-\item{output}{(\code{shinyoutput})\cr the session's output object.}
-
-\item{session}{(\code{ShinySession})\cr the session object.}
+\item{id}{(\code{string}) the shiny module id.}
 
 \item{plot_height}{(\code{list})\cr list of integers to set the default, minimum,
 and maximum plot height.}

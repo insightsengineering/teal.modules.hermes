@@ -13,26 +13,26 @@ ui <- function(id,
   )
 }
 
-server <- function(input,
-                   output,
-                   session,
+server <- function(id,
                    datasets) {
-  experiment <- experimentSpecServer(
-    "experiment",
-    datasets,
-    "MAE"
-  )
-  facet_var_spec <- sampleVarSpecServer(
-    "facet_var",
-    experiment_name = experiment$name,
-    original_data = experiment$data
-  )
-  output$summary <- renderPrint({
-    experiment_data_final <- facet_var_spec$experiment_data()
-    facet_var <- facet_var_spec$sample_var()
-    req(facet_var)
-    facet_col <- SummarizedExperiment::colData(experiment_data_final)[[facet_var]]
-    summary(facet_col)
+  moduleServer(id, function(input, output, session) {
+    experiment <- experimentSpecServer(
+      "experiment",
+      datasets,
+      "MAE"
+    )
+    facet_var_spec <- sampleVarSpecServer(
+      "facet_var",
+      experiment_name = experiment$name,
+      original_data = experiment$data
+    )
+    output$summary <- renderPrint({
+      experiment_data_final <- facet_var_spec$experiment_data()
+      facet_var <- facet_var_spec$sample_var()
+      req(facet_var)
+      facet_col <- SummarizedExperiment::colData(experiment_data_final)[[facet_var]]
+      summary(facet_col)
+    })
   })
 }
 

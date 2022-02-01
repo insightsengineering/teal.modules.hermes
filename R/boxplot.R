@@ -107,66 +107,66 @@ ui_g_boxplot <- function(id,
 #' @describeIn tm_g_boxplot sets up the server with reactive graph.
 #' @inheritParams module_arguments
 #' @export
-srv_g_boxplot <- function(input,
-                          output,
-                          session,
+srv_g_boxplot <- function(id,
                           datasets,
                           mae_name,
                           exclude_assays,
                           summary_funs) {
-  experiment <- experimentSpecServer(
-    "experiment",
-    datasets = datasets,
-    mae_name = mae_name
-  )
-  assay <- assaySpecServer(
-    "assay",
-    assays = experiment$assays,
-    exclude_assays = exclude_assays
-  )
-  multi <- multiSampleVarSpecServer(
-    inputIds = c("strat", "color", "facet"),
-    experiment_name = experiment$name,
-    original_data = experiment$data
-  )
-  genes <- geneSpecServer(
-    "genes",
-    funs = summary_funs,
-    gene_choices = experiment$genes
-  )
-  output$plot <- renderPlot({
-    # Resolve all reactivity.
-    experiment_data <- multi$experiment_data()
-    strat <- multi$vars$strat()
-    genes <- genes()
-    facet <- multi$vars$facet()
-    color <- multi$vars$color()
-    assay <- assay()
-    jitter <- input$jitter
-    violin <- input$violin
-
-    req(
-      assay,
-      # Note: The following statements are important to make sure the UI inputs have been updated.
-      isTRUE(assay %in% SummarizedExperiment::assayNames(experiment_data)),
-      is.null(facet) || isTRUE(facet %in% names(SummarizedExperiment::colData(experiment_data))),
-      is.null(color) || isTRUE(color %in% names(SummarizedExperiment::colData(experiment_data))),
-      is.null(strat) || isTRUE(strat %in% names(SummarizedExperiment::colData(experiment_data))),
-      cancelOutput = FALSE
+  moduleServer(id, function(input, output, session) {
+    experiment <- experimentSpecServer(
+      "experiment",
+      datasets = datasets,
+      mae_name = mae_name
     )
-
-    validate_gene_spec(genes, rownames(experiment_data))
-
-    hermes::draw_boxplot(
-      object = experiment_data,
-      assay_name = assay,
-      genes = genes,
-      x_var = strat,
-      facet_var = facet,
-      color_var = color,
-      jitter = jitter,
-      violin = violin
+    assay <- assaySpecServer(
+      "assay",
+      assays = experiment$assays,
+      exclude_assays = exclude_assays
     )
+    multi <- multiSampleVarSpecServer(
+      inputIds = c("strat", "color", "facet"),
+      experiment_name = experiment$name,
+      original_data = experiment$data
+    )
+    genes <- geneSpecServer(
+      "genes",
+      funs = summary_funs,
+      gene_choices = experiment$genes
+    )
+    output$plot <- renderPlot({
+      # Resolve all reactivity.
+      experiment_data <- multi$experiment_data()
+      strat <- multi$vars$strat()
+      genes <- genes()
+      facet <- multi$vars$facet()
+      color <- multi$vars$color()
+      assay <- assay()
+      jitter <- input$jitter
+      violin <- input$violin
+
+      req(
+        assay,
+        # Note: The following statements are important to make sure the UI inputs have been updated.
+        isTRUE(assay %in% SummarizedExperiment::assayNames(experiment_data)),
+        is.null(facet) || isTRUE(facet %in% names(SummarizedExperiment::colData(experiment_data))),
+        is.null(color) || isTRUE(color %in% names(SummarizedExperiment::colData(experiment_data))),
+        is.null(strat) || isTRUE(strat %in% names(SummarizedExperiment::colData(experiment_data))),
+        cancelOutput = FALSE
+      )
+
+      validate_gene_spec(genes, rownames(experiment_data))
+
+      hermes::draw_boxplot(
+        object = experiment_data,
+        assay_name = assay,
+        genes = genes,
+        x_var = strat,
+        facet_var = facet,
+        color_var = color,
+        jitter = jitter,
+        violin = violin
+      )
+    })
   })
 }
 

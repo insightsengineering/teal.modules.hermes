@@ -15,8 +15,7 @@ sampleVarSpecServer(
 )
 }
 \arguments{
-\item{id}{(\code{string})\cr
-the ID used to call the teal module's UI function.}
+\item{id}{(\code{string}) the shiny module id.}
 
 \item{experiment_name}{(reactive \code{string})\cr name of the input experiment.}
 
@@ -63,33 +62,33 @@ ui <- function(id,
     output = plotOutput(ns("plot"))
   )
 }
-server <- function(input,
-                   output,
-                   session,
+server <- function(id,
                    datasets) {
-  experiment_data <- reactive({
-    req(input$experiment_name)
-    mae <- datasets$get_data("MAE", filtered = TRUE)
-    object <- mae[[input$experiment_name]]
-    SummarizedExperiment::colData(object) <- hermes::df_cols_to_factor(SummarizedExperiment::colData(object))
-    object
-  })
-  facet_var_spec <- sampleVarSpecServer(
-    "facet_var",
-    experiment_name = reactive({
-      input$experiment_name
-    }),
-    original_data = experiment_data
-  )
-  output$plot <- renderPlot({
-    experiment_data_final <- facet_var_spec$experiment_data()
-    facet_var <- facet_var_spec$sample_var()
-    hermes::draw_boxplot(
-      experiment_data_final,
-      assay_name = "counts",
-      genes = hermes::genes(experiment_data_final)[1],
-      facet_var = facet_var
+  moduleServer(id, function(input, output, session) {
+    experiment_data <- reactive({
+      req(input$experiment_name)
+      mae <- datasets$get_data("MAE", filtered = TRUE)
+      object <- mae[[input$experiment_name]]
+      SummarizedExperiment::colData(object) <- hermes::df_cols_to_factor(SummarizedExperiment::colData(object))
+      object
+    })
+    facet_var_spec <- sampleVarSpecServer(
+      "facet_var",
+      experiment_name = reactive({
+        input$experiment_name
+      }),
+      original_data = experiment_data
     )
+    output$plot <- renderPlot({
+      experiment_data_final <- facet_var_spec$experiment_data()
+      facet_var <- facet_var_spec$sample_var()
+      hermes::draw_boxplot(
+        experiment_data_final,
+        assay_name = "counts",
+        genes = hermes::genes(experiment_data_final)[1],
+        facet_var = facet_var
+      )
+    })
   })
 }
 my_app <- function() {

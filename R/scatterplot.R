@@ -109,63 +109,63 @@ ui_g_scatterplot <- function(id,
 #' @describeIn tm_g_scatterplot sets up the server with reactive graph.
 #' @inheritParams module_arguments
 #' @export
-srv_g_scatterplot <- function(input,
-                              output,
-                              session,
+srv_g_scatterplot <- function(id,
                               datasets,
                               mae_name,
                               exclude_assays,
                               summary_funs) {
-  experiment <- experimentSpecServer(
-    "experiment",
-    datasets = datasets,
-    mae_name = mae_name
-  )
-  assay <- assaySpecServer(
-    "assay",
-    assays = experiment$assays,
-    exclude_assays = exclude_assays
-  )
-  sample_var_specs <- multiSampleVarSpecServer(
-    inputIds = c("facet_var", "color_var"),
-    experiment_name = experiment$name,
-    original_data = experiment$data
-  )
-  x_spec <- geneSpecServer("x_spec", summary_funs, experiment$genes)
-  y_spec <- geneSpecServer("y_spec", summary_funs, experiment$genes)
-
-  output$plot <- renderPlot({
-    # Resolve all reactivity.
-    experiment_data <- sample_var_specs$experiment_data()
-    x_spec <- x_spec()
-    y_spec <- y_spec()
-    facet_var <- sample_var_specs$vars$facet_var()
-    color_var <- sample_var_specs$vars$color_var()
-    assay_name <- assay()
-    smooth_method <- input$smooth_method
-
-    validate_gene_spec(x_spec, rownames(experiment_data))
-    validate_gene_spec(y_spec, rownames(experiment_data))
-
-    # Require which states need to be truthy.
-    req(
-      smooth_method,
-      # Note: The following statements are important to make sure the UI inputs have been updated.
-      isTRUE(assay_name %in% SummarizedExperiment::assayNames(experiment_data)),
-      is.null(facet_var) || isTRUE(facet_var %in% names(SummarizedExperiment::colData(experiment_data))),
-      is.null(color_var) || isTRUE(color_var %in% names(SummarizedExperiment::colData(experiment_data))),
-      cancelOutput = FALSE
+  moduleServer(id, function(input, output, session) {
+    experiment <- experimentSpecServer(
+      "experiment",
+      datasets = datasets,
+      mae_name = mae_name
     )
-
-    hermes::draw_scatterplot(
-      object = experiment_data,
-      assay_name = assay_name,
-      x_spec = x_spec,
-      y_spec = y_spec,
-      facet_var = facet_var,
-      color_var = color_var,
-      smooth_method = smooth_method
+    assay <- assaySpecServer(
+      "assay",
+      assays = experiment$assays,
+      exclude_assays = exclude_assays
     )
+    sample_var_specs <- multiSampleVarSpecServer(
+      inputIds = c("facet_var", "color_var"),
+      experiment_name = experiment$name,
+      original_data = experiment$data
+    )
+    x_spec <- geneSpecServer("x_spec", summary_funs, experiment$genes)
+    y_spec <- geneSpecServer("y_spec", summary_funs, experiment$genes)
+
+    output$plot <- renderPlot({
+      # Resolve all reactivity.
+      experiment_data <- sample_var_specs$experiment_data()
+      x_spec <- x_spec()
+      y_spec <- y_spec()
+      facet_var <- sample_var_specs$vars$facet_var()
+      color_var <- sample_var_specs$vars$color_var()
+      assay_name <- assay()
+      smooth_method <- input$smooth_method
+
+      validate_gene_spec(x_spec, rownames(experiment_data))
+      validate_gene_spec(y_spec, rownames(experiment_data))
+
+      # Require which states need to be truthy.
+      req(
+        smooth_method,
+        # Note: The following statements are important to make sure the UI inputs have been updated.
+        isTRUE(assay_name %in% SummarizedExperiment::assayNames(experiment_data)),
+        is.null(facet_var) || isTRUE(facet_var %in% names(SummarizedExperiment::colData(experiment_data))),
+        is.null(color_var) || isTRUE(color_var %in% names(SummarizedExperiment::colData(experiment_data))),
+        cancelOutput = FALSE
+      )
+
+      hermes::draw_scatterplot(
+        object = experiment_data,
+        assay_name = assay_name,
+        x_spec = x_spec,
+        y_spec = y_spec,
+        facet_var = facet_var,
+        color_var = color_var,
+        smooth_method = smooth_method
+      )
+    })
   })
 }
 

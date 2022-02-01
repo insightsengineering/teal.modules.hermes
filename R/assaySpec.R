@@ -57,22 +57,21 @@ assaySpecInput <- function(inputId,
 #'   )
 #' }
 #'
-#' server <- function(input,
-#'                    output,
-#'                    session,
-#'                    datasets) {
-#'   experiment <- experimentSpecServer(
-#'     "experiment",
-#'     datasets,
-#'     "MAE"
-#'   )
-#'   assay <- assaySpecServer(
-#'     "assay",
-#'     experiment$assays,
-#'     exclude_assays = c("counts", "cpm", "tpm", "bla")
-#'   )
-#'   output$result <- renderPrint({
-#'     assay()
+#' server <- function(id, datasets) {
+#'   moduleServer(id, module = function(input, output, session) {
+#'     experiment <- experimentSpecServer(
+#'       "experiment",
+#'       datasets,
+#'       "MAE"
+#'     )
+#'     assay <- assaySpecServer(
+#'       "assay",
+#'       experiment$assays,
+#'       exclude_assays = c("counts", "cpm", "tpm", "bla")
+#'     )
+#'     output$result <- renderPrint({
+#'       assay()
+#'     })
 #'   })
 #' }
 #'
@@ -97,14 +96,14 @@ assaySpecInput <- function(inputId,
 #' if (interactive()) {
 #'   my_app()
 #' }
-assaySpecServer <- function(inputId,
+assaySpecServer <- function(id,
                             assays,
                             exclude_assays = character()) {
-  assert_string(inputId)
+  assert_string(id)
   assert_reactive(assays)
   assert_character(exclude_assays, any.missing = FALSE)
 
-  moduleServer(inputId, function(input, output, session) {
+  moduleServer(id, function(input, output, session) {
 
     # When the assay names change, update the choices for assay.
     choices <- reactive({

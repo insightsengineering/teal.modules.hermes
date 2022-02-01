@@ -110,67 +110,67 @@ ui_g_barplot <- function(id,
 #' @describeIn tm_g_barplot sets up the server with reactive graph.
 #' @inheritParams module_arguments
 #' @export
-srv_g_barplot <- function(input,
-                          output,
-                          session,
+srv_g_barplot <- function(id,
                           datasets,
                           mae_name,
                           exclude_assays,
                           summary_funs) {
-  experiment <- experimentSpecServer(
-    "experiment",
-    datasets = datasets,
-    mae_name = mae_name
-  )
-  assay <- assaySpecServer(
-    "assay",
-    assays = experiment$assays,
-    exclude_assays = exclude_assays
-  )
-  multi <- multiSampleVarSpecServer(
-    c("facet", "fill"),
-    experiment_name = experiment$name,
-    original_data = experiment$data
-  )
-  x <- geneSpecServer(
-    "x",
-    funs = summary_funs,
-    gene_choices = experiment$genes
-  )
-
-  output$plot <- renderPlot({
-    # Resolve all reactivity.
-    experiment_data <- multi$experiment_data()
-    facet_var <- multi$vars$facet()
-    fill_var <- multi$vars$fill()
-    percentiles <- input$percentiles
-    assay <- assay()
-    x <- x()
-
-    # Require which states need to be truthy.
-    req(
-      assay,
-      # Note: The following statements are important to make sure the UI inputs have been updated.
-      isTRUE(assay %in% SummarizedExperiment::assayNames(experiment_data)),
-      isTRUE(all(c(facet_var, fill_var) %in% names(SummarizedExperiment::colData(experiment_data)))),
-      cancelOutput = FALSE
+  moduleServer(id, function(input, output, session) {
+    experiment <- experimentSpecServer(
+      "experiment",
+      datasets = datasets,
+      mae_name = mae_name
+    )
+    assay <- assaySpecServer(
+      "assay",
+      assays = experiment$assays,
+      exclude_assays = exclude_assays
+    )
+    multi <- multiSampleVarSpecServer(
+      c("facet", "fill"),
+      experiment_name = experiment$name,
+      original_data = experiment$data
+    )
+    x <- geneSpecServer(
+      "x",
+      funs = summary_funs,
+      gene_choices = experiment$genes
     )
 
-    # Validate and give useful messages to the user. Note: no need to duplicate here req() from above.
-    validate(need(
-      percentiles[1] != percentiles[2],
-      "please select two different quantiles - if you want only 2 groups, choose one quantile as 0 or 1"
-    ))
-    validate_gene_spec(x, rownames(experiment_data))
+    output$plot <- renderPlot({
+      # Resolve all reactivity.
+      experiment_data <- multi$experiment_data()
+      facet_var <- multi$vars$facet()
+      fill_var <- multi$vars$fill()
+      percentiles <- input$percentiles
+      assay <- assay()
+      x <- x()
 
-    hermes::draw_barplot(
-      object = experiment_data,
-      assay_name = assay,
-      x_spec = x,
-      facet_var = facet_var,
-      fill_var = fill_var,
-      percentiles = percentiles
-    )
+      # Require which states need to be truthy.
+      req(
+        assay,
+        # Note: The following statements are important to make sure the UI inputs have been updated.
+        isTRUE(assay %in% SummarizedExperiment::assayNames(experiment_data)),
+        isTRUE(all(c(facet_var, fill_var) %in% names(SummarizedExperiment::colData(experiment_data)))),
+        cancelOutput = FALSE
+      )
+
+      # Validate and give useful messages to the user. Note: no need to duplicate here req() from above.
+      validate(need(
+        percentiles[1] != percentiles[2],
+        "please select two different quantiles - if you want only 2 groups, choose one quantile as 0 or 1"
+      ))
+      validate_gene_spec(x, rownames(experiment_data))
+
+      hermes::draw_barplot(
+        object = experiment_data,
+        assay_name = assay,
+        x_spec = x,
+        facet_var = facet_var,
+        fill_var = fill_var,
+        percentiles = percentiles
+      )
+    })
   })
 }
 

@@ -5,7 +5,7 @@
 \title{Module Server for Gene Signature Specification}
 \usage{
 geneSpecServer(
-  inputId,
+  id,
   funs,
   gene_choices,
   label_modal_title = "Enter list of genes",
@@ -15,8 +15,7 @@ geneSpecServer(
 )
 }
 \arguments{
-\item{inputId}{(\code{string})\cr
-the ID used to call the module input.}
+\item{id}{(\code{string}) the shiny module id.}
 
 \item{funs}{(static named \code{list})\cr names of this list will be used for the function
 selection drop down menu.}
@@ -53,34 +52,34 @@ ui <- function(id,
     output = textOutput(ns("result"))
   )
 }
-server <- function(input,
-                   output,
-                   session,
+server <- function(id,
                    datasets,
                    funs) {
-  gene_choices <- reactive({
-    mae <- datasets$get_data("MAE", filtered = TRUE)
-    object <- mae[[1]]
-    gene_ids <- rownames(object)
-    gene_names <- SummarizedExperiment::rowData(object)$symbol
-    gene_data <- data.frame(
-      id = gene_ids,
-      name = gene_names
+  moduleServer(id, function(input, output, session) {
+    gene_choices <- reactive({
+      mae <- datasets$get_data("MAE", filtered = TRUE)
+      object <- mae[[1]]
+      gene_ids <- rownames(object)
+      gene_names <- SummarizedExperiment::rowData(object)$symbol
+      gene_data <- data.frame(
+        id = gene_ids,
+        name = gene_names
+      )
+      gene_data[order(gene_data$name), ]
+    })
+    gene_spec <- geneSpecServer(
+      "my_genes",
+      funs = funs,
+      gene_choices = gene_choices
     )
-    gene_data[order(gene_data$name), ]
-  })
-  gene_spec <- geneSpecServer(
-    "my_genes",
-    funs = funs,
-    gene_choices = gene_choices
-  )
-  output$result <- renderText({
-    validate_gene_spec(
-      gene_spec(),
-      gene_choices()$id
-    )
-    gene_spec <- gene_spec()
-    gene_spec$get_label()
+    output$result <- renderText({
+      validate_gene_spec(
+        gene_spec(),
+        gene_choices()$id
+      )
+      gene_spec <- gene_spec()
+      gene_spec$get_label()
+    })
   })
 }
 funs <- list(mean = colMeans)

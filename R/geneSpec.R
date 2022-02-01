@@ -140,6 +140,7 @@ geneSpecInput <- function(inputId,
 #' shows a notification if not all `selected` genes were available.
 #'
 #' @inheritParams module_arguments
+#' @param session (`ShinySession`)\cr the session object.
 #' @param selected (`character`)\cr currently selected gene IDs.
 #' @param choices (`data.frame`)\cr containing `id` and `name` columns of the
 #'   new choices.
@@ -232,34 +233,34 @@ h_parse_genes <- function(words, choices) {
 #'     output = textOutput(ns("result"))
 #'   )
 #' }
-#' server <- function(input,
-#'                    output,
-#'                    session,
+#' server <- function(id,
 #'                    datasets,
 #'                    funs) {
-#'   gene_choices <- reactive({
-#'     mae <- datasets$get_data("MAE", filtered = TRUE)
-#'     object <- mae[[1]]
-#'     gene_ids <- rownames(object)
-#'     gene_names <- SummarizedExperiment::rowData(object)$symbol
-#'     gene_data <- data.frame(
-#'       id = gene_ids,
-#'       name = gene_names
+#'   moduleServer(id, function(input, output, session) {
+#'     gene_choices <- reactive({
+#'       mae <- datasets$get_data("MAE", filtered = TRUE)
+#'       object <- mae[[1]]
+#'       gene_ids <- rownames(object)
+#'       gene_names <- SummarizedExperiment::rowData(object)$symbol
+#'       gene_data <- data.frame(
+#'         id = gene_ids,
+#'         name = gene_names
+#'       )
+#'       gene_data[order(gene_data$name), ]
+#'     })
+#'     gene_spec <- geneSpecServer(
+#'       "my_genes",
+#'       funs = funs,
+#'       gene_choices = gene_choices
 #'     )
-#'     gene_data[order(gene_data$name), ]
-#'   })
-#'   gene_spec <- geneSpecServer(
-#'     "my_genes",
-#'     funs = funs,
-#'     gene_choices = gene_choices
-#'   )
-#'   output$result <- renderText({
-#'     validate_gene_spec(
-#'       gene_spec(),
-#'       gene_choices()$id
-#'     )
-#'     gene_spec <- gene_spec()
-#'     gene_spec$get_label()
+#'     output$result <- renderText({
+#'       validate_gene_spec(
+#'         gene_spec(),
+#'         gene_choices()$id
+#'       )
+#'       gene_spec <- gene_spec()
+#'       gene_spec$get_label()
+#'     })
 #'   })
 #' }
 #' funs <- list(mean = colMeans)
@@ -285,7 +286,7 @@ h_parse_genes <- function(words, choices) {
 #' if (interactive()) {
 #'   my_app()
 #' }
-geneSpecServer <- function(inputId,
+geneSpecServer <- function(id,
                            funs,
                            gene_choices,
                            label_modal_title = "Enter list of genes",
@@ -293,13 +294,13 @@ geneSpecServer <- function(inputId,
                              "Please enter a comma-separated list of gene IDs and/or names.",
                              "(Note that genes not included in current choices will be removed)"
                            )) {
-  assert_string(inputId)
+  assert_string(id)
   assert_list(funs, names = "unique", min.len = 1L)
   assert_reactive(gene_choices)
   assert_string(label_modal_title)
   assert_character(label_modal_footer)
 
-  moduleServer(inputId, function(input, output, session) {
+  moduleServer(id, function(input, output, session) {
     # The `reactiveValues` object for storing current gene text input.
     # This will also be a data frame with id and name columns.
     parsed_genes <- reactiveVal(NULL, label = "Parsed genes")

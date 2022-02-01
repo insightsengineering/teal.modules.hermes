@@ -138,70 +138,70 @@ ui_g_km <- function(id,
 #' @describeIn tm_g_km sets up the user interface.
 #' @inheritParams module_arguments
 #' @export
-srv_g_km <- function(input,
-                     output,
-                     session,
+srv_g_km <- function(id,
                      datasets,
                      adtte_name,
                      mae_name,
                      adtte_vars,
                      summary_funs,
                      exclude_assays) {
-  experiment <- experimentSpecServer(
-    "experiment",
-    datasets = datasets,
-    mae_name = mae_name,
-    sample_vars_as_factors = FALSE # To avoid converting logical `event` to factor.
-  )
-  assay <- assaySpecServer(
-    "assay",
-    assays = experiment$assays,
-    exclude_assays = exclude_assays
-  )
-  genes <- geneSpecServer(
-    "genes",
-    funs = summary_funs,
-    gene_choices = experiment$genes
-  )
-  strata <- sampleVarSpecServer(
-    "strata",
-    experiment_name = experiment$name,
-    original_data = experiment$data
-  )
-  percentiles_without_borders <- reactive({
-    percentiles <- input$percentiles
-
-    result <- setdiff(percentiles, c(0, 1))
-    validate(need(
-      length(result) > 0,
-      "Please select at least one quantile other than 0 and 1"
-    ))
-    result
-  })
-  adtte <- adtteSpecServer(
-    "adtte",
-    datasets = datasets,
-    adtte_name = adtte_name,
-    mae_name = mae_name,
-    adtte_vars = adtte_vars,
-    experiment_data = strata$experiment_data,
-    experiment_name = experiment$name,
-    assay = assay,
-    genes = genes,
-    probs = percentiles_without_borders
-  )
-
-  output$km_plot <- renderPlot({
-    strata_var <- strata$sample_var()
-    binned_adtte <- adtte$binned_adtte_subset()
-
-    variables <- list(
-      tte = adtte_vars$aval,
-      is_event = adtte_vars$is_event,
-      arm = adtte$gene_factor,
-      strat = strata_var
+  moduleServer(id, function(input, output, session) {
+    experiment <- experimentSpecServer(
+      "experiment",
+      datasets = datasets,
+      mae_name = mae_name,
+      sample_vars_as_factors = FALSE # To avoid converting logical `event` to factor.
     )
-    tern::g_km(binned_adtte, variables = variables, annot_coxph = TRUE)
+    assay <- assaySpecServer(
+      "assay",
+      assays = experiment$assays,
+      exclude_assays = exclude_assays
+    )
+    genes <- geneSpecServer(
+      "genes",
+      funs = summary_funs,
+      gene_choices = experiment$genes
+    )
+    strata <- sampleVarSpecServer(
+      "strata",
+      experiment_name = experiment$name,
+      original_data = experiment$data
+    )
+    percentiles_without_borders <- reactive({
+      percentiles <- input$percentiles
+
+      result <- setdiff(percentiles, c(0, 1))
+      validate(need(
+        length(result) > 0,
+        "Please select at least one quantile other than 0 and 1"
+      ))
+      result
+    })
+    adtte <- adtteSpecServer(
+      "adtte",
+      datasets = datasets,
+      adtte_name = adtte_name,
+      mae_name = mae_name,
+      adtte_vars = adtte_vars,
+      experiment_data = strata$experiment_data,
+      experiment_name = experiment$name,
+      assay = assay,
+      genes = genes,
+      probs = percentiles_without_borders
+    )
+
+    output$km_plot <- renderPlot({
+      strata_var <- strata$sample_var()
+      binned_adtte <- adtte$binned_adtte_subset()
+
+      variables <- list(
+        tte = adtte_vars$aval,
+        is_event = adtte_vars$is_event,
+        arm = adtte$gene_factor,
+        strat = strata_var
+      )
+      tern::g_km(binned_adtte, variables = variables, annot_coxph = TRUE)
+    })
   })
 }
 

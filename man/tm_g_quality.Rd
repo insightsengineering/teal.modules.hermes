@@ -17,7 +17,7 @@ tm_g_quality(
 
 ui_g_quality(id, datasets, mae_name, pre_output, post_output)
 
-srv_g_quality(input, output, session, datasets, mae_name, exclude_assays)
+srv_g_quality(id, datasets, mae_name, exclude_assays)
 
 sample_tm_g_quality()
 }
@@ -38,18 +38,11 @@ placed before the output to put the output into context (for example a title).}
 placed after the output to put the output into context (for example the \code{\link[shiny:helpText]{shiny::helpText()}}
 elements can be useful).}
 
-\item{id}{(\code{string})\cr
-the ID used to call the teal module's UI function.}
+\item{id}{(\code{string}) the shiny module id.}
 
 \item{datasets}{(\code{Datasets})\cr
 teal specific argument which is automatically passed to the UI and server
 functions, holding all the data sets provided in the app initialization.}
-
-\item{input}{(\code{ReactiveValues})\cr the session's input object.}
-
-\item{output}{(\code{shinyoutput})\cr the session's output object.}
-
-\item{session}{(\code{ShinySession})\cr the session object.}
 }
 \value{
 Shiny module to be used in the teal app.
