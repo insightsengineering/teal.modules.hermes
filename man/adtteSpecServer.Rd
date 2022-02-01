@@ -102,8 +102,8 @@ server <- function(id, datasets) {
     )
     genes <- geneSpecServer(
       "genes",
-       funs = list(Mean = colMeans),
-       gene_choices = experiment$genes
+      funs = list(Mean = colMeans),
+      gene_choices = experiment$genes
     )
     adtte <- adtteSpecServer(
       "adtte",
@@ -129,7 +129,7 @@ server <- function(id, datasets) {
       binned_adtte_subset <- adtte$binned_adtte_subset()
       summary(binned_adtte_subset)
     })
- })
+  })
 }
 
 my_app <- function() {

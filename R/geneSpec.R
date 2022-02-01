@@ -236,7 +236,7 @@ h_parse_genes <- function(words, choices) {
 #' server <- function(id,
 #'                    datasets,
 #'                    funs) {
-#'   moduleServer(id, function(input, output, session){
+#'   moduleServer(id, function(input, output, session) {
 #'     gene_choices <- reactive({
 #'       mae <- datasets$get_data("MAE", filtered = TRUE)
 #'       object <- mae[[1]]

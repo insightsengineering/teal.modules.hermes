@@ -172,8 +172,8 @@ adtteSpecInput <- function(inputId,
 #'     )
 #'     genes <- geneSpecServer(
 #'       "genes",
-#'        funs = list(Mean = colMeans),
-#'        gene_choices = experiment$genes
+#'       funs = list(Mean = colMeans),
+#'       gene_choices = experiment$genes
 #'     )
 #'     adtte <- adtteSpecServer(
 #'       "adtte",
@@ -199,7 +199,7 @@ adtteSpecInput <- function(inputId,
 #'       binned_adtte_subset <- adtte$binned_adtte_subset()
 #'       summary(binned_adtte_subset)
 #'     })
-#'  })
+#'   })
 #' }
 #'
 #' my_app <- function() {

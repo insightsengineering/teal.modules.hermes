@@ -279,7 +279,7 @@ sampleVarSpecServer <- function(id,
     col_data_vars <- eventReactive(experiment_name(), {
       object <- original_data()
       col_data <- SummarizedExperiment::colData(object)
-     can_be_used <- vapply(col_data, FUN = function(x) is.atomic(x) && !allMissing(x), FUN.VALUE = logical(1))
+      can_be_used <- vapply(col_data, FUN = function(x) is.atomic(x) && !allMissing(x), FUN.VALUE = logical(1))
       if (!is.null(num_levels)) {
         col_is_factor <- vapply(col_data, FUN = is.factor, FUN.VALUE = logical(1))
         can_be_used <- can_be_used & col_is_factor

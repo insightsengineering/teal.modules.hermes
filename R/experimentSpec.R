@@ -157,7 +157,7 @@ h_gene_data <- function(object, name_annotation) {
 #' server <- function(id,
 #'                    datasets,
 #'                    mae_name) {
-#'   moduleServer(id,function(input, output, session){
+#'   moduleServer(id, function(input, output, session) {
 #'     experiment <- experimentSpecServer(
 #'       "my_experiment",
 #'       datasets,

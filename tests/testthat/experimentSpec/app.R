@@ -36,10 +36,10 @@ server <- function(id,
     )
     result <- reactive({
       switch(input$property,
-             data = experiment$data(),
-             name = experiment$name(),
-             genes = experiment$genes(),
-             assays = experiment$assays()
+        data = experiment$data(),
+        name = experiment$name(),
+        genes = experiment$genes(),
+        assays = experiment$assays()
       )
     })
     output$summary <- renderPrint({
