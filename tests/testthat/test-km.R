@@ -52,7 +52,7 @@ test_that("tm_g_km works as expected in the sample app", {
   expect_identical(initial_assay_name, "cpm")
 
   # Choose a gene signature.
-  app$setValue(ns("genes-genes"), c("GeneID:101927746", "GeneID:1820"))
+  app$setValue(ns("genes-genes"), c("GeneID:10061", "GeneID:28"))
 
   # Choose an endpoint.
   msg <- app$waitForOutputElement(ns("km_plot"), "message")

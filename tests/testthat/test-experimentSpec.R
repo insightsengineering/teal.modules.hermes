@@ -142,23 +142,23 @@ test_that("experimentSpec module works as expected in the test app", {
 
   # Filtering out all samples does give a validation message, so we are safe
   # downstream.
-  ns2 <- NS("teal-main_ui-filter_panel-add_MAE_filter")
-  app$setValue(ns2("subjects-var_to_add"), "SEX")
-  app$waitForValue(ns2("subjects-var_SEX-remove"))
-  app$setValue(ns2("subjects-var_SEX-content-selection"), character())
+  ns2 <- NS("teal-main_ui-filter_panel")
+  app$setValue(ns2("add_MAE_filter-subjects-var_to_add"), "SEX")
+  app$waitForValue(ns2("MAE_filter-subjects-_var_SEX-remove"))
+  app$setValue(ns2("MAE_filter-subjects-_var_SEX-content-selection"), character())
   expect_match(
     app$waitForOutputElement(ns("summary"), "message"),
     "No genes or samples included in this experiment, please adjust filters"
   )
-  app$click("teal-main_ui-filter_panel-MAE_filter-remove_filters")
+  app$click(ns2("MAE_filter-remove_filters"))
 
   # Same for filtering out all genes.
-  app$setValue(ns2("hd2-row_to_add"), "chromosome")
-  app$waitForValue(ns2("hd2-rowData_var_chromosome-content-selection"))
-  app$setValue(ns2("hd2-rowData_var_chromosome-content-selection"), character())
+  app$setValue(ns2("add_MAE_filter-hd2-row_to_add"), "chromosome")
+  app$waitForValue(ns2("MAE_filter-hd2-rowData_var_chromosome-content-selection"))
+  app$setValue(ns2("MAE_filter-hd2-rowData_var_chromosome-content-selection"), character())
   expect_match(
     app$waitForOutputElement(ns("summary"), "message"),
     "No genes or samples included in this experiment, please adjust filters"
   )
-  app$click("teal-main_ui-filter_panel-MAE_filter-remove_filters")
+  app$click(ns2("MAE_filter-remove_filters"))
 })
