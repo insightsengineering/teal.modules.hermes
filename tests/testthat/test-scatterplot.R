@@ -63,32 +63,32 @@ test_that("tm_g_scatterplot works as expected in the sample app", {
   )
 
   # Set one gene each.
-  app$setValue(ns("x_spec-genes"), "GeneID:5205")
-  app$setValue(ns("y_spec-genes"), "GeneID:1820")
+  app$setValue(ns("x_spec-genes"), "GeneID:503538")
+  app$setValue(ns("y_spec-genes"), "GeneID:8086")
 
   # Change the sample filter and confirm that genes are not updated.
-  ns2 <- NS("teal-main_ui-filter_panel-add_MAE_filter")
-  app$setValue(ns2("hd2-col_to_add"), "ARM")
+  ns2 <- NS("teal-main_ui-filter_panel")
+  app$setValue(ns2("add_MAE_filter-subjects-var_to_add"), "ARM")
 
   now_x_var <- app$waitForValue(ns("x_spec-genes"))
-  expect_identical(now_x_var, "GeneID:5205")
+  expect_identical(now_x_var, "GeneID:503538")
 
   now_y_var <- app$waitForValue(ns("y_spec-genes"))
-  expect_identical(now_y_var, "GeneID:1820")
+  expect_identical(now_y_var, "GeneID:8086")
 
   # Change the genes filter and confirm that genes are staying the same.
-  app$setValue(ns2("hd2-row_to_add"), "chromosome")
+  app$setValue(ns2("add_MAE_filter-hd2-row_to_add"), "chromosome")
 
   now_x_var <- app$waitForValue(ns("x_spec-genes"))
-  expect_identical(now_x_var, "GeneID:5205")
+  expect_identical(now_x_var, "GeneID:503538")
 
   now_y_var <- app$waitForValue(ns("y_spec-genes"))
-  expect_identical(now_y_var, "GeneID:1820")
+  expect_identical(now_y_var, "GeneID:8086")
 
   # Now change the experiment_name, genes, method.
   app$setValue(ns("experiment-name"), "hd2")
-  app$setValue(ns("x_spec-genes"), "GeneID:5205")
-  app$setValue(ns("y_spec-genes"), "GeneID:102723793")
+  app$setValue(ns("x_spec-genes"), "GeneID:441376")
+  app$setValue(ns("y_spec-genes"), "GeneID:79963")
   app$setValue(ns("smooth_method"), "loess")
   app$setValue(ns("facet_var-sample_var"), "AGE18")
 

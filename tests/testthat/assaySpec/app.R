@@ -31,7 +31,7 @@ server <- function(id,
     assay <- assaySpecServer(
       "assay",
       assays = experiment$assays,
-      exclude_assays = c("cpm", "tpm", "bla")
+      exclude_assays = c("counts", "cpm", "tpm", "bla")
     )
     output$result <- renderPrint({
       assay <- assay()
