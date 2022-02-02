@@ -59,3 +59,4 @@ and maximum plot width.}
 The documentation to this function lists all the conventional arguments in
 \code{hermes} teal modules.
 }
+\keyword{internal}
