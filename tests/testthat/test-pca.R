@@ -63,16 +63,16 @@ test_that("tm_g_pca works as expected in the sample app", {
   )
 
   # Add a gene filter and deselect everything and check that it does not crash.
-  ns2 <- NS("teal-main_ui-filter_panel-add_MAE_filter")
-  app$setValue(ns2("hd1-row_to_add"), "symbol")
-  app$waitForValue(ns2("hd1-rowData_var_symbol-content-selection"))
-  app$setValue(ns2("hd1-rowData_var_symbol-content-selection"), character()) # Deselect everything.
+  ns2 <- NS("teal-main_ui-filter_panel")
+  app$setValue(ns2("add_MAE_filter-hd1-row_to_add"), "symbol")
+  app$waitForValue(ns2("MAE_filter-hd1-rowData_var_symbol-content-selection"))
+  app$setValue(ns2("MAE_filter-hd1-rowData_var_symbol-content-selection"), character()) # Deselect everything.
   plot_message <- app$waitForOutputElement(ns("plot_pca"), "message") # Only works without a crash.
   expect_match(
     plot_message,
     "No genes or samples included in this experiment, please adjust filters"
   )
-  app$click(ns2("hd1-rowData_var_symbol-remove")) # Remove filter again.
+  app$click(ns2("MAE_filter-hd1-rowData_var_symbol-remove")) # Remove filter again.
 
   # Now update the tab selection.
   app$setValue(ns("tab_selected"), "PC and Sample Correlation")
@@ -201,10 +201,10 @@ test_that("tm_g_pca works as expected in the sample app", {
     "show_matrix" = TRUE
   )
 
-  app$setValue(ns2("subjects-var_to_add"), "SEX")
+  app$setValue(ns2("add_MAE_filter-subjects-var_to_add"), "SEX")
   # Before selecting, it seems we need to wait a bit for the initial state.
-  app$waitForValue(ns2("subjects-var_SEX-content-selection"))
-  app$setValue(ns2("subjects-var_SEX-content-selection"), "M")
+  app$waitForValue(ns2("MAE_filter-subjects-_var_SEX-content-selection"))
+  app$setValue(ns2("MAE_filter-subjects-_var_SEX-content-selection"), "M")
 
   # Ensure xvar and yvar get resetted to pc1 and pc2.
   new_xvar <- app$waitForValue(ns("x_var"))
@@ -237,13 +237,13 @@ test_that("tm_g_pca works as expected in the sample app", {
 
   # Update filter to F, look at PCA plot, to get another validate msg.
   app$setValue(ns("tab_selected"), "PCA")
-  app$setValue(ns2("subjects-var_SEX-content-selection"), "F")
+  app$setValue(ns2("MAE_filter-subjects-_var_SEX-content-selection"), "F")
 
   plot_message <- app$waitForOutputElement(ns("plot_pca"), "message")
   expect_identical(plot_message, "Sample size is too small. PCA needs more than 2 samples.")
 
   # Remove filter.
-  app$click(ns2("subjects-var_SEX-remove"))
+  app$click(ns2("MAE_filter-subjects-_var_SEX-remove"))
 
   # Initiate the use of Top Variance Genes filtering functionality.
   app$setValue(ns("filter_top"), TRUE)
