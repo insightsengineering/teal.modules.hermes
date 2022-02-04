@@ -17,4 +17,3 @@ HTML code that includes \code{CSS} files
 not work with \code{devtools}. Therefore, we redefine this method in each package
 as needed. Thus, we do not export this method
 }
-\keyword{internal}

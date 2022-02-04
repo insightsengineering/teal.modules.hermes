@@ -23,4 +23,3 @@ linked below.
 \seealso{
 \code{\link[=assert_tag]{assert_tag()}}, \code{\link[=assert_reactive]{assert_reactive()}}, \code{\link[=assert_summary_funs]{assert_summary_funs()}}, \code{\link[=assert_adtte_vars]{assert_adtte_vars()}}
 }
-\keyword{internal}

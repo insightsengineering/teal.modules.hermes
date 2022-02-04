@@ -45,8 +45,6 @@
 #'   and maximum plot width.
 #'
 #' @name module_arguments
-#' @keywords internal
-#'
 NULL
 
 # assertion_arguments ----
@@ -87,6 +85,4 @@ NULL
 #' @param assay_name (`string`)\cr the assay to define the groups.
 #'
 #' @name function_arguments
-#' @keywords internal
-#'
 NULL

@@ -23,4 +23,3 @@ using \code{\link[hermes:gene_spec]{hermes::gene_spec()}}.}
 The documentation to this function lists all the conventional arguments in
 functions.
 }
-\keyword{internal}

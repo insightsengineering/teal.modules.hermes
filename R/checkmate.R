@@ -17,8 +17,6 @@
 #'
 #' @name assertions
 #' @import checkmate
-#' @keywords internal
-#'
 NULL
 
 # assert_tag ----
