@@ -45,6 +45,8 @@
 #'   and maximum plot width.
 #'
 #' @name module_arguments
+#' @keywords internal
+#'
 NULL
 
 # assertion_arguments ----
@@ -66,6 +68,8 @@ NULL
 #'   messages. Defaults to the heuristic implemented in [checkmate::vname()].
 #'
 #' @name assertion_arguments
+#' @keywords internal
+#'
 NULL
 
 # function_arguments ----
@@ -85,4 +89,6 @@ NULL
 #' @param assay_name (`string`)\cr the assay to define the groups.
 #'
 #' @name function_arguments
+#' @keywords internal
+#'
 NULL

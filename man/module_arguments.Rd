@@ -59,7 +59,4 @@ and maximum plot width.}
 The documentation to this function lists all the conventional arguments in
 \code{hermes} teal modules.
 }
-<<<<<<< HEAD
 \keyword{internal}
-=======
->>>>>>> parent of 64cce73... devops: removed private functions from the pkgdown

@@ -36,11 +36,7 @@ MAE into the experiment \code{colData()}.}
 \value{
 List with the following reactive objects:
 \itemize{
-<<<<<<< HEAD
-\item \code{data}: the \code{\link[hermes:AnyHermesData]{hermes::AnyHermesData}} experiment.
-=======
 \item \code{data}: the \code{\link[hermes:HermesData-class]{hermes::AnyHermesData}} experiment.
->>>>>>> parent of 64cce73... devops: removed private functions from the pkgdown
 \item \code{name}: the name of the experiment as selected by the user.
 \item \code{genes}: a \code{data.frame} with the genes in \code{data}, with columns \code{id} and \code{name}.
 \item \code{assays}: the names of the assays in \code{data}.
