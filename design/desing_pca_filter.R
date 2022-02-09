@@ -324,7 +324,7 @@ ui_g_pca2 <- function(id,
     data <- teal_data(mae_data)
     app <- init(
       data = data,
-      modules = root_modules(
+      modules = modules(
         static = {
           tm_g_pca2(
             label = "pca",

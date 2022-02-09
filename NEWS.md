@@ -1,6 +1,7 @@
 # teal.modules.hermes 0.1.1.9003
 
 * Rewrote modules to use `moduleServer` and updated call to `plot_with_settings_srv` after changes in `teal.devel`.
+* Replaced calls to `teal::root_modules` with `teal::modules` following deprecation of `teal::root_modules`.
 * Added basic logging to the modules.
 
 # teal.modules.hermes 0.1.1

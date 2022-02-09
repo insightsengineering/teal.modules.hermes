@@ -71,7 +71,7 @@ heatmap_plot <- function(object, assay_name) {
 #' data <- teal_data(mae_data)
 #' app <- init(
 #'   data = data,
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_g_quality(
 #'       label = "Quality Control",
 #'       mae_name = "MAE"
@@ -345,7 +345,7 @@ sample_tm_g_quality <- function() {
   data <- teal_data(mae_data)
   app <- init(
     data = data,
-    modules = root_modules(
+    modules = modules(
       tm_g_quality(
         label = "quality",
         mae_name = "MAE"

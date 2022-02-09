@@ -96,7 +96,7 @@ for (i in seq_along(mae)) {
 data <- teal_data(dataset("MAE", mae))
 app <- init(
   data = data,
-  modules = root_modules(
+  modules = modules(
     static = {
       tm_g_scatterplot(
         label = "scatterplot",

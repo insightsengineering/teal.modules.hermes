@@ -59,7 +59,7 @@ data <- teal_data(dataset("MAE", MAE))
 
 app <- init(
   data = data,
-  modules = root_modules(
+  modules = modules(
     static = {
       tm_made_up_merge_pr(
         label = "static",

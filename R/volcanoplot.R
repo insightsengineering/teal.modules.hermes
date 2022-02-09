@@ -17,7 +17,7 @@
 #' data <- teal_data(mae_data)
 #' app <- init(
 #'   data = data,
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_g_volcanoplot(
 #'       label = "volcanoplot",
 #'       mae_name = "MAE"
@@ -206,7 +206,7 @@ sample_tm_g_volcanoplot <- function() {
   data <- teal_data(mae_data)
   app <- init(
     data = data,
-    modules = root_modules(
+    modules = modules(
       tm_g_volcanoplot(
         label = "volcanoplot",
         mae_name = "MAE"

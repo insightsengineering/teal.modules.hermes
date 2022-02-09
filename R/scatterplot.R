@@ -17,7 +17,7 @@
 #' data <- teal_data(mae_data)
 #' app <- init(
 #'   data = data,
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_g_scatterplot(
 #'       label = "scatterplot",
 #'       mae_name = "MAE"
@@ -183,7 +183,7 @@ sample_tm_g_scatterplot <- function() {
   data <- teal_data(mae_data)
   app <- init(
     data = data,
-    modules = root_modules(
+    modules = modules(
       tm_g_scatterplot(
         label = "scatterplot",
         mae_name = "MAE"

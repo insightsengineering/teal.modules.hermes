@@ -68,7 +68,7 @@ mae_data <- dataset("MAE", mae)
 data <- teal_data(mae_data)
 app <- init(
   data = data,
-  modules = root_modules(
+  modules = modules(
     tm_g_volcanoplot(
       label = "volcanoplot",
       mae_name = "MAE"

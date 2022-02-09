@@ -189,7 +189,7 @@ h_gene_data <- function(object, name_annotation) {
 #'   data <- teal_data(mae_data)
 #'   app <- init(
 #'     data = data,
-#'     modules = root_modules(
+#'     modules = modules(
 #'       module(
 #'         label = "experimentSpec example",
 #'         server = server,
