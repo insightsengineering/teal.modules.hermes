@@ -25,7 +25,7 @@ analysis."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/m
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.hermes</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.1.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.1.9004</span>
       </span>
     </div>
 
@@ -36,15 +36,6 @@ analysis."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/m
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/insightsengineering/teal.modules.hermes" class="external-link">
     <span class="fa fa-github"></span>
@@ -137,14 +128,14 @@ functions, holding all the data sets provided in the app initialization.</p></dd
 <span class="r-in"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/teal/man/teal_data.html" class="external-link">teal_data</a></span><span class="op">(</span><span class="va">mae_data</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/teal/man/init.html" class="external-link">init</a></span><span class="op">(</span></span>
 <span class="r-in">  data <span class="op">=</span> <span class="va">data</span>,</span>
-<span class="r-in">  modules <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/teal/man/root_modules.html" class="external-link">root_modules</a></span><span class="op">(</span></span>
+<span class="r-in">  modules <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/teal/man/modules.html" class="external-link">modules</a></span><span class="op">(</span></span>
 <span class="r-in">    <span class="fu">tm_g_scatterplot</span><span class="op">(</span></span>
 <span class="r-in">      label <span class="op">=</span> <span class="st">"scatterplot"</span>,</span>
 <span class="r-in">      mae_name <span class="op">=</span> <span class="st">"MAE"</span></span>
 <span class="r-in">    <span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2022-02-09 14:48:08.7271 pid:1569 token:[] teal.modules.hermes Initializing tm_g_scatterplot</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2022-02-11 09:45:56.6601 pid:1563 token:[] teal.modules.hermes Initializing tm_g_scatterplot</span>
 <span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in">  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html" class="external-link">shinyApp</a></span><span class="op">(</span><span class="va">app</span><span class="op">$</span><span class="va">ui</span>, <span class="va">app</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">}</span></span>
