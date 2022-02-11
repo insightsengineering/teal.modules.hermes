@@ -128,7 +128,7 @@ data <- teal_data(
 )
 app <- init(
   data = data,
-  modules = root_modules(
+  modules = modules(
     tm_g_forest_tte(
       label = "forestplot",
       adtte_name = "ADTTE",

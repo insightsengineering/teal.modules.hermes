@@ -26,7 +26,7 @@
 #'   dataset("MAE", mae)
 #' )
 #'
-#' modules <- root_modules(
+#' modules <- modules(
 #'   tm_g_km(
 #'     label = "kaplan-meier",
 #'     adtte_name = "ADTTE",
@@ -229,7 +229,7 @@ sample_tm_g_km <- function() { # nolint
     dataset("MAE", mae)
   )
 
-  modules <- root_modules(
+  modules <- modules(
     tm_g_km(
       label = "kaplan-meier",
       adtte_name = "ADTTE",

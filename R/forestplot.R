@@ -26,7 +26,7 @@
 #' )
 #' app <- init(
 #'   data = data,
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_g_forest_tte(
 #'       label = "forestplot",
 #'       adtte_name = "ADTTE",
@@ -249,7 +249,7 @@ sample_tm_g_forest_tte <- function() { # nolint
 
   app <- init(
     data = data,
-    modules = root_modules(
+    modules = modules(
       tm_g_forest_tte(
         label = "forest",
         adtte_name = "ADTTE",

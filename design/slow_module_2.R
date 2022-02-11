@@ -58,7 +58,7 @@ app <- init(
   data = teal_data(
     dataset(mae_name, mae)
   ),
-  modules = root_modules(
+  modules = modules(
     module(
       label = "Slow Module",
       server = srv,

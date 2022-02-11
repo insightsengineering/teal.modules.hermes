@@ -108,7 +108,7 @@ my_app <- function() {
   data <- teal_data(mae_data)
   app <- init(
     data = data,
-    modules = root_modules(
+    modules = modules(
       module(
         label = "experimentSpec example",
         server = server,

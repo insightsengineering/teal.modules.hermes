@@ -17,7 +17,7 @@ app <- init(
   data = teal_data(
     dataset("MAE", mae)
   ),
-  modules = root_modules(
+  modules = modules(
     tm_g_boxplot(
       label = "boxplot",
       mae_name = "MAE",

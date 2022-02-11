@@ -270,7 +270,7 @@ h_parse_genes <- function(words, choices) {
 #'   data <- teal_data(mae_data)
 #'   app <- init(
 #'     data = data,
-#'     modules = root_modules(
+#'     modules = modules(
 #'       module(
 #'         label = "GeneSpec example",
 #'         server = server,

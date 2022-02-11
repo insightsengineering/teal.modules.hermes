@@ -132,7 +132,7 @@ Now we can try it out.
 ```{r}
 app <- init(
   data = data,
-  modules = root_modules(
+  modules = modules(
     static = {
       tm_g_volcanoplot(
         label = "volcanoplot",

@@ -179,7 +179,7 @@ data <- teal_data(mae, adsl, adtte) %>%
 ```{r}
 app <- init(
   data = data,
-  modules = root_modules(
+  modules = modules(
     static = {
       tm_made_up_merge_pr(
         label = "static",
