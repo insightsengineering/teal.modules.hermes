@@ -149,7 +149,7 @@ my_app <- function() {
 
   app <- init(
     data = data,
-    modules = root_modules(
+    modules = modules(
       module(
         label = "adtteSpec example",
         server = server,

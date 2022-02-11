@@ -17,7 +17,7 @@
 #' data <- teal_data(mae_data)
 #' app <- init(
 #'   data = data,
-#'   modules = root_modules(
+#'   modules = modules(
 #'     tm_g_pca(
 #'       label = "PCA plot",
 #'       mae_name = "MAE"
@@ -344,7 +344,7 @@ sample_tm_g_pca <- function() {
   data <- teal_data(mae_data)
   app <- init(
     data = data,
-    modules = root_modules(
+    modules = modules(
       tm_g_pca(
         label = "pca",
         mae_name = "MAE"

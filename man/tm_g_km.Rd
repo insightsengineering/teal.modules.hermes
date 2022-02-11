@@ -118,7 +118,7 @@ data <- teal_data(
   dataset("MAE", mae)
 )
 
-modules <- root_modules(
+modules <- modules(
   tm_g_km(
     label = "kaplan-meier",
     adtte_name = "ADTTE",

@@ -24,3 +24,4 @@ messages. Defaults to the heuristic implemented in \code{\link[checkmate:vname]{
 The documentation to this function lists all the conventional arguments in
 additional \code{checkmate} assertions.
 }
+\keyword{internal}

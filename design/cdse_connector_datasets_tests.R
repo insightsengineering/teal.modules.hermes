@@ -14,7 +14,7 @@ data <- cdse_data(
 
 app <- init(
   data = teal_data(data),
-  root_modules(
+  modules(
     teal.modules.hermes::tm_g_barplot("barplot", "MAE")
   )
 )
@@ -47,7 +47,7 @@ data <- cdse_data(
 
 app <- init(
   data = cdisc_data(data),
-  root_modules(
+  modules(
     teal.modules.clinical::tm_t_summary(
       label = "Demographic Table",
       dataname = "ADSL",
@@ -84,7 +84,7 @@ data <- cdse_data(
 )
 app <- init(
   data = cdisc_data(data),
-  root_modules(
+  modules(
     teal.modules.clinical::tm_t_summary(
       label = "Demographic Table",
       dataname = "ADSL",
@@ -114,7 +114,7 @@ data <- cdse_data(
 
 app <- init(
   data = teal_data(data),
-  root_modules(
+  modules(
     teal.modules.hermes::tm_g_barplot("barplot", "MAE")
   )
 )
