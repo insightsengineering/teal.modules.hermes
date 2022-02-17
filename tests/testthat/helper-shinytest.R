@@ -24,15 +24,19 @@ shinytest::ShinyDriver$set(
     }
     time_end <- time_num() + timeout_sec
 
+    # nolint start
     while (time_num() < time_end) {
-      result <- try({
-        output_res <- self$getAllValues(
-          output = name,
-          input = FALSE,
-          export = FALSE
-        )[["output"]]
-        output_res[[name]][[element]]
-      }, silent = TRUE)
+      result <- try(
+        {
+          output_res <- self$getAllValues(
+            output = name,
+            input = FALSE,
+            export = FALSE
+          )[["output"]]
+          output_res[[name]][[element]]
+        },
+        silent = TRUE
+      )
 
       if (!inherits(result, "try-error")) {
         invalid_match <- vapply(ignore, identical, logical(1L), x = result)
@@ -43,6 +47,8 @@ shinytest::ShinyDriver$set(
       }
       Sys.sleep(interval_sec)
     }
+    # nolint end
+
     stop(paste(
       "time out was reached while waiting for element",
       element, "from output", name
