@@ -25,8 +25,7 @@ shinytest::ShinyDriver$set(
     time_end <- time_num() + timeout_sec
 
     while (time_num() < time_end) {
-      result <- try(
-        {
+      result <- try({
           output_res <- self$getAllValues(
             output = name,
             input = FALSE,
