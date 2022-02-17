@@ -24,8 +24,10 @@ shinytest::ShinyDriver$set(
     }
     time_end <- time_num() + timeout_sec
 
+    # nolint start
     while (time_num() < time_end) {
-      result <- try({
+      result <- try(
+        {
           output_res <- self$getAllValues(
             output = name,
             input = FALSE,
@@ -45,6 +47,8 @@ shinytest::ShinyDriver$set(
       }
       Sys.sleep(interval_sec)
     }
+    # nolint end
+
     stop(paste(
       "time out was reached while waiting for element",
       element, "from output", name
