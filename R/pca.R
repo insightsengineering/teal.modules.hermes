@@ -308,7 +308,8 @@ srv_g_pca <- function(id,
         colour = color_var,
         variance_percentage = var_pct,
         label = label,
-        label.repel = label
+        label.repel = label,
+        label.show.legend = FALSE
       )
     })
 
