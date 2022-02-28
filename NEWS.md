@@ -7,6 +7,7 @@
 # teal.modules.hermes 0.1.1
 
 ### Bug Fixes
+* Updated legend for the PCA plot.
 * Gene selection with more than a few thousand genes no longer hangs the application. This is achieved through a different selection input in the corresponding `geneSpec` shiny module.
 * Only atomic columns of `colData` with at least one value can now be selected in the `sampleVarSpecModule`.
 
