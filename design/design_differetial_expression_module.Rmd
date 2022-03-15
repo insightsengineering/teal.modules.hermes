@@ -9,7 +9,6 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 
 library(teal)
-library(teal.devel)
 library(hermes)
 mae <- multi_assay_experiment # from hermes
 data <- teal_data(dataset("MAE", mae))
@@ -48,7 +47,7 @@ ui_volcanoplot <- function(id, datasets, dataname) {
   ns <- NS(id)
   mae <- datasets$get_data(dataname, filtered = TRUE)
 
-  standard_layout(
+  teal.widgets::standard_layout(
     output = plotOutput(ns("plot")),
     encoding = div(
       selectInput(ns("experiment_name"), "Select experiment", names(mae)),

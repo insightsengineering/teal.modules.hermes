@@ -7,7 +7,6 @@ remotes::install_github(
 )
 
 library(teal)
-library(teal.devel)
 library(dplyr)
 library(ggplot2)
 library(random.cdisc.data)
@@ -35,8 +34,8 @@ ui_made_up_merge_pr <- function(id, ...) {
 
   ns <- NS(id)
 
-  standard_layout(
-    output = white_small_well(
+  teal.widgets::standard_layout(
+    output = teal.widgets::white_small_well(
       tabsetPanel(
         tabPanel(title = "MAE", verbatimTextOutput(outputId = ns("col_data_table")))
       )

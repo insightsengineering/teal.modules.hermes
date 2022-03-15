@@ -81,7 +81,7 @@ ui_g_scatterplot <- function(id,
     None = "none"
   )
 
-  teal.devel::standard_layout(
+  teal.widgets::standard_layout(
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
@@ -89,8 +89,8 @@ ui_g_scatterplot <- function(id,
       assaySpecInput(ns("assay")),
       geneSpecInput(ns("x_spec"), summary_funs, label_genes = "Select x Gene(s)"),
       geneSpecInput(ns("y_spec"), summary_funs, label_genes = "Select y Gene(s)"),
-      teal.devel::panel_group(
-        teal.devel::panel_item(
+      teal.widgets::panel_group(
+        teal.widgets::panel_item(
           input_id = "settings_item",
           collapsed = TRUE,
           title = "Additional Settings",

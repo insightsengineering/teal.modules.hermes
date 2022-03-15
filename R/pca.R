@@ -67,7 +67,7 @@ ui_g_pca <- function(id,
   mae <- datasets$get_data(mae_name, filtered = FALSE)
   experiment_name_choices <- names(mae)
 
-  teal.devel::standard_layout(
+  teal.widgets::standard_layout(
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
@@ -80,8 +80,8 @@ ui_g_pca <- function(id,
         selectizeInput(ns("x_var"), "Select X-axis PC", choices = ""),
         selectizeInput(ns("y_var"), "Select Y-axis PC", choices = "")
       ),
-      teal.devel::panel_group(
-        teal.devel::panel_item(
+      teal.widgets::panel_group(
+        teal.widgets::panel_item(
           input_id = "settings_item",
           collapsed = TRUE,
           title = "Additional Settings",

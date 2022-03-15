@@ -45,7 +45,7 @@ sampleVarSpecInput <- function(inputId,
     ),
     div(
       class = "custom-select-input",
-      optionalSelectInput(
+      teal.widgets::optionalSelectInput(
         ns("sample_var"),
         label = NULL,
         choices = "",
@@ -201,7 +201,7 @@ validate_n_levels <- function(x, name, n_levels) {
 #'   ns <- NS(id)
 #'   mae <- datasets$get_data("MAE", filtered = FALSE)
 #'   experiment_name_choices <- names(mae)
-#'   teal.devel::standard_layout(
+#'   teal.widgets::standard_layout(
 #'     encoding = div(
 #'       selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
 #'       sampleVarSpecInput(ns("facet_var"), "Select faceting variable")
@@ -290,7 +290,7 @@ sampleVarSpecServer <- function(id,
     # When the colData variables change, update the choices for sample_var.
     observeEvent(col_data_vars(), {
       col_data_vars <- col_data_vars()
-      updateOptionalSelectInput(
+      teal.widgets::updateOptionalSelectInput(
         session,
         "sample_var",
         choices = col_data_vars,

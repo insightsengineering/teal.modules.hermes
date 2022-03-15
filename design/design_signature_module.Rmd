@@ -9,7 +9,6 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 
 library(teal)
-library(teal.devel)
 library(teal.modules.hermes)
 library(hermes)
 library(checkmate)
@@ -255,7 +254,7 @@ geneSpecInput <- function(id, # nolint
     ),
     div(
       class = "custom-select-input",
-      optionalSelectInput(
+      teal.widgets::optionalSelectInput(
         ns("genes"),
         label = NULL,
         choices = "",
@@ -314,7 +313,7 @@ geneSpecServer <- function(id, # nolint
       # Only select the subset of parsed genes included in choices.
       new_selected <- intersect(parsed_genes, genes)
       removed <- setdiff(parsed_genes, new_selected)
-      updateOptionalSelectInput(
+      teal.widgets::updateOptionalSelectInput(
         session,
         inputId = "genes",
         choices = genes,
@@ -342,7 +341,7 @@ geneSpecServer <- function(id, # nolint
       if (!lock) {
         new_selected <- intersect(old_selected, genes)
         removed <- setdiff(old_selected, new_selected)
-        updateOptionalSelectInput(
+        teal.widgets::updateOptionalSelectInput(
           session,
           inputId = "genes",
           choices = genes,
@@ -480,7 +479,7 @@ ui_g_signature <- function(id,
   mae <- datasets$get_data(mae_name, filtered = FALSE)
   experiment_name_choices <- names(mae)
 
-  teal.devel::standard_layout(
+  teal.widgets::standard_layout(
     encoding = div(
       selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
       selectInput(ns("assay_name"), "Select assay", choices = ""),

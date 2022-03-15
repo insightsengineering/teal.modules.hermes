@@ -20,7 +20,7 @@ A \code{data.frame} with \code{id} and \code{name} columns containing all genes 
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-Given a \code{\link[hermes:HermesData-class]{hermes::AnyHermesData}} data object, as well as the annotation
+Given a \code{\link[hermes:AnyHermesData]{hermes::AnyHermesData}} data object, as well as the annotation
 column name to use as gene name, this function formats the contained genes
 as a \code{data.frame} ready for consumption in \code{\link[=h_order_genes]{h_order_genes()}} e.g.
 }

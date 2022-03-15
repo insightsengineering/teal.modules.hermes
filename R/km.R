@@ -104,7 +104,7 @@ ui_g_km <- function(id,
                     post_output) {
   ns <- NS(id)
 
-  teal.devel::standard_layout(
+  teal.widgets::standard_layout(
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
@@ -113,8 +113,8 @@ ui_g_km <- function(id,
       geneSpecInput(ns("genes"), summary_funs),
       helpText("Analysis of ADTTE:", tags$code(adtte_name)),
       adtteSpecInput(ns("adtte")),
-      teal.devel::panel_group(
-        teal.devel::panel_item(
+      teal.widgets::panel_group(
+        teal.widgets::panel_item(
           input_id = "settings_item",
           collapsed = TRUE,
           title = "Additional Settings",

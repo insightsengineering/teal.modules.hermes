@@ -35,7 +35,7 @@ ui_g_pca2 <- function(id,
   mae <- datasets$get_data(mae_name, filtered = FALSE)
   experiment_name_choices <- names(mae)
 
-  teal.devel::standard_layout(
+  teal.widgets::standard_layout(
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
@@ -44,7 +44,7 @@ ui_g_pca2 <- function(id,
       conditionalPanel(
         condition = "input.tab_selected == 'PCA'",
         ns = ns,
-        optionalSelectInput(ns("color_var"), "Optional color variable"),
+        teal.widgets::optionalSelectInput(ns("color_var"), "Optional color variable"),
         selectizeInput(ns("x_var"), "Select X-axis PC", choices = ""),
         selectizeInput(ns("y_var"), "Select Y-axis PC", choices = ""),
       ),
@@ -174,7 +174,7 @@ ui_g_pca2 <- function(id,
     observeEvent(col_data_vars(), {
       color_var_choices <- col_data_vars()
 
-      updateOptionalSelectInput(
+      teal.widgets::updateOptionalSelectInput(
         session,
         "color_var",
         choices = color_var_choices,

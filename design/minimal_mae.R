@@ -32,8 +32,8 @@ ui_made_up_merge_pr <- function(id, ...) {
 
   ns <- NS(id)
 
-  standard_layout(
-    output = white_small_well(
+  teal.widgets::standard_layout(
+    output = teal.widgets::white_small_well(
       tabsetPanel(
         tabPanel(title = "MAE", verbatimTextOutput(outputId = ns("col_data_table")))
       )
@@ -50,7 +50,6 @@ srv_made_up_merge_pr <- function(input, output, session, datasets, dataname) {
 }
 
 library(teal)
-library(teal.devel)
 library(hermes)
 
 mae <- multi_assay_experiment # from hermes

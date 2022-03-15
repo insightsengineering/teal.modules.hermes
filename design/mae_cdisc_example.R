@@ -21,8 +21,8 @@ ui_made_up_merge_pr <- function(id, ...) {
 
   ns <- NS(id)
 
-  standard_layout(
-    output = white_small_well(
+  teal.widgets::standard_layout(
+    output = teal.widgets::white_small_well(
       verbatimTextOutput(outputId = ns("filter_expr")),
       tabsetPanel(
         tabPanel(title = "MAE", verbatimTextOutput(outputId = ns("col_data_table"))),
@@ -30,17 +30,17 @@ ui_made_up_merge_pr <- function(id, ...) {
       )
     ),
     encoding = div(
-      optionalSelectInput(
+      teal.widgets::optionalSelectInput(
         inputId = "select_assay",
         label = "Select assay",
         choices = c("a", "b", "c")
       ),
-      optionalSelectInput(
+      teal.widgets::optionalSelectInput(
         inputId = "select_patient",
         label = "Select patient",
         choices = 1:10
       ),
-      optionalSelectInput(
+      teal.widgets::optionalSelectInput(
         inputId = "select_column",
         label = "Select column",
         choices = 1:10
@@ -51,7 +51,7 @@ ui_made_up_merge_pr <- function(id, ...) {
   )
 }
 srv_made_up_merge_pr <- function(input, output, session, datasets, dataname) {
-  init_chunks()
+  teal.code::init_chunks()
 
   output$filter_expr <- renderText({
     paste(
@@ -65,20 +65,20 @@ srv_made_up_merge_pr <- function(input, output, session, datasets, dataname) {
 
   output$col_data_table <- renderText({
     mae <- datasets$get_data(dataname, filtered = TRUE)
-    chunks_reset()
-    chunks_push(bquote({
+    teal.code::chunks_reset()
+    teal.code::chunks_push(bquote({
       paste(capture.output(print(mae)), collapse = "\n")
     }))
-    chunks_safe_eval()
+    teal.code::chunks_safe_eval()
   })
 
   output$adsl_data_table <- renderText({
     adsl <- datasets$get_data("ADSL", filtered = TRUE)
-    chunks_reset()
-    chunks_push(bquote({
+    teal.code::chunks_reset()
+    teal.code::chunks_push(bquote({
       paste(capture.output(str(adsl)), collapse = "\n")
     }))
-    chunks_safe_eval()
+    teal.code::chunks_safe_eval()
   })
 
 
@@ -96,7 +96,6 @@ srv_made_up_merge_pr <- function(input, output, session, datasets, dataname) {
 }
 
 library(teal)
-library(teal.devel)
 library(hermes)
 library(random.cdisc.data)
 adsl <- cdisc_dataset("ADSL", radsl(cached = TRUE, na_percentage = 0.2)) %>%

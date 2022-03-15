@@ -17,7 +17,6 @@ remotes::install_github(
 )
 
 library(teal)
-library(teal.devel)
 library(hermes)
 library(tern)
 ```
@@ -138,7 +137,7 @@ emptySelectInput <- function(inputId, label, ...) { # nolint
 ui_barplot <- function(id, datasets, dataname) {
   ns <- NS(id)
   mae <- datasets$get_data(dataname, filtered = TRUE)
-  standard_layout(
+  teal.widgets::standard_layout(
     output = plotOutput(ns("plot")),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
@@ -151,8 +150,8 @@ ui_barplot <- function(id, datasets, dataname) {
                   min = 0, max = 1,
                   value = c(0.2, 0.8)
                   ),
-      optionalSelectInput(ns("fillvar"), "Select stratify by"),
-      optionalSelectInput(ns("facetvar"), "Select facet by")
+      teal.widgets::optionalSelectInput(ns("fillvar"), "Select stratify by"),
+      teal.widgets::optionalSelectInput(ns("facetvar"), "Select facet by")
     )
   )
 }
@@ -233,7 +232,7 @@ srv_barplot <- function(input, output, session, datasets, dataname) {
     # Second: do the action.
     idnames <- c("facetvar", "fillvar", "percentiles")
     for (i in seq_along(idnames)) {
-      updateOptionalSelectInput(
+      teal.widgets::updateOptionalSelectInput(
         session,
         idnames[i],
         choices = colvars,

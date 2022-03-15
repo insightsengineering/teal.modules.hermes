@@ -67,7 +67,7 @@ ui_g_volcanoplot <- function(id,
   ns <- NS(id)
   mae <- datasets$get_data(mae_name, filtered = TRUE)
 
-  teal.devel::standard_layout(
+  teal.widgets::standard_layout(
     output = div(
       plotOutput(ns("plot")),
       DT::DTOutput(ns("table"))
@@ -82,8 +82,8 @@ ui_g_volcanoplot <- function(id,
       sampleVarSpecInput(ns("compare_group"), "Compare Groups", "Please group here into 2 levels"),
       tags$label("Show Top Differentiated Genes"),
       shinyWidgets::switchInput(ns("show_top_gene"), value = FALSE, size = "mini"),
-      teal.devel::panel_group(
-        teal.devel::panel_item(
+      teal.widgets::panel_group(
+        teal.widgets::panel_item(
           input_id = "settings_item",
           collapsed = TRUE,
           title = "Additional Settings",
