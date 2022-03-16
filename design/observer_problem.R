@@ -1,5 +1,4 @@
 library(teal)
-library(teal.devel)
 library(hermes)
 
 
