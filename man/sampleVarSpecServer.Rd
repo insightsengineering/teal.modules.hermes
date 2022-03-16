@@ -54,7 +54,7 @@ ui <- function(id,
   ns <- NS(id)
   mae <- datasets$get_data("MAE", filtered = FALSE)
   experiment_name_choices <- names(mae)
-  teal.devel::standard_layout(
+  teal.widgets::standard_layout(
     encoding = div(
       selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
       sampleVarSpecInput(ns("facet_var"), "Select faceting variable")

@@ -4,7 +4,7 @@ ui <- function(id,
                datasets,
                funs) {
   ns <- NS(id)
-  teal.devel::standard_layout(
+  teal.widgets::standard_layout(
     encoding = div(
       geneSpecInput(
         ns("my_genes"),

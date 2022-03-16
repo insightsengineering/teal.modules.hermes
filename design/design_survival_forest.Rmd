@@ -11,7 +11,6 @@ knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
 library(tern)
 library(teal)
-library(teal.devel)
 library(teal.modules.hermes)
 library(hermes)
 library(assertthat)
@@ -170,7 +169,7 @@ ui_surv_forest <- function(id, datasets, dataname) {
   ns <- NS(id)
   mae <- datasets$get_data(dataname, filtered = TRUE)
   experiment_name_choices <- names(mae)
-  teal.devel::standard_layout(
+  teal.widgets::standard_layout(
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(dataname)),
@@ -178,7 +177,7 @@ ui_surv_forest <- function(id, datasets, dataname) {
       selectInput(ns("assay_name"), "Select Assay", choices = ""),
       selectizeInput(ns("geneid"), "Gene ID", choices = ""),
       sliderInput(ns("probs"), label = ("Probability Cutoff"), min = 0.01, max = 0.99, value = 0.5),
-      optionalSelectInput(ns("subgroups"), label = "Subgroups", choices = "", selected = "", multiple = TRUE)
+      teal.widgets::optionalSelectInput(ns("subgroups"), label = "Subgroups", choices = "", selected = "", multiple = TRUE)
     ),
     output = plotOutput(ns("plot"))
   )
@@ -189,7 +188,7 @@ ui_surv_forest <- function(id, datasets, dataname) {
 
 ```{r}
 srv_surv_forest <- function(input, output, session, datasets, dataname) {
-  
+
   # When the filtered data set of the chosen experiment changes, update the
   # experiment data object.
   experiment_data <- reactive({
@@ -246,7 +245,7 @@ srv_surv_forest <- function(input, output, session, datasets, dataname) {
   observeEvent(subgroups(), {
     subgroup_choices <- subgroups()
 
-    updateOptionalSelectInput(
+    teal.widgets::updateOptionalSelectInput(
       session,
       "subgroups",
       choices = subgroup_choices,

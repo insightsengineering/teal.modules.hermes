@@ -17,7 +17,6 @@ remotes::install_github(
 )
 
 library(teal)
-library(teal.devel)
 library(dplyr)
 library(ggplot2)
 library(random.cdisc.data)
@@ -74,7 +73,7 @@ draw_boxplot <- function(object, assayname, facetvar, xvar, yvar) {
     stat_boxplot(geom = "errorbar") +
     labs(x = xvar, y = yvar)
   if (!is.null(facetvar)) {
-    p <- p + facet_wrap(~ facet)
+    p <- p + facet_wrap(~facet)
   }
   p
 }
@@ -98,7 +97,6 @@ draw_boxplot(
   xvar = "SEX",
   yvar = genes(object)[2]
 )
-
 ```
 
 ## UI function
@@ -127,7 +125,7 @@ empty_select_input <- function(input_id, label, ...) {
 ui_boxplot <- function(id, datasets, dataname) {
   ns <- NS(id)
   mae <- datasets$get_data(dataname, filtered = TRUE)
-  standard_layout(
+  teal.widgets::standard_layout(
     output = plotOutput(ns("plot")),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
@@ -136,7 +134,7 @@ ui_boxplot <- function(id, datasets, dataname) {
       selectInput(ns("assay"), "assay", choices = ""),
       selectizeInput(ns("yvar"), "Select Gene of Interest", choices = ""),
       selectizeInput(ns("xvar"), "Stratify by", choices = ""),
-      optionalSelectInput(ns("facetvar"), "Facet by")
+      teal.widgets::optionalSelectInput(ns("facetvar"), "Facet by")
     )
   )
 }
@@ -182,7 +180,7 @@ srv_boxplot <- function(input, output, session, datasets, dataname) {
       choices = colvars,
       selected = ""
     )
-    updateOptionalSelectInput(
+    teal.widgets::updateOptionalSelectInput(
       session,
       "facetvar",
       choices = colvars,
@@ -203,12 +201,12 @@ srv_boxplot <- function(input, output, session, datasets, dataname) {
     }
 
     # Second: do the action.
-      updateSelectInput(
-        session,
-        "yvar",
-        choices = gene_choices,
-        selected = gene_choices[1]
-      )
+    updateSelectInput(
+      session,
+      "yvar",
+      choices = gene_choices,
+      selected = gene_choices[1]
+    )
   })
 
   output$plot <- renderPlot({
@@ -240,10 +238,10 @@ Unfortunately in the current shiny version in the dockers we cannot yet try this
 
 ```{r}
 tm_g_boxplot <- function(label = "Simple MAE module",
-                             info = NULL,
-                             dataname = NULL,
-                             pre_output = NULL,
-                             post_output = NULL) {
+                         info = NULL,
+                         dataname = NULL,
+                         pre_output = NULL,
+                         post_output = NULL) {
   module(
     label = label,
     server = srv_boxplot,

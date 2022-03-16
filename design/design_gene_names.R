@@ -3,9 +3,9 @@ library(teal.modules.hermes)
 ui <- function(id,
                datasets) {
   ns <- NS(id)
-  teal.devel::standard_layout(
+  teal.widgets::standard_layout(
     encoding = div(
-      optionalSelectInput(
+      teal.widgets::optionalSelectInput(
         ns("genes"),
         label = NULL,
         choices = "",
@@ -25,7 +25,7 @@ h_update_gene_selection2 <- function(session,
                                      choice_data) {
   is_new_selected <- selected %in% choice_data$id
   is_removed <- !is_new_selected
-  updateOptionalSelectInput(
+  teal.widgets::updateOptionalSelectInput(
     session,
     inputId = inputId,
     selected = selected[is_new_selected],

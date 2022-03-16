@@ -9,7 +9,6 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 
 library(teal)
-library(teal.devel)
 library(teal.modules.hermes)
 library(hermes)
 library(checkmate)
@@ -106,8 +105,7 @@ if (FALSE) {
 
   server <- function(input, output, session) {
     output$debug01 <- renderPrint({
-      rmi01 <- input$rmi01
-      teal.devel::as.global(rmi01)
+      .GlobalEnv$rmi01 <- input$rmi01
     })
   }
 
@@ -215,7 +213,7 @@ ui_g_levels <- function(id,
   mae <- datasets$get_data(mae_name, filtered = FALSE)
   experiment_name_choices <- names(mae)
 
-  teal.devel::standard_layout(
+  teal.widgets::standard_layout(
     encoding = div(
       selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
       div(
@@ -240,7 +238,7 @@ ui_g_levels <- function(id,
       ),
       div(
         class = "custom-select-input",
-        optionalSelectInput(
+        teal.widgets::optionalSelectInput(
           ns("facet_var"),
           label = NULL,
           choices = "",
@@ -284,7 +282,7 @@ srv_g_levels <- function(input,
   observeEvent(col_data_vars(), {
     col_data_vars <- col_data_vars()
 
-    updateOptionalSelectInput(
+    teal.widgets::updateOptionalSelectInput(
       session,
       "facet_var",
       choices = col_data_vars,
@@ -490,7 +488,7 @@ ui_example <- function(id,
   ns <- NS(id)
   mae <- datasets$get_data(mae_name, filtered = FALSE)
   experiment_name_choices <- names(mae)
-  teal.devel::standard_layout(
+  teal.widgets::standard_layout(
     encoding = div(
       selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
       sampleVarSpecInput(ns("facet_var"), "Select faceting variable")

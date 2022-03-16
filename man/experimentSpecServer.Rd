@@ -52,7 +52,7 @@ ui <- function(id,
                datasets,
                mae_name) {
   ns <- NS(id)
-  teal.devel::standard_layout(
+  teal.widgets::standard_layout(
     encoding = div(
       experimentSpecInput(
         ns("my_experiment"),

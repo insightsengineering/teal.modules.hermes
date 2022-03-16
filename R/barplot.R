@@ -74,7 +74,7 @@ ui_g_barplot <- function(id,
                          pre_output,
                          post_output) {
   ns <- NS(id)
-  teal.devel::standard_layout(
+  teal.widgets::standard_layout(
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
@@ -89,8 +89,8 @@ ui_g_barplot <- function(id,
         max = 1,
         value = c(0.2, 0.8)
       ),
-      teal.devel::panel_group(
-        teal.devel::panel_item(
+      teal.widgets::panel_group(
+        teal.widgets::panel_item(
           input_id = "settings_item",
           collapsed = TRUE,
           title = "Additional Settings",

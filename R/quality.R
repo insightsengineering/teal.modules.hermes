@@ -118,7 +118,7 @@ ui_g_quality <- function(id,
                          pre_output,
                          post_output) {
   ns <- NS(id)
-  teal.devel::standard_layout(
+  teal.widgets::standard_layout(
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
@@ -151,7 +151,7 @@ ui_g_quality <- function(id,
         ns = ns,
         sliderInput(ns("min_cpm"), label = ("Minimum CPM"), min = 1, max = 10, value = 5),
         sliderInput(ns("min_cpm_prop"), label = ("Minimum CPM Proportion"), min = 0.01, max = 0.99, value = 0.25),
-        optionalSelectInput(
+        teal.widgets::optionalSelectInput(
           ns("annotate"),
           label = "Required Annotations",
           choices = "",
@@ -224,7 +224,7 @@ srv_g_quality <- function(id,
     observeEvent(experiment_properties(), {
       properties <- experiment_properties()
 
-      updateOptionalSelectInput(
+      teal.widgets::updateOptionalSelectInput(
         session,
         "annotate",
         choices = properties$annotations,

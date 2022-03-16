@@ -9,7 +9,6 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 
 library(teal)
-library(teal.devel)
 library(hermes)
 mae <- multi_assay_experiment # from hermes
 data <- teal_data(dataset("MAE", mae))
@@ -48,7 +47,7 @@ ui_volcanoplot <- function(id, datasets, dataname) {
   ns <- NS(id)
   mae <- datasets$get_data(dataname, filtered = TRUE)
 
-  standard_layout(
+  teal.widgets::standard_layout(
     output = plotOutput(ns("plot")),
     encoding = div(
       selectInput(ns("experiment_name"), "Select experiment", names(mae)),
@@ -64,16 +63,15 @@ ui_volcanoplot <- function(id, datasets, dataname) {
 
 ```{r}
 srv_volcanoplot <- function(input, output, session, datasets, dataname) {
+  experiment_data <- reactive({
+    req(input$experiment_name)
 
-   experiment_data <- reactive({
-     req(input$experiment_name)
+    mae <- datasets$get_data(dataname, filtered = TRUE)
 
-     mae <- datasets$get_data(dataname, filtered = TRUE)
-
-     object <- HermesData(mae[[input$experiment_name]])
-     colData(object) <- df_char_to_factor(colData(object))
-     object
-   })
+    object <- HermesData(mae[[input$experiment_name]])
+    colData(object) <- df_char_to_factor(colData(object))
+    object
+  })
 
   diff_expr <- reactive({
     object <- experiment_data()
@@ -82,10 +80,9 @@ srv_volcanoplot <- function(input, output, session, datasets, dataname) {
     req(facetvar)
 
     diff_expression(object, group = facetvar, method = "voom")
-   })
+  })
 
   output$plot <- renderPlot({
-
     object <- experiment_data()
     diff_expr_result <- diff_expr()
 

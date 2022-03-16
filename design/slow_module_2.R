@@ -19,7 +19,7 @@ ui <- function(id,
                mae_name) {
   ns <- NS(id)
 
-  teal.devel::standard_layout(
+  teal.widgets::standard_layout(
     encoding = div(
       experimentSpecInput(ns("experiment"), datasets, mae_name),
       assaySpecInput(ns("assay")),
@@ -38,7 +38,7 @@ srv <- function(input,
     "experiment",
     datasets = datasets,
     mae_name = mae_name,
-    name_annotation = NULL  # If you have a gene name column in your rowData, can specify here.
+    name_annotation = NULL # If you have a gene name column in your rowData, can specify here.
   )
   assay <- assaySpecServer("assay", experiment$assays)
   genes <- geneSpecServer("genes", list(None = NULL), gene_choices = experiment$genes)

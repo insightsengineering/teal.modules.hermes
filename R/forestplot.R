@@ -102,7 +102,7 @@ ui_g_forest_tte <- function(id,
                             pre_output,
                             post_output) {
   ns <- NS(id)
-  teal.devel::standard_layout(
+  teal.widgets::standard_layout(
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
@@ -111,8 +111,8 @@ ui_g_forest_tte <- function(id,
       geneSpecInput(ns("genes"), summary_funs),
       helpText("Analysis of ADTTE:", tags$code(adtte_name)),
       adtteSpecInput(ns("adtte")),
-      teal.devel::panel_group(
-        teal.devel::panel_item(
+      teal.widgets::panel_group(
+        teal.widgets::panel_item(
           input_id = "settings_item",
           collapsed = TRUE,
           title = "Additional Settings",
@@ -121,7 +121,7 @@ ui_g_forest_tte <- function(id,
         )
       )
     ),
-    output = teal.devel::plot_with_settings_ui(ns("plot")),
+    output = teal.widgets::plot_with_settings_ui(ns("plot")),
     pre_output = pre_output,
     post_output = post_output
   )
@@ -214,7 +214,7 @@ srv_g_forest_tte <- function(id,
       tern::g_forest(result)
     })
 
-    teal.devel::plot_with_settings_srv(
+    teal.widgets::plot_with_settings_srv(
       id = "plot",
       plot_r = forest_plot,
       height = plot_height,

@@ -76,7 +76,7 @@ ui_g_boxplot <- function(id,
                          post_output) {
   ns <- NS(id)
 
-  teal.devel::standard_layout(
+  teal.widgets::standard_layout(
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
@@ -87,8 +87,8 @@ ui_g_boxplot <- function(id,
       shinyWidgets::switchInput(ns("jitter"), value = FALSE, size = "mini"),
       tags$label("Violin Plot"),
       shinyWidgets::switchInput(ns("violin"), value = FALSE, size = "mini"),
-      teal.devel::panel_group(
-        teal.devel::panel_item(
+      teal.widgets::panel_group(
+        teal.widgets::panel_item(
           input_id = "settings_item",
           collapsed = TRUE,
           title = "Additional Settings",

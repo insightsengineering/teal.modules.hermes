@@ -222,7 +222,7 @@ h_parse_genes <- function(words, choices) {
 #'                datasets,
 #'                funs) {
 #'   ns <- NS(id)
-#'   teal.devel::standard_layout(
+#'   teal.widgets::standard_layout(
 #'     encoding = div(
 #'       geneSpecInput(
 #'         ns("my_genes"),

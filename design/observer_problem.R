@@ -1,5 +1,4 @@
 library(teal)
-library(teal.devel)
 library(hermes)
 
 
@@ -7,7 +6,6 @@ tm_g_scatterplot <- function(label,
                              mae_name,
                              pre_output = NULL,
                              post_output = NULL) {
-
   module(
     label = label,
     server = srv_g_scatterplot,
@@ -26,7 +24,6 @@ tm_g_scatterplot <- function(label,
 
 #' @describeIn tm_g_scatterplot sets up the user interface.
 #' @inheritParams module_arguments
-#' @importFrom teal.devel standard_layout
 ui_g_scatterplot <- function(id,
                              datasets,
                              mae_name,
@@ -35,7 +32,7 @@ ui_g_scatterplot <- function(id,
   ns <- NS(id)
   experiment_name_choices <- c("a", "b", "c")
 
-  teal.devel::standard_layout(
+  teal.widgets::standard_layout(
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),

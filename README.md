@@ -19,7 +19,7 @@ ui <- function(id,
                mae_name) {
   ns <- NS(id)
 
-  teal.devel::standard_layout(
+  teal.widgets::standard_layout(
     encoding = div(
       experimentSpecInput(ns("experiment"), datasets, mae_name),
       assaySpecInput(ns("assay"))

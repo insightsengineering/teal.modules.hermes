@@ -1,11 +1,8 @@
-tm_made_up_merge_pr <- function(
-    label = "PR merge",
-    info = NULL,
-    dataname = NULL,
-    pre_output = NULL,
-    post_output = NULL
-  ) {
-
+tm_made_up_merge_pr <- function(label = "PR merge",
+                                info = NULL,
+                                dataname = NULL,
+                                pre_output = NULL,
+                                post_output = NULL) {
   args <- as.list(environment())
   module(
     label = label,
@@ -21,8 +18,8 @@ ui_made_up_merge_pr <- function(id, ...) {
 
   ns <- NS(id)
 
-  standard_layout(
-    output = white_small_well(
+  teal.widgets::standard_layout(
+    output = teal.widgets::white_small_well(
       verbatimTextOutput(outputId = ns("filter_expr")),
       tabsetPanel(
         tabPanel(title = "MAE", verbatimTextOutput(outputId = ns("col_data_table"))),
@@ -30,28 +27,29 @@ ui_made_up_merge_pr <- function(id, ...) {
       )
     ),
     encoding = div(
-      optionalSelectInput(
+      teal.widgets::optionalSelectInput(
         inputId = "select_assay",
         label = "Select assay",
         choices = c("a", "b", "c")
       ),
-      optionalSelectInput(
+      teal.widgets::optionalSelectInput(
         inputId = "select_patient",
         label = "Select patient",
         choices = 1:10
       ),
-      optionalSelectInput(
+      teal.widgets::optionalSelectInput(
         inputId = "select_column",
         label = "Select column",
         choices = 1:10
       )
     ),
     forms = div(
-      actionButton(ns("show_rcode"), "Show R Code", width = "100%"))
+      actionButton(ns("show_rcode"), "Show R Code", width = "100%")
+    )
   )
 }
 srv_made_up_merge_pr <- function(input, output, session, datasets, dataname) {
-  init_chunks()
+  teal.code::init_chunks()
 
   output$filter_expr <- renderText({
     paste(
@@ -65,25 +63,24 @@ srv_made_up_merge_pr <- function(input, output, session, datasets, dataname) {
 
   output$col_data_table <- renderText({
     mae <- datasets$get_data(dataname, filtered = TRUE)
-    chunks_reset()
-    chunks_push(bquote({
+    teal.code::chunks_reset()
+    teal.code::chunks_push(bquote({
       paste(capture.output(print(mae)), collapse = "\n")
     }))
-    chunks_safe_eval()
+    teal.code::chunks_safe_eval()
   })
 
   output$adsl_data_table <- renderText({
     adsl <- datasets$get_data("ADSL", filtered = TRUE)
-    chunks_reset()
-    chunks_push(bquote({
+    teal.code::chunks_reset()
+    teal.code::chunks_push(bquote({
       paste(capture.output(str(adsl)), collapse = "\n")
     }))
-    chunks_safe_eval()
+    teal.code::chunks_safe_eval()
   })
 
 
   observeEvent(input$show_rcode, {
-
     show_rcode_modal(
       title = "R Code for MAE analysis",
       rcode = get_rcode(
@@ -96,7 +93,6 @@ srv_made_up_merge_pr <- function(input, output, session, datasets, dataname) {
 }
 
 library(teal)
-library(teal.devel)
 library(hermes)
 library(random.cdisc.data)
 adsl <- cdisc_dataset("ADSL", radsl(cached = TRUE, na_percentage = 0.2)) %>%
@@ -109,7 +105,7 @@ adsl <- cdisc_dataset("ADSL", radsl(cached = TRUE, na_percentage = 0.2)) %>%
     ADSL$all_na <- NA
     ADSL$unknown <- as.list(ADSL$SEX)"
   )
-adtte <- cdisc_dataset("ADTTE", radtte(cached = TRUE))  %>%
+adtte <- cdisc_dataset("ADTTE", radtte(cached = TRUE)) %>%
   mutate_dataset(
     "ADTTE$CNSR <- as.logical(ADTTE$CNSR)
     ADTTE$CNSR[100:110] <- NA"

@@ -148,7 +148,7 @@ adtteSpecInput <- function(inputId,
 #'                datasets) {
 #'   ns <- NS(id)
 #'
-#'   teal.devel::standard_layout(
+#'   teal.widgets::standard_layout(
 #'     encoding = div(
 #'       experimentSpecInput(ns("experiment"), datasets = datasets, mae_name = "MAE"),
 #'       assaySpecInput(ns("assay")),

@@ -17,7 +17,6 @@ remotes::install_github(
 )
 
 library(teal)
-library(teal.devel)
 library(hermes)
 library(tern)
 ```
@@ -73,7 +72,7 @@ draw_barplot <- function(object, assayname, facetvar, fillvar, xvar, percentiles
     geom_bar() +
     labs(x = xvar)
   if (!is.null(facetvar)) {
-    p <- p + facet_wrap(~ facet)
+    p <- p + facet_wrap(~facet)
   }
   if (!is.null(fillvar)) {
     p <- p + aes(fill = fill)
@@ -138,7 +137,7 @@ emptySelectInput <- function(inputId, label, ...) { # nolint
 ui_barplot <- function(id, datasets, dataname) {
   ns <- NS(id)
   mae <- datasets$get_data(dataname, filtered = TRUE)
-  standard_layout(
+  teal.widgets::standard_layout(
     output = plotOutput(ns("plot")),
     encoding = div(
       tags$label("Encodings", class = "text-primary"),
@@ -147,12 +146,12 @@ ui_barplot <- function(id, datasets, dataname) {
       emptySelectInput(ns("assay"), "Select Assay"),
       selectizeInput(ns("xvar"), "Select Gene of Interest", choices = ""),
       sliderInput(ns("percentiles"),
-                  "Select quantiles to be displayed",
-                  min = 0, max = 1,
-                  value = c(0.2, 0.8)
-                  ),
-      optionalSelectInput(ns("fillvar"), "Select stratify by"),
-      optionalSelectInput(ns("facetvar"), "Select facet by")
+        "Select quantiles to be displayed",
+        min = 0, max = 1,
+        value = c(0.2, 0.8)
+      ),
+      teal.widgets::optionalSelectInput(ns("fillvar"), "Select stratify by"),
+      teal.widgets::optionalSelectInput(ns("facetvar"), "Select facet by")
     )
   )
 }
@@ -184,31 +183,31 @@ srv_barplot <- function(input, output, session, datasets, dataname) {
   })
 
   experiment_call <- reactive({
-   dat <- datasets$get_filtered_dataset(dataname)
-   if (is.null(input$experiment)) {
-     NULL
-   } else {
-     dat$get_filter_queues(input$experiment)$get_call()
-   }
+    dat <- datasets$get_filtered_dataset(dataname)
+    if (is.null(input$experiment)) {
+      NULL
+    } else {
+      dat$get_filter_queues(input$experiment)$get_call()
+    }
   })
 
   # When the chosen experiment call changes,
   # we recompute gene names.
   genes <- eventReactive(experiment_call(), ignoreNULL = FALSE, {
-   object <- experiment_data()
-   rownames(object)
+    object <- experiment_data()
+    rownames(object)
   })
 
   # When the chosen experiment changes, recompute the assay names.
   assaynames <- eventReactive(input$experiment, ignoreInit = TRUE, {
-   object <- experiment_data()
-   SummarizedExperiment::assayNames(object)
+    object <- experiment_data()
+    SummarizedExperiment::assayNames(object)
   })
 
   # When the chosen experiment changes, recompute the col vars.
   colvars <- eventReactive(input$experiment, {
-   object <- experiment_data()
-   names(colData(object))
+    object <- experiment_data()
+    names(colData(object))
   })
 
   # When the assay names change, update the choices for assay.
@@ -217,12 +216,12 @@ srv_barplot <- function(input, output, session, datasets, dataname) {
     assaynames <- assaynames()
 
     # Second: do the action.
-   updateSelectInput(
-     session,
-     "assay",
-     choices = assaynames,
-     selected = assaynames[1]
-   )
+    updateSelectInput(
+      session,
+      "assay",
+      choices = assaynames,
+      selected = assaynames[1]
+    )
   })
 
   # When the colvars change, update the choices for facetvar and fillvar.
@@ -233,7 +232,7 @@ srv_barplot <- function(input, output, session, datasets, dataname) {
     # Second: do the action.
     idnames <- c("facetvar", "fillvar", "percentiles")
     for (i in seq_along(idnames)) {
-      updateOptionalSelectInput(
+      teal.widgets::updateOptionalSelectInput(
         session,
         idnames[i],
         choices = colvars,
@@ -255,7 +254,6 @@ srv_barplot <- function(input, output, session, datasets, dataname) {
       selected = gene_choices[1],
       server = TRUE
     )
-
   })
 
   output$plot <- renderPlot({
@@ -302,7 +300,6 @@ tm_g_barplot <- function(label = "Simple MAE module",
     ui_args = list(dataname = dataname),
     server_args = list(dataname = dataname),
     filters = "all"
-
   )
 }
 ```
