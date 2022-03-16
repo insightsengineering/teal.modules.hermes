@@ -70,7 +70,7 @@ draw_scatterplot <- function(object, assayname, facetvar, xvar, yvar) {
     geom_smooth(method = "lm", formula = y ~ x) +
     labs(x = xvar, y = yvar)
   if (!is.null(facetvar)) {
-    p <- p + facet_wrap(~ facet)
+    p <- p + facet_wrap(~facet)
   }
   p
 }

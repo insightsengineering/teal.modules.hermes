@@ -43,7 +43,6 @@ ui_made_up_merge_pr <- function(id, ...) {
   )
 }
 srv_made_up_merge_pr <- function(input, output, session, datasets, dataname) {
-
   output$col_data_table <- renderText({
     mae <- datasets$get_data(dataname, filtered = TRUE)
     paste(capture.output(print(mae)), collapse = "\n")

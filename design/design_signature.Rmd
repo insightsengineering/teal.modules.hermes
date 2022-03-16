@@ -44,10 +44,11 @@ shorten_list(letters[1:4])
 shorten_list(letters)
 
 parenthesize <- function(x) {
-  if (is_blank(x))
+  if (is_blank(x)) {
     ""
-  else
+  } else {
     paste0("(", x, ")")
+  }
 }
 ```
 
@@ -60,39 +61,39 @@ draw_signature <- function(object,
                            y_vars,
                            summary_fun = colMeans,
                            fun_name = deparse(substitute(summary_fun))) {
-    assert_class(object, "AnyHermesData")
-    assert_string(assay_name)
-    assert_string(x_var)
-    assert_character(y_vars, min.len = 1L, any.missing = FALSE, unique = TRUE)
-    assay_matrix <- assay(object, assay_name)
+  assert_class(object, "AnyHermesData")
+  assert_string(assay_name)
+  assert_string(x_var)
+  assert_character(y_vars, min.len = 1L, any.missing = FALSE, unique = TRUE)
+  assay_matrix <- assay(object, assay_name)
 
-    col_data <- colData(object)
-    assert_names(names(col_data), must.include = x_var)
-    assert_names(rownames(assay_matrix), must.include = y_vars)
+  col_data <- colData(object)
+  assert_names(names(col_data), must.include = x_var)
+  assert_names(rownames(assay_matrix), must.include = y_vars)
 
-    y_vals <- if (length(y_vars) > 1L) {
-      assert_function(summary_fun)
-      summary_fun(assay_matrix[y_vars, ])
-    } else {
-      assay_matrix[y_vars, ]
-    }
+  y_vals <- if (length(y_vars) > 1L) {
+    assert_function(summary_fun)
+    summary_fun(assay_matrix[y_vars, ])
+  } else {
+    assay_matrix[y_vars, ]
+  }
 
-    y_label <- if (length(y_vars) > 1L) {
-      assert_string(fun_name, min.chars = 1L)
-      paste0(fun_name, parenthesize(shorten_list(y_vars)))
-    } else {
-      y_vars
-    }
+  y_label <- if (length(y_vars) > 1L) {
+    assert_string(fun_name, min.chars = 1L)
+    paste0(fun_name, parenthesize(shorten_list(y_vars)))
+  } else {
+    y_vars
+  }
 
-    df <- data.frame(x = col_data[, x_var], y = y_vals)
+  df <- data.frame(x = col_data[, x_var], y = y_vals)
 
-    p <- ggplot(df, aes(x = .data$x, y = .data$y)) +
-      geom_boxplot(outlier.shape = 19) +
-      stat_boxplot(geom = "errorbar") +
-      labs(x = x_var, y = y_label)
-    geom_point_args <- list()
-    p <- p + do.call(geom_point, geom_point_args)
-    p
+  p <- ggplot(df, aes(x = .data$x, y = .data$y)) +
+    geom_boxplot(outlier.shape = 19) +
+    stat_boxplot(geom = "errorbar") +
+    labs(x = x_var, y = y_label)
+  geom_point_args <- list()
+  p <- p + do.call(geom_point, geom_point_args)
+  p
 }
 ```
 
@@ -176,11 +177,11 @@ Here we take the `summary_funs` list and give that into the option menu.
 
 ```{r}
 ui_g_signature <- function(id,
-                         datasets,
-                         mae_name,
-                         summary_funs,
-                         pre_output,
-                         post_output) {
+                           datasets,
+                           mae_name,
+                           summary_funs,
+                           pre_output,
+                           post_output) {
   ns <- NS(id)
   mae <- datasets$get_data(mae_name, filtered = FALSE)
   experiment_name_choices <- names(mae)
@@ -189,15 +190,15 @@ ui_g_signature <- function(id,
     encoding = div(
       selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
       selectInput(ns("assay_name"), "Select assay", choices = ""),
-
       div(
         class = "row",
         div(
           class = "col-sm-8",
-          tags$label(class = "control-label",
-                     "Select gene(s) of interest")
+          tags$label(
+            class = "control-label",
+            "Select gene(s) of interest"
+          )
         ),
-
         div(
           class = "col-sm-4",
           actionButton(
@@ -283,7 +284,7 @@ srv_g_signature <- function(input,
   # When the filtered data set of the chosen experiment changes, update the
   # experiment data object.
   experiment_data <- reactive({
-    req(input$experiment_name)  # Important to avoid running into NULL here.
+    req(input$experiment_name) # Important to avoid running into NULL here.
 
     mae <- datasets$get_data(mae_name, filtered = TRUE)
     mae[[input$experiment_name]]
@@ -292,7 +293,7 @@ srv_g_signature <- function(input,
   # When the filtered data set or the chosen experiment changes, update
   # the call that creates the chosen experiment data object.
   experiment_call <- reactive({
-    req(input$experiment_name)  # Important to avoid running into NULL here.
+    req(input$experiment_name) # Important to avoid running into NULL here.
 
     dat <- datasets$get_filtered_dataset(mae_name)
     dat$get_filter_states(input$experiment_name)$get_call()
@@ -515,7 +516,7 @@ We can add similar functions to `hermes`.
 #' @export
 calc_meanZ <- function(x) { # nolint
   stopifnot(class(x) == "matrix")
-  zmat  <- apply(x, 1, function(y) if (sd(y) > 0) scale(y) else rep(NA, length(y)))
+  zmat <- apply(x, 1, function(y) if (sd(y) > 0) scale(y) else rep(NA, length(y)))
   zmean <- apply(zmat, 1, mean, na.rm = TRUE)
   names(zmean) <- colnames(x)
   return(zmean)

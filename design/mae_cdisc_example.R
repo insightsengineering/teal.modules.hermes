@@ -1,11 +1,8 @@
-tm_made_up_merge_pr <- function(
-    label = "PR merge",
-    info = NULL,
-    dataname = NULL,
-    pre_output = NULL,
-    post_output = NULL
-  ) {
-
+tm_made_up_merge_pr <- function(label = "PR merge",
+                                info = NULL,
+                                dataname = NULL,
+                                pre_output = NULL,
+                                post_output = NULL) {
   args <- as.list(environment())
   module(
     label = label,
@@ -47,7 +44,8 @@ ui_made_up_merge_pr <- function(id, ...) {
       )
     ),
     forms = div(
-      actionButton(ns("show_rcode"), "Show R Code", width = "100%"))
+      actionButton(ns("show_rcode"), "Show R Code", width = "100%")
+    )
   )
 }
 srv_made_up_merge_pr <- function(input, output, session, datasets, dataname) {
@@ -83,7 +81,6 @@ srv_made_up_merge_pr <- function(input, output, session, datasets, dataname) {
 
 
   observeEvent(input$show_rcode, {
-
     show_rcode_modal(
       title = "R Code for MAE analysis",
       rcode = get_rcode(
@@ -108,7 +105,7 @@ adsl <- cdisc_dataset("ADSL", radsl(cached = TRUE, na_percentage = 0.2)) %>%
     ADSL$all_na <- NA
     ADSL$unknown <- as.list(ADSL$SEX)"
   )
-adtte <- cdisc_dataset("ADTTE", radtte(cached = TRUE))  %>%
+adtte <- cdisc_dataset("ADTTE", radtte(cached = TRUE)) %>%
   mutate_dataset(
     "ADTTE$CNSR <- as.logical(ADTTE$CNSR)
     ADTTE$CNSR[100:110] <- NA"

@@ -7,7 +7,6 @@ tm_g_scatterplot <- function(label,
                              mae_name,
                              pre_output = NULL,
                              post_output = NULL) {
-
   module(
     label = label,
     server = srv_g_scatterplot,

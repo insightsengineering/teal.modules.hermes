@@ -73,7 +73,7 @@ draw_boxplot <- function(object, assayname, facetvar, xvar, yvar) {
     stat_boxplot(geom = "errorbar") +
     labs(x = xvar, y = yvar)
   if (!is.null(facetvar)) {
-    p <- p + facet_wrap(~ facet)
+    p <- p + facet_wrap(~facet)
   }
   p
 }
@@ -97,7 +97,6 @@ draw_boxplot(
   xvar = "SEX",
   yvar = genes(object)[2]
 )
-
 ```
 
 ## UI function
@@ -202,12 +201,12 @@ srv_boxplot <- function(input, output, session, datasets, dataname) {
     }
 
     # Second: do the action.
-      updateSelectInput(
-        session,
-        "yvar",
-        choices = gene_choices,
-        selected = gene_choices[1]
-      )
+    updateSelectInput(
+      session,
+      "yvar",
+      choices = gene_choices,
+      selected = gene_choices[1]
+    )
   })
 
   output$plot <- renderPlot({
@@ -239,10 +238,10 @@ Unfortunately in the current shiny version in the dockers we cannot yet try this
 
 ```{r}
 tm_g_boxplot <- function(label = "Simple MAE module",
-                             info = NULL,
-                             dataname = NULL,
-                             pre_output = NULL,
-                             post_output = NULL) {
+                         info = NULL,
+                         dataname = NULL,
+                         pre_output = NULL,
+                         post_output = NULL) {
   module(
     label = label,
     server = srv_boxplot,

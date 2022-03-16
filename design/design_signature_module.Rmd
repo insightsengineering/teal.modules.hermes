@@ -34,10 +34,11 @@ shorten_list(letters[1:4])
 shorten_list(letters)
 
 parenthesize <- function(x) {
-  if (is_blank(x))
+  if (is_blank(x)) {
     ""
-  else
+  } else {
     paste0("(", x, ")")
+  }
 }
 
 extract_words <- function(x) {
@@ -153,28 +154,28 @@ draw_scatterplot2 <- function(object,
                               assay_name,
                               x_spec,
                               y_spec) {
-    assert_class(object, "AnyHermesData")
-    assert_string(assay_name)
-    assert_class(x_spec, "GeneSpec")
-    assert_class(y_spec, "GeneSpec")
+  assert_class(object, "AnyHermesData")
+  assert_string(assay_name)
+  assert_class(x_spec, "GeneSpec")
+  assert_class(y_spec, "GeneSpec")
 
-    # make sure we get vectors back and not matrices with multiple genes
-    assert_true(x_spec$returns_vector())
-    assert_true(y_spec$returns_vector())
+  # make sure we get vectors back and not matrices with multiple genes
+  assert_true(x_spec$returns_vector())
+  assert_true(y_spec$returns_vector())
 
-    # now use extract method on matrix which internally applies summary function
-    # etc.
-    assay_matrix <- assay(object, assay_name)
-    df <- data.frame(
-      x = x_spec$extract(assay_matrix),
-      y = y_spec$extract(assay_matrix)
-    )
+  # now use extract method on matrix which internally applies summary function
+  # etc.
+  assay_matrix <- assay(object, assay_name)
+  df <- data.frame(
+    x = x_spec$extract(assay_matrix),
+    y = y_spec$extract(assay_matrix)
+  )
 
-    # then do the plot
-    p <- ggplot(df, aes(x = .data$x, y = .data$y)) +
-      geom_point() +
-      labs(x = x_spec$get_label(), y = y_spec$get_label()) # we get the labels via class
-    p
+  # then do the plot
+  p <- ggplot(df, aes(x = .data$x, y = .data$y)) +
+    geom_point() +
+    labs(x = x_spec$get_label(), y = y_spec$get_label()) # we get the labels via class
+  p
 }
 ```
 
@@ -470,11 +471,11 @@ Here we take the `summary_funs` list and give that into the option menu.
 
 ```{r}
 ui_g_signature <- function(id,
-                         datasets,
-                         mae_name,
-                         summary_funs,
-                         pre_output,
-                         post_output) {
+                           datasets,
+                           mae_name,
+                           summary_funs,
+                           pre_output,
+                           post_output) {
   ns <- NS(id)
   mae <- datasets$get_data(mae_name, filtered = FALSE)
   experiment_name_choices <- names(mae)
@@ -505,7 +506,7 @@ srv_g_signature <- function(input,
   # When the filtered data set of the chosen experiment changes, update the
   # experiment data object.
   experiment_data <- reactive({
-    req(input$experiment_name)  # Important to avoid running into NULL here.
+    req(input$experiment_name) # Important to avoid running into NULL here.
 
     mae <- datasets$get_data(mae_name, filtered = TRUE)
     mae[[input$experiment_name]]
@@ -514,7 +515,7 @@ srv_g_signature <- function(input,
   # When the filtered data set or the chosen experiment changes, update
   # the call that creates the chosen experiment data object.
   experiment_call <- reactive({
-    req(input$experiment_name)  # Important to avoid running into NULL here.
+    req(input$experiment_name) # Important to avoid running into NULL here.
 
     dat <- datasets$get_filtered_dataset(mae_name)
     dat$get_filter_states(input$experiment_name)$get_call()
@@ -627,7 +628,7 @@ use of R6 syntax, see above commented code.
 #' @export
 calc_meanZ <- function(x) { # nolint
   stopifnot(class(x) == "matrix")
-  zmat  <- apply(x, 1, function(y) if (sd(y) > 0) scale(y) else rep(NA, length(y)))
+  zmat <- apply(x, 1, function(y) if (sd(y) > 0) scale(y) else rep(NA, length(y)))
   zmean <- apply(zmat, 1, mean, na.rm = TRUE)
   names(zmean) <- colnames(x)
   return(zmean)
