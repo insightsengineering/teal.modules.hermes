@@ -38,12 +38,12 @@ server <- function(id,
 
 my_app <- function() {
   mae <- hermes::multi_assay_experiment
-  mae_data <- dataset("MAE", mae)
-  data <- teal_data(mae_data)
-  app <- init(
+  mae_data <- teal.data::dataset("MAE", mae)
+  data <- teal.data::teal_data(mae_data)
+  app <- teal::init(
     data = data,
-    modules = modules(
-      module(
+    modules = teal::modules(
+      teal::module(
         label = "sampleVarSpec example",
         server = server,
         ui = ui,
@@ -51,7 +51,7 @@ my_app <- function() {
       )
     )
   )
-  shinyApp(app$ui, app$server)
+  runApp(app)
 }
 
 my_app()

@@ -43,11 +43,11 @@ server <- function(id,
 my_app <- function() {
   mae <- hermes::multi_assay_experiment
   mae_name <- "MAE"
-  mae_data <- dataset(mae_name, mae)
-  data <- teal_data(mae_data)
-  app <- init(
+  mae_data <- teal.data::dataset(mae_name, mae)
+  data <- teal.data::teal_data(mae_data)
+  app <- teal::init(
     data = data,
-    modules = modules(
+    modules = teal::modules(
       module(
         label = "assaySpec example",
         server = server,

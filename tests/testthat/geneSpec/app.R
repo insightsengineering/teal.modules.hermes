@@ -50,12 +50,12 @@ server <- function(id,
 funs <- list(mean = colMeans)
 my_app <- function() {
   mae <- hermes::multi_assay_experiment
-  mae_data <- dataset("MAE", mae)
-  data <- teal_data(mae_data)
-  app <- init(
+  mae_data <- teal.data::dataset("MAE", mae)
+  data <- teal.data::teal_data(mae_data)
+  app <- teal::init(
     data = data,
-    modules = modules(
-      module(
+    modules = teal::modules(
+      teal::module(
         label = "GeneSpec example",
         server = server,
         server_args = list(funs = funs),
