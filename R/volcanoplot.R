@@ -39,7 +39,7 @@ tm_g_volcanoplot <- function(label,
   assert_tag(pre_output, null.ok = TRUE)
   assert_tag(post_output, null.ok = TRUE)
 
-  module(
+  teal::module(
     label = label,
     server = srv_g_volcanoplot,
     server_args = list(
@@ -202,11 +202,11 @@ srv_g_volcanoplot <- function(id,
 #' }
 sample_tm_g_volcanoplot <- function() {
   mae <- hermes::multi_assay_experiment
-  mae_data <- dataset("MAE", mae)
-  data <- teal_data(mae_data)
-  app <- init(
+  mae_data <- teal.data::dataset("MAE", mae)
+  data <- teal.data::teal_data(mae_data)
+  app <- teal::init(
     data = data,
-    modules = modules(
+    modules = teal::modules(
       tm_g_volcanoplot(
         label = "volcanoplot",
         mae_name = "MAE"

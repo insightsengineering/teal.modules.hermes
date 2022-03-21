@@ -64,20 +64,20 @@ my_app <- function() {
   adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
     dplyr::mutate(is_event = .data$CNSR == 0)
 
-  data <- teal_data(
-    dataset(
+  data <- teal.data::teal_data(
+    teal.data::dataset(
       "ADTTE",
       adtte,
       code = 'adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
         dplyr::mutate(is_event = .data$CNSR == 0)'
     ),
-    dataset("MAE", mae)
+    teal.data::dataset("MAE", mae)
   )
 
-  app <- init(
+  app <- teal::init(
     data = data,
-    modules = modules(
-      module(
+    modules = teal::modules(
+      teal::module(
         label = "adtteSpec example",
         server = server,
         ui = ui,

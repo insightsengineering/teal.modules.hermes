@@ -184,11 +184,11 @@ srv_g_barplot <- function(id,
 #' }
 sample_tm_g_barplot <- function() {
   mae <- hermes::multi_assay_experiment
-  mae_data <- dataset("MAE", mae)
-  data <- teal_data(mae_data)
-  app <- init(
+  mae_data <- teal.data::dataset("MAE", mae)
+  data <- teal.data::teal_data(mae_data)
+  app <- teal::init(
     data = data,
-    modules = modules(
+    modules = teal::modules(
       tm_g_barplot(
         label = "barplot",
         mae_name = "MAE"

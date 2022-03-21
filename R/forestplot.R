@@ -67,7 +67,7 @@ tm_g_forest_tte <- function(label,
   assert_tag(pre_output, null.ok = TRUE)
   assert_tag(post_output, null.ok = TRUE)
 
-  module(
+  teal::module(
     label = label,
     server = srv_g_forest_tte,
     server_args = list(
@@ -237,19 +237,19 @@ sample_tm_g_forest_tte <- function() { # nolint
   adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
     dplyr::mutate(is_event = .data$CNSR == 0)
 
-  data <- teal_data(
-    dataset(
+  data <- teal.data::teal_data(
+    teal.data::dataset(
       "ADTTE",
       adtte,
       code = 'adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
         dplyr::mutate(is_event = .data$CNSR == 0)'
     ),
-    dataset("MAE", mae)
+    teal.data::dataset("MAE", mae)
   )
 
-  app <- init(
+  app <- teal::init(
     data = data,
-    modules = modules(
+    modules = teal::modules(
       tm_g_forest_tte(
         label = "forest",
         adtte_name = "ADTTE",

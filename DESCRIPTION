@@ -33,6 +33,8 @@ Imports:
     stringr,
     SummarizedExperiment,
     teal.code,
+    teal.data,
+    teal.logger,
     teal.widgets,
     tern (>= 0.7.6)
 Suggests:

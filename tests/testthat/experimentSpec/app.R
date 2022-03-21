@@ -56,12 +56,12 @@ server <- function(id,
 my_app <- function() {
   mae <- hermes::multi_assay_experiment
   mae_name <- "MAE"
-  mae_data <- dataset(mae_name, mae)
-  data <- teal_data(mae_data)
-  app <- init(
+  mae_data <- teal.data::dataset(mae_name, mae)
+  data <- teal.data::teal_data(mae_data)
+  app <- teal::init(
     data = data,
-    modules = modules(
-      module(
+    modules = teal::modules(
+      teal::module(
         label = "experimentSpec example",
         server = server,
         server_args = list(mae_name = mae_name),
