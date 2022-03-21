@@ -26,7 +26,7 @@ for RNA-seq gene expression quality control."><!-- mathjax --><script src="https
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">teal.modules.hermes</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.1.9006</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.1.9008</span>
       </span>
     </div>
 
@@ -37,15 +37,6 @@ for RNA-seq gene expression quality control."><!-- mathjax --><script src="https
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../index.html">latest</a></li>
-   <li><a href="..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/insightsengineering/teal.modules.hermes" class="external-link">
     <span class="fa fa-github"></span>
@@ -129,8 +120,8 @@ functions, holding all the data sets provided in the app initialization.</p></dd
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">mae</span> <span class="op">&lt;-</span> <span class="fu">hermes</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/hermes/man/multi_assay_experiment.html" class="external-link">multi_assay_experiment</a></span></span>
-<span class="r-in"><span class="va">mae_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/teal/man/dataset.html" class="external-link">dataset</a></span><span class="op">(</span><span class="st">"MAE"</span>, <span class="va">mae</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/teal/man/teal_data.html" class="external-link">teal_data</a></span><span class="op">(</span><span class="va">mae_data</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">mae_data</span> <span class="op">&lt;-</span> <span class="fu">dataset</span><span class="op">(</span><span class="st">"MAE"</span>, <span class="va">mae</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">teal_data</span><span class="op">(</span><span class="va">mae_data</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/teal/man/init.html" class="external-link">init</a></span><span class="op">(</span></span>
 <span class="r-in">  data <span class="op">=</span> <span class="va">data</span>,</span>
 <span class="r-in">  modules <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/teal/man/modules.html" class="external-link">modules</a></span><span class="op">(</span></span>

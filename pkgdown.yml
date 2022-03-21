@@ -2,7 +2,7 @@ pandoc: 2.17.1.1
 pkgdown: 2.0.2
 pkgdown_sha: ~
 articles: {}
-last_built: 2022-02-28T17:12Z
+last_built: 2022-03-21T09:49Z
 urls:
   reference: https://insightsengineering.github.io/teal.modules.hermes/reference
   article: https://insightsengineering.github.io/teal.modules.hermes/articles
