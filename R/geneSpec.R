@@ -120,7 +120,7 @@ geneSpecInput <- function(inputId,
       )
     ),
     conditionalPanel(
-      condition = "input.genes.length > 1",
+      condition = "input.genes && input.genes.length > 1",
       ns = ns,
       selectInput(
         ns("fun_name"),
