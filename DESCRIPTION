@@ -32,7 +32,6 @@ Imports:
     stats,
     stringr,
     SummarizedExperiment,
-    teal.code,
     teal.data,
     teal.logger,
     teal.widgets,
