@@ -1,8 +1,9 @@
-# teal.modules.hermes 0.1.1.9009
+# teal.modules.hermes 0.1.1.9009.1
 
 * Rewrote modules to use `moduleServer` and updated call to `plot_with_settings_srv` after changes in `teal.devel`.
 * Replaced calls to `teal::root_modules` with `teal::modules` following deprecation of `teal::root_modules`.
 * Added basic logging to the modules.
+* Fixed the `geneSpecInput` so that the hermes app doesn't fail anymore (on chrome) on an experiment with no genes.
 
 # teal.modules.hermes 0.1.1
 
