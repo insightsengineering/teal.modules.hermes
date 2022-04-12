@@ -1,3 +1,5 @@
+// used to add the css class for the custom
+// radiomatrix buttons on the modal for combination assignment
 $(window).on("shown.bs.modal", function () {
   $("td:not(.radio-active)")
     .has("input")
