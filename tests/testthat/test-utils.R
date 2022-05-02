@@ -15,6 +15,6 @@ test_that("h_extract_words works as expected", {
   )
   expect_error(
     h_extract_words(""),
-    "Must have at least 1 characters"
+    "All elements must have at least 1 characters, but element 1 has 0 characters."
   )
 })
