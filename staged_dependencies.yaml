@@ -27,3 +27,6 @@ upstream_repos:
     repo: insightsengineering/scda
     host: https://github.com
 downstream_repos:
+  nest/r-packages/teal.gallery:
+    repo: nest/r-packages/teal.gallery
+    host: https://code.roche.com
