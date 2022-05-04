@@ -135,7 +135,7 @@ test_that("h_km_mae_to_adtte fails as expected if USUBJID in MAE colData is diff
       genes = hermes::gene_spec("ENSG1"),
       experiment_name = "a"
     ),
-    "Must be a subset of {'C','D'}, but is {'A','B'}",
+    "Must be a subset of {'C','D'}, but has additional elements {'A','B'}",
     fixed = TRUE
   )
 })
@@ -162,7 +162,7 @@ test_that("h_km_mae_to_adtte fails as expected if USUBJID in experiment colData 
       genes = hermes::gene_spec("ENSG1"),
       experiment_name = "a"
     ),
-    "Must be a subset of {'E','F'}, but is {'A','B'}",
+    "Must be a subset of {'E','F'}, but has additional elements {'A','B'}",
     fixed = TRUE
   )
 })
