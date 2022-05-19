@@ -18,6 +18,11 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: NEST \email{basel.nestcicd@roche.com}
+\strong{Maintainer}: Daniel Sabanés Bové \email{daniel.sabanes_bove@roche.com}
+
+Other contributors:
+\itemize{
+  \item F. Hoffmann-La Roche AG [copyright holder, funder]
+}
 
 }
