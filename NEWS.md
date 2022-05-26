@@ -1,4 +1,4 @@
-# teal.modules.hermes 0.1.2.9004
+# teal.modules.hermes 0.1.2.9005
 
 ### Miscellaneous
 * Added a template to the `pkgdown` site.
