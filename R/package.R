@@ -8,5 +8,6 @@
 #' @import ggplot2
 #' @import shiny
 #' @import teal
+#' @importFrom S4Vectors setListElement DataFrame
 #' @importFrom lifecycle deprecate_soft
 NULL

@@ -47,3 +47,6 @@ design/*.html
 tests/unit_testing_results.rds
 tests/testthat/testthat-problems.rds
 coverage.*
+
+# pkgdown
+docs/

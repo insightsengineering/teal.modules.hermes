@@ -1,4 +1,10 @@
-# teal.modules.hermes 0.1.1.9009.1
+# teal.modules.hermes 0.1.2.9005
+
+### Miscellaneous
+* Added a template to the `pkgdown` site.
+* Updated package authors.
+
+# teal.modules.hermes 0.1.2
 
 * Rewrote modules to use `moduleServer` and updated call to `plot_with_settings_srv` after changes in `teal.devel`.
 * Replaced calls to `teal::root_modules` with `teal::modules` following deprecation of `teal::root_modules`.

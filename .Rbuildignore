@@ -1,3 +1,7 @@
+^renv$
+^renv\.lock$
+CODE_OF_CONDUCT.md
+SECURITY.md
 ^_dev$
 ^.*\.Rproj$
 ^[^/]+\.html$
@@ -38,3 +42,4 @@
 coverage.*
 ^\.markdownlint\.json$
 ^\.markdownlintignore$
+^\.pre-commit-config\.yaml$
