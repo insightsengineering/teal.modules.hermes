@@ -138,7 +138,7 @@ test_that("sampleVarSpecServer only gives atomic columns with at least one value
   )
 })
 
-test_that("sampleVarSpecServer only gives factor columns in col_data_vars when num_levels specified", {
+test_that("sampleVarSpecServer only gives factor columns in col_data_vars when categorical_only", {
   object <- hermes::hermes_data
   SummarizedExperiment::colData(object) <- S4Vectors::DataFrame(
     char = rep("a", ncol(object)),
@@ -154,7 +154,7 @@ test_that("sampleVarSpecServer only gives factor columns in col_data_vars when n
     args = list(
       experiment_name = experiment_name,
       original_data = original_data,
-      num_levels = 2
+      categorical_only = TRUE
     ),
     expr = {
       col_data_vars <- col_data_vars()
