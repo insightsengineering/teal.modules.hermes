@@ -104,7 +104,7 @@ See [github](https://github.com/insightsengineering/teal) for more details.
 
 `hermes` facilitates preprocessing, analyzing, and reporting of RNA-seq data.
 The core functionality is built on the BioConductor ecosystem, especially the `SummarizedExperiment` class from which the `HermesData` class inherits.
-See the [vignette](https://insightsengineering.github.io/hermes/articles/introduction.html) for more details.
+See the [vignette](https://insightsengineering.github.io/hermes/articles/hermes.html) for more details.
 
 ### So what is then `teal.modules.hermes`?
 
