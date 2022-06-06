@@ -466,7 +466,7 @@ sampleVarSpecServer <- function(id,
 #'   experiment_name = reactive({
 #'     input$experiment_name
 #'   }),
-#'   original_data = <orginal_data>
+#'   original_data = <orginal_data> # Please update the <orginal_data>
 #' )
 #' # Then can extract the transformed data and selected variables later:
 #' experiment_data <- sample_var_specs$experiment_data()
