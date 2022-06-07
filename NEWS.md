@@ -1,4 +1,4 @@
-# teal.modules.hermes 0.1.2.9005.4
+# teal.modules.hermes 0.1.2.9005.5
 * Improve the selection of sample variables in the forest module (`tm_g_forest_tte`) such that only categorical variables can be selected in the first place.
 
 ### Miscellaneous
