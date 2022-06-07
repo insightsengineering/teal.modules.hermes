@@ -1,10 +1,24 @@
 Type: Package
 Package: teal.modules.hermes
 Title: RNA-seq analysis modules to add to a teal application
-Version: 0.1.2.9005
+Version: 0.1.2.9005.4
 Date: 2022-04-07
 Authors@R: c(
     person("Daniel", "Sabanés Bové", , "daniel.sabanes_bove@roche.com", role = c("aut", "cre")),
+    person("Nikolas", "Burkoff", role = "aut"),
+    person("Dinakar", "Kulkarni", role = "aut"),
+    person("Konrad", "Pagacz", role = "aut"),
+    person("Namrata", "Bhatia", role = "aut"),
+    person("Dawid", "Kaledkowski", role = "aut"),
+    person("Pawel", "Rucki", role = "aut"),
+    person("Jeff", "Luong", role = "aut"),
+    person("Stefanie", "Bienert", role = "aut"),
+    person("Haocheng", "Li", role = "aut"),
+    person("Lyndsee Midori", "Zhang", role = "aut"),
+    person("Sorin", "Voicu", role = "ctb"),
+    person("Benoit", "Falquet", role = "ctb"),
+    person("Mahmoud", "Hallal", role = "ctb"),
+    person("Tim", "Treis", role = "ctb"),
     person("F. Hoffmann-La Roche AG", role = c("cph", "fnd"))
   )
 Description: RNA-seq analysis teal modules based on the `hermes` package.

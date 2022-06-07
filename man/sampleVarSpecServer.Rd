@@ -11,6 +11,7 @@ sampleVarSpecServer(
   transformed_data = original_data,
   assign_lists = reactiveValues(),
   num_levels = NULL,
+  categorical_only = !is.null(num_levels),
   label_modal_title = "Please click to group the original factor levels"
 )
 }
@@ -31,6 +32,9 @@ sample variables.}
 
 \item{num_levels}{(\code{count} or \code{NULL})\cr required number of levels after combining original levels.
 If \code{NULL} then all numbers of levels are allowed.}
+
+\item{categorical_only}{(\code{flag})\cr whether only categorical variables should be selected
+from.}
 
 \item{label_modal_title}{(\code{string})\cr title for the dialog that asks for the text input.}
 }
@@ -85,7 +89,7 @@ server <- function(id,
       hermes::draw_boxplot(
         experiment_data_final,
         assay_name = "counts",
-        genes = hermes::genes(experiment_data_final)[1],
+        genes = hermes::gene_spec(hermes::genes(experiment_data_final)[1]),
         facet_var = facet_var
       )
     })

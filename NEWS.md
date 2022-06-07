@@ -1,8 +1,10 @@
-# teal.modules.hermes 0.1.2.9005
+# teal.modules.hermes 0.1.2.9005.4
+* Improve the selection of sample variables in the forest module (`tm_g_forest_tte`) such that only categorical variables can be selected in the first place.
 
 ### Miscellaneous
 * Added a template to the `pkgdown` site.
 * Updated package authors.
+* Added the option `categorical_only` to the `sampleVarSpec` server module, which allows to only show categorical sample variables for selection.
 
 # teal.modules.hermes 0.1.2
 

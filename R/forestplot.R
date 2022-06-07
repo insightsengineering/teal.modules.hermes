@@ -158,7 +158,8 @@ srv_g_forest_tte <- function(id,
     subgroups <- sampleVarSpecServer(
       "subgroups",
       experiment_name = experiment$name,
-      original_data = experiment$data
+      original_data = experiment$data,
+      categorical_only = TRUE
     )
     adtte <- adtteSpecServer(
       "adtte",
@@ -178,11 +179,6 @@ srv_g_forest_tte <- function(id,
     surv_subgroups <- reactive({
       binned_adtte <- adtte$binned_adtte_subset()
       subgroups_var <- subgroups$sample_var()
-
-      validate(need(
-        is.null(subgroups_var) || is.factor(binned_adtte[[subgroups_var]]),
-        "please select a categorical variable"
-      ))
 
       tern::extract_survival_subgroups(
         variables = list(
