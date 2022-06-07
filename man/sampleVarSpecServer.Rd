@@ -89,7 +89,7 @@ server <- function(id,
       hermes::draw_boxplot(
         experiment_data_final,
         assay_name = "counts",
-        genes = hermes::genes(experiment_data_final)[1],
+        genes = hermes::gene_spec(hermes::genes(experiment_data_final)[1]),
         facet_var = facet_var
       )
     })
