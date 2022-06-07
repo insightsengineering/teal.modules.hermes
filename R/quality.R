@@ -204,7 +204,13 @@ srv_g_quality <- function(id,
 
     assay <- assaySpecServer(
       "assay",
-      assays = experiment$assays,
+      assays = reactive({
+        union(
+          experiment$assays(),
+          # Add all the additional normalized assays.
+          c("cpm", "rpkm", "tpm", "voom", "vst")
+        )
+      }),
       exclude_assays = exclude_assays
     )
 
