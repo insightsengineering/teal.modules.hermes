@@ -65,7 +65,7 @@ Suggests:
 RdMacros:
     lifecycle
 Remotes:
-    szelepke/shinyRadioMatrix@84b2572
+    szelepke/shinyRadioMatrix@2d861f2
 biocViews:
 Config/Needs/website: insightsengineering/nesttemplate
 Config/testthat/edition: 3
