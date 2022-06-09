@@ -395,7 +395,16 @@ sampleVarSpecServer <- function(id,
 
           # Note: here we make sure we load with previous choice so the user
           # does not constantly need to start from scratch again.
-          selected_groups <- assign_lists[[experiment_name]][[sample_var]]
+          # although we do not do this if the levels do not match (i.e. if
+          # some levels have been filtered out)
+
+          selected_groups <- NULL
+
+          old_values <- names(assign_lists[[experiment_name]][[sample_var]])
+          if (!is.null(old_values) &&
+            all(sort(unique(old_values)) == sort(sample_var_levels))) {
+            selected_groups <- assign_lists[[experiment_name]][[sample_var]]
+          }
 
           showModal(combModal(
             sample_var_levels = sample_var_levels,
