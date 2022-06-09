@@ -403,7 +403,7 @@ sampleVarSpecServer <- function(id,
           old_values <- names(assign_lists[[experiment_name]][[sample_var]])
           if (!is.null(old_values) &&
               length(old_values) == length(sample_var_levels) &&
-              all(sort(unique(old_values)) == sort(sample_var_levels))) {
+              all(sort(old_values) == sort(sample_var_levels))) {
             selected_groups <- assign_lists[[experiment_name]][[sample_var]]
           }
 
