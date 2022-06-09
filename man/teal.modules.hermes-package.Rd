@@ -20,8 +20,26 @@ Useful links:
 \author{
 \strong{Maintainer}: Daniel Sabanés Bové \email{daniel.sabanes_bove@roche.com}
 
+Authors:
+\itemize{
+  \item Nikolas Burkoff
+  \item Dinakar Kulkarni
+  \item Konrad Pagacz
+  \item Namrata Bhatia
+  \item Dawid Kaledkowski
+  \item Pawel Rucki
+  \item Jeff Luong
+  \item Stefanie Bienert
+  \item Haocheng Li
+  \item Lyndsee Midori Zhang
+}
+
 Other contributors:
 \itemize{
+  \item Sorin Voicu [contributor]
+  \item Benoit Falquet [contributor]
+  \item Mahmoud Hallal [contributor]
+  \item Tim Treis [contributor]
   \item F. Hoffmann-La Roche AG [copyright holder, funder]
 }
 

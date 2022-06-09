@@ -66,10 +66,19 @@ test_that("tm_g_quality works as expected in the sample app", {
   initial_min_depth_continuous <- app$waitForValue(ns("min_depth_continuous"))
   expect_identical(initial_min_depth_continuous, 1777260L)
 
-  # Final plot.
+  # Final histogram plot.
   expect_snapshot_screenshot(
     app,
     id = ns("plot"),
     name = "final_plot.png"
+  )
+
+  # Change to another plot type so that we can choose another assay.
+  app$setValue(ns("plot_type"), "Top Genes Plot")
+  app$setValue(ns("assay-name"), "cpm")
+  expect_snapshot_screenshot(
+    app,
+    id = ns("plot"),
+    name = "top_genes_plot.png"
   )
 })

@@ -15,8 +15,9 @@ sample variables extracted via \code{\link[SummarizedExperiment:SummarizedExperi
 selection.}
 
 \item{...}{additional arguments as documented in \code{\link[=sampleVarSpecServer]{sampleVarSpecServer()}},
-namely the mandatory \code{experiment_name} and the optional \code{num_levels} and
-\code{label_modal_title}. \code{transformed_data} and \code{assign_lists} should not be
+namely the mandatory \code{experiment_name} and the optional \code{categorical_only},
+\code{num_levels} and \code{label_modal_title}.
+\code{transformed_data} and \code{assign_lists} should not be
 specified as they are already specified internally here.}
 }
 \value{
@@ -38,7 +39,7 @@ sample_var_specs <- multiSampleVarSpecServer(
   experiment_name = reactive({
     input$experiment_name
   }),
-  original_data = experiment_data
+  original_data = <orginal_data> # Please update the <orginal_data>
 )
 # Then can extract the transformed data and selected variables later:
 experiment_data <- sample_var_specs$experiment_data()

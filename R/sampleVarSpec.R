@@ -183,6 +183,8 @@ validate_n_levels <- function(x, name, n_levels) {
 #'   sample variables.
 #' @param num_levels (`count` or `NULL`)\cr required number of levels after combining original levels.
 #'   If `NULL` then all numbers of levels are allowed.
+#' @param categorical_only (`flag`)\cr whether only categorical variables should be selected
+#'   from.
 #' @param label_modal_title (`string`)\cr title for the dialog that asks for the text input.
 #'
 #' @return Reactive [`SummarizedExperiment::SummarizedExperiment`] which can be used as
@@ -232,7 +234,7 @@ validate_n_levels <- function(x, name, n_levels) {
 #'       hermes::draw_boxplot(
 #'         experiment_data_final,
 #'         assay_name = "counts",
-#'         genes = hermes::genes(experiment_data_final)[1],
+#'         genes = hermes::gene_spec(hermes::genes(experiment_data_final)[1]),
 #'         facet_var = facet_var
 #'       )
 #'     })
@@ -264,6 +266,7 @@ sampleVarSpecServer <- function(id,
                                 transformed_data = original_data,
                                 assign_lists = reactiveValues(),
                                 num_levels = NULL,
+                                categorical_only = !is.null(num_levels),
                                 label_modal_title = "Please click to group the original factor levels") {
   assert_string(id)
   assert_reactive(experiment_name)
@@ -271,6 +274,7 @@ sampleVarSpecServer <- function(id,
   assert_reactive(transformed_data)
   assert_class(assign_lists, "reactivevalues")
   assert_count(num_levels, null.ok = TRUE, positive = TRUE)
+  assert_flag(categorical_only)
   assert_string(label_modal_title)
 
   moduleServer(id, function(input, output, session) {
@@ -280,7 +284,7 @@ sampleVarSpecServer <- function(id,
       object <- original_data()
       col_data <- SummarizedExperiment::colData(object)
       can_be_used <- vapply(col_data, FUN = function(x) is.atomic(x) && !allMissing(x), FUN.VALUE = logical(1))
-      if (!is.null(num_levels)) {
+      if (categorical_only) {
         col_is_factor <- vapply(col_data, FUN = is.factor, FUN.VALUE = logical(1))
         can_be_used <- can_be_used & col_is_factor
       }
@@ -391,7 +395,17 @@ sampleVarSpecServer <- function(id,
 
           # Note: here we make sure we load with previous choice so the user
           # does not constantly need to start from scratch again.
-          selected_groups <- assign_lists[[experiment_name]][[sample_var]]
+          # although we do not do this if the levels do not match (i.e. if
+          # some levels have been filtered out)
+
+          selected_groups <- NULL
+
+          old_values <- names(assign_lists[[experiment_name]][[sample_var]])
+          if (!is.null(old_values) &&
+              length(old_values) == length(sample_var_levels) &&
+              all(sort(old_values) == sort(sample_var_levels))) {
+            selected_groups <- assign_lists[[experiment_name]][[sample_var]]
+          }
 
           showModal(combModal(
             sample_var_levels = sample_var_levels,
@@ -444,8 +458,9 @@ sampleVarSpecServer <- function(id,
 #'   different sample variables specified in the UI function.
 #' @inheritParams sampleVarSpecServer
 #' @param ... additional arguments as documented in [sampleVarSpecServer()],
-#'   namely the mandatory `experiment_name` and the optional `num_levels` and
-#'   `label_modal_title`. `transformed_data` and `assign_lists` should not be
+#'   namely the mandatory `experiment_name` and the optional `categorical_only`,
+#'   `num_levels` and `label_modal_title`.
+#'   `transformed_data` and `assign_lists` should not be
 #'   specified as they are already specified internally here.
 #'
 #' @return List with the final transformed `experiment_data` reactive and a
@@ -461,7 +476,7 @@ sampleVarSpecServer <- function(id,
 #'   experiment_name = reactive({
 #'     input$experiment_name
 #'   }),
-#'   original_data = experiment_data
+#'   original_data = <orginal_data> # Please update the <orginal_data>
 #' )
 #' # Then can extract the transformed data and selected variables later:
 #' experiment_data <- sample_var_specs$experiment_data()
