@@ -63,11 +63,12 @@ Suggests:
     shinytest (>= 1.5.0),
     testthat (>= 2.0)
 Remotes:
-    insightsengineering/teal.data@*release
-    insightsengineering/teal.logger@*release
-    insightsengineering/teal.widgets@*release
-    insightsengineering/tern@*release
-    insightsengineering/hermes@*release
+    insightsengineering/teal@*release,
+    insightsengineering/teal.data@*release,
+    insightsengineering/teal.logger@*release,
+    insightsengineering/teal.widgets@*release,
+    insightsengineering/tern@*release,
+    insightsengineering/hermes@*release,
     insightsengineering/scda@*release
 RdMacros:
     lifecycle
