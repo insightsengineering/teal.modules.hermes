@@ -27,7 +27,7 @@
     
     <a class="navbar-brand me-2" href="index.html">teal.modules.hermes</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.3.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.3.9002</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,12 +42,6 @@
 <li class="nav-item">
   <a class="nav-link" href="news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" href="https://insightsengineering.github.io/teal.modules.hermes/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="search.json" id="search-input" placeholder="Search for" autocomplete="off">
@@ -80,80 +74,80 @@
 </h3>
 <p>In <code>teal.modules.hermes</code> we provide modules that make the experiment and assay selection super easy, see here for the UI part:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ui</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">id</span>,
-               <span class="va">datasets</span>,
-               <span class="va">mae_name</span><span class="op">)</span> <span class="op">{</span>
-  <span class="va">ns</span> <span class="op">&lt;-</span> <span class="fu">NS</span><span class="op">(</span><span class="va">id</span><span class="op">)</span>
-
-  <span class="fu">teal.widgets</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.widgets/man/standard_layout.html" class="external-link">standard_layout</a></span><span class="op">(</span>
-    encoding <span class="op">=</span> <span class="fu">div</span><span class="op">(</span>
-      <span class="fu"><a href="reference/experimentSpecInput.html">experimentSpecInput</a></span><span class="op">(</span><span class="fu">ns</span><span class="op">(</span><span class="st">"experiment"</span><span class="op">)</span>, <span class="va">datasets</span>, <span class="va">mae_name</span><span class="op">)</span>,
-      <span class="fu"><a href="reference/assaySpecInput.html">assaySpecInput</a></span><span class="op">(</span><span class="fu">ns</span><span class="op">(</span><span class="st">"assay"</span><span class="op">)</span><span class="op">)</span>
-    <span class="op">)</span>,
-    output <span class="op">=</span> <span class="fu">plotOutput</span><span class="op">(</span><span class="fu">ns</span><span class="op">(</span><span class="st">"awesome_plot"</span><span class="op">)</span><span class="op">)</span>
-  <span class="op">)</span>
-<span class="op">}</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">id</span>,</span>
+<span>               <span class="va">datasets</span>,</span>
+<span>               <span class="va">mae_name</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">ns</span> <span class="op">&lt;-</span> <span class="fu">NS</span><span class="op">(</span><span class="va">id</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="fu">teal.widgets</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.widgets/man/standard_layout.html" class="external-link">standard_layout</a></span><span class="op">(</span></span>
+<span>    encoding <span class="op">=</span> <span class="fu">div</span><span class="op">(</span></span>
+<span>      <span class="fu"><a href="reference/experimentSpecInput.html">experimentSpecInput</a></span><span class="op">(</span><span class="fu">ns</span><span class="op">(</span><span class="st">"experiment"</span><span class="op">)</span>, <span class="va">datasets</span>, <span class="va">mae_name</span><span class="op">)</span>,</span>
+<span>      <span class="fu"><a href="reference/assaySpecInput.html">assaySpecInput</a></span><span class="op">(</span><span class="fu">ns</span><span class="op">(</span><span class="st">"assay"</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    output <span class="op">=</span> <span class="fu">plotOutput</span><span class="op">(</span><span class="fu">ns</span><span class="op">(</span><span class="st">"awesome_plot"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="server-function">Server function<a class="anchor" aria-label="anchor" href="#server-function"></a>
 </h3>
 <p>Similarly for the server we use the modules, and call then our awesome plotting function.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">srv</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>,
-                <span class="va">output</span>,
-                <span class="va">session</span>,
-                <span class="va">datasets</span>,
-                <span class="va">mae_name</span><span class="op">)</span> <span class="op">{</span>
-  <span class="va">experiment</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/experimentSpecServer.html">experimentSpecServer</a></span><span class="op">(</span>
-    <span class="st">"experiment"</span>,
-    datasets <span class="op">=</span> <span class="va">datasets</span>,
-    mae_name <span class="op">=</span> <span class="va">mae_name</span>,
-    name_annotation <span class="op">=</span> <span class="cn">NULL</span>  <span class="co"># If you have a gene name column in your rowData, can specify here.</span>
-  <span class="op">)</span>
-  <span class="va">assay</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/assaySpecServer.html">assaySpecServer</a></span><span class="op">(</span><span class="st">"assay"</span>, <span class="va">experiment</span><span class="op">$</span><span class="va">assays</span><span class="op">)</span>
-  <span class="va">output</span><span class="op">$</span><span class="va">awesome_plot</span> <span class="op">&lt;-</span> <span class="fu">renderPlot</span><span class="op">(</span><span class="op">{</span>
-    <span class="va">data</span> <span class="op">&lt;-</span> <span class="va">experiment</span><span class="op">$</span><span class="fu">data</span><span class="op">(</span><span class="op">)</span>
-    <span class="va">assay</span> <span class="op">&lt;-</span> <span class="fu">assay</span><span class="op">(</span><span class="op">)</span>
-    <span class="fu">req</span><span class="op">(</span><span class="va">assay</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu">SummarizedExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assayNames</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">)</span>
-    <span class="va">counts</span> <span class="op">&lt;-</span> <span class="fu">SummarizedExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assay</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">assay</span><span class="op">)</span>
-    <span class="fu">awesome_plot</span><span class="op">(</span><span class="va">counts</span><span class="op">)</span>
-  <span class="op">}</span><span class="op">)</span>
-<span class="op">}</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">srv</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>,</span>
+<span>                <span class="va">output</span>,</span>
+<span>                <span class="va">session</span>,</span>
+<span>                <span class="va">datasets</span>,</span>
+<span>                <span class="va">mae_name</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">experiment</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/experimentSpecServer.html">experimentSpecServer</a></span><span class="op">(</span></span>
+<span>    <span class="st">"experiment"</span>,</span>
+<span>    datasets <span class="op">=</span> <span class="va">datasets</span>,</span>
+<span>    mae_name <span class="op">=</span> <span class="va">mae_name</span>,</span>
+<span>    name_annotation <span class="op">=</span> <span class="cn">NULL</span>  <span class="co"># If you have a gene name column in your rowData, can specify here.</span></span>
+<span>  <span class="op">)</span></span>
+<span>  <span class="va">assay</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/assaySpecServer.html">assaySpecServer</a></span><span class="op">(</span><span class="st">"assay"</span>, <span class="va">experiment</span><span class="op">$</span><span class="va">assays</span><span class="op">)</span></span>
+<span>  <span class="va">output</span><span class="op">$</span><span class="va">awesome_plot</span> <span class="op">&lt;-</span> <span class="fu">renderPlot</span><span class="op">(</span><span class="op">{</span></span>
+<span>    <span class="va">data</span> <span class="op">&lt;-</span> <span class="va">experiment</span><span class="op">$</span><span class="fu">data</span><span class="op">(</span><span class="op">)</span></span>
+<span>    <span class="va">assay</span> <span class="op">&lt;-</span> <span class="fu">assay</span><span class="op">(</span><span class="op">)</span></span>
+<span>    <span class="fu">req</span><span class="op">(</span><span class="va">assay</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu">SummarizedExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assayNames</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="va">counts</span> <span class="op">&lt;-</span> <span class="fu">SummarizedExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assay</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">assay</span><span class="op">)</span></span>
+<span>    <span class="fu">awesome_plot</span><span class="op">(</span><span class="va">counts</span><span class="op">)</span></span>
+<span>  <span class="op">}</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="app-function">App function<a class="anchor" aria-label="anchor" href="#app-function"></a>
 </h3>
 <p>Now let’s assume you want to spin up your app for an MAE.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/insightsengineering/teal.modules.hermes/" class="external-link">teal.modules.hermes</a></span><span class="op">)</span>
-<span class="va">awesome_app</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">mae</span>, <span class="va">label</span> <span class="op">=</span> <span class="st">"My awesome app"</span><span class="op">)</span> <span class="op">{</span>
-  <span class="va">mae_name</span> <span class="op">&lt;-</span> <span class="st">"MAE"</span>
-  <span class="va">mae</span> <span class="op">&lt;-</span> <span class="fu">hermes</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/hermes/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">mae</span>, <span class="fu">hermes</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/hermes/man/HermesData-class.html" class="external-link">HermesData</a></span><span class="op">)</span>
-  <span class="va">mae_data</span> <span class="op">&lt;-</span> <span class="fu">dataset</span><span class="op">(</span><span class="va">mae_name</span>, <span class="va">mae</span><span class="op">)</span>
-  <span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">teal_data</span><span class="op">(</span><span class="va">mae_data</span><span class="op">)</span>
-  <span class="va">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/teal/man/init.html" class="external-link">init</a></span><span class="op">(</span>
-    data <span class="op">=</span> <span class="va">data</span>,
-    modules <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/teal/man/root_modules.html" class="external-link">root_modules</a></span><span class="op">(</span>
-      <span class="fu"><a href="https://rdrr.io/pkg/teal/man/module.html" class="external-link">module</a></span><span class="op">(</span>
-        label <span class="op">=</span> <span class="va">label</span>,
-        server <span class="op">=</span> <span class="va">srv</span>,
-        server_args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mae_name <span class="op">=</span> <span class="va">mae_name</span><span class="op">)</span>,
-        ui <span class="op">=</span> <span class="va">ui</span>,
-        ui_args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mae_name <span class="op">=</span> <span class="va">mae_name</span><span class="op">)</span>,
-        filters <span class="op">=</span> <span class="va">mae_name</span>
-      <span class="op">)</span>
-    <span class="op">)</span>
-  <span class="op">)</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html" class="external-link">shinyApp</a></span><span class="op">(</span><span class="va">app</span><span class="op">$</span><span class="va">ui</span>, <span class="va">app</span><span class="op">$</span><span class="va">server</span><span class="op">)</span>
-<span class="op">}</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/insightsengineering/teal.modules.hermes/" class="external-link">teal.modules.hermes</a></span><span class="op">)</span></span>
+<span><span class="va">awesome_app</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">mae</span>, <span class="va">label</span> <span class="op">=</span> <span class="st">"My awesome app"</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">mae_name</span> <span class="op">&lt;-</span> <span class="st">"MAE"</span></span>
+<span>  <span class="va">mae</span> <span class="op">&lt;-</span> <span class="fu">hermes</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">mae</span>, <span class="fu">hermes</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/hermes/man/HermesData-class.html" class="external-link">HermesData</a></span><span class="op">)</span></span>
+<span>  <span class="va">mae_data</span> <span class="op">&lt;-</span> <span class="fu">dataset</span><span class="op">(</span><span class="va">mae_name</span>, <span class="va">mae</span><span class="op">)</span></span>
+<span>  <span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">teal_data</span><span class="op">(</span><span class="va">mae_data</span><span class="op">)</span></span>
+<span>  <span class="va">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/teal/man/init.html" class="external-link">init</a></span><span class="op">(</span></span>
+<span>    data <span class="op">=</span> <span class="va">data</span>,</span>
+<span>    modules <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/teal/man/root_modules.html" class="external-link">root_modules</a></span><span class="op">(</span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/pkg/teal/man/module.html" class="external-link">module</a></span><span class="op">(</span></span>
+<span>        label <span class="op">=</span> <span class="va">label</span>,</span>
+<span>        server <span class="op">=</span> <span class="va">srv</span>,</span>
+<span>        server_args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mae_name <span class="op">=</span> <span class="va">mae_name</span><span class="op">)</span>,</span>
+<span>        ui <span class="op">=</span> <span class="va">ui</span>,</span>
+<span>        ui_args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mae_name <span class="op">=</span> <span class="va">mae_name</span><span class="op">)</span>,</span>
+<span>        filters <span class="op">=</span> <span class="va">mae_name</span></span>
+<span>      <span class="op">)</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html" class="external-link">shinyApp</a></span><span class="op">(</span><span class="va">app</span><span class="op">$</span><span class="va">ui</span>, <span class="va">app</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="testing-it">Testing it<a class="anchor" aria-label="anchor" href="#testing-it"></a>
 </h3>
 <p>Let’s test this.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">awesome_plot</span> <span class="op">&lt;-</span> <span class="va">image</span>
-<span class="fu">awesome_app</span><span class="op">(</span><span class="fu">hermes</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/hermes/man/multi_assay_experiment.html" class="external-link">multi_assay_experiment</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">awesome_plot</span> <span class="op">&lt;-</span> <span class="va">image</span></span>
+<span><span class="fu">awesome_app</span><span class="op">(</span><span class="fu">hermes</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/hermes/man/multi_assay_experiment.html" class="external-link">multi_assay_experiment</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -174,6 +168,16 @@
 </h3>
 <p><code>teal.modules.hermes</code> provides <code>teal</code> modules (which can be used as part of any <code>teal</code> app), for interactive RNA-seq data analysis using <code>hermes</code>. Again it is heavily built on the BioConductor classes, in particular <code>MultiAssayExperiment</code> (MAE) which is expected to contain the <code>HermesData</code> experiments.</p>
 </div>
+</div>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<p>For releases from August 2022 it is recommended that you <a href="https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token" class="external-link">create and use a Github PAT</a> to install the latest version of this package. Once you have the PAT, run the following:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>GITHUB_PAT <span class="op">=</span> <span class="st">"your_access_token_here"</span><span class="op">)</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://remotes.r-lib.org" class="external-link">"remotes"</a></span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"insightsengineering/teal.modules.hermes@*release"</span><span class="op">)</span></span></code></pre></div>
+<p>A stable release of all <code>NEST</code> packages from June 2022 is also available <a href="https://github.com/insightsengineering/depository#readme" class="external-link">here</a>.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
