@@ -43,6 +43,3 @@ coverage.*
 ^\.markdownlint\.json$
 ^\.markdownlintignore$
 ^\.pre-commit-config\.yaml$
-SECURITY.md
-SECURITY.md
-SECURITY.md
