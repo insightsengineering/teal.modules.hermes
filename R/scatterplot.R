@@ -83,6 +83,14 @@ ui_g_scatterplot <- function(id,
 
   teal.widgets::standard_layout(
     encoding = div(
+      ### Reporter
+      shiny::tags$div(
+        teal.reporter::add_card_button_ui(ns("addReportCard")),
+        teal.reporter::download_report_button_ui(ns("downloadButton")),
+        teal.reporter::reset_report_button_ui(ns("resetButton"))
+      ),
+      shiny::tags$br(),
+      ###
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
       experimentSpecInput(ns("experiment"), datasets, mae_name),
@@ -111,9 +119,11 @@ ui_g_scatterplot <- function(id,
 #' @export
 srv_g_scatterplot <- function(id,
                               datasets,
+                              reporter,
                               mae_name,
                               exclude_assays,
                               summary_funs) {
+  with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   moduleServer(id, function(input, output, session) {
     experiment <- experimentSpecServer(
       "experiment",
@@ -133,7 +143,7 @@ srv_g_scatterplot <- function(id,
     x_spec <- geneSpecServer("x_spec", summary_funs, experiment$genes)
     y_spec <- geneSpecServer("y_spec", summary_funs, experiment$genes)
 
-    output$plot <- renderPlot({
+    plot_r <- reactive({
       # Resolve all reactivity.
       experiment_data <- sample_var_specs$experiment_data()
       x_spec <- x_spec()
@@ -166,6 +176,54 @@ srv_g_scatterplot <- function(id,
         smooth_method = smooth_method
       )
     })
+    output$plot <- renderPlot(plot_r())
+
+    ### REPORTER
+    if (with_reporter) {
+      card_fun <- function(comment) {
+        card <- teal.reporter::TealReportCard$new()
+        card$set_name("Scatter Plot")
+        card$append_text("Scatter Plot", "header2")
+        card$append_text("Filter State", "header3")
+        card$append_fs(datasets$get_filter_state())
+        card$append_text("Selected Options", "header3")
+        card$append_text(
+          paste(
+            "Experiment:",
+            input$`experiment-name`,
+            "\nAssay:",
+            input$`assay-name`,
+            "\nX Genes Selected:",
+            paste0(input$`x_spec-genes`, collapse = ", "),
+            "\nX Genes Summary:",
+            input$`x_spec-fun_name`,
+            "\nY Genes Selected:",
+            paste0(input$`y_spec-genes`, collapse = ", "),
+            "\nY Genes Summary:",
+            input$`y_spec-fun_name`,
+            "\nOptional Color Variable:",
+            input$`color_var-sample_var`,
+            "\nOptional Facetting Variable:",
+            input$`facet_var-sample_var`,
+            "\nSmoother:",
+            input$smooth_method
+          ),
+          style = "verbatim"
+        )
+        card$append_text("Plot", "header3")
+        card$append_plot(plot_r())
+        if (!comment == "") {
+          card$append_text("Comment", "header3")
+          card$append_text(comment)
+        }
+        card
+      }
+
+      teal.reporter::add_card_button_srv("addReportCard", reporter = reporter, card_fun = card_fun)
+      teal.reporter::download_report_button_srv("downloadButton", reporter = reporter)
+      teal.reporter::reset_report_button_srv("resetButton", reporter)
+    }
+    ###
   })
 }
 

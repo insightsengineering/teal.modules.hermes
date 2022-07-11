@@ -106,6 +106,14 @@ ui_g_km <- function(id,
 
   teal.widgets::standard_layout(
     encoding = div(
+      ### Reporter
+      shiny::tags$div(
+        teal.reporter::add_card_button_ui(ns("addReportCard")),
+        teal.reporter::download_report_button_ui(ns("downloadButton")),
+        teal.reporter::reset_report_button_ui(ns("resetButton"))
+      ),
+      shiny::tags$br(),
+      ###
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
       experimentSpecInput(ns("experiment"), datasets, mae_name),
@@ -140,11 +148,13 @@ ui_g_km <- function(id,
 #' @export
 srv_g_km <- function(id,
                      datasets,
+                     reporter,
                      adtte_name,
                      mae_name,
                      adtte_vars,
                      summary_funs,
                      exclude_assays) {
+  with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   moduleServer(id, function(input, output, session) {
     experiment <- experimentSpecServer(
       "experiment",
@@ -190,7 +200,7 @@ srv_g_km <- function(id,
       probs = percentiles_without_borders
     )
 
-    output$km_plot <- renderPlot({
+    km_plot <- reactive({
       strata_var <- strata$sample_var()
       binned_adtte <- adtte$binned_adtte_subset()
 
@@ -202,6 +212,51 @@ srv_g_km <- function(id,
       )
       tern::g_km(binned_adtte, variables = variables, annot_coxph = TRUE)
     })
+
+    output$km_plot <- renderPlot(km_plot())
+
+    ### REPORTER
+    if (with_reporter) {
+      card_fun <- function(comment) {
+        card <- teal.reporter::TealReportCard$new()
+        card$set_name("Kaplan-Meier Plot")
+        card$append_text("Kaplan-Meier Plot", "header2")
+        card$append_text("Filter State", "header3")
+        card$append_fs(datasets$get_filter_state())
+        card$append_text("Selected Options", "header3")
+        card$append_text(
+          paste(
+            "Experiment:",
+            input$`experiment-name`,
+            "\nAssay:",
+            input$`assay-name`,
+            "\nGenes Selected:",
+            paste0(input$`genes-genes`, collapse = ", "),
+            "\nGene Summary:",
+            input$`genes-fun_name`,
+            "\nEndpoint:",
+            input$`adtte-paramcd`,
+            "\nStrata Selected:",
+            input$`strata-sample_var`,
+            "\nQuantiles Displayed:",
+            paste0(input$percentiles, collapse = "-")
+          ),
+          style = "verbatim"
+        )
+        card$append_text("Plot", "header3")
+        card$append_plot(km_plot())
+        if (!comment == "") {
+          card$append_text("Comment", "header3")
+          card$append_text(comment)
+        }
+        card
+      }
+
+      teal.reporter::add_card_button_srv("addReportCard", reporter = reporter, card_fun = card_fun)
+      teal.reporter::download_report_button_srv("downloadButton", reporter = reporter)
+      teal.reporter::reset_report_button_srv("resetButton", reporter)
+    }
+    ###
   })
 }
 
