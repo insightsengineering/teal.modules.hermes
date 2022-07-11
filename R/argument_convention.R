@@ -33,6 +33,7 @@
 #' @param summary_funs (named `list` of functions or `NULL`)\cr functions which can be used
 #'   in the the gene signatures. For modules that support also multiple genes without
 #'   summary, `NULL` can be included to not summarize the genes but provide all of them.
+#' @param reporter (`Reporter`) object
 #' @param pre_output (`shiny.tag` or `NULL`)\cr
 #'   placed before the output to put the output into context (for example a title).
 #' @param post_output (`shiny.tag` or `NULL`)\cr

@@ -40,6 +40,8 @@ names of the assays which should not be included in choices in the teal module.}
 in the the gene signatures. For modules that support also multiple genes without
 summary, \code{NULL} can be included to not summarize the genes but provide all of them.}
 
+\item{reporter}{(\code{Reporter}) object}
+
 \item{pre_output}{(\code{shiny.tag} or \code{NULL})\cr
 placed before the output to put the output into context (for example a title).}
 

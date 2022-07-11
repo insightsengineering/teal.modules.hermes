@@ -17,7 +17,7 @@ tm_g_pca(
 
 ui_g_pca(id, datasets, mae_name, pre_output, post_output)
 
-srv_g_pca(id, datasets, mae_name, exclude_assays)
+srv_g_pca(id, datasets, reporter, mae_name, exclude_assays)
 
 sample_tm_g_pca()
 }
@@ -43,6 +43,8 @@ elements can be useful).}
 \item{datasets}{(\code{Datasets})\cr
 teal specific argument which is automatically passed to the UI and server
 functions, holding all the data sets provided in the app initialization.}
+
+\item{reporter}{(\code{Reporter}) object}
 }
 \value{
 Shiny module to be used in the teal app.
