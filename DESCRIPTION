@@ -50,6 +50,7 @@ Imports:
     SummarizedExperiment,
     teal.data (>= 0.1.1),
     teal.logger (>= 0.1.0),
+    teal.reporter (>= 0.1.0),
     teal.widgets (>= 0.1.1),
     tern (>= 0.7.8)
 Suggests:
