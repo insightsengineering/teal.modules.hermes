@@ -178,7 +178,7 @@
                     </div>
                   </div>
                 </div>
-                <div data-display-if="input.genes.length &gt; 1" data-ns-prefix="testid-genes-">
+                <div data-display-if="input.genes &amp;&amp; input.genes.length &gt; 1" data-ns-prefix="testid-genes-">
                   <div class="form-group shiny-input-container">
                     <label class="control-label" id="testid-genes-fun_name-label" for="testid-genes-fun_name">Select Gene Summary</label>
                     <div>
