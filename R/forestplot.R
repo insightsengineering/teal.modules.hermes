@@ -236,7 +236,6 @@ srv_g_forest_tte <- function(id,
         card$append_text("Filter State", "header3")
         card$append_fs(datasets$get_filter_state())
         card$append_text("Selected Options", "header3")
-        browser()
         card$append_text(
           paste(
             "Experiment:",
