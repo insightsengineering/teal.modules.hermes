@@ -78,6 +78,14 @@ ui_g_boxplot <- function(id,
 
   teal.widgets::standard_layout(
     encoding = div(
+      ### Reporter
+      shiny::tags$div(
+        teal.reporter::add_card_button_ui(ns("addReportCard")),
+        teal.reporter::download_report_button_ui(ns("downloadButton")),
+        teal.reporter::reset_report_button_ui(ns("resetButton"))
+      ),
+      shiny::tags$br(),
+      ###
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
       experimentSpecInput(ns("experiment"), datasets, mae_name),
@@ -109,9 +117,11 @@ ui_g_boxplot <- function(id,
 #' @export
 srv_g_boxplot <- function(id,
                           datasets,
+                          reporter,
                           mae_name,
                           exclude_assays,
                           summary_funs) {
+  with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   moduleServer(id, function(input, output, session) {
     experiment <- experimentSpecServer(
       "experiment",
@@ -133,7 +143,7 @@ srv_g_boxplot <- function(id,
       funs = summary_funs,
       gene_choices = experiment$genes
     )
-    output$plot <- renderPlot({
+    plot_r <- reactive({
       # Resolve all reactivity.
       experiment_data <- multi$experiment_data()
       strat <- multi$vars$strat()
@@ -167,6 +177,62 @@ srv_g_boxplot <- function(id,
         violin = violin
       )
     })
+    output$plot <- renderPlot(plot_r())
+
+    ### REPORTER
+    if (with_reporter) {
+      card_fun <- function(comment) {
+        card <- teal.reporter::TealReportCard$new()
+        card$set_name("Boxplot")
+        card$append_text("Boxplot", "header2")
+        card$append_text("Filter State", "header3")
+        card$append_fs(datasets$get_filter_state())
+        card$append_text("Selected Options", "header3")
+        encodings_list <- list(
+          "Experiment:",
+          input$`experiment-name`,
+          "\nAssay:",
+          input$`assay-name`,
+          "\nFacetting Variable:",
+          input$`facet-sample_var`,
+          "\nGenes Selected:",
+          paste0(input$`genes-genes`, collapse = ", "),
+          "\nGene Summary:",
+          input$`genes-fun_name`,
+          "\nJitter:",
+          input$jitter,
+          "\nViolin:",
+          input$violin,
+          "\nOptional Stratifying Variable:",
+          input$`strat-sample_var`,
+          "\nOptional Color Variable:",
+          input$`color-sample_var`,
+          "\nOptional Facet Variable:",
+          input$`facet-sample_var`
+        )
+        null_encodings_indices <- which(sapply(encodings_list, function(x) is.null(x) || x == ""))
+        final_encodings <- if (length(null_encodings_indices) > 0) {
+          null_encodings_indices_1 <- c(null_encodings_indices, null_encodings_indices - 1)
+          paste(encodings_list[-null_encodings_indices_1], collapse = " ")
+        } else {
+          paste(encodings_list, collapse = " ")
+        }
+
+        card$append_text(final_encodings, style = "verbatim")
+        card$append_text("Plot", "header3")
+        card$append_plot(plot_r())
+        if (!comment == "") {
+          card$append_text("Comment", "header3")
+          card$append_text(comment)
+        }
+        card
+      }
+
+      teal.reporter::add_card_button_srv("addReportCard", reporter = reporter, card_fun = card_fun)
+      teal.reporter::download_report_button_srv("downloadButton", reporter = reporter)
+      teal.reporter::reset_report_button_srv("resetButton", reporter)
+    }
+    ###
   })
 }
 

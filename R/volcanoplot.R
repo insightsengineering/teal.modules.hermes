@@ -75,6 +75,14 @@ ui_g_volcanoplot <- function(id,
     pre_output = pre_output,
     post_output = post_output,
     encoding = div(
+      ### Reporter
+      shiny::tags$div(
+        teal.reporter::add_card_button_ui(ns("addReportCard")),
+        teal.reporter::download_report_button_ui(ns("downloadButton")),
+        teal.reporter::reset_report_button_ui(ns("resetButton"))
+      ),
+      shiny::tags$br(),
+      ###
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
       experimentSpecInput(ns("experiment"), datasets, mae_name),
@@ -101,8 +109,10 @@ ui_g_volcanoplot <- function(id,
 #' @export
 srv_g_volcanoplot <- function(id,
                               datasets,
+                              reporter,
                               mae_name,
                               exclude_assays) {
+  with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   moduleServer(id, function(input, output, session) {
     experiment_data <- experimentSpecServer(
       "experiment",
@@ -145,7 +155,7 @@ srv_g_volcanoplot <- function(id,
       )
     })
 
-    output$plot <- renderPlot({
+    plot_r <- reactive({
       diff_expr_result <- diff_expr()
       log2_fc_thresh <- input$log2_fc_thresh
       adj_p_val_thresh <- input$adj_p_val_thresh
@@ -161,6 +171,7 @@ srv_g_volcanoplot <- function(id,
         log2_fc_thresh = log2_fc_thresh
       )
     })
+    output$plot <- renderPlot(plot_r())
 
     # Display top genes if switched on.
     show_top_gene_diffexpr <- reactive({
@@ -189,6 +200,59 @@ srv_g_volcanoplot <- function(id,
         caption = "Top Differentiated Genes"
       )
     })
+
+    ### REPORTER
+    if (with_reporter) {
+      card_fun <- function(comment) {
+        card <- teal.reporter::TealReportCard$new()
+        card$set_name("Scatter Plot")
+        card$append_text("Scatter Plot", "header2")
+        card$append_text("Filter State", "header3")
+        card$append_fs(datasets$get_filter_state())
+        card$append_text("Selected Options", "header3")
+        encodings_list <- list(
+          "Experiment:",
+          input$`experiment-name`,
+          "\nAssay:",
+          input$`assay-name`,
+          "\nCompare Groups:",
+          input$`compare_group-sample_var`,
+          "\nShow Top Differentiated Genes:",
+          input$show_top_gene,
+          "\nMethod:",
+          input$method,
+          "\nLog2fold Change Threshold:",
+          input$log2_fc_thresh,
+          "\nAdjusted P-value Threshold:",
+          input$adj_p_val_thresh
+        )
+        null_encodings_indices <- which(sapply(encodings_list, function(x) is.null(x) || x == ""))
+        final_encodings <- if (length(null_encodings_indices) > 0) {
+          null_encodings_indices_1 <- c(null_encodings_indices, null_encodings_indices - 1)
+          paste(encodings_list[-null_encodings_indices_1], collapse = " ")
+        } else {
+          paste(encodings_list, collapse = " ")
+        }
+
+        card$append_text(final_encodings, style = "verbatim")
+        card$append_text("Plot", "header3")
+        card$append_plot(plot_r())
+        if (isTRUE(input$show_top_gene)) {
+          card$append_text("Table", "header3")
+          card$append_table(show_top_gene_diffexpr())
+        }
+        if (!comment == "") {
+          card$append_text("Comment", "header3")
+          card$append_text(comment)
+        }
+        card
+      }
+
+      teal.reporter::add_card_button_srv("addReportCard", reporter = reporter, card_fun = card_fun)
+      teal.reporter::download_report_button_srv("downloadButton", reporter = reporter)
+      teal.reporter::reset_report_button_srv("resetButton", reporter)
+    }
+    ###
   })
 }
 

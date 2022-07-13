@@ -69,6 +69,14 @@ ui_g_pca <- function(id,
 
   teal.widgets::standard_layout(
     encoding = div(
+      ### Reporter
+      shiny::tags$div(
+        teal.reporter::add_card_button_ui(ns("addReportCard")),
+        teal.reporter::download_report_button_ui(ns("downloadButton")),
+        teal.reporter::reset_report_button_ui(ns("resetButton"))
+      ),
+      shiny::tags$br(),
+      ###
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
       experimentSpecInput(ns("experiment"), datasets, mae_name),
@@ -148,8 +156,10 @@ ui_g_pca <- function(id,
 #' @export
 srv_g_pca <- function(id,
                       datasets,
+                      reporter,
                       mae_name,
                       exclude_assays) {
+  with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   moduleServer(id, function(input, output, session) {
     experiment <- experimentSpecServer(
       "experiment",
@@ -275,7 +285,7 @@ srv_g_pca <- function(id,
     })
 
     # Render plot PCA output.
-    output$plot_pca <- renderPlot({
+    plot_pca <- reactive({
       # Resolve all reactivity.
       pca_result <- pca_result()
       experiment_data <- color$experiment_data()
@@ -312,9 +322,10 @@ srv_g_pca <- function(id,
         label.show.legend = FALSE
       )
     })
+    output$plot_pca <- renderPlot(plot_pca())
 
     # render correlation heatmap
-    output$plot_cor <- renderPlot({
+    plot_cor <- reactive({
       # Resolve all reactivity.
       cor_result <- cor_result()
       cluster_columns <- input$cluster_columns
@@ -328,6 +339,93 @@ srv_g_pca <- function(id,
         cluster_columns = cluster_columns
       )
     })
+    output$plot_cor <- renderPlot(plot_cor())
+
+    ### REPORTER
+    if (with_reporter) {
+      card_fun <- function(comment) {
+        card <- teal.reporter::TealReportCard$new()
+        card$set_name("PCA")
+        card$append_text("PCA", "header2")
+        card$append_text("Filter State", "header3")
+        card$append_fs(datasets$get_filter_state())
+        card$append_text("Selected Options", "header3")
+        if (input$tab_selected == "PCA") {
+          encodings_list <- list(
+            "Experiment:",
+            input$`experiment-name`,
+            "\nAssay:",
+            input$`assay-name`,
+            "\nOptional Color Variable:",
+            input$`color-sample_var`,
+            "\nX-axis PC:",
+            input$x_var,
+            "\nY-axis PC:",
+            input$y_var,
+            "\nUse Top Variance Genes:",
+            input$filter_top,
+            "\nNumber of Top Genes:",
+            input$n_top,
+            "\nShow Variance %:",
+            input$var_pct,
+            "\nShow Matrix:",
+            input$show_matrix,
+            "\nShow Label:",
+            input$label
+          )
+          null_encodings_indices <- which(sapply(encodings_list, function(x) is.null(x) || x == ""))
+          final_encodings <- if (length(null_encodings_indices) > 0) {
+            null_encodings_indices_1 <- c(null_encodings_indices, null_encodings_indices - 1)
+            paste(encodings_list[-null_encodings_indices_1], collapse = " ")
+          } else {
+            paste(encodings_list, collapse = " ")
+          }
+          card$append_text(final_encodings, style = "verbatim")
+          card$append_text("Plot", "header3")
+          card$append_plot(plot_pca())
+          card$append_text("Table", "header3")
+          card$append_table(show_matrix_pca())
+        } else {
+          encodings_list <- list(
+            "Experiment:",
+            input$`experiment-name`,
+            "\nAssay:",
+            input$`assay-name`,
+            "\nUse Top Variance Genes:",
+            input$filter_top,
+            "\nNumber of Top Genes:",
+            input$top_n,
+            "\nCluster Columns:",
+            paste0(input$cluster_columns, collapse = ", "),
+            "\nShow Matrix:",
+            input$show_matrix
+          )
+          null_encodings_indices <- which(sapply(encodings_list, function(x) is.null(x) || x == ""))
+          final_encodings <- if (length(null_encodings_indices) > 0) {
+            null_encodings_indices_1 <- c(null_encodings_indices, null_encodings_indices - 1)
+            paste(encodings_list[-null_encodings_indices_1], collapse = " ")
+          } else {
+            paste(encodings_list, collapse = " ")
+          }
+
+          card$append_text(final_encodings, style = "verbatim")
+          card$append_text("Plot", "header3")
+          card$append_plot(plot_cor())
+          card$append_text("Table", "header3")
+          card$append_table(show_matrix_cor())
+        }
+        if (!comment == "") {
+          card$append_text("Comment", "header3")
+          card$append_text(comment)
+        }
+        card
+      }
+
+      teal.reporter::add_card_button_srv("addReportCard", reporter = reporter, card_fun = card_fun)
+      teal.reporter::download_report_button_srv("downloadButton", reporter = reporter)
+      teal.reporter::reset_report_button_srv("resetButton", reporter)
+    }
+    ###
   })
 }
 

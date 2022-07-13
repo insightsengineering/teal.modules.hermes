@@ -35,6 +35,7 @@ ui_g_forest_tte(
 srv_g_forest_tte(
   id,
   datasets,
+  reporter,
   adtte_name,
   mae_name,
   adtte_vars,
@@ -94,6 +95,8 @@ and maximum plot width.}
 \item{datasets}{(\code{Datasets})\cr
 teal specific argument which is automatically passed to the UI and server
 functions, holding all the data sets provided in the app initialization.}
+
+\item{reporter}{(\code{Reporter}) object}
 }
 \value{
 Shiny module to be used in the teal app.

@@ -57,7 +57,7 @@ test_that("tm_g_barplot works as expected in the sample app", {
 
   # Check that gene list is updated
   now_x_spec_gene <- app$waitForValue(ns("x-genes"), ignore = "")
-  expect_null(now_x_spec_gene)
+  expect_identical(now_x_spec_gene, "GeneID:8086")
 
   # Check that assay list is updated
   now_assay <- app$waitForValue(ns("assay"), ignore = "")

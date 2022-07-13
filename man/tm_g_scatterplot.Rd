@@ -19,7 +19,14 @@ tm_g_scatterplot(
 
 ui_g_scatterplot(id, datasets, mae_name, summary_funs, pre_output, post_output)
 
-srv_g_scatterplot(id, datasets, mae_name, exclude_assays, summary_funs)
+srv_g_scatterplot(
+  id,
+  datasets,
+  reporter,
+  mae_name,
+  exclude_assays,
+  summary_funs
+)
 
 sample_tm_g_scatterplot()
 }
@@ -49,6 +56,8 @@ elements can be useful).}
 \item{datasets}{(\code{Datasets})\cr
 teal specific argument which is automatically passed to the UI and server
 functions, holding all the data sets provided in the app initialization.}
+
+\item{reporter}{(\code{Reporter}) object}
 }
 \value{
 Shiny module to be used in the teal app.

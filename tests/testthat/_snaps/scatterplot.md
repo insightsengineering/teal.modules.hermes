@@ -178,7 +178,7 @@
                     </div>
                   </div>
                 </div>
-                <div data-display-if="input.genes.length &gt; 1" data-ns-prefix="testid-x_spec-">
+                <div data-display-if="input.genes &amp;&amp; input.genes.length &gt; 1" data-ns-prefix="testid-x_spec-">
                   <div class="form-group shiny-input-container">
                     <label class="control-label" id="testid-x_spec-fun_name-label" for="testid-x_spec-fun_name">Select Gene Summary</label>
                     <div>
@@ -239,7 +239,7 @@
                     </div>
                   </div>
                 </div>
-                <div data-display-if="input.genes.length &gt; 1" data-ns-prefix="testid-y_spec-">
+                <div data-display-if="input.genes &amp;&amp; input.genes.length &gt; 1" data-ns-prefix="testid-y_spec-">
                   <div class="form-group shiny-input-container">
                     <label class="control-label" id="testid-y_spec-fun_name-label" for="testid-y_spec-fun_name">Select Gene Summary</label>
                     <div>

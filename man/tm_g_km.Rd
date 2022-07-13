@@ -33,6 +33,7 @@ ui_g_km(
 srv_g_km(
   id,
   datasets,
+  reporter,
   adtte_name,
   mae_name,
   adtte_vars,
@@ -84,6 +85,8 @@ elements can be useful).}
 \item{datasets}{(\code{Datasets})\cr
 teal specific argument which is automatically passed to the UI and server
 functions, holding all the data sets provided in the app initialization.}
+
+\item{reporter}{(\code{Reporter}) object}
 }
 \value{
 Shiny module to be used in the teal app.
