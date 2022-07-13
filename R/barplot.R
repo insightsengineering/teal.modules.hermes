@@ -191,25 +191,31 @@ srv_g_barplot <- function(id,
         card$append_text("Filter State", "header3")
         card$append_fs(datasets$get_filter_state())
         card$append_text("Selected Options", "header3")
-        card$append_text(
-          paste(
-            "Experiment:",
-            input$`experiment-name`,
-            "\nAssay:",
-            input$`assay-name`,
-            "\nFacetting Variable:",
-            input$`facet-sample_var`,
-            "\nGenes Selected:",
-            paste0(input$`x-genes`, collapse = ", "),
-            "\nGene Summary:",
-            input$`x-fun_name`,
-            "\nQuantiles:",
-            paste0(input$percentiles, collapse = ", "),
-            "\nOptional Fill Variable:",
-            input$`fill-sample_var`
-          ),
-          style = "verbatim"
+        encodings_list <- list(
+          "Experiment:",
+          input$`experiment-name`,
+          "\nAssay:",
+          input$`assay-name`,
+          "\nFacetting Variable:",
+          input$`facet-sample_var`,
+          "\nGenes Selected:",
+          paste0(input$`x-genes`, collapse = ", "),
+          "\nGene Summary:",
+          input$`x-fun_name`,
+          "\nQuantiles:",
+          paste0(input$percentiles, collapse = ", "),
+          "\nOptional Fill Variable:",
+          input$`fill-sample_var`
         )
+        null_encodings_indices <- which(sapply(encodings_list, function(x) is.null(x) || x == ""))
+        final_encodings <- if (length(null_encodings_indices) > 0) {
+          null_encodings_indices_1 <- c(null_encodings_indices, null_encodings_indices - 1)
+          paste(encodings_list[-null_encodings_indices_1], collapse = " ")
+        } else {
+          paste(encodings_list, collapse = " ")
+        }
+
+        card$append_text(final_encodings, style = "verbatim")
         card$append_text("Plot", "header3")
         card$append_plot(plot_r())
         if (!comment == "") {

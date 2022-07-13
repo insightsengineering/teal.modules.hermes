@@ -5,6 +5,8 @@
 \title{Correlation Heatmap Plot}
 \usage{
 heatmap_plot(object, assay_name)
+
+heatmap_plot(object, assay_name)
 }
 \arguments{
 \item{object}{(\code{AnyHermesData})\cr contains RNA-seq values for one experiment.}
@@ -13,13 +15,22 @@ heatmap_plot(object, assay_name)
 }
 \value{
 Plot to be displayed in the teal app.
+
+Plot to be displayed in the teal app.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 This function plots the correlation heatmap.
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+This function plots the correlation heatmap.
 }
 \examples{
+library(hermes)
+object <- HermesData(summarized_experiment)
+result <- heatmap_plot(object, assay_name = "counts")
 library(hermes)
 object <- HermesData(summarized_experiment)
 result <- heatmap_plot(object, assay_name = "counts")

@@ -351,53 +351,64 @@ srv_g_pca <- function(id,
         card$append_fs(datasets$get_filter_state())
         card$append_text("Selected Options", "header3")
         if (input$tab_selected == "PCA") {
-          card$append_text(
-            paste(
-              "Experiment:",
-              input$`experiment-name`,
-              "\nAssay:",
-              input$`assay-name`,
-              "\nOptional Color Variable:",
-              input$`color-sample_var`,
-              "\nX-axis PC:",
-              input$x_var,
-              "\nY-axis PC:",
-              input$y_var,
-              "\nUse Top Variance Genes:",
-              input$filter_top,
-              "\nNumber of Top Genes:",
-              input$n_top,
-              "\nShow Variance %:",
-              input$var_pct,
-              "\nShow Matrix:",
-              input$show_matrix,
-              "\nShow Label:",
-              input$label
-            ),
-            style = "verbatim"
+          encodings_list <- list(
+            "Experiment:",
+            input$`experiment-name`,
+            "\nAssay:",
+            input$`assay-name`,
+            "\nOptional Color Variable:",
+            input$`color-sample_var`,
+            "\nX-axis PC:",
+            input$x_var,
+            "\nY-axis PC:",
+            input$y_var,
+            "\nUse Top Variance Genes:",
+            input$filter_top,
+            "\nNumber of Top Genes:",
+            input$n_top,
+            "\nShow Variance %:",
+            input$var_pct,
+            "\nShow Matrix:",
+            input$show_matrix,
+            "\nShow Label:",
+            input$label
           )
+          null_encodings_indices <- which(sapply(encodings_list, function(x) is.null(x) || x == ""))
+          final_encodings <- if (length(null_encodings_indices) > 0) {
+            null_encodings_indices_1 <- c(null_encodings_indices, null_encodings_indices - 1)
+            paste(encodings_list[-null_encodings_indices_1], collapse = " ")
+          } else {
+            paste(encodings_list, collapse = " ")
+          }
+          card$append_text(final_encodings, style = "verbatim")
           card$append_text("Plot", "header3")
           card$append_plot(plot_pca())
           card$append_text("Table", "header3")
           card$append_table(show_matrix_pca())
         } else {
-          card$append_text(
-            paste(
-              "Experiment:",
-              input$`experiment-name`,
-              "\nAssay:",
-              input$`assay-name`,
-              "\nUse Top Variance Genes:",
-              input$filter_top,
-              "\nNumber of Top Genes:",
-              input$top_n,
-              "\nCluster Columns:",
-              paste0(input$cluster_columns, collapse = ", "),
-              "\nShow Matrix:",
-              input$show_matrix
-            ),
-            style = "verbatim"
+          encodings_list <- list(
+            "Experiment:",
+            input$`experiment-name`,
+            "\nAssay:",
+            input$`assay-name`,
+            "\nUse Top Variance Genes:",
+            input$filter_top,
+            "\nNumber of Top Genes:",
+            input$top_n,
+            "\nCluster Columns:",
+            paste0(input$cluster_columns, collapse = ", "),
+            "\nShow Matrix:",
+            input$show_matrix
           )
+          null_encodings_indices <- which(sapply(encodings_list, function(x) is.null(x) || x == ""))
+          final_encodings <- if (length(null_encodings_indices) > 0) {
+            null_encodings_indices_1 <- c(null_encodings_indices, null_encodings_indices - 1)
+            paste(encodings_list[-null_encodings_indices_1], collapse = " ")
+          } else {
+            paste(encodings_list, collapse = " ")
+          }
+
+          card$append_text(final_encodings, style = "verbatim")
           card$append_text("Plot", "header3")
           card$append_plot(plot_cor())
           card$append_text("Table", "header3")

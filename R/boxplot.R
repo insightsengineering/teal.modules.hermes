@@ -188,31 +188,37 @@ srv_g_boxplot <- function(id,
         card$append_text("Filter State", "header3")
         card$append_fs(datasets$get_filter_state())
         card$append_text("Selected Options", "header3")
-        card$append_text(
-          paste(
-            "Experiment:",
-            input$`experiment-name`,
-            "\nAssay:",
-            input$`assay-name`,
-            "\nFacetting Variable:",
-            input$`facet-sample_var`,
-            "\nGenes Selected:",
-            paste0(input$`genes-genes`, collapse = ", "),
-            "\nGene Summary:",
-            input$`genes-fun_name`,
-            "\nJitter:",
-            input$jitter,
-            "\nViolin:",
-            input$violin,
-            "\nOptional Stratifying Variable:",
-            input$`strat-sample_var`,
-            "\nOptional Color Variable:",
-            input$`color-sample_var`,
-            "\nOptional Facet Variable:",
-            input$`facet-sample_var`
-          ),
-          style = "verbatim"
+        encodings_list <- list(
+          "Experiment:",
+          input$`experiment-name`,
+          "\nAssay:",
+          input$`assay-name`,
+          "\nFacetting Variable:",
+          input$`facet-sample_var`,
+          "\nGenes Selected:",
+          paste0(input$`genes-genes`, collapse = ", "),
+          "\nGene Summary:",
+          input$`genes-fun_name`,
+          "\nJitter:",
+          input$jitter,
+          "\nViolin:",
+          input$violin,
+          "\nOptional Stratifying Variable:",
+          input$`strat-sample_var`,
+          "\nOptional Color Variable:",
+          input$`color-sample_var`,
+          "\nOptional Facet Variable:",
+          input$`facet-sample_var`
         )
+        null_encodings_indices <- which(sapply(encodings_list, function(x) is.null(x) || x == ""))
+        final_encodings <- if (length(null_encodings_indices) > 0) {
+          null_encodings_indices_1 <- c(null_encodings_indices, null_encodings_indices - 1)
+          paste(encodings_list[-null_encodings_indices_1], collapse = " ")
+        } else {
+          paste(encodings_list, collapse = " ")
+        }
+
+        card$append_text(final_encodings, style = "verbatim")
         card$append_text("Plot", "header3")
         card$append_plot(plot_r())
         if (!comment == "") {
