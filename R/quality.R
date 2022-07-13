@@ -350,8 +350,9 @@ srv_g_quality <- function(id,
     if (with_reporter) {
       card_fun <- function(comment) {
         card <- teal.reporter::TealReportCard$new()
-        card$set_name("Quality control plot")
-        card$append_text(input$plot_type, "header2")
+        card$set_name("Quality Control Plot")
+        card$append_text("Quality Control Plot", "header2")
+        card$append_text(tools::toTitleCase(input$plot_type), "header3")
         card$append_text("Filter State", "header3")
         card$append_fs(datasets$get_filter_state())
         card$append_text("Selected Options", "header3")
