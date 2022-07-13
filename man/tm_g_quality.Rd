@@ -20,20 +20,6 @@ ui_g_quality(id, datasets, mae_name, pre_output, post_output)
 srv_g_quality(id, datasets, reporter, mae_name, exclude_assays)
 
 sample_tm_g_quality()
-
-tm_g_quality(
-  label,
-  mae_name,
-  exclude_assays = character(),
-  pre_output = NULL,
-  post_output = NULL
-)
-
-ui_g_quality(id, datasets, mae_name, pre_output, post_output)
-
-srv_g_quality(id, datasets, reporter, mae_name, exclude_assays)
-
-sample_tm_g_quality()
 }
 \arguments{
 \item{label}{(\code{string})\cr
@@ -62,16 +48,8 @@ functions, holding all the data sets provided in the app initialization.}
 }
 \value{
 Shiny module to be used in the teal app.
-
-Shiny module to be used in the teal app.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-
-This module adds quality flags, filters by genes and/or samples,
-normalizes \code{AnyHermesData} objects and provides interactive plots
-for RNA-seq gene expression quality control.
-
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 This module adds quality flags, filters by genes and/or samples,
@@ -85,35 +63,9 @@ for RNA-seq gene expression quality control.
 \item \code{srv_g_quality}: sets up the server with reactive graphs.
 
 \item \code{sample_tm_g_quality}: sample module function.
-
-\item \code{ui_g_quality}: sets up the user interface.
-
-\item \code{srv_g_quality}: sets up the server with reactive graphs.
-
-\item \code{sample_tm_g_quality}: sample module function.
 }}
 
 \examples{
-mae <- hermes::multi_assay_experiment
-mae_data <- dataset("MAE", mae)
-data <- teal_data(mae_data)
-app <- init(
-  data = data,
-  modules = modules(
-    tm_g_quality(
-      label = "Quality Control",
-      mae_name = "MAE"
-    )
-  )
-)
-if (interactive()) {
-  shinyApp(app$ui, app$server)
-}
-
-# Alternatively you can run the sample module with this function call:
-if (interactive()) {
-  sample_tm_g_quality()
-}
 mae <- hermes::multi_assay_experiment
 mae_data <- dataset("MAE", mae)
 data <- teal_data(mae_data)
