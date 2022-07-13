@@ -231,8 +231,8 @@ srv_g_forest_tte <- function(id,
     if (with_reporter) {
       card_fun <- function(comment) {
         card <- teal.reporter::TealReportCard$new()
-        card$set_name("Boxplot")
-        card$append_text("Boxplot", "header2")
+        card$set_name("Forest Plot")
+        card$append_text("Forest Plot", "header2")
         card$append_text("Filter State", "header3")
         card$append_fs(datasets$get_filter_state())
         card$append_text("Selected Options", "header3")
