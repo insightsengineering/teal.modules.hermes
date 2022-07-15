@@ -1,7 +1,7 @@
 Type: Package
 Package: teal.modules.hermes
 Title: RNA-seq analysis modules to add to a teal application
-Version: 0.1.3.9005
+Version: 0.1.3.9006
 Date: 2022-06-09
 Authors@R: c(
     person("Daniel", "Sabanés Bové", , "daniel.sabanes_bove@roche.com", role = c("aut", "cre")),
@@ -70,10 +70,10 @@ Remotes:
     insightsengineering/scda@*release,
     insightsengineering/teal.data@*release,
     insightsengineering/teal.logger@*release,
+    insightsengineering/teal.reporter@*release,
     insightsengineering/teal.widgets@*release,
     insightsengineering/teal@*release,
-    insightsengineering/tern@*release,
-    insightsengineering/teal.reporter@*release
+    insightsengineering/tern@*release
 biocViews:
 Config/Needs/website: insightsengineering/nesttemplate
 Config/testthat/edition: 3
