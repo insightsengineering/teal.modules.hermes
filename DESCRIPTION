@@ -72,7 +72,8 @@ Remotes:
     insightsengineering/teal.logger@*release,
     insightsengineering/teal.widgets@*release,
     insightsengineering/teal@*release,
-    insightsengineering/tern@*release
+    insightsengineering/tern@*release,
+    insightsengineering/teal.reporter@*release
 biocViews:
 Config/Needs/website: insightsengineering/nesttemplate
 Config/testthat/edition: 3
