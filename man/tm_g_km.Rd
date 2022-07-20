@@ -11,8 +11,8 @@ tm_g_km(
   label,
   adtte_name,
   mae_name,
-  adtte_vars = list(aval = "AVAL", is_event = "is_event", paramcd = "PARAMCD", usubjid
-    = "USUBJID", avalu = "AVALU"),
+  adtte_vars = list(aval = "AVAL", is_event = "is_event", paramcd = "PARAMCD", usubjid =
+    "USUBJID", avalu = "AVALU"),
   exclude_assays = "counts",
   summary_funs = list(Mean = colMeans, Median = matrixStats::colMedians, Max =
     matrixStats::colMaxs),
@@ -99,13 +99,13 @@ ADaM structure.
 }
 \section{Functions}{
 \itemize{
-\item \code{ui_g_km}: sets up the user interface.
+\item \code{ui_g_km()}: sets up the user interface.
 
-\item \code{srv_g_km}: sets up the user interface.
+\item \code{srv_g_km()}: sets up the user interface.
 
-\item \code{sample_tm_g_km}: sample module function.
+\item \code{sample_tm_g_km()}: sample module function.
+
 }}
-
 \examples{
 mae <- hermes::multi_assay_experiment
 adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte \%>\%

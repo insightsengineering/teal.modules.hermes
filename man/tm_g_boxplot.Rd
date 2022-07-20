@@ -11,8 +11,8 @@ tm_g_boxplot(
   label,
   mae_name,
   exclude_assays = character(),
-  summary_funs = list(None = NULL, Mean = colMeans, Median = matrixStats::colMedians,
-    Max = matrixStats::colMaxs),
+  summary_funs = list(None = NULL, Mean = colMeans, Median = matrixStats::colMedians, Max
+    = matrixStats::colMaxs),
   pre_output = NULL,
   post_output = NULL
 )
@@ -63,13 +63,13 @@ analysis.
 }
 \section{Functions}{
 \itemize{
-\item \code{ui_g_boxplot}: sets up the user interface.
+\item \code{ui_g_boxplot()}: sets up the user interface.
 
-\item \code{srv_g_boxplot}: sets up the server with reactive graph.
+\item \code{srv_g_boxplot()}: sets up the server with reactive graph.
 
-\item \code{sample_tm_g_boxplot}: sample module function.
+\item \code{sample_tm_g_boxplot()}: sample module function.
+
 }}
-
 \examples{
 mae <- hermes::multi_assay_experiment
 mae_data <- dataset("MAE", mae)

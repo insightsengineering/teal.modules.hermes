@@ -70,13 +70,13 @@ analysis.
 }
 \section{Functions}{
 \itemize{
-\item \code{ui_g_scatterplot}: sets up the user interface.
+\item \code{ui_g_scatterplot()}: sets up the user interface.
 
-\item \code{srv_g_scatterplot}: sets up the server with reactive graph.
+\item \code{srv_g_scatterplot()}: sets up the server with reactive graph.
 
-\item \code{sample_tm_g_scatterplot}: sample module function.
+\item \code{sample_tm_g_scatterplot()}: sample module function.
+
 }}
-
 \examples{
 mae <- hermes::multi_assay_experiment
 mae_data <- dataset("MAE", mae)
