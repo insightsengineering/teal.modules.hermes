@@ -9,8 +9,7 @@ geneSpecServer(
   funs,
   gene_choices,
   label_modal_title = "Enter list of genes",
- 
-    label_modal_footer = c("Please enter a comma-separated list of gene IDs and/or names.",
+  label_modal_footer = c("Please enter a comma-separated list of gene IDs and/or names.",
     "(Note that genes not included in current choices will be removed)")
 )
 }

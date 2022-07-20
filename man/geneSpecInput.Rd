@@ -10,8 +10,8 @@ geneSpecInput(
   label_genes = "Select Gene(s)",
   label_funs = "Select Gene Summary",
   label_text_button = "Enter list of genes",
- 
-    label_lock_button = "Lock gene selection (so that it does not get updated when filtering)",
+  label_lock_button =
+    "Lock gene selection (so that it does not get updated when filtering)",
   label_select_all_button = paste0("Select All Genes (first ", max_options, ")"),
   label_select_none_button = "Select None",
   max_options = 200L,

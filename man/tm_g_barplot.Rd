@@ -63,13 +63,13 @@ analysis.
 }
 \section{Functions}{
 \itemize{
-\item \code{ui_g_barplot}: sets up the user interface.
+\item \code{ui_g_barplot()}: sets up the user interface.
 
-\item \code{srv_g_barplot}: sets up the server with reactive graph.
+\item \code{srv_g_barplot()}: sets up the server with reactive graph.
 
-\item \code{sample_tm_g_barplot}: sample module function.
+\item \code{sample_tm_g_barplot()}: sample module function.
+
 }}
-
 \examples{
 mae <- hermes::multi_assay_experiment
 mae_data <- dataset("MAE", mae)
