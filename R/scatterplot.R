@@ -85,7 +85,6 @@ ui_g_scatterplot <- function(id,
     encoding = div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
-      shiny::tags$br(),
       ###
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
