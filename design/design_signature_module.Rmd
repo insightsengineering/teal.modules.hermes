@@ -216,7 +216,7 @@ geneSpecInput <- function(id, # nolint
                           summary_funs) {
   ns <- NS(id)
   tagList(
-        include_css_files(pattern = "*"),
+    include_css_files(pattern = "*"),
     div(
       class = "row",
       div(
