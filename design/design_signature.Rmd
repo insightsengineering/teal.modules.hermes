@@ -186,6 +186,8 @@ ui_g_signature <- function(id,
   mae <- datasets$get_data(mae_name, filtered = FALSE)
   experiment_name_choices <- names(mae)
 
+  tagList(
+          include_css_files(pattern = "*"),
   teal.widgets::standard_layout(
     encoding = div(
       selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
@@ -223,8 +225,7 @@ ui_g_signature <- function(id,
               icon_off = icon("unlock-alt fa-border"),
               animation = "pulse"
             )
-          ),
-          include_css_files(pattern = "*")
+          )
         )
       ),
       div(
@@ -249,6 +250,7 @@ ui_g_signature <- function(id,
     output = plotOutput(ns("plot")),
     pre_output = pre_output,
     post_output = post_output
+  )
   )
 }
 ```

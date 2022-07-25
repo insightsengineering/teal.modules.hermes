@@ -46,6 +46,7 @@ geneSpecInput <- function(inputId,
 
   ns <- NS(inputId)
   tagList(
+    include_css_files(pattern = "*"),
     div(
       class = "row",
       div(
@@ -94,8 +95,7 @@ geneSpecInput <- function(inputId,
             icon_off = icon("fas fa-lock-open"),
             animation = "pulse"
           )
-        ),
-        include_css_files(pattern = "*")
+        )
       )
     ),
     div(
@@ -109,8 +109,8 @@ geneSpecInput <- function(inputId,
         options = list(
           render = I("{
           option: function(item, escape) {
-              return '<div> <div style = \"font-size: inherit; display: inline\">' + item.label + '</div>' +
-                ' <div style=\"color: #808080; font-size: xx-small; display: inline\" >' + item.value + '</div> </div>'
+              return '<div> <span style = \"font-size: inherit;\">' + item.label + '</div>' +
+                ' <span style=\"color: #808080; font-size: xx-small;\" >' + item.value + '</div> </div>'
             }
           }"),
           searchField = c("value", "label"),
