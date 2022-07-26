@@ -37,70 +37,70 @@ ui_g_pca2 <- function(id,
 
   tagList(
     include_css_files(pattern = "*"),
-  teal.widgets::standard_layout(
-    encoding = div(
-      tags$label("Encodings", class = "text-primary"),
-      helpText("Analysis of MAE:", tags$code(mae_name)),
-      selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
-      selectInput(ns("assay_name"), "Select assay", choices = ""),
-      conditionalPanel(
-        condition = "input.tab_selected == 'PCA'",
-        ns = ns,
-        teal.widgets::optionalSelectInput(ns("color_var"), "Optional color variable"),
-        selectizeInput(ns("x_var"), "Select X-axis PC", choices = ""),
-        selectizeInput(ns("y_var"), "Select Y-axis PC", choices = ""),
-      ),
-      tags$label("Use only Top Variance Genes"),
-      shinyWidgets::switchInput(ns("filter_top"), value = FALSE, size = "mini"),
-      conditionalPanel(
-        condition = "input.filter_top",
-        ns = ns,
-        sliderInput(ns("n_top"), label = "Number of Top Genes", min = 10, max = 5000, value = 500)
-      ),
-      tags$label("Show Variance %"),
-      shinyWidgets::switchInput(ns("var_pct"), value = TRUE, size = "mini"),
-      tags$label("Show Label"),
-      shinyWidgets::switchInput(ns("label"), value = TRUE, size = "mini"),
-      conditionalPanel(
-        condition = "input.tab_selected == 'PC and Sample Correlation'",
-        ns = ns,
-        tags$label("Cluster columns"),
-        shinyWidgets::switchInput(ns("cluster_columns"), value = FALSE, size = "mini")
-      ),
-      tags$label("View Matrix"),
-      shinyWidgets::switchInput(ns("show_matrix"), value = TRUE, size = "mini")
-    ),
-    output = tagList(
-      tabsetPanel(
-        id = ns("tab_selected"),
-        type = "tabs",
-        tabPanel(
-          "PCA",
-          column(
-            width = 12,
-            div(
-              class = "my-5",
-              plotOutput(ns("plot_pca"))
-            ),
-            DT::DTOutput(ns("table_pca"))
-          )
+    teal.widgets::standard_layout(
+      encoding = div(
+        tags$label("Encodings", class = "text-primary"),
+        helpText("Analysis of MAE:", tags$code(mae_name)),
+        selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
+        selectInput(ns("assay_name"), "Select assay", choices = ""),
+        conditionalPanel(
+          condition = "input.tab_selected == 'PCA'",
+          ns = ns,
+          teal.widgets::optionalSelectInput(ns("color_var"), "Optional color variable"),
+          selectizeInput(ns("x_var"), "Select X-axis PC", choices = ""),
+          selectizeInput(ns("y_var"), "Select Y-axis PC", choices = ""),
         ),
-        tabPanel(
-          "PC and Sample Correlation",
-          column(
-            width = 12,
-            div(
-              class = "my-5",
-              plotOutput(ns("plot_cor"))
-            ),
-            DT::DTOutput(ns("table_cor"))
+        tags$label("Use only Top Variance Genes"),
+        shinyWidgets::switchInput(ns("filter_top"), value = FALSE, size = "mini"),
+        conditionalPanel(
+          condition = "input.filter_top",
+          ns = ns,
+          sliderInput(ns("n_top"), label = "Number of Top Genes", min = 10, max = 5000, value = 500)
+        ),
+        tags$label("Show Variance %"),
+        shinyWidgets::switchInput(ns("var_pct"), value = TRUE, size = "mini"),
+        tags$label("Show Label"),
+        shinyWidgets::switchInput(ns("label"), value = TRUE, size = "mini"),
+        conditionalPanel(
+          condition = "input.tab_selected == 'PC and Sample Correlation'",
+          ns = ns,
+          tags$label("Cluster columns"),
+          shinyWidgets::switchInput(ns("cluster_columns"), value = FALSE, size = "mini")
+        ),
+        tags$label("View Matrix"),
+        shinyWidgets::switchInput(ns("show_matrix"), value = TRUE, size = "mini")
+      ),
+      output = tagList(
+        tabsetPanel(
+          id = ns("tab_selected"),
+          type = "tabs",
+          tabPanel(
+            "PCA",
+            column(
+              width = 12,
+              div(
+                class = "my-5",
+                plotOutput(ns("plot_pca"))
+              ),
+              DT::DTOutput(ns("table_pca"))
+            )
+          ),
+          tabPanel(
+            "PC and Sample Correlation",
+            column(
+              width = 12,
+              div(
+                class = "my-5",
+                plotOutput(ns("plot_cor"))
+              ),
+              DT::DTOutput(ns("table_cor"))
+            )
           )
         )
-      )
-    ),
-    pre_output = pre_output,
-    post_output = post_output
-  )
+      ),
+      pre_output = pre_output,
+      post_output = post_output
+    )
   )
 }
 
