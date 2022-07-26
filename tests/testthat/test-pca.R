@@ -10,7 +10,7 @@ test_that("ui_g_pca creates HTML", {
     pre_output = NULL,
     post_output = NULL
   )
-  testthat::expect_s3_class(result, "shiny.tag.list")
+  expect_tag(result)
 })
 
 test_that("tm_g_pca works as expected in the sample app", {

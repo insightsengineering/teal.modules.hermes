@@ -9,24 +9,6 @@
           <div class="col-md-3">
             <div class="well">
               <div>
-                <div>
-                  <button class="add_card--hover btn btn-primary action-button" id="testid-addReportCard-add_report_card_button" type="button">
-                    <span class="add_card--before">
-                      <i class="fa fa-plus" role="presentation" aria-label="plus icon"></i>
-                    </span>
-                  </button>
-                  <button class="download_report--hover btn btn-primary action-button" id="testid-downloadButton-download_button" type="button">
-                    <span class="download_report--before">
-                      <i class="fa fa-download" role="presentation" aria-label="download icon"></i>
-                    </span>
-                  </button>
-                  <button class="reset_report--hover btn btn-warning action-button" id="testid-resetButton-reset_reporter" type="button">
-                    <span class="reset_report--before">
-                      <i class="fa fa-xmark" role="presentation" aria-label="xmark icon"></i>
-                    </span>
-                  </button>
-                </div>
-                <br/>
                 <label class="text-primary">Encodings</label>
                 <span class="help-block">
                   Analysis of MAE:
