@@ -186,69 +186,71 @@ ui_g_signature <- function(id,
   mae <- datasets$get_data(mae_name, filtered = FALSE)
   experiment_name_choices <- names(mae)
 
-  teal.widgets::standard_layout(
-    encoding = div(
-      selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
-      selectInput(ns("assay_name"), "Select assay", choices = ""),
-      div(
-        class = "row",
+  tagList(
+    include_css_files(pattern = "*"),
+    teal.widgets::standard_layout(
+      encoding = div(
+        selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
+        selectInput(ns("assay_name"), "Select assay", choices = ""),
         div(
-          class = "col-sm-8",
-          tags$label(
-            class = "control-label",
-            "Select gene(s) of interest"
+          class = "row",
+          div(
+            class = "col-sm-8",
+            tags$label(
+              class = "control-label",
+              "Select gene(s) of interest"
+            )
+          ),
+          div(
+            class = "col-sm-4",
+            actionButton(
+              ns("open_text_input"),
+              span(icon("font fa-border")),
+              title = "Enter list of genes",
+              class = "pull-right list-genes"
+            ),
+            div(
+              class = "pull-right",
+              title = "Lock gene selection",
+              shinyWidgets::prettyToggle(
+                ns("lock"),
+                value = FALSE,
+                label_on = NULL,
+                label_off = NULL,
+                status_on = "default",
+                status_off = "default",
+                outline = FALSE,
+                plain = TRUE,
+                icon_on = icon("lock fa-border"),
+                icon_off = icon("unlock-alt fa-border"),
+                animation = "pulse"
+              )
+            )
           )
         ),
         div(
-          class = "col-sm-4",
-          actionButton(
-            ns("open_text_input"),
-            span(icon("font fa-border")),
-            title = "Enter list of genes",
-            class = "pull-right list-genes"
-          ),
-          div(
-            class = "pull-right",
-            title = "Lock gene selection",
-            shinyWidgets::prettyToggle(
-              ns("lock"),
-              value = FALSE,
-              label_on = NULL,
-              label_off = NULL,
-              status_on = "default",
-              status_off = "default",
-              outline = FALSE,
-              plain = TRUE,
-              icon_on = icon("lock fa-border"),
-              icon_off = icon("unlock-alt fa-border"),
-              animation = "pulse"
-            )
-          ),
-          include_css_files(pattern = "*")
+          class = "custom-select-input",
+          teal.widgets::optionalSelectInput(
+            ns("y_vars"),
+            label = NULL,
+            choices = "",
+            multiple = TRUE
+          )
+        ),
+        conditionalPanel(
+          condition = "input.y_vars.length > 1", # JavaScript expression
+          ns = ns, # namespace in this module
+          selectInput(
+            ns("summary_fun_name"),
+            "Select gene summary",
+            names(summary_funs)
+          )
         )
       ),
-      div(
-        class = "custom-select-input",
-        teal.widgets::optionalSelectInput(
-          ns("y_vars"),
-          label = NULL,
-          choices = "",
-          multiple = TRUE
-        )
-      ),
-      conditionalPanel(
-        condition = "input.y_vars.length > 1", # JavaScript expression
-        ns = ns, # namespace in this module
-        selectInput(
-          ns("summary_fun_name"),
-          "Select gene summary",
-          names(summary_funs)
-        )
-      )
-    ),
-    output = plotOutput(ns("plot")),
-    pre_output = pre_output,
-    post_output = post_output
+      output = plotOutput(ns("plot")),
+      pre_output = pre_output,
+      post_output = post_output
+    )
   )
 }
 ```

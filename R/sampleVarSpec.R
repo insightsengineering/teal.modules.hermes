@@ -23,6 +23,7 @@ sampleVarSpecInput <- function(inputId,
 
   ns <- NS(inputId)
   tagList(
+    include_css_files(pattern = "*"),
     div(
       class = "row",
       div(
@@ -39,8 +40,7 @@ sampleVarSpecInput <- function(inputId,
           span(icon("fas fa-table")),
           title = label_levels_button,
           class = "pull-right list-genes"
-        ),
-        include_css_files(pattern = "*")
+        )
       )
     ),
     div(
@@ -402,8 +402,8 @@ sampleVarSpecServer <- function(id,
 
           old_values <- names(assign_lists[[experiment_name]][[sample_var]])
           if (!is.null(old_values) &&
-              length(old_values) == length(sample_var_levels) &&
-              all(sort(old_values) == sort(sample_var_levels))) {
+            length(old_values) == length(sample_var_levels) &&
+            all(sort(old_values) == sort(sample_var_levels))) {
             selected_groups <- assign_lists[[experiment_name]][[sample_var]]
           }
 
