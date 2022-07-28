@@ -11,17 +11,17 @@
               <div>
                 <div>
                   <button class="add_card--hover btn btn-primary action-button" id="testid-addReportCard-add_report_card_button" type="button">
-                    <span class="add_card--before">
+                    <span class="add_card--after">
                       <i class="fa fa-plus" role="presentation" aria-label="plus icon"></i>
                     </span>
                   </button>
                   <button class="download_report--hover btn btn-primary action-button" id="testid-downloadButton-download_button" type="button">
-                    <span class="download_report--before">
+                    <span class="download_report--after">
                       <i class="fa fa-download" role="presentation" aria-label="download icon"></i>
                     </span>
                   </button>
                   <button class="reset_report--hover btn btn-warning action-button" id="testid-resetButton-reset_reporter" type="button">
-                    <span class="reset_report--before">
+                    <span class="reset_report--after">
                       <i class="fa fa-xmark" role="presentation" aria-label="xmark icon"></i>
                     </span>
                   </button>
@@ -167,11 +167,11 @@
           </div>
           <div class="col-md-9">
             <div class="well">
-              <div id="pre-output"></div>
-              <div id="output">
+              <div class="pre-output"></div>
+              <div class="output">
                 <div id="testid-plot" class="shiny-plot-output" style="width:100%;height:400px;"></div>
               </div>
-              <div id="post-output"></div>
+              <div class="post-output"></div>
             </div>
           </div>
         </div>
