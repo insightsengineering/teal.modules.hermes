@@ -9,6 +9,28 @@
           <div class="col-md-3">
             <div class="well">
               <div>
+                <div class="block mb-4 p-1">
+                  <label class="text-primary block -ml-1">
+                    <strong>Reporter</strong>
+                  </label>
+                  <div class="simple_reporter_container">
+                    <button id="testid-simple_reporter-add_report_card_simple-add_report_card_button" type="button" class="simple_report_button btn btn-primary action-button" title="Add Card">
+                      <span>
+                        <i class="fa fa-plus" role="presentation" aria-label="plus icon"></i>
+                      </span>
+                    </button>
+                    <button id="testid-simple_reporter-download_button_simple-download_button" type="button" class="simple_report_button btn btn-primary action-button" title="Downlaod">
+                      <span>
+                        <i class="fa fa-download" role="presentation" aria-label="download icon"></i>
+                      </span>
+                    </button>
+                    <button id="testid-simple_reporter-reset_button_simple-reset_reporter" type="button" class="simple_report_button btn btn-warning action-button" title="Reset">
+                      <span>
+                        <i class="fa fa-xmark" role="presentation" aria-label="xmark icon"></i>
+                      </span>
+                    </button>
+                  </div>
+                </div>
                 <label class="text-primary">Encodings</label>
                 <span class="help-block">
                   Analysis of MAE:
@@ -37,105 +59,9 @@
                   <div class="col-sm-4">
                     <button class="btn btn-default action-button pull-right list-genes" id="testid-facet-levels_button" title="Combine factor levels" type="button">
                       <span>
-                        <i class="fa fa-fas fa-table" role="presentation" aria-label="fas fa-table icon"></i>
+                        <i class="fas fa-table" role="presentation" aria-label="table icon"></i>
                       </span>
                     </button>
-                    <style type="text/css">.pretty {
-        margin-right: 0;
-      }
-      
-      .list-genes {
-        padding: 0;
-        margin: 0 0 0 0.5rem;
-        background: transparent !important;
-        outline: none !important;
-        box-shadow: none !important;
-        border: 0;
-      }
-      
-      .custom-select-input .bootstrap-select .dropdown-menu {
-        min-width: fit-content;
-      }
-      
-      .selectize-input {
-        max-height: 102px;
-        overflow-y: auto;
-      }
-      
-      div.shiny-radiomatrix input[type="radio"] {
-        display: none;
-      }
-      
-      div.shiny-radiomatrix .radio-parent {
-        display: block;
-        position: relative;
-        cursor: pointer;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-        top: -10px;
-        left: -13px;
-      }
-      
-      /* Hide the browser's default radio button */
-      div.shiny-radiomatrix .radio-parent input {
-        position: absolute;
-        opacity: 0;
-        cursor: pointer;
-        height: 0;
-        width: 0;
-      }
-      
-      /* Create a custom radio button */
-      div.shiny-radiomatrix .checkmark {
-        position: absolute;
-        height: 25px;
-        width: 25px;
-        background-color: #eee;
-        z-index: 25;
-        transition: 0.5s all ease-in-out;
-      }
-      
-      div.shiny-radiomatrix .radio-parent:hover input ~ .checkmark {
-        background-color: #2195f34b;
-      }
-      
-      div.shiny-radiomatrix .radio-parent input:checked ~ .checkmark {
-        background-color: #2196f3;
-      }
-      
-      div.shiny-radiomatrix table {
-        border-spacing: 0;
-        border-collapse: collapse;
-        overflow: hidden;
-      }
-      
-      div.shiny-radiomatrix td,
-      div.shiny-radiomatrix th {
-        padding: 10px;
-        position: relative;
-        transition: 0.5s all ease-in-out;
-      }
-      
-      div.shiny-radiomatrix tr:hover {
-        background-color: rgba(151, 151, 151, 0.1);
-      }
-      
-      div.shiny-radiomatrix td:hover::before,
-      div.shiny-radiomatrix th:hover::before {
-        background-color: rgba(151, 151, 151, 0.1);
-        content: "\00a0";
-        height: 1000vh;
-        left: 0;
-        position: absolute;
-        top: -500vh;
-        width: 100%;
-      }
-      
-      .dataTable-container table td{
-        white-space: unset !important;
-      }</style>
                   </div>
                 </div>
                 <div class="custom-select-input">
@@ -163,7 +89,7 @@
                   <div class="col-sm-2">
                     <button class="btn btn-default action-button pull-right list-genes" id="testid-x-text_button" title="Enter list of genes" type="button">
                       <span>
-                        <i class="fa fa-fas fa-font" role="presentation" aria-label="fas fa-font icon"></i>
+                        <i class="fas fa-font" role="presentation" aria-label="font icon"></i>
                       </span>
                     </button>
                     <div class="pull-right" title="Lock gene selection (so that it does not get updated when filtering)">
@@ -171,13 +97,13 @@
                         <div class="pretty p-toggle p-plain p-icon p-pulse">
                           <input id="testid-x-lock_button" type="checkbox"/>
                           <div class="state p-on">
-                            <i class="icon fa fa-fas fa-lock" role="presentation" aria-label="fas fa-lock icon"></i>
+                            <i class="icon fas fa-lock" role="presentation" aria-label="lock icon"></i>
                             <label>
                               <span></span>
                             </label>
                           </div>
                           <div class="state p-off">
-                            <i class="icon fa fa-fas fa-lock-open" role="presentation" aria-label="fas fa-lock-open icon"></i>
+                            <i class="icon fas fa-lock-open" role="presentation" aria-label="lock-open icon"></i>
                             <label>
                               <span></span>
                             </label>
@@ -192,7 +118,7 @@
                     <label class="control-label shiny-label-null" for="testid-x-genes" id="testid-x-genes-label"></label>
                     <div>
                       <select id="testid-x-genes" class="form-control" multiple="multiple"><option value=""></option></select>
-                      <script type="application/json" data-for="testid-x-genes" data-eval="[&quot;render&quot;]">{"render":"{\n          option: function(item, escape) {\n              return '<div> <div style = \"font-size: inherit; display: inline\">' + item.label + '<\/div>' +\n                ' <div style=\"color: #808080; font-size: xx-small; display: inline\" >' + item.value + '<\/div> <\/div>'\n            }\n          }","searchField":["value","label"],"maxOptions":200,"maxItems":200,"plugins":["selectize-plugin-a11y"]}</script>
+                      <script type="application/json" data-for="testid-x-genes" data-eval="[&quot;render&quot;]">{"render":"{\n          option: function(item, escape) {\n              return '<div> <span style = \"font-size: inherit;\">' + item.label + '<\/div>' +\n                ' <span style=\"color: #808080; font-size: xx-small;\" >' + item.value + '<\/div> <\/div>'\n            }\n          }","searchField":["value","label"],"maxOptions":200,"maxItems":200,"plugins":["selectize-plugin-a11y"]}</script>
                     </div>
                   </div>
                 </div>
@@ -210,13 +136,11 @@
                   <input class="js-range-slider" id="testid-percentiles" data-skin="shiny" data-type="double" data-min="0" data-max="1" data-from="0.2" data-to="0.8" data-step="0.01" data-grid="true" data-grid-num="10" data-grid-snap="false" data-prettify-separator="," data-prettify-enabled="true" data-keyboard="true" data-drag-interval="true" data-data-type="number"/>
                 </div>
                 <div class="panel-group">
-                  <style type="text/css">.panel-title { font-size: 14px; } /*same as everywhere else*/
-      .panel-body { background-color: #f5f5f5; } /*same as panel-title*/</style>
                   <input id="settings_item" type="checkbox" value="TRUE" class="shinyjs-hide"/>
                   <div class="panel panel-default">
                     <div id="settings_item_div" class="panel-heading collapsed" data-toggle="collapse" href="#settings_item_panel_body_9115" aria-expanded="false">
                       <i class="fa fa-angle-down dropdown-icon" role="presentation" aria-label="angle-down icon"></i>
-                      <label class="panel-title" style="display:inline">Additional Settings</label>
+                      <label class="panel-title inline">Additional Settings</label>
                     </div>
                     <div class="panel-collapse collapse " id="settings_item_panel_body_9115">
                       <div class="panel-body">
@@ -227,7 +151,7 @@
                           <div class="col-sm-4">
                             <button class="btn btn-default action-button pull-right list-genes" id="testid-fill-levels_button" title="Combine factor levels" type="button">
                               <span>
-                                <i class="fa fa-fas fa-table" role="presentation" aria-label="fas fa-table icon"></i>
+                                <i class="fas fa-table" role="presentation" aria-label="table icon"></i>
                               </span>
                             </button>
                           </div>
@@ -247,11 +171,11 @@
           </div>
           <div class="col-md-9">
             <div class="well">
-              <div id="pre-output"></div>
-              <div id="output">
+              <div class="pre-output"></div>
+              <div class="output">
                 <div id="testid-plot" class="shiny-plot-output" style="width:100%;height:400px;"></div>
               </div>
-              <div id="post-output"></div>
+              <div class="post-output"></div>
             </div>
           </div>
         </div>

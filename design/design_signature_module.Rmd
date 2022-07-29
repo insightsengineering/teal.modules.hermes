@@ -216,6 +216,7 @@ geneSpecInput <- function(id, # nolint
                           summary_funs) {
   ns <- NS(id)
   tagList(
+    include_css_files(pattern = "*"),
     div(
       class = "row",
       div(
@@ -249,8 +250,7 @@ geneSpecInput <- function(id, # nolint
             icon_off = icon("unlock-alt fa-border"),
             animation = "pulse"
           )
-        ),
-        include_css_files(pattern = "*")
+        )
       )
     ),
     div(

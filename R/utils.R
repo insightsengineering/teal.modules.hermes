@@ -56,9 +56,8 @@ include_css_files <- function(pattern = "*") { # nolint
     system.file("css", package = "teal.modules.hermes", mustWork = TRUE),
     pattern = pattern, full.names = TRUE
   )
-  return(singleton(lapply(css_files, includeCSS)))
+  return(shiny::singleton(shiny::tags$head(lapply(css_files, includeCSS))))
 }
-
 
 #' Include `JS` files from `/inst/js/` package directory to application header
 #'

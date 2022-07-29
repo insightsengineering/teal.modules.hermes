@@ -213,42 +213,44 @@ ui_g_levels <- function(id,
   mae <- datasets$get_data(mae_name, filtered = FALSE)
   experiment_name_choices <- names(mae)
 
-  teal.widgets::standard_layout(
-    encoding = div(
-      selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
-      div(
-        class = "row",
+  tagList(
+    include_css_files(pattern = "*"),
+    teal.widgets::standard_layout(
+      encoding = div(
+        selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
         div(
-          class = "col-sm-8",
-          tags$label(
-            class = "control-label",
-            "Select faceting variable"
+          class = "row",
+          div(
+            class = "col-sm-8",
+            tags$label(
+              class = "control-label",
+              "Select faceting variable"
+            )
+          ),
+          div(
+            class = "col-sm-4",
+            actionButton(
+              ns("open_levels_input"),
+              span(icon("font fa-object-ungroup")),
+              title = "Combine factor levels",
+              class = "pull-right list-genes"
+            )
           )
         ),
         div(
-          class = "col-sm-4",
-          actionButton(
-            ns("open_levels_input"),
-            span(icon("font fa-object-ungroup")),
-            title = "Combine factor levels",
-            class = "pull-right list-genes"
-          ),
-          include_css_files(pattern = "*")
+          class = "custom-select-input",
+          teal.widgets::optionalSelectInput(
+            ns("facet_var"),
+            label = NULL,
+            choices = "",
+            multiple = FALSE
+          )
         )
       ),
-      div(
-        class = "custom-select-input",
-        teal.widgets::optionalSelectInput(
-          ns("facet_var"),
-          label = NULL,
-          choices = "",
-          multiple = FALSE
-        )
-      )
-    ),
-    output = plotOutput(ns("plot")),
-    pre_output = pre_output,
-    post_output = post_output
+      output = plotOutput(ns("plot")),
+      pre_output = pre_output,
+      post_output = post_output
+    )
   )
 }
 ```
