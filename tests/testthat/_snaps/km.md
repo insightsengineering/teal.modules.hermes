@@ -9,24 +9,28 @@
           <div class="col-md-3">
             <div class="well">
               <div>
-                <div>
-                  <button class="add_card--hover btn btn-primary action-button" id="testid-addReportCard-add_report_card_button" type="button">
-                    <span class="add_card--after">
-                      <i class="fa fa-plus" role="presentation" aria-label="plus icon"></i>
-                    </span>
-                  </button>
-                  <button class="download_report--hover btn btn-primary action-button" id="testid-downloadButton-download_button" type="button">
-                    <span class="download_report--after">
-                      <i class="fa fa-download" role="presentation" aria-label="download icon"></i>
-                    </span>
-                  </button>
-                  <button class="reset_report--hover btn btn-warning action-button" id="testid-resetButton-reset_reporter" type="button">
-                    <span class="reset_report--after">
-                      <i class="fa fa-xmark" role="presentation" aria-label="xmark icon"></i>
-                    </span>
-                  </button>
+                <div class="block mb-4 p-1">
+                  <label class="text-primary block -ml-1">
+                    <strong>Reporter</strong>
+                  </label>
+                  <div class="simple_reporter_container">
+                    <button id="testid-simple_reporter-add_report_card_simple-add_report_card_button" type="button" class="simple_report_button btn btn-primary action-button" title="Add Card">
+                      <span>
+                        <i class="fa fa-plus" role="presentation" aria-label="plus icon"></i>
+                      </span>
+                    </button>
+                    <button id="testid-simple_reporter-download_button_simple-download_button" type="button" class="simple_report_button btn btn-primary action-button" title="Downlaod">
+                      <span>
+                        <i class="fa fa-download" role="presentation" aria-label="download icon"></i>
+                      </span>
+                    </button>
+                    <button id="testid-simple_reporter-reset_button_simple-reset_reporter" type="button" class="simple_report_button btn btn-warning action-button" title="Reset">
+                      <span>
+                        <i class="fa fa-xmark" role="presentation" aria-label="xmark icon"></i>
+                      </span>
+                    </button>
+                  </div>
                 </div>
-                <br/>
                 <label class="text-primary">Encodings</label>
                 <span class="help-block">
                   Analysis of MAE:
