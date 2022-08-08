@@ -42,7 +42,6 @@ Imports:
     MultiAssayExperiment,
     rtables (>= 0.5.1),
     S4Vectors,
-    scda (>= 0.1.3),
     shinyRadioMatrix (>= 0.2.1),
     shinyWidgets,
     stats,
@@ -61,6 +60,7 @@ Suggests:
     matrixStats,
     R6,
     rvest,
+    scda (>= 0.1.3),
     shinytest (>= 1.5.0),
     testthat (>= 2.0)
 RdMacros:
