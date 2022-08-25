@@ -1,7 +1,7 @@
 # experimentSpecInput creates expected HTML
 
     Code
-      experimentSpecInput("my_experiment", datasets = datasets, mae_name = mae_name,
+      experimentSpecInput("my_experiment", data = data, mae_name = mae_name,
         label_experiments = "Please select the best experiment")
     Output
       <div class="form-group shiny-input-container">
