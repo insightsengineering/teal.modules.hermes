@@ -33,6 +33,7 @@ shinytest::ShinyDriver$set(
             input = FALSE,
             export = FALSE
           )[["output"]]
+          print(output_res)
           output_res[[name]][[element]]
         },
         silent = TRUE

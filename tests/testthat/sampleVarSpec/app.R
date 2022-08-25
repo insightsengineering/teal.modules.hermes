@@ -1,12 +1,12 @@
 library(teal.modules.hermes)
 
 ui <- function(id,
-               datasets) {
+               data) {
   ns <- NS(id)
 
   teal.widgets::standard_layout(
     encoding = div(
-      experimentSpecInput(ns("experiment"), datasets, "MAE"),
+      experimentSpecInput(ns("experiment"), data, "MAE"),
       sampleVarSpecInput(ns("facet_var"), "Select variable")
     ),
     output = verbatimTextOutput(ns("summary"))
@@ -14,11 +14,12 @@ ui <- function(id,
 }
 
 server <- function(id,
-                   datasets) {
+                   data) {
   moduleServer(id, function(input, output, session) {
     experiment <- experimentSpecServer(
       "experiment",
-      datasets,
+      data,
+      filter_panel_api,
       "MAE"
     )
     facet_var_spec <- sampleVarSpecServer(

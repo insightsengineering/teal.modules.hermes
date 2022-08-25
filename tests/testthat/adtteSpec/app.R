@@ -1,12 +1,12 @@
 library(teal.modules.hermes)
 
 ui <- function(id,
-               datasets) {
+               data) {
   ns <- NS(id)
 
   teal.widgets::standard_layout(
     encoding = div(
-      experimentSpecInput(ns("experiment"), datasets = datasets, mae_name = "MAE"),
+      experimentSpecInput(ns("experiment"), data = data, mae_name = "MAE"),
       assaySpecInput(ns("assay")),
       geneSpecInput(ns("genes"), funs = list(Mean = colMeans)),
       adtteSpecInput(ns("adtte"))
@@ -16,11 +16,12 @@ ui <- function(id,
 }
 
 server <- function(id,
-                   datasets) {
+                   data) {
   moduleServer(id, function(input, output, session) {
     experiment <- experimentSpecServer(
       "experiment",
-      datasets = datasets,
+      data = data,
+      filter_panel_api = filter_panel_api,
       mae_name = "MAE"
     )
     assay <- assaySpecServer(
@@ -34,7 +35,7 @@ server <- function(id,
     )
     adtte <- adtteSpecServer(
       "adtte",
-      datasets = datasets,
+      data = data,
       adtte_name = "ADTTE",
       mae_name = "MAE",
       adtte_vars = list(

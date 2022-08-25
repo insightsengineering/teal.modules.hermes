@@ -3,10 +3,10 @@
 test_that("ui_g_forest_tte creates expected HTML", {
   mae_name <- "MyMAE"
   set.seed(123)
-  datasets <- mock_datasets(list(MyMAE = hermes::multi_assay_experiment))
+  data <- list(MyMAE = reactive(hermes::multi_assay_experiment))
   result <- ui_g_forest_tte(
     id = "testid",
-    datasets = datasets,
+    data = data,
     adtte_name = "ADTTE",
     mae_name = mae_name,
     summary_funs = list(
