@@ -109,6 +109,8 @@ srv_g_volcanoplot <- function(id,
                               mae_name,
                               exclude_assays) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
+
   moduleServer(id, function(input, output, session) {
     experiment_data <- experimentSpecServer(
       "experiment",
@@ -203,7 +205,7 @@ srv_g_volcanoplot <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Scatter Plot")
         card$append_text("Scatter Plot", "header2")
-        card$append_fs(filter_panel_api$get_filter_state())
+        if (with_filter) card$append_fs(filter_panel_api$get_filter_state())
         card$append_text("Selected Options", "header3")
         encodings_list <- list(
           "Experiment:",
