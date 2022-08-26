@@ -2,7 +2,7 @@
 
 test_that("ui_g_boxplot creates expected HTML", {
   mae_name <- "MyMAE"
-  data <- list(MyMAE = reactive(hermes::multi_assay_experiment))
+  data <- list(MyMAE = function() hermes::multi_assay_experiment)
   result <- ui_g_boxplot(
     id = "testid",
     data = data,
