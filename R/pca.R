@@ -64,7 +64,7 @@ ui_g_pca <- function(id,
                      pre_output,
                      post_output) {
   ns <- NS(id)
-  mae <- isolate(data[[mae_name]]())
+  mae <- data[[mae_name]]()
   experiment_name_choices <- names(mae)
 
   tagList(

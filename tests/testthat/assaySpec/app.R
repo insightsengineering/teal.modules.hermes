@@ -21,7 +21,8 @@ ui <- function(id,
 }
 
 server <- function(id,
-                   data) {
+                   data,
+                   filter_panel_api) {
   moduleServer(id, function(input, output, session) {
     experiment <- experimentSpecServer(
       "experiment",
