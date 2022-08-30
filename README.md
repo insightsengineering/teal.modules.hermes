@@ -121,3 +121,10 @@ remotes::install_github("insightsengineering/teal.modules.hermes@*release")
 ```
 
 A stable release of all `NEST` packages from June 2022 is also available [here](https://github.com/insightsengineering/depository#readme).
+
+[![Stargazers repo roster for @insightsengineering/teal.modules.hermes](https://reporoster.com/stars/insightsengineering/teal.modules.hermes)](https://github.com/insightsengineering/teal.modules.hermes/stargazers)
+[![Forkers repo roster for @insightsengineering/teal.modules.hermes](https://reporoster.com/forks/insightsengineering/teal.modules.hermes)](https://github.com/insightsengineering/teal.modules.hermes/network/members)
+
+## Stargazers over time
+
+[![Stargazers over time](https://starchart.cc/insightsengineering/teal.modules.hermes.svg)](https://starchart.cc/insightsengineering/teal.modules.hermes)
