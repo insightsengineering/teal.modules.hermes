@@ -161,7 +161,7 @@ srv_g_pca <- function(id,
                       mae_name,
                       exclude_assays) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
+  checkmate::assert_class(filter_panel_api, "FilterPanelAPI")
 
   moduleServer(id, function(input, output, session) {
     experiment <- experimentSpecServer(
@@ -351,7 +351,7 @@ srv_g_pca <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("PCA")
         card$append_text("PCA", "header2")
-        if (with_filter) card$append_fs(filter_panel_api$get_filter_state())
+        card$append_fs(filter_panel_api$get_filter_state())
         card$append_text("Selected Options", "header3")
         if (input$tab_selected == "PCA") {
           encodings_list <- list(

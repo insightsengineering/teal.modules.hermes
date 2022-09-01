@@ -145,7 +145,7 @@ srv_g_forest_tte <- function(id,
                              plot_height,
                              plot_width) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
+  checkmate::assert_class(filter_panel_api, "FilterPanelAPI")
 
   moduleServer(id, function(input, output, session) {
     experiment <- experimentSpecServer(
@@ -232,7 +232,7 @@ srv_g_forest_tte <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Forest Plot")
         card$append_text("Forest Plot", "header2")
-        if (with_filter) card$append_fs(filter_panel_api$get_filter_state())
+        card$append_fs(filter_panel_api$get_filter_state())
         card$append_text("Selected Options", "header3")
         encodings_list <- list(
           "Experiment:",
