@@ -230,10 +230,10 @@ test_that("adtteSpecServer module works as expected in the test app", {
 test_that("results from adtteSpecServer are as expected", {
   adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
     dplyr::mutate(is_event = .data$CNSR == 0)
-  datasets <- mock_datasets(list(
-    MyMAE = hermes::multi_assay_experiment,
-    MyADTTE = adtte
-  ))
+  data <- list(
+    MyMAE = reactive(hermes::multi_assay_experiment),
+    MyADTTE = reactive(adtte)
+  )
   experiment_data <- reactiveVal(hermes::multi_assay_experiment[[1]])
   experiment_name <- reactiveVal(names(hermes::multi_assay_experiment)[1])
   assay <- reactiveVal("counts")
@@ -242,7 +242,7 @@ test_that("results from adtteSpecServer are as expected", {
   testServer(
     adtteSpecServer,
     args = list(
-      datasets = datasets,
+      data = data,
       mae_name = "MyMAE",
       adtte_name = "MyADTTE",
       adtte_vars = list(

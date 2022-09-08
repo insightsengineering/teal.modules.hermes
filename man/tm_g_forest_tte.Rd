@@ -24,7 +24,7 @@ tm_g_forest_tte(
 
 ui_g_forest_tte(
   id,
-  datasets,
+  data,
   adtte_name,
   mae_name,
   summary_funs,
@@ -34,7 +34,8 @@ ui_g_forest_tte(
 
 srv_g_forest_tte(
   id,
-  datasets,
+  data,
+  filter_panel_api,
   reporter,
   adtte_name,
   mae_name,
@@ -92,9 +93,11 @@ and maximum plot width.}
 
 \item{id}{(\code{string}) the shiny module id.}
 
-\item{datasets}{(\code{Datasets})\cr
-teal specific argument which is automatically passed to the UI and server
+\item{data}{(\code{list})\cr
+list which is automatically passed to the UI and server
 functions, holding all the data sets provided in the app initialization.}
+
+\item{filter_panel_api}{(\code{FilterPanelAPI})\cr object describing the actual filter panel API.}
 
 \item{reporter}{(\code{Reporter}) object}
 }

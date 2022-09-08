@@ -6,7 +6,7 @@
 \usage{
 adtteSpecServer(
   id,
-  datasets,
+  data,
   mae_name,
   adtte_name,
   adtte_vars,
@@ -20,8 +20,8 @@ adtteSpecServer(
 \arguments{
 \item{id}{(\code{string}) the shiny module id.}
 
-\item{datasets}{(\code{Datasets})\cr
-teal specific argument which is automatically passed to the UI and server
+\item{data}{(\code{list})\cr
+list which is automatically passed to the UI and server
 functions, holding all the data sets provided in the app initialization.}
 
 \item{mae_name}{(\code{string})\cr
@@ -75,12 +75,12 @@ the numeric column according to the quantile cutoffs specified in \code{probs}.
 }
 \examples{
 ui <- function(id,
-               datasets) {
+               data) {
   ns <- NS(id)
 
   teal.widgets::standard_layout(
     encoding = div(
-      experimentSpecInput(ns("experiment"), datasets = datasets, mae_name = "MAE"),
+      experimentSpecInput(ns("experiment"), data = data, mae_name = "MAE"),
       assaySpecInput(ns("assay")),
       geneSpecInput(ns("genes"), funs = list(Mean = colMeans)),
       adtteSpecInput(ns("adtte"))
@@ -89,11 +89,12 @@ ui <- function(id,
   )
 }
 
-server <- function(id, datasets) {
+server <- function(id, data, filter_panel_api) {
   moduleServer(id, function(input, output, session) {
     experiment <- experimentSpecServer(
       "experiment",
-      datasets = datasets,
+      data = data,
+      filter_panel_api = filter_panel_api,
       mae_name = "MAE"
     )
     assay <- assaySpecServer(
@@ -107,7 +108,7 @@ server <- function(id, datasets) {
     )
     adtte <- adtteSpecServer(
       "adtte",
-      datasets = datasets,
+      data = data,
       adtte_name = "ADTTE",
       mae_name = "MAE",
       adtte_vars = list(

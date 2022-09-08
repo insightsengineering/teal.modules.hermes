@@ -59,12 +59,12 @@ tm_g_pca <- function(label,
 #' @inheritParams module_arguments
 #' @export
 ui_g_pca <- function(id,
-                     datasets,
+                     data,
                      mae_name,
                      pre_output,
                      post_output) {
   ns <- NS(id)
-  mae <- datasets$get_data(mae_name, filtered = FALSE)
+  mae <- data[[mae_name]]()
   experiment_name_choices <- names(mae)
 
   tagList(
@@ -76,7 +76,7 @@ ui_g_pca <- function(id,
         ###
         tags$label("Encodings", class = "text-primary"),
         helpText("Analysis of MAE:", tags$code(mae_name)),
-        experimentSpecInput(ns("experiment"), datasets, mae_name),
+        experimentSpecInput(ns("experiment"), data, mae_name),
         assaySpecInput(ns("assay")),
         conditionalPanel(
           condition = "input.tab_selected == 'PCA'",
@@ -155,15 +155,19 @@ ui_g_pca <- function(id,
 #' @inheritParams module_arguments
 #' @export
 srv_g_pca <- function(id,
-                      datasets,
+                      data,
+                      filter_panel_api,
                       reporter,
                       mae_name,
                       exclude_assays) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
+  checkmate::assert_class(filter_panel_api, "FilterPanelAPI")
+
   moduleServer(id, function(input, output, session) {
     experiment <- experimentSpecServer(
       "experiment",
-      datasets = datasets,
+      data = data,
+      filter_panel_api = filter_panel_api,
       mae_name = mae_name
     )
     assay <- assaySpecServer(
@@ -347,7 +351,7 @@ srv_g_pca <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("PCA")
         card$append_text("PCA", "header2")
-        card$append_fs(datasets$get_filter_state())
+        card$append_fs(filter_panel_api$get_filter_state())
         card$append_text("Selected Options", "header3")
         if (input$tab_selected == "PCA") {
           encodings_list <- list(

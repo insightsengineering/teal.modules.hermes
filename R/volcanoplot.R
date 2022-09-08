@@ -60,12 +60,12 @@ tm_g_volcanoplot <- function(label,
 #' @inheritParams module_arguments
 #' @export
 ui_g_volcanoplot <- function(id,
-                             datasets,
+                             data,
                              mae_name,
                              pre_output,
                              post_output) {
   ns <- NS(id)
-  mae <- datasets$get_data(mae_name, filtered = TRUE)
+  mae <- data[[mae_name]]
 
   teal.widgets::standard_layout(
     output = div(
@@ -80,7 +80,7 @@ ui_g_volcanoplot <- function(id,
       ###
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
-      experimentSpecInput(ns("experiment"), datasets, mae_name),
+      experimentSpecInput(ns("experiment"), data, mae_name),
       assaySpecInput(ns("assay")),
       sampleVarSpecInput(ns("compare_group"), "Compare Groups", "Please group here into 2 levels"),
       tags$label("Show Top Differentiated Genes"),
@@ -103,15 +103,18 @@ ui_g_volcanoplot <- function(id,
 #' @inheritParams module_arguments
 #' @export
 srv_g_volcanoplot <- function(id,
-                              datasets,
+                              data,
+                              filter_panel_api,
                               reporter,
                               mae_name,
                               exclude_assays) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
+  checkmate::assert_class(filter_panel_api, "FilterPanelAPI")
+
   moduleServer(id, function(input, output, session) {
     experiment_data <- experimentSpecServer(
       "experiment",
-      datasets = datasets,
+      data = data,
       mae_name = mae_name
     )
     assay <- assaySpecServer(
@@ -202,7 +205,7 @@ srv_g_volcanoplot <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Scatter Plot")
         card$append_text("Scatter Plot", "header2")
-        card$append_fs(datasets$get_filter_state())
+        card$append_fs(filter_panel_api$get_filter_state())
         card$append_text("Selected Options", "header3")
         encodings_list <- list(
           "Experiment:",
