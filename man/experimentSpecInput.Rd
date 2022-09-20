@@ -16,7 +16,7 @@ experimentSpecInput(
 the ID used to call the module input.}
 
 \item{data}{(\code{tdata})\cr
-tdata object which is automatically passed to the UI and server
+\code{tdata} object which is automatically passed to the UI and server
 functions, holding all the data sets provided in the app initialization.}
 
 \item{mae_name}{(\code{string})\cr
