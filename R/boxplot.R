@@ -118,6 +118,7 @@ srv_g_boxplot <- function(id,
                           summary_funs) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   checkmate::assert_class(filter_panel_api, "FilterPanelAPI")
+  checkmate::assert_class(data, "tdata")
 
   moduleServer(id, function(input, output, session) {
     experiment <- experimentSpecServer(

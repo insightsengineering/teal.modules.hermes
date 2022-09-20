@@ -202,6 +202,7 @@ srv_g_quality <- function(id,
                           exclude_assays) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   checkmate::assert_class(filter_panel_api, "FilterPanelAPI")
+  checkmate::assert_class(data, "tdata")
 
   moduleServer(id, function(input, output, session) {
     experiment <- experimentSpecServer(
