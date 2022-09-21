@@ -145,8 +145,8 @@ srv_g_forest_tte <- function(id,
                              plot_height,
                              plot_width) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-  checkmate::assert_class(filter_panel_api, "FilterPanelAPI")
-  checkmate::assert_class(data, "tdata")
+  assert_class(filter_panel_api, "FilterPanelAPI")
+  assert_class(data, "tdata")
 
   moduleServer(id, function(input, output, session) {
     experiment <- experimentSpecServer(
