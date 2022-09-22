@@ -54,8 +54,8 @@ elements can be useful).}
 
 \item{id}{(\code{string}) the shiny module id.}
 
-\item{data}{(\code{list})\cr
-list which is automatically passed to the UI and server
+\item{data}{(\code{tdata})\cr
+\code{tdata} object which is automatically passed to the UI and server
 functions, holding all the data sets provided in the app initialization.}
 
 \item{filter_panel_api}{(\code{FilterPanelAPI})\cr object describing the actual filter panel API.}

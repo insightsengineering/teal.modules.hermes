@@ -246,7 +246,7 @@ adtteSpecServer <- function(id,
                             genes,
                             probs) {
   assert_string(id)
-  assert_list(data)
+  assert_class(data, "tdata")
   assert_string(mae_name)
   assert_string(adtte_name)
   assert_adtte_vars(adtte_vars)

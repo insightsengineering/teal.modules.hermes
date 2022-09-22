@@ -4,8 +4,8 @@
 \alias{module_arguments}
 \title{Standard Module Arguments}
 \arguments{
-\item{data}{(\code{list})\cr
-list which is automatically passed to the UI and server
+\item{data}{(\code{tdata})\cr
+\code{tdata} object which is automatically passed to the UI and server
 functions, holding all the data sets provided in the app initialization.}
 
 \item{label}{(\code{string})\cr

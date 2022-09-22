@@ -15,7 +15,7 @@ experimentSpecInput <- function(inputId,
                                 mae_name,
                                 label_experiments = "Select Experiment") {
   assert_string(inputId)
-  assert_list(data)
+  assert_class(data, "tdata")
   assert_string(mae_name, min.chars = 1L)
   assert_string(label_experiments, min.chars = 1L)
   mae <- data[[mae_name]]()
@@ -214,7 +214,7 @@ experimentSpecServer <- function(id,
                                  sample_vars_as_factors = TRUE,
                                  with_mae_col_data = TRUE) {
   assert_string(id)
-  assert_list(data)
+  assert_class(data, "tdata")
   assert_string(mae_name, min.chars = 1L)
   assert_string(name_annotation, min.chars = 1L, null.ok = TRUE)
   assert_flag(sample_vars_as_factors)
