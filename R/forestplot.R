@@ -120,7 +120,7 @@ ui_g_forest_tte <- function(id,
           collapsed = TRUE,
           title = "Additional Settings",
           sliderInput(ns("probs"), label = ("Probability Cutoff"), min = 0.01, max = 0.99, value = 0.5),
-          sampleVarSpecInput(ns("subgroups"), "Select Subgroup Variable")
+          sampleVarSpecInput(ns("subgroups"), "Select Categorical Subgroup Variable")
         )
       )
     ),
