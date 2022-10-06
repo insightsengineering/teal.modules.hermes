@@ -20,8 +20,8 @@
 #'   dataset(
 #'     "ADTTE",
 #'     adtte,
-#'     code = 'adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
-#'       dplyr::mutate(is_event = (.data$CNSR == 0))'
+#'     code = "adtte <- scda::synthetic_cdisc_data('rcd_2021_07_07')$adtte %>%
+#'       dplyr::mutate(is_event = (.data$CNSR == 0))"
 #'   ),
 #'   dataset("MAE", mae)
 #' )
