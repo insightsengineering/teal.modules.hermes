@@ -19,8 +19,8 @@
 #'   dataset(
 #'     "ADTTE",
 #'     adtte,
-#'     code = 'adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
-#'       dplyr::mutate(is_event = (.data$CNSR == 0))'
+#'     code = "adtte <- scda::synthetic_cdisc_data('rcd_2021_07_07')$adtte %>%
+#'       dplyr::mutate(is_event = (.data$CNSR == 0))"
 #'   ),
 #'   dataset("MAE", mae)
 #' )
@@ -236,7 +236,7 @@ srv_g_forest_tte <- function(id,
           "\nAssay:",
           input$`assay-name`,
           "\nGenes Selected:",
-          paste0(input$`genes-genes`, collapse = ", "),
+          paste0(genes()$get_gene_labels(), collapse = ", "),
           "\nGene Summary:",
           input$`genes-fun_name`,
           "\nEndpoint:",

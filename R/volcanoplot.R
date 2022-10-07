@@ -200,8 +200,8 @@ srv_g_volcanoplot <- function(id,
     if (with_reporter) {
       card_fun <- function(comment) {
         card <- teal.reporter::TealReportCard$new()
-        card$set_name("Scatter Plot")
-        card$append_text("Scatter Plot", "header2")
+        card$set_name("Volcano Plot")
+        card$append_text("Volcano Plot", "header2")
         card$append_fs(datasets$get_filter_state())
         card$append_text("Selected Options", "header3")
         encodings_list <- list(
