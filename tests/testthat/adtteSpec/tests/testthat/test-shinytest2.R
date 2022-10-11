@@ -28,17 +28,21 @@ test_that("{shinytest2} recording: adtteSpecServer module works as expected in t
   app$set_inputs(`teal-main_ui-root-adttespec_example-genes-lock_button` = FALSE)
   app$expect_values()
   app$set_inputs(`teal-main_ui-root-adttespec_example-genes-genes` = "GeneID:28")
+
+  # Upon initialization the endpoint is not selected automatically, the user
+  # has to click this actively.
   app$expect_values()
   app$set_inputs(`teal-main_ui-root-adttespec_example-adtte-paramcd` = "CRSD")
   app$expect_values()
+
+  # Test what happens if selected endpoint (here PFS) is no longer in filtered data.
   app$set_inputs(`teal-main_ui-filter_panel-add_ADTTE_filter-filter-var_to_add` = "PARAMCD")
   app$click("teal-main_ui-filter_panel-ADTTE_filter-filter-_var_PARAMCD-remove")
-  app$set_inputs(`teal-main_ui-filter_panel-ADTTE_filter-filter-_var_PARAMCD-content-selection` = c(
-    "CRSD",
-    "EFS", "OS", "PFS"
-  ))
   app$set_inputs(`teal-main_ui-filter_panel-ADTTE_filter-filter-_var_PARAMCD-content-selection` = "OS")
   app$expect_values()
+
+  # Now we update the filter by adding PFS back. However the user would have to
+  # actively select it.
   app$set_inputs(`teal-main_ui-filter_panel-ADTTE_filter-filter-_var_PARAMCD-content-selection` = c(
     "OS",
     "PFS"
