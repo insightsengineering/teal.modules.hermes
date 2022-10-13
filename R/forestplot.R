@@ -19,8 +19,8 @@
 #'   dataset(
 #'     "ADTTE",
 #'     adtte,
-#'     code = 'adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
-#'       dplyr::mutate(is_event = (.data$CNSR == 0))'
+#'     code = "adtte <- scda::synthetic_cdisc_data('rcd_2021_07_07')$adtte %>%
+#'       dplyr::mutate(is_event = (.data$CNSR == 0))"
 #'   ),
 #'   dataset("MAE", mae)
 #' )
@@ -120,7 +120,7 @@ ui_g_forest_tte <- function(id,
           collapsed = TRUE,
           title = "Additional Settings",
           sliderInput(ns("probs"), label = ("Probability Cutoff"), min = 0.01, max = 0.99, value = 0.5),
-          sampleVarSpecInput(ns("subgroups"), "Select Subgroup Variable")
+          sampleVarSpecInput(ns("subgroups"), "Select Categorical Subgroup Variable")
         )
       )
     ),
@@ -241,7 +241,7 @@ srv_g_forest_tte <- function(id,
           "\nAssay:",
           input$`assay-name`,
           "\nGenes Selected:",
-          paste0(input$`genes-genes`, collapse = ", "),
+          paste0(genes()$get_gene_labels(), collapse = ", "),
           "\nGene Summary:",
           input$`genes-fun_name`,
           "\nEndpoint:",
