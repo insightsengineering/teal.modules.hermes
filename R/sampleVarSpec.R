@@ -185,6 +185,9 @@ validate_n_levels <- function(x, name, n_levels) {
 #'   If `NULL` then all numbers of levels are allowed.
 #' @param categorical_only (`flag`)\cr whether only categorical variables should be selected
 #'   from.
+#' @param explicit_na (`flag`)\cr whether the `colData` of `original_data` will be transformed with
+#'   [hermes::h_df_factors_with_explicit_na] before further processing. That means also that
+#'   `NA` will be made an explicit factor level and counted for `num_levels`.
 #' @param label_modal_title (`string`)\cr title for the dialog that asks for the text input.
 #'
 #' @return Reactive [`SummarizedExperiment::SummarizedExperiment`] which can be used as
@@ -267,6 +270,7 @@ sampleVarSpecServer <- function(id,
                                 assign_lists = reactiveValues(),
                                 num_levels = NULL,
                                 categorical_only = !is.null(num_levels),
+                                explicit_na = FALSE,
                                 label_modal_title = "Please click to group the original factor levels") {
   assert_string(id)
   assert_reactive(experiment_name)
@@ -275,14 +279,24 @@ sampleVarSpecServer <- function(id,
   assert_class(assign_lists, "reactivevalues")
   assert_count(num_levels, null.ok = TRUE, positive = TRUE)
   assert_flag(categorical_only)
+  assert_flag(explicit_na)
   assert_string(label_modal_title)
 
   moduleServer(id, function(input, output, session) {
 
-    # The colData variables to choose the sample variable from.
-    col_data_vars <- eventReactive(experiment_name(), {
+    start_col_data <- eventReactive(experiment_name(), {
       object <- original_data()
       col_data <- SummarizedExperiment::colData(object)
+      if (explicit_na) {
+        hermes::h_df_factors_with_explicit_na(col_data)
+      } else {
+        col_data
+      }
+    })
+
+    # The colData variables to choose the sample variable from.
+    col_data_vars <- reactive({
+      col_data <- start_col_data()
       can_be_used <- vapply(col_data, FUN = function(x) is.atomic(x) && !allMissing(x), FUN.VALUE = logical(1))
       if (categorical_only) {
         col_is_factor <- vapply(col_data, FUN = is.factor, FUN.VALUE = logical(1))
@@ -330,11 +344,12 @@ sampleVarSpecServer <- function(id,
     final_data <- reactive({
       sample_var <- input$sample_var
       original_data <- original_data()
+      start_col_data <- start_col_data()
       transformed_data <- transformed_data()
       current_combination <- current_combination()
 
       if (!is.null(sample_var)) {
-        sample_var_vector <- SummarizedExperiment::colData(original_data)[[sample_var]]
+        sample_var_vector <- start_col_data[[sample_var]]
         if (!is.null(current_combination)) {
           sample_var_vector <- h_collapse_levels(
             sample_var_vector,
@@ -383,12 +398,13 @@ sampleVarSpecServer <- function(id,
     observeEvent(input$levels_button, {
       sample_var <- input$sample_var
       original_data <- original_data()
+      start_col_data <- start_col_data()
       experiment_name <- experiment_name()
 
       req(experiment_name)
 
       if (!is.null(sample_var)) {
-        current_sample_var <- SummarizedExperiment::colData(original_data)[[sample_var]]
+        current_sample_var <- start_col_data[[sample_var]]
 
         if (is.factor(current_sample_var)) {
           sample_var_levels <- levels(current_sample_var)
