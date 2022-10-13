@@ -288,7 +288,7 @@ sampleVarSpecServer <- function(id,
       object <- original_data()
       col_data <- SummarizedExperiment::colData(object)
       if (explicit_na) {
-        hermes::h_df_factors_with_explicit_na(col_data)
+        hermes::df_cols_to_factor(col_data)
       } else {
         col_data
       }

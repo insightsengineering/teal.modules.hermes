@@ -12,6 +12,7 @@ sampleVarSpecServer(
   assign_lists = reactiveValues(),
   num_levels = NULL,
   categorical_only = !is.null(num_levels),
+  explicit_na = FALSE,
   label_modal_title = "Please click to group the original factor levels"
 )
 }
@@ -35,6 +36,10 @@ If \code{NULL} then all numbers of levels are allowed.}
 
 \item{categorical_only}{(\code{flag})\cr whether only categorical variables should be selected
 from.}
+
+\item{explicit_na}{(\code{flag})\cr whether the \code{colData} of \code{original_data} will be transformed with
+\link[hermes:h_df_factors_with_explicit_na]{hermes::h_df_factors_with_explicit_na} before further processing. That means also that
+\code{NA} will be made an explicit factor level and counted for \code{num_levels}.}
 
 \item{label_modal_title}{(\code{string})\cr title for the dialog that asks for the text input.}
 }
