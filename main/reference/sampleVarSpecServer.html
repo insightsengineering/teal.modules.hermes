@@ -12,7 +12,7 @@ This defines the server part for the sample variable specification."><!-- mathja
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.hermes</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.3.9014</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.3.9016</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -26,12 +26,6 @@ This defines the server part for the sample variable specification."><!-- mathja
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.hermes/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -68,6 +62,7 @@ This defines the server part for the sample variable specification."><!-- mathja
 <span>  assign_lists <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactiveValues.html" class="external-link">reactiveValues</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  num_levels <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  categorical_only <span class="op">=</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">num_levels</span><span class="op">)</span>,</span>
+<span>  explicit_na <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  label_modal_title <span class="op">=</span> <span class="st">"Please click to group the original factor levels"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -106,6 +101,12 @@ If <code>NULL</code> then all numbers of levels are allowed.</p></dd>
 <dt>categorical_only</dt>
 <dd><p>(<code>flag</code>)<br> whether only categorical variables should be selected
 from.</p></dd>
+
+
+<dt>explicit_na</dt>
+<dd><p>(<code>flag</code>)<br> whether the <code>colData</code> of <code>original_data</code> will be transformed with
+<a href="https://rdrr.io/pkg/hermes/man/h_df_factors_with_explicit_na.html" class="external-link">hermes::h_df_factors_with_explicit_na</a> before further processing. That means also that
+<code>NA</code> will be made an explicit factor level and counted for <code>num_levels</code>.</p></dd>
 
 
 <dt>label_modal_title</dt>
