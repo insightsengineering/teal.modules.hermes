@@ -355,7 +355,7 @@ adtteSpecServer <- function(id,
           )
         },
         error = function(e) {
-          if (grepl("Duplicate quantiles produced", e)) {
+          if (grepl("Contains duplicated values", e)) {
             validate(paste(
               "please adjust filters or select (slightly) different quantiles",
               "to avoid duplicate quantiles"
