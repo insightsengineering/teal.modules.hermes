@@ -14,7 +14,7 @@
 #'
 #' @examples
 #' sampleVarSpecInput("my_vars", label_vars = "Select faceting variable")
-sampleVarSpecInput <- function(inputId,
+sampleVarSpecInput <- function(inputId, # nolint
                                label_vars = "Select sample variable",
                                label_levels_button = "Combine factor levels") {
   assert_string(inputId)
@@ -263,7 +263,7 @@ validate_n_levels <- function(x, name, n_levels) {
 #' if (interactive()) {
 #'   my_app()
 #' }
-sampleVarSpecServer <- function(id,
+sampleVarSpecServer <- function(id, # nolint
                                 experiment_name,
                                 original_data,
                                 transformed_data = original_data,
@@ -316,12 +316,6 @@ sampleVarSpecServer <- function(id,
       )
     })
 
-    # `reactiveValuees` object for storing experiment and colData variable
-    # specific assignment lists.
-    # Note that this should have experiments at the first level and then colData in the
-    # second level.
-    # assign_lists <- reactiveValues()
-
     # Reactive for the current combination. Takes the assignment list if available
     # and converts to combination list.
     current_combination <- reactive({
@@ -367,7 +361,7 @@ sampleVarSpecServer <- function(id,
 
     # Function to return the UI for a modal dialog with matrix input for combination
     # assignment.
-    combModal <- function(sample_var_levels,
+    combModal <- function(sample_var_levels, # nolint
                           n_max_groups,
                           selected_groups) {
       if (is.null(selected_groups)) {
@@ -499,7 +493,7 @@ sampleVarSpecServer <- function(id,
 #' facet_var <- sample_var_specs$vars$facet_var()
 #' color_var <- sample_var_specs$vars$color_var()
 #' }
-multiSampleVarSpecServer <- function(inputIds,
+multiSampleVarSpecServer <- function(inputIds, # nolint
                                      original_data,
                                      ...) {
   assert_character(inputIds, any.missing = FALSE, unique = TRUE)
