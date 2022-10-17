@@ -6,7 +6,6 @@ test_that("boxplot module works as expected in the test app", {
     name = "boxplot module works as expected in the test app"
   )
   ns <- module_ns_shiny2(app)
-  ns2 <- NS("teal-main_ui-filter_panel")
 
   app$wait_for_idle()
 
@@ -35,6 +34,8 @@ test_that("boxplot module works as expected in the test app", {
     !!ns("strat-sample_var") := "COUNTRY",
     !!ns("color-sample_var") := "AGE18"
   )
+
+  app$wait_for_idle()
 
   app$expect_values()
 })
