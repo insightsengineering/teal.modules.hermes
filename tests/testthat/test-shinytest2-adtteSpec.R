@@ -3,8 +3,7 @@ library(shinytest2)
 test_that("{shinytest2} recording: adtteSpecServer module works as expected in the test app", {
   app <- AppDriver$new(
     app_dir = "adtteSpec",
-    name = "adtteSpecServer module works as expected in the test app",
-    height = 520, width = 979
+    name = "adtteSpecServer module works as expected in the test app"
   )
   ns <- module_ns_shiny2(app)
   ns2 <- NS("teal-main_ui-filter_panel")
