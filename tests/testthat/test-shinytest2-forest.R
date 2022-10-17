@@ -1,6 +1,29 @@
-library(shinytest2)
+# ui_g_forest_tte ----
+
+test_that("ui_g_forest_tte creates expected HTML", {
+  mae_name <- "MyMAE"
+  set.seed(123)
+  datasets <- mock_datasets(list(MyMAE = hermes::multi_assay_experiment))
+  result <- ui_g_forest_tte(
+    id = "testid",
+    datasets = datasets,
+    adtte_name = "ADTTE",
+    mae_name = mae_name,
+    summary_funs = list(
+      Mean = colMeans
+    ),
+    pre_output = NULL,
+    post_output = NULL
+  )
+  expect_tag(result)
+})
+
+# tm_g_forest_tte ----
 
 test_that("forest_tte module works as expected in the test app", {
+  skip_if_covr()
+  skip_if_too_deep(5)
+
   app <- AppDriver$new(
     app_dir = "forest_tte",
     name = "forest_tte module works as expected in the test app",

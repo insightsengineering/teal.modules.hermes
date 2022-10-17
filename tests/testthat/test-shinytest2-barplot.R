@@ -1,6 +1,27 @@
-library(shinytest2)
+# ui_g_barplot ----
+
+test_that("ui_g_barplot creates expected HTML", {
+  mae_name <- "MyMAE"
+  set.seed(999)
+  datasets <- mock_datasets(list(MyMAE = hermes::multi_assay_experiment))
+  expect_snapshot(ui_g_barplot(
+    id = "testid",
+    datasets = datasets,
+    mae_name = mae_name,
+    summary_funs = list(
+      Mean = colMeans
+    ),
+    pre_output = NULL,
+    post_output = NULL
+  ))
+})
+
+# tm_g_barplot ----
 
 test_that("barplot module works as expected in the test app", {
+  skip_if_covr()
+  skip_if_too_deep(5)
+
   app <- AppDriver$new(
     app_dir = "barplot",
     name = "barplot module works as expected in the test app",

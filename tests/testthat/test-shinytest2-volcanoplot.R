@@ -1,6 +1,9 @@
 library(shinytest2)
 
 test_that("volcanoplot module works as expected in the test app", {
+  skip_if_covr()
+  skip_if_too_deep(5)
+
   app <- AppDriver$new(
     app_dir = "volcanoplot",
     name = "volcanoplot module works as expected in the test app",

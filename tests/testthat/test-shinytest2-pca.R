@@ -1,6 +1,24 @@
-library(shinytest2)
+# ui_g_pca ----
+
+test_that("ui_g_pca creates HTML", {
+  mae_name <- "MyMAE"
+  datasets <- mock_datasets(list(MyMAE = hermes::multi_assay_experiment))
+  result <- ui_g_pca(
+    id = "testid",
+    datasets = datasets,
+    mae_name = mae_name,
+    pre_output = NULL,
+    post_output = NULL
+  )
+  testthat::expect_s3_class(result, "shiny.tag.list")
+})
+
+# pca Server ----
 
 test_that("pca module works as expected in the test app", {
+  skip_if_covr()
+  skip_if_too_deep(5)
+
   app <- AppDriver$new(
     app_dir = "pca",
     name = "pca module works as expected in the test app",

@@ -1,6 +1,25 @@
-library(shinytest2)
+# ui_g_boxplot ----
+
+test_that("ui_g_boxplot creates expected HTML", {
+  mae_name <- "MyMAE"
+  datasets <- mock_datasets(list(MyMAE = hermes::multi_assay_experiment))
+  result <- ui_g_boxplot(
+    id = "testid",
+    datasets = datasets,
+    mae_name = mae_name,
+    summary_funs = list(Mean = colMeans),
+    pre_output = NULL,
+    post_output = NULL
+  )
+  expect_tag(result)
+})
+
+# tm_g_boxplot ----
 
 test_that("boxplot module works as expected in the test app", {
+  skip_if_covr()
+  skip_if_too_deep(5)
+
   app <- AppDriver$new(
     app_dir = "boxplot",
     name = "boxplot module works as expected in the test app",

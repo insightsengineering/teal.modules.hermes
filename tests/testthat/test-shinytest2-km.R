@@ -1,6 +1,28 @@
-library(shinytest2)
+# ui_g_km ----
+
+test_that("ui_g_km creates expected HTML", {
+  mae_name <- "MyMAE"
+  set.seed(123)
+  datasets <- mock_datasets(list(MyMAE = hermes::multi_assay_experiment))
+  expect_snapshot(ui_g_km(
+    id = "testid",
+    datasets = datasets,
+    adtte_name = "ADTTE",
+    mae_name = mae_name,
+    summary_funs = list(
+      Mean = colMeans
+    ),
+    pre_output = NULL,
+    post_output = NULL
+  ))
+})
+
+# tm_g_km ----
 
 test_that("km module works as expected in the test app", {
+  skip_if_covr()
+  skip_if_too_deep(5)
+
   app <- AppDriver$new(
     app_dir = "km",
     name = "km module works as expected in the test app",

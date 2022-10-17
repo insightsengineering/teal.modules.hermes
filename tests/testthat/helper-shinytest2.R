@@ -1,3 +1,5 @@
+library(shinytest2)
+
 module_ns_shiny2 <- function(app) {
   source <- app$get_html("html", outer_html = TRUE)
   module_id <- rvest::html_attr(

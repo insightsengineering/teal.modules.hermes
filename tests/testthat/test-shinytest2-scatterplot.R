@@ -1,4 +1,22 @@
-library(shinytest2)
+# ui_g_scatterplot ----
+
+test_that("ui_g_scatterplot creates expected HTML", {
+  mae_name <- "MyMAE"
+  set.seed(123)
+  datasets <- mock_datasets(list(MyMAE = hermes::multi_assay_experiment))
+  expect_snapshot(ui_g_scatterplot(
+    id = "testid",
+    datasets = datasets,
+    mae_name = mae_name,
+    summary_funs = list(
+      Mean = colMeans
+    ),
+    pre_output = NULL,
+    post_output = NULL
+  ))
+})
+
+# tm_g_scatterplot ----
 
 test_that("scatterplot module works as expected in the test app", {
   app <- AppDriver$new(

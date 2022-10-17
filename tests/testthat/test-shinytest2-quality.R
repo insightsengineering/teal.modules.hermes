@@ -1,6 +1,24 @@
-library(shinytest2)
+# ui_g_quality ----
+
+test_that("ui_g_quality creates expected HTML", {
+  mae_name <- "MyMAE"
+  set.seed(123)
+  datasets <- mock_datasets(list(MyMAE = hermes::multi_assay_experiment))
+  expect_snapshot(ui_g_quality(
+    id = "testid",
+    datasets = datasets,
+    mae_name = mae_name,
+    pre_output = NULL,
+    post_output = NULL
+  ))
+})
+
+# tm_g_quality ----
 
 test_that("quality module works as expected in the test app", {
+  skip_if_covr()
+  skip_if_too_deep(5)
+
   app <- AppDriver$new(
     app_dir = "quality",
     name = "quality module works as expected in the test app",
@@ -24,7 +42,7 @@ test_that("quality module works as expected in the test app", {
   # Check that warning message for at least 2 genes works as expected.
   app$set_inputs(!!ns("min_cpm") := 54356)
   res <- app$wait_for_value(output = ns("plot"))
-  expect_identical(res, "Please change gene filters to ensure that there are at least 2 genes")
+  expect_identical(res$message, "Please change gene filters to ensure that there are at least 2 genes")
 
   # Initial plot.
   app$expect_screenshot()
