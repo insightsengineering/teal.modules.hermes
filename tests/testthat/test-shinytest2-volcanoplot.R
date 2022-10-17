@@ -1,4 +1,19 @@
-library(shinytest2)
+# ui_g_volcanoplot ----
+
+test_that("ui_g_volcanoplot creates expected HTML", {
+  mae_name <- "MyMAE"
+  datasets <- mock_datasets(list(MyMAE = hermes::multi_assay_experiment))
+  result <- ui_g_volcanoplot(
+    id = "testid",
+    datasets = datasets,
+    mae_name = mae_name,
+    pre_output = NULL,
+    post_output = NULL
+  )
+  expect_tag(result)
+})
+
+# tm_g_volcanoplot ----
 
 test_that("volcanoplot module works as expected in the test app", {
   skip_if_covr()
