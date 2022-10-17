@@ -3,7 +3,8 @@ library(shinytest2)
 test_that("boxplot module works as expected in the test app", {
   app <- AppDriver$new(
     app_dir = "boxplot",
-    name = "boxplot module works as expected in the test app"
+    name = "boxplot module works as expected in the test app",
+    variant = platform_variant()
   )
   ns <- module_ns_shiny2(app)
 
@@ -37,5 +38,5 @@ test_that("boxplot module works as expected in the test app", {
 
   app$wait_for_idle()
 
-  app$expect_values()
+  app$expect_screenshot()
 })

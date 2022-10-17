@@ -3,7 +3,8 @@ library(shinytest2)
 test_that("forest_tte module works as expected in the test app", {
   app <- AppDriver$new(
     app_dir = "forest_tte",
-    name = "forest_tte module works as expected in the test app"
+    name = "forest_tte module works as expected in the test app",
+    variant = platform_variant()
   )
   ns <- module_ns_shiny2(app)
 
@@ -21,21 +22,19 @@ test_that("forest_tte module works as expected in the test app", {
 
   # Choose another experiment.
   app$set_inputs(!!ns("experiment-name") := "hd2")
-  app$wait_for_idle()
 
-  res <- app$get_value(input = ns("assay-name"))
+  res <- app$wait_for_value(input = ns("assay-name"))
   expect_identical(res, "cpm")
 
   # Choose a gene signature.
   app$set_inputs(!!ns("genes-genes") := c("GeneID:101927746", "GeneID:1820"))
-  app$wait_for_idle()
 
-  res <- app$get_value(output = ns("plot-plot_main"))
+  res <- app$wait_for_value(output = ns("plot-plot_main"))
   expect_identical(res$message, "please select an endpoint")
 
   # Choose an endpoint.
   app$set_inputs(!!ns("adtte-paramcd") := "PFS")
 
   app$wait_for_idle()
-  app$expect_values()
+  app$expect_screenshot()
 })

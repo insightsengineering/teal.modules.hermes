@@ -3,7 +3,8 @@ library(shinytest2)
 test_that("barplot module works as expected in the test app", {
   app <- AppDriver$new(
     app_dir = "barplot",
-    name = "barplot module works as expected in the test app"
+    name = "barplot module works as expected in the test app",
+    variant = platform_variant()
   )
   ns <- module_ns_shiny2(app)
 
@@ -62,5 +63,5 @@ test_that("barplot module works as expected in the test app", {
     !!ns("facet-sample_var") := "AGE18"
   )
 
-  app$expect_values()
+  app$expect_screenshot()
 })

@@ -3,7 +3,8 @@ library(shinytest2)
 test_that("km module works as expected in the test app", {
   app <- AppDriver$new(
     app_dir = "km",
-    name = "km module works as expected in the test app"
+    name = "km module works as expected in the test app",
+    variant = platform_variant()
   )
   ns <- module_ns_shiny2(app)
   ns2 <- NS("teal-main_ui-filter_panel")
@@ -34,5 +35,5 @@ test_that("km module works as expected in the test app", {
   app$set_inputs(!!ns("adtte-paramcd") := "PFS")
   app$wait_for_idle()
 
-  app$expect_values()
+  app$expect_screenshot()
 })

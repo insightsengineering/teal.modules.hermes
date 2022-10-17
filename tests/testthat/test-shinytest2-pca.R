@@ -3,7 +3,8 @@ library(shinytest2)
 test_that("pca module works as expected in the test app", {
   app <- AppDriver$new(
     app_dir = "pca",
-    name = "pca module works as expected in the test app"
+    name = "pca module works as expected in the test app",
+    variant = platform_variant()
   )
   ns <- module_ns_shiny2(app)
   ns2 <- NS("teal-main_ui-filter_panel")
@@ -35,7 +36,7 @@ test_that("pca module works as expected in the test app", {
   res <- app$get_value(input = ns("show_matrix"))
   expect_true(res)
 
-  app$expect_values()
+  app$expect_screenshot()
 
   # Add a gene filter and deselect everything and check that it does not crash.
   app$set_inputs(!!ns2("add_MAE_filter-hd1-row_to_add") := "symbol")
@@ -64,7 +65,7 @@ test_that("pca module works as expected in the test app", {
   res <- app$get_value(input = ns("show_matrix"))
   expect_true(res)
 
-  app$expect_values()
+  app$expect_screenshot()
 
   # Now update experiment name, assay name, cluster & matrix option on correlation tab.
   app$set_inputs(
@@ -75,7 +76,7 @@ test_that("pca module works as expected in the test app", {
   )
 
   # app$wait_for_idle()
-  app$expect_values()
+  app$expect_screenshot()
 
   # Now go back to pca tab and update experiment, assay name, variance % option,
   # label option and matrix option.
@@ -90,7 +91,7 @@ test_that("pca module works as expected in the test app", {
   )
 
   app$wait_for_idle()
-  app$expect_values()
+  app$expect_screenshot()
 
   # Update experiment / assay (ensure xvar and yvar revert back to PC1 and PC2, assay to counts)
   # and add color for pca.
@@ -149,7 +150,7 @@ test_that("pca module works as expected in the test app", {
   res <- app$get_value(input = ns("y_var"))
   expect_identical(res, "2")
 
-  app$expect_values()
+  app$expect_screenshot()
 
   # Update to cor tab.
   app$set_inputs(!!ns("tab_selected") := "PCA")
@@ -165,7 +166,7 @@ test_that("pca module works as expected in the test app", {
   res <- app$wait_for_value(input = ns("n_top"))
   expect_identical(res, 500L)
 
-  app$expect_values()
+  app$expect_screenshot()
 
   # Change the number of top genes.
   app$set_inputs(!!ns("n_top") := 777L)
@@ -180,12 +181,12 @@ test_that("pca module works as expected in the test app", {
   # Increase number of top genes to maximum.
   app$set_inputs(!!ns("n_top") := 2500L)
   app$wait_for_idle()
-  app$expect_values()
+  app$expect_screenshot()
 
   # Switch off gene filtering and check that table is still the same.
   app$set_inputs(!!ns("filter_top") := FALSE)
   app$wait_for_idle()
-  app$expect_values()
+  app$expect_screenshot()
 
   # Go back to first experiment and check that n_top stayed the same.
   app$set_inputs(!!ns("experiment-name") := "hd1")
