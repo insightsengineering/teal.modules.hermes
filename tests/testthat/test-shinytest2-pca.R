@@ -120,7 +120,7 @@ test_that("pca module works as expected in the test app", {
   res <- app$get_value(input = ns("assay-name"))
   expect_identical(res, "counts")
 
-    res <- app$get_value(input = ns("x_var"))
+  res <- app$get_value(input = ns("x_var"))
   expect_identical(res, "1")
 
   res <- app$get_value(input = ns("y_var"))
@@ -211,4 +211,3 @@ test_that("pca module works as expected in the test app", {
   res <- app$wait_for_value(input = ns("n_top"))
   expect_identical(res, 1000L)
 })
-

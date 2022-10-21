@@ -28,7 +28,7 @@ test_that("quality module works as expected in the test app", {
 
   app$wait_for_idle()
 
-    # Check initial state of encodings.
+  # Check initial state of encodings.
   res <- app$get_value(input = ns("experiment-name"))
   expect_identical(res, "hd1")
 
