@@ -39,7 +39,7 @@ sample_var_specs <- multiSampleVarSpecServer(
   experiment_name = reactive({
     input$experiment_name
   }),
-  original_data = <original_data> # Please update the <original_data>
+  original_data = <original_data> # nolint Please update the <original_data>
 )
 # Then can extract the transformed data and selected variables later:
 experiment_data <- sample_var_specs$experiment_data()
