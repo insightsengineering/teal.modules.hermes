@@ -176,6 +176,8 @@ test_that("adtteSpecInput creates expected HTML", {
   ))
 })
 
+# nolint start
+
 test_that("adtteSpecServer module works as expected in the test app", {
   skip_if_covr()
   skip_if_too_deep(5)
@@ -223,3 +225,6 @@ test_that("adtteSpecServer module works as expected in the test app", {
   res <- app$wait_for_value(output = ns("summary"))
   expect_equal(res$message, "please select an endpoint")
 })
+
+# nolint end
+

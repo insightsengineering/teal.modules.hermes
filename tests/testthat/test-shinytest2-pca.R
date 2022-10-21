@@ -15,6 +15,8 @@ test_that("ui_g_pca creates HTML", {
 
 # pca Server ----
 
+# nolint start
+
 test_that("pca module works as expected in the test app", {
   skip_if_covr()
   skip_if_too_deep(5)
@@ -211,3 +213,6 @@ test_that("pca module works as expected in the test app", {
   res <- app$wait_for_value(input = ns("n_top"))
   expect_identical(res, 1000L)
 })
+
+# nolint end
+

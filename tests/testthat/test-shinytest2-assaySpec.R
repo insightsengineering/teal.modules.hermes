@@ -7,6 +7,8 @@ test_that("assaySpecInput creates expected HTML", {
   ))
 })
 
+# nolint start
+
 # assaySpecServer ----
 test_that("assaySpecServer module works as expected in the test app", {
   skip_if_covr()
@@ -44,3 +46,6 @@ test_that("assaySpecServer module works as expected in the test app", {
   res <- app$get_value(output = ns("result"))
   expect_identical(res, "[1] \"\"")
 })
+
+# nolint end
+

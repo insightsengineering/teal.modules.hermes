@@ -82,6 +82,8 @@ test_that("h_gene_data does not fail when object does not contain any genes", {
   expect_identical(result, expected)
 })
 
+# nolint start
+
 test_that("experimentSpec module works as expected in the test app", {
   skip_if_covr()
   skip_if_too_deep(5)
@@ -165,3 +167,6 @@ test_that("experimentSpec module works as expected in the test app", {
   res <- app$get_value(output = ns("summary"))
   expect_match(res, "HermesData object with 9 samples of 2500 genes")
 })
+
+# nolint end
+

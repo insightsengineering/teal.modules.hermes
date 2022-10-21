@@ -32,6 +32,8 @@ test_that("h_parse_genes correctly returns empty data frame when no genes match"
 
 # geneSpecServer ----
 
+# nolint start
+
 test_that("geneSpec module works as expected in the test app", {
   skip_if_covr()
   skip_if_too_deep(5)
@@ -113,3 +115,6 @@ test_that("geneSpec module works as expected in the test app", {
   res <- app$get_value(input = ns("my_genes-genes"))
   expect_set_equal(res, c("GeneID:10061", "GeneID:28"))
 })
+
+# nolint end
+

@@ -20,6 +20,8 @@ test_that("ui_g_forest_tte creates expected HTML", {
 
 # tm_g_forest_tte ----
 
+# nolint start
+
 test_that("forest_tte module works as expected in the test app", {
   skip_if_covr()
   skip_if_too_deep(5)
@@ -61,3 +63,5 @@ test_that("forest_tte module works as expected in the test app", {
   app$wait_for_idle()
   app$expect_screenshot()
 })
+
+# nolint end
