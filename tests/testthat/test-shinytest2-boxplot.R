@@ -63,4 +63,3 @@ test_that("boxplot module works as expected in the test app", {
 })
 
 # nolint end
-

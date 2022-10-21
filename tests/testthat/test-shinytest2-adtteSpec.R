@@ -227,4 +227,3 @@ test_that("adtteSpecServer module works as expected in the test app", {
 })
 
 # nolint end
-

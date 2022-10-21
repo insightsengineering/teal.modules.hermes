@@ -90,4 +90,3 @@ test_that("barplot module works as expected in the test app", {
 })
 
 # nolint end
-

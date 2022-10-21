@@ -117,4 +117,3 @@ test_that("geneSpec module works as expected in the test app", {
 })
 
 # nolint end
-

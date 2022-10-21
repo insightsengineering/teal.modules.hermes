@@ -215,4 +215,3 @@ test_that("pca module works as expected in the test app", {
 })
 
 # nolint end
-

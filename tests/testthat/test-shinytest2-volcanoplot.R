@@ -54,4 +54,3 @@ test_that("volcanoplot module works as expected in the test app", {
 })
 
 # nolint end
-

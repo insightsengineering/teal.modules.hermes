@@ -62,4 +62,3 @@ test_that("km module works as expected in the test app", {
 })
 
 # nolint end
-

@@ -48,4 +48,3 @@ test_that("assaySpecServer module works as expected in the test app", {
 })
 
 # nolint end
-

@@ -69,4 +69,3 @@ test_that("quality module works as expected in the test app", {
 })
 
 # nolint end
-

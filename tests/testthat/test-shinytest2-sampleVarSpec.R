@@ -206,4 +206,3 @@ test_that("sampleVarSpec module works as expected in the test app", {
 })
 
 # nolint end
-
