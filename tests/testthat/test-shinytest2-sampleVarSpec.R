@@ -164,42 +164,46 @@ test_that("sampleVarSpecServer only gives factor columns in col_data_vars when c
   )
 })
 
+# nolint start
+
 test_that("sampleVarSpec module works as expected in the test app", {
   skip_if_covr()
   skip_if_too_deep(5)
 
-  library(shinytest)
-  app <- ShinyDriver$new(testthat::test_path("sampleVarSpec"),
-    loadTimeout = 1e5,
-    debug = "all", phantomTimeout = 1e5, seed = 123
+  app <- AppDriver$new(
+    app_dir = "sampleVarSpec",
+    name = "sampleVarSpec module works as expected in the test app",
+    variant = platform_variant()
   )
-  on.exit(app$stop())
-  app$getDebugLog()
-  app$snapshotInit("test-app")
-  Sys.sleep(2.5)
-  ns <- module_ns(app)
+  ns <- module_ns_shiny2(app)
+
+  app$wait_for_idle()
 
   # Initially no variable is selected.
-  initial_var <- app$waitForValue(ns("facet_var"), ignore = "")
-  expect_identical(initial_var, NULL)
+  res <- app$get_value(input = ns("facet_var"))
+  expect_null(res)
 
   # Select a variable.
   first_var <- "AGE18"
-  app$setValue(ns("facet_var-sample_var"), first_var)
+  app$set_inputs(!!ns("facet_var-sample_var") := first_var)
 
   # Check the output and which levels are reported there.
-  first_output <- app$waitForValue(ns("summary"), iotype = "output")
-  expect_match(first_output, " < 18 >= 18 \n")
+  res <- app$wait_for_value(output = ns("summary"))
+  expect_match(res, " < 18 >= 18 \n")
 
   # Now click on the levels button, set combination and click ok.
   app$click(ns("facet_var-levels_button"))
-  first_combination <- list("< 18" = "2", ">= 18" = "2") # Click on second column in both rows.
-  app$waitForValue(ns("facet_var-comb_assignment"))
-  app$setValue(ns("facet_var-comb_assignment"), first_combination)
-  app$waitForValue(ns("facet_var-comb_assignment"))
+  first_combination <- list("< 18" = "2", ">= 18" = "2")
+  # Click on second column in both rows.
+  app$wait_for_idle()
+  app$set_inputs(!!ns("facet_var-comb_assignment") := first_combination)
+  app$wait_for_idle()
   app$click(ns("facet_var-ok"))
 
   # Check the output and which levels are reported there.
-  second_output <- app$waitForValue(ns("summary"), iotype = "output")
-  expect_match(second_output, "< 18/>= 18 \n")
+  res <- app$wait_for_value(output = ns("summary"))
+  expect_match(res, "< 18/>= 18 \n")
 })
+
+# nolint end
+
