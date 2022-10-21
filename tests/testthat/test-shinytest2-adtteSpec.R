@@ -176,7 +176,7 @@ test_that("adtteSpecInput creates expected HTML", {
   ))
 })
 
-test_that("{shinytest2} recording: adtteSpecServer module works as expected in the test app", {
+test_that("adtteSpecServer module works as expected in the test app", {
   skip_if_covr()
   skip_if_too_deep(5)
 
@@ -185,7 +185,6 @@ test_that("{shinytest2} recording: adtteSpecServer module works as expected in t
     name = "adtteSpecServer module works as expected in the test app"
   )
   ns <- module_ns_shiny2(app)
-  ns2 <- NS("teal-main_ui-filter_panel")
 
   # check initialization
   res <- app$get_values()
@@ -213,7 +212,7 @@ test_that("{shinytest2} recording: adtteSpecServer module works as expected in t
 
   app$wait_for_idle()
   # We expect to get a validation message (also a notification box but we cannot test that)
-  res <- app$wait_for_value(output = ns("summary"))
+  res <- app$get_value(output = ns("summary"))
   expect_equal(res$message, "please select an endpoint")
   res <- app$get_value(input = ns("adtte-paramcd"))
   expect_equal(res, "")

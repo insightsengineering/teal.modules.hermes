@@ -25,7 +25,6 @@ test_that("pca module works as expected in the test app", {
     variant = platform_variant()
   )
   ns <- module_ns_shiny2(app)
-  ns2 <- NS("teal-main_ui-filter_panel")
 
   app$wait_for_idle()
 
@@ -118,7 +117,7 @@ test_that("pca module works as expected in the test app", {
   app$set_inputs(!!ns("color-sample_var") := "AGE18")
   app$wait_for_idle()
 
-  res <- app$wait_for_value(input = ns("assay-name"))
+  res <- app$get_value(input = ns("assay-name"))
   expect_identical(res, "counts")
 
     res <- app$get_value(input = ns("x_var"))
@@ -193,7 +192,7 @@ test_that("pca module works as expected in the test app", {
   app$set_inputs(!!ns("experiment-name") := "hd2")
   app$wait_for_idle()
 
-  res <- app$wait_for_value(input = ns("n_top"))
+  res <- app$get_value(input = ns("n_top"))
   expect_identical(res, 777L)
 
   # Increase number of top genes to maximum.

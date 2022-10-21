@@ -29,7 +29,6 @@ test_that("km module works as expected in the test app", {
     variant = platform_variant()
   )
   ns <- module_ns_shiny2(app)
-  ns2 <- NS("teal-main_ui-filter_panel")
 
   app$wait_for_idle()
 

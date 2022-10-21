@@ -8,3 +8,5 @@ module_ns_shiny2 <- function(app) {
   )
   NS(module_id)
 }
+
+ns2 <- NS("teal-main_ui-filter_panel")

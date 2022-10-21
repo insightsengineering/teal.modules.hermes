@@ -8,21 +8,19 @@ test_that("assaySpecInput creates expected HTML", {
 })
 
 # assaySpecServer ----
-test_that("{shinytest2} recording: assaySpecServer module works as expected in the test app", {
+test_that("assaySpecServer module works as expected in the test app", {
   skip_if_covr()
   skip_if_too_deep(5)
 
   app <- AppDriver$new(
     app_dir = "assaySpec",
-    name = "assaySpec module works as expected in the test app",
-    height = 520, width = 979
+    name = "assaySpec module works as expected in the test app"
   )
   ns <- module_ns_shiny2(app)
-  ns2 <- NS("teal-main_ui-filter_panel")
 
   # Validation message because no assays eligible in first experiment.
   app$wait_for_idle()
-  res <- app$wait_for_value(output = ns("result"))
+  res <- app$get_value(output = ns("result"))
   expect_identical(res$message, "No assays eligible for this experiment, please make sure to add normalized assays")
 
   # Select the second experiment and see that we can select the right assays.
