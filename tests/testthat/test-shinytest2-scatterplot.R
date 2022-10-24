@@ -21,11 +21,13 @@ test_that("ui_g_scatterplot creates expected HTML", {
 # nolint start
 
 test_that("scatterplot module works as expected in the test app", {
+  skip_if_covr()
+  skip_if_too_deep(5)
+
   app <- AppDriver$new(
     app_dir = "scatterplot",
     name = "scatterplot module works as expected in the test app",
-    variant = platform_variant(),
-    timeout = 20000
+    variant = platform_variant()
   )
   ns <- module_ns_shiny2(app)
   app$wait_for_idle()
