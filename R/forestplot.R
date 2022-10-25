@@ -169,7 +169,8 @@ srv_g_forest_tte <- function(id,
       "subgroups",
       experiment_name = experiment$name,
       original_data = experiment$data,
-      categorical_only = TRUE
+      categorical_only = TRUE,
+      explicit_na = TRUE
     )
     adtte <- adtteSpecServer(
       "adtte",
