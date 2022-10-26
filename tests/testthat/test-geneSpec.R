@@ -36,7 +36,7 @@ test_that("h_parse_genes correctly returns empty data frame when no genes match"
 
 test_that("geneSpec module works as expected in the test app", {
   skip_if_covr()
-  skip_if_too_deep(3)
+  skip_if_too_deep(5)
 
   app <- AppDriver$new(
     app_dir = "geneSpec",
