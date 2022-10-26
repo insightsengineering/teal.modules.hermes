@@ -188,6 +188,8 @@ test_that("adtteSpecServer module works as expected in the test app", {
   )
   ns <- module_ns_shiny2(app)
 
+  app$wait_for_idle()
+
   # check initialization
   res <- app$get_values()
   expect_equal(res$input[[ns("experiment-name")]], "hd1")
