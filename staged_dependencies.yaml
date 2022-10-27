@@ -29,7 +29,7 @@ upstream_repos:
   insightsengineering/scda:
     repo: insightsengineering/scda
     host: https://github.com
-    insightsengineering/scda.2022:
+  insightsengineering/scda.2022:
     repo: insightsengineering/scda.2022
     host: https://github.com
 downstream_repos:
