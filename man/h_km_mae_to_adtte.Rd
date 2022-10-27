@@ -44,7 +44,7 @@ the original gene IDs (or labels), in particular white space and colons are remo
 }
 \examples{
 mae <- hermes::multi_assay_experiment
-adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte \%>\%
+adtte <- scda::synthetic_cdisc_data("rcd_2022_06_27")$adtte \%>\%
   dplyr::mutate(CNSR = as.logical(CNSR))
 
 new_adtte <- h_km_mae_to_adtte(
