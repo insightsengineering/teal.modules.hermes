@@ -221,7 +221,6 @@ experimentSpecServer <- function(id,
   assert_flag(with_mae_col_data)
 
   moduleServer(id, function(input, output, session) {
-
     # When the filtered data set of the chosen experiment changes, update the
     # experiment data object.
     data_return <- reactive({

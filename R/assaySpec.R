@@ -105,7 +105,6 @@ assaySpecServer <- function(id,
   assert_character(exclude_assays, any.missing = FALSE)
 
   moduleServer(id, function(input, output, session) {
-
     # When the assay names change, update the choices for assay.
     choices <- reactive({
       assays <- assays()
