@@ -256,7 +256,6 @@ adtteSpecServer <- function(id,
   assert_reactive(probs)
 
   moduleServer(id, function(input, output, session) {
-
     # Join ADTTE with gene data.
     adtte_joined <- reactive({
       experiment_data <- experiment_data()
