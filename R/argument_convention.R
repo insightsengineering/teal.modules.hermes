@@ -5,13 +5,11 @@
 #' The documentation to this function lists all the conventional arguments in
 #' `hermes` teal modules.
 #'
-#' @param datasets (`Datasets`)\cr
-#'   teal specific argument which is automatically passed to the UI and server
+#' @param data (`tdata`)\cr
+#'   `tdata` object which is automatically passed to the UI and server
 #'   functions, holding all the data sets provided in the app initialization.
 #' @param label (`string`)\cr
 #'   menu item label of the module in the teal app.
-#' @param id (`string`)\cr
-#'   the ID used to call the teal module's UI function.
 #' @param inputId (`string`)\cr
 #'   the ID used to call the module input.
 #' @param adtte_name (`string`)\cr
@@ -44,6 +42,7 @@
 #'   and maximum plot height.
 #' @param plot_width (`list`)\cr list of integers to set the default, minimum,
 #'   and maximum plot width.
+#' @param filter_panel_api (`FilterPanelAPI`)\cr object describing the actual filter panel API.
 #'
 #' @name module_arguments
 #' @keywords internal

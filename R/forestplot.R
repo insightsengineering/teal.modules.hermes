@@ -95,7 +95,7 @@ tm_g_forest_tte <- function(label,
 #' @inheritParams module_arguments
 #' @export
 ui_g_forest_tte <- function(id,
-                            datasets,
+                            data,
                             adtte_name,
                             mae_name,
                             summary_funs,
@@ -109,7 +109,7 @@ ui_g_forest_tte <- function(id,
       ###
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
-      experimentSpecInput(ns("experiment"), datasets, mae_name),
+      experimentSpecInput(ns("experiment"), data, mae_name),
       assaySpecInput(ns("assay")),
       geneSpecInput(ns("genes"), summary_funs),
       helpText("Analysis of ADTTE:", tags$code(adtte_name)),
@@ -134,7 +134,8 @@ ui_g_forest_tte <- function(id,
 #' @inheritParams module_arguments
 #' @export
 srv_g_forest_tte <- function(id,
-                             datasets,
+                             data,
+                             filter_panel_api,
                              reporter,
                              adtte_name,
                              mae_name,
@@ -144,10 +145,14 @@ srv_g_forest_tte <- function(id,
                              plot_height,
                              plot_width) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
+  assert_class(filter_panel_api, "FilterPanelAPI")
+  assert_class(data, "tdata")
+
   moduleServer(id, function(input, output, session) {
     experiment <- experimentSpecServer(
       "experiment",
-      datasets = datasets,
+      data = data,
+      filter_panel_api = filter_panel_api,
       mae_name = mae_name
     )
     assay <- assaySpecServer(
@@ -169,7 +174,7 @@ srv_g_forest_tte <- function(id,
     )
     adtte <- adtteSpecServer(
       "adtte",
-      datasets = datasets,
+      data = data,
       adtte_name = adtte_name,
       mae_name = mae_name,
       adtte_vars = adtte_vars,
@@ -229,7 +234,7 @@ srv_g_forest_tte <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Forest Plot")
         card$append_text("Forest Plot", "header2")
-        card$append_fs(datasets$get_filter_state())
+        card$append_fs(filter_panel_api$get_filter_state())
         card$append_text("Selected Options", "header3")
         encodings_list <- list(
           "Experiment:",

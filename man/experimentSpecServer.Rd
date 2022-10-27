@@ -6,7 +6,8 @@
 \usage{
 experimentSpecServer(
   id,
-  datasets,
+  data,
+  filter_panel_api,
   mae_name,
   name_annotation = "symbol",
   sample_vars_as_factors = TRUE,
@@ -16,9 +17,11 @@ experimentSpecServer(
 \arguments{
 \item{id}{(\code{string}) the shiny module id.}
 
-\item{datasets}{(\code{Datasets})\cr
-teal specific argument which is automatically passed to the UI and server
+\item{data}{(\code{tdata})\cr
+\code{tdata} object which is automatically passed to the UI and server
 functions, holding all the data sets provided in the app initialization.}
+
+\item{filter_panel_api}{(\code{FilterPanelAPI})\cr object describing the actual filter panel API.}
 
 \item{mae_name}{(\code{string})\cr
 name of the MAE data used in the teal module.}
@@ -49,14 +52,14 @@ This defines the server part for the experiment specification.
 }
 \examples{
 ui <- function(id,
-               datasets,
+               data,
                mae_name) {
   ns <- NS(id)
   teal.widgets::standard_layout(
     encoding = div(
       experimentSpecInput(
         ns("my_experiment"),
-        datasets,
+        data,
         mae_name,
         label_experiments = "Please choose experiment"
       ),
@@ -74,12 +77,14 @@ ui <- function(id,
 }
 
 server <- function(id,
-                   datasets,
+                   data,
+                   filter_panel_api,
                    mae_name) {
   moduleServer(id, function(input, output, session) {
     experiment <- experimentSpecServer(
       "my_experiment",
-      datasets,
+      data,
+      filter_panel_api,
       mae_name
     )
     result <- reactive({

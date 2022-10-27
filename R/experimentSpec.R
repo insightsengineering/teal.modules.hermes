@@ -11,15 +11,14 @@
 #' @seealso [experimentSpecServer()] for the module server and a complete example.
 #' @export
 experimentSpecInput <- function(inputId,
-                                datasets,
+                                data,
                                 mae_name,
                                 label_experiments = "Select Experiment") {
   assert_string(inputId)
-  assert_r6(datasets)
+  assert_class(data, "tdata")
   assert_string(mae_name, min.chars = 1L)
   assert_string(label_experiments, min.chars = 1L)
-
-  mae <- datasets$get_data(mae_name, filtered = FALSE)
+  mae <- data[[mae_name]]()
   name_choices <- names(mae)
 
   ns <- NS(inputId)
@@ -130,14 +129,14 @@ h_gene_data <- function(object, name_annotation) {
 #'
 #' @examples
 #' ui <- function(id,
-#'                datasets,
+#'                data,
 #'                mae_name) {
 #'   ns <- NS(id)
 #'   teal.widgets::standard_layout(
 #'     encoding = div(
 #'       experimentSpecInput(
 #'         ns("my_experiment"),
-#'         datasets,
+#'         data,
 #'         mae_name,
 #'         label_experiments = "Please choose experiment"
 #'       ),
@@ -155,12 +154,14 @@ h_gene_data <- function(object, name_annotation) {
 #' }
 #'
 #' server <- function(id,
-#'                    datasets,
+#'                    data,
+#'                    filter_panel_api,
 #'                    mae_name) {
 #'   moduleServer(id, function(input, output, session) {
 #'     experiment <- experimentSpecServer(
 #'       "my_experiment",
-#'       datasets,
+#'       data,
+#'       filter_panel_api,
 #'       mae_name
 #'     )
 #'     result <- reactive({
@@ -206,13 +207,14 @@ h_gene_data <- function(object, name_annotation) {
 #'   my_app()
 #' }
 experimentSpecServer <- function(id,
-                                 datasets,
+                                 data,
+                                 filter_panel_api,
                                  mae_name,
                                  name_annotation = "symbol",
                                  sample_vars_as_factors = TRUE,
                                  with_mae_col_data = TRUE) {
   assert_string(id)
-  assert_r6(datasets)
+  assert_class(data, "tdata")
   assert_string(mae_name, min.chars = 1L)
   assert_string(name_annotation, min.chars = 1L, null.ok = TRUE)
   assert_flag(sample_vars_as_factors)
@@ -222,11 +224,10 @@ experimentSpecServer <- function(id,
 
     # When the filtered data set of the chosen experiment changes, update the
     # experiment data object.
-    data <- reactive({
+    data_return <- reactive({
       name <- input$name
       req(name)
-
-      mae <- datasets$get_data(mae_name, filtered = TRUE)
+      mae <- data[[mae_name]]()
       orig_object <- mae[[name]]
       validate(need(
         hermes::is_hermes_data(orig_object),
@@ -254,28 +255,26 @@ experimentSpecServer <- function(id,
       name <- input$name
       req(name)
 
-      filtered_mae <- datasets$get_filtered_dataset(mae_name)
-      filter_states <- filtered_mae$get_filter_states(name)
-      subset_queue <- filter_states$queue_get("subset")
-      sapply(subset_queue, function(x) x$get_call())
+      filter_states <- filter_panel_api$get_filter_state()[[mae_name]][[name]]["subset"]
+      filter_states
     })
 
     # Only when the chosen gene subset changes, we recompute gene choices
     genes <- eventReactive(subset_calls(), ignoreNULL = FALSE, {
-      data <- data()
-      genes <- h_gene_data(data, name_annotation)
+      data_return <- data_return()
+      genes <- h_gene_data(data_return, name_annotation)
       h_order_genes(genes)
     })
 
     # When the chosen experiment changes, recompute the assay names.
     assays <- eventReactive(input$name, ignoreNULL = TRUE, {
-      data <- data()
-      SummarizedExperiment::assayNames(data)
+      data_return <- data_return()
+      SummarizedExperiment::assayNames(data_return)
     })
 
 
     list(
-      data = data,
+      data = data_return,
       name = reactive({
         input$name
       }), # nolint

@@ -4,8 +4,8 @@
 \alias{module_arguments}
 \title{Standard Module Arguments}
 \arguments{
-\item{datasets}{(\code{Datasets})\cr
-teal specific argument which is automatically passed to the UI and server
+\item{data}{(\code{tdata})\cr
+\code{tdata} object which is automatically passed to the UI and server
 functions, holding all the data sets provided in the app initialization.}
 
 \item{label}{(\code{string})\cr
@@ -56,6 +56,8 @@ and maximum plot height.}
 
 \item{plot_width}{(\code{list})\cr list of integers to set the default, minimum,
 and maximum plot width.}
+
+\item{filter_panel_api}{(\code{FilterPanelAPI})\cr object describing the actual filter panel API.}
 }
 \description{
 The documentation to this function lists all the conventional arguments in

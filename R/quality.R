@@ -113,7 +113,7 @@ tm_g_quality <- function(label,
 #' @inheritParams module_arguments
 #' @export
 ui_g_quality <- function(id,
-                         datasets,
+                         data,
                          mae_name,
                          pre_output,
                          post_output) {
@@ -125,7 +125,7 @@ ui_g_quality <- function(id,
       ###
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
-      experimentSpecInput(ns("experiment"), datasets, mae_name),
+      experimentSpecInput(ns("experiment"), data, mae_name),
       selectInput(
         ns("plot_type"),
         "Plot Type",
@@ -195,15 +195,20 @@ ui_g_quality <- function(id,
 #' @inheritParams module_arguments
 #' @export
 srv_g_quality <- function(id,
-                          datasets,
+                          data,
+                          filter_panel_api,
                           reporter,
                           mae_name,
                           exclude_assays) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
+  assert_class(filter_panel_api, "FilterPanelAPI")
+  assert_class(data, "tdata")
+
   moduleServer(id, function(input, output, session) {
     experiment <- experimentSpecServer(
       "experiment",
-      datasets = datasets,
+      data = data,
+      filter_panel_api = filter_panel_api,
       mae_name = mae_name
     )
 
@@ -348,7 +353,7 @@ srv_g_quality <- function(id,
         card$set_name("Quality Control Plot")
         card$append_text("Quality Control Plot", "header2")
         card$append_text(tools::toTitleCase(input$plot_type), "header3")
-        card$append_fs(datasets$get_filter_state())
+        card$append_fs(filter_panel_api$get_filter_state())
         card$append_text("Selected Options", "header3")
         encodings_list <- list(
           "Experiment:",
