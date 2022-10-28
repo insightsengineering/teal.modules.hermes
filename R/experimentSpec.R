@@ -15,7 +15,6 @@ experimentSpecInput <- function(inputId, # nolint
                                 mae_name,
                                 label_experiments = "Select Experiment") {
   assert_string(inputId)
-  assert_class(data, "tdata")
   assert_string(mae_name, min.chars = 1L)
   assert_string(label_experiments, min.chars = 1L)
   mae <- data[[mae_name]]()
