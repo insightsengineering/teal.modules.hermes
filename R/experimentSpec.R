@@ -10,7 +10,7 @@
 #' @return The UI part.
 #' @seealso [experimentSpecServer()] for the module server and a complete example.
 #' @export
-experimentSpecInput <- function(inputId,
+experimentSpecInput <- function(inputId, # nolint
                                 data,
                                 mae_name,
                                 label_experiments = "Select Experiment") {
@@ -206,7 +206,7 @@ h_gene_data <- function(object, name_annotation) {
 #' if (interactive()) {
 #'   my_app()
 #' }
-experimentSpecServer <- function(id,
+experimentSpecServer <- function(id, # nolint
                                  data,
                                  filter_panel_api,
                                  mae_name,

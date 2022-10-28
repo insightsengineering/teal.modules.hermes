@@ -23,7 +23,7 @@
 #'
 #' @examples
 #' geneSpecInput("my_genes", list(mean = colMeans), label_funs = "Please select function")
-geneSpecInput <- function(inputId,
+geneSpecInput <- function(inputId, # nolint
                           funs,
                           label_genes = "Select Gene(s)",
                           label_funs = "Select Gene Summary",
@@ -147,7 +147,7 @@ geneSpecInput <- function(inputId,
 #'
 #' @export
 h_update_gene_selection <- function(session,
-                                    inputId,
+                                    inputId, # nolint
                                     selected,
                                     choices) {
   is_new_selected <- selected %in% choices$id
@@ -286,7 +286,7 @@ h_parse_genes <- function(words, choices) {
 #' if (interactive()) {
 #'   my_app()
 #' }
-geneSpecServer <- function(id,
+geneSpecServer <- function(id, # nolint
                            funs,
                            gene_choices,
                            label_modal_title = "Enter list of genes",
@@ -378,7 +378,7 @@ geneSpecServer <- function(id,
     })
 
     # Return the UI for a modal dialog with gene text input, showing examples.
-    dataModal <- function(example_list) {
+    dataModal <- function(example_list) { # nolint
       modalDialog(
         textInput(
           session$ns("gene_text"),
