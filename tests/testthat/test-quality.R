@@ -19,16 +19,16 @@ test_that("ui_g_quality creates expected HTML", {
 
 test_that("quality module works as expected in the test app", {
   skip_if_covr()
-  skip_if_too_deep(5)
+  skip_if_too_deep(3)
 
   app <- AppDriver$new(
     app_dir = "quality",
     name = "quality module works as expected in the test app",
     variant = platform_variant()
   )
-  ns <- module_ns_shiny2(app)
 
-  app$wait_for_idle()
+  app$wait_for_idle(timeout = 20000)
+  ns <- module_ns_shiny2(app)
 
   # Check initial state of encodings.
   res <- app$get_value(input = ns("experiment-name"))

@@ -19,7 +19,7 @@ test_that("ui_g_volcanoplot creates expected HTML", {
 
 test_that("volcanoplot module works as expected in the test app", {
   skip_if_covr()
-  skip_if_too_deep(5)
+  skip_if_too_deep(3)
 
   app <- AppDriver$new(
     app_dir = "volcanoplot",

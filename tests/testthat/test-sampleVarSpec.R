@@ -168,7 +168,7 @@ test_that("sampleVarSpecServer only gives factor columns in col_data_vars when c
 
 test_that("sampleVarSpec module works as expected in the test app", {
   skip_if_covr()
-  skip_if_too_deep(5)
+  skip_if_too_deep(3)
 
   app <- AppDriver$new(
     app_dir = "sampleVarSpec",
@@ -176,7 +176,7 @@ test_that("sampleVarSpec module works as expected in the test app", {
     variant = platform_variant()
   )
 
-  app$wait_for_idle()
+  app$wait_for_idle(timeout = 20000)
   ns <- module_ns_shiny2(app)
 
   # Initially no variable is selected.
