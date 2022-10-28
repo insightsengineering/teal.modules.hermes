@@ -24,16 +24,16 @@ test_that("ui_g_forest_tte creates expected HTML", {
 
 test_that("forest_tte module works as expected in the test app", {
   skip_if_covr()
-  skip_if_too_deep(5)
+  skip_if_too_deep(3)
 
   app <- AppDriver$new(
     app_dir = "forest_tte",
     name = "forest_tte module works as expected in the test app",
     variant = platform_variant()
   )
-  ns <- module_ns_shiny2(app)
 
-  app$wait_for_idle()
+  app$wait_for_idle(timeout = 20000)
+  ns <- module_ns_shiny2(app)
 
   # check initialization
   res <- app$get_value(input = ns("experiment-name"))

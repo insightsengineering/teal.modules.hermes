@@ -86,15 +86,15 @@ test_that("h_gene_data does not fail when object does not contain any genes", {
 
 test_that("experimentSpec module works as expected in the test app", {
   skip_if_covr()
-  skip_if_too_deep(5)
+  skip_if_too_deep(3)
 
   app <- AppDriver$new(
     app_dir = "experimentSpec",
     name = "experimentSpec module works as expected in the test app"
   )
-  ns <- module_ns_shiny2(app)
 
   app$wait_for_idle(timeout = 20000)
+  ns <- module_ns_shiny2(app)
 
   # check initialization
   res <- app$get_value(input = ns("my_experiment-name"))

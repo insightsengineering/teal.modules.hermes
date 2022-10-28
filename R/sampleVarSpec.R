@@ -283,7 +283,6 @@ sampleVarSpecServer <- function(id, # nolint
   assert_string(label_modal_title)
 
   moduleServer(id, function(input, output, session) {
-
     start_col_data <- eventReactive(experiment_name(), {
       object <- original_data()
       col_data <- SummarizedExperiment::colData(object)
@@ -486,7 +485,7 @@ sampleVarSpecServer <- function(id, # nolint
 #'   experiment_name = reactive({
 #'     input$experiment_name
 #'   }),
-#'   original_data = <original_data> # nolint Please update the <original_data>
+#'   original_data = ori_data # nolint Please update the <ori_data>
 #' )
 #' # Then can extract the transformed data and selected variables later:
 #' experiment_data <- sample_var_specs$experiment_data()
