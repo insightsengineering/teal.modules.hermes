@@ -29,8 +29,9 @@ test_that("scatterplot module works as expected in the test app", {
     name = "scatterplot module works as expected in the test app",
     variant = platform_variant()
   )
+
+  app$wait_for_idle(timeout = 20000)
   ns <- module_ns_shiny2(app)
-  app$wait_for_idle()
 
   # check initialization
   res <- app$get_value(input = ns("experiment-name"))

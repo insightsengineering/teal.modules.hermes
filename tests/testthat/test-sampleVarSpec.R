@@ -175,9 +175,9 @@ test_that("sampleVarSpec module works as expected in the test app", {
     name = "sampleVarSpec module works as expected in the test app",
     variant = platform_variant()
   )
-  ns <- module_ns_shiny2(app)
 
   app$wait_for_idle()
+  ns <- module_ns_shiny2(app)
 
   # Initially no variable is selected.
   res <- app$get_value(input = ns("facet_var"))

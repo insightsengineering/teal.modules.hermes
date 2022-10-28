@@ -2,7 +2,7 @@
 
 test_that("h_km_mae_to_adtte function works as expected with a single gene", {
   mae <- hermes::multi_assay_experiment
-  adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
+  adtte <- scda::synthetic_cdisc_data("rcd_2022_06_27")$adtte %>%
     dplyr::mutate(CNSR = as.logical(.data$CNSR))
 
   result <- h_km_mae_to_adtte(
@@ -19,7 +19,7 @@ test_that("h_km_mae_to_adtte function also works when some ID variables are fact
   mae <- hermes::multi_assay_experiment
   SummarizedExperiment::colData(mae)$USUBJID <- # nolint
     factor(SummarizedExperiment::colData(mae)$USUBJID)
-  adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
+  adtte <- scda::synthetic_cdisc_data("rcd_2022_06_27")$adtte %>%
     dplyr::mutate(USUBJID = factor(USUBJID))
 
   result <- h_km_mae_to_adtte(
@@ -34,7 +34,7 @@ test_that("h_km_mae_to_adtte function also works when some ID variables are fact
 
 test_that("h_km_mae_to_adtte function works as expected with multiple genes", {
   mae <- hermes::multi_assay_experiment
-  adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
+  adtte <- scda::synthetic_cdisc_data("rcd_2022_06_27")$adtte %>%
     dplyr::mutate(CNSR = as.logical(.data$CNSR))
 
   result <- h_km_mae_to_adtte(
@@ -49,7 +49,7 @@ test_that("h_km_mae_to_adtte function works as expected with multiple genes", {
 
 test_that("h_km_mae_to_adtte function works as expected with a gene signature", {
   mae <- hermes::multi_assay_experiment
-  adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
+  adtte <- scda::synthetic_cdisc_data("rcd_2022_06_27")$adtte %>%
     dplyr::mutate(CNSR = as.logical(.data$CNSR))
 
   result <- h_km_mae_to_adtte(
@@ -65,7 +65,7 @@ test_that("h_km_mae_to_adtte function works as expected with a gene signature", 
 
 test_that("h_km_mae_to_adtte fails as expected with invalid settings", {
   mae <- hermes::multi_assay_experiment
-  adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
+  adtte <- scda::synthetic_cdisc_data("rcd_2022_06_27")$adtte %>%
     dplyr::mutate(CNSR = as.logical(.data$CNSR))
   good_adtte <- adtte
 
@@ -97,7 +97,7 @@ test_that("h_km_mae_to_adtte fails as expected with invalid settings", {
 
 test_that("h_km_mae_to_adtte warns when patients are not in ADTTE and therefore removed", {
   mae <- hermes::multi_assay_experiment
-  adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
+  adtte <- scda::synthetic_cdisc_data("rcd_2022_06_27")$adtte %>%
     dplyr::mutate(CNSR = as.logical(.data$CNSR))
 
   # Example with no matched patient IDs.
@@ -186,9 +186,9 @@ test_that("adtteSpecServer module works as expected in the test app", {
     app_dir = "adtteSpec",
     name = "adtteSpecServer module works as expected in the test app"
   )
-  ns <- module_ns_shiny2(app)
 
-  app$wait_for_idle()
+  app$wait_for_idle(timeout = 20000)
+  ns <- module_ns_shiny2(app)
 
   # check initialization
   res <- app$get_values()

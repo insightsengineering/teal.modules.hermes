@@ -26,9 +26,9 @@ test_that("volcanoplot module works as expected in the test app", {
     name = "volcanoplot module works as expected in the test app",
     variant = platform_variant()
   )
-  ns <- module_ns_shiny2(app)
 
-  app$wait_for_idle()
+  app$wait_for_idle(timeout = 20000)
+  ns <- module_ns_shiny2(app)
 
   # check initialization
   res <- app$get_value(input = ns("experiment-name"))

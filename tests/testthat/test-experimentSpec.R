@@ -94,7 +94,7 @@ test_that("experimentSpec module works as expected in the test app", {
   )
   ns <- module_ns_shiny2(app)
 
-  app$wait_for_idle()
+  app$wait_for_idle(timeout = 20000)
 
   # check initialization
   res <- app$get_value(input = ns("my_experiment-name"))
