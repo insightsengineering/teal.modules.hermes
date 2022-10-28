@@ -1,5 +1,9 @@
 # teal.modules.hermes 0.1.4.9000
 
+### Breaking changes
+
+* Replaced `datasets` argument containing `FilteredData` with the new arguments `data` (`tdata` object) and `filter_panel_api` (`FilterPanelAPI`).
+
 # teal.modules.hermes 0.1.4
 
 # teal.modules.hermes 0.1.3
