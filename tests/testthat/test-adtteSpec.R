@@ -180,7 +180,7 @@ test_that("adtteSpecInput creates expected HTML", {
 
 test_that("adtteSpecServer module works as expected in the test app", {
   skip_if_covr()
-  skip_if_too_deep(3)
+  skip_if_too_deep(5)
 
   app <- AppDriver$new(
     app_dir = "adtteSpec",

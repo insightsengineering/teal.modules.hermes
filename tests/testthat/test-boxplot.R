@@ -20,7 +20,7 @@ test_that("ui_g_boxplot creates expected HTML", {
 
 test_that("boxplot module works as expected in the test app", {
   skip_if_covr()
-  skip_if_too_deep(3)
+  skip_if_too_deep(5)
 
   app <- AppDriver$new(
     app_dir = "boxplot",
