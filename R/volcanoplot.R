@@ -69,8 +69,9 @@ ui_g_volcanoplot <- function(id,
 
   teal.widgets::standard_layout(
     output = div(
-      plotOutput(ns("plot")),
+      teal.widgets::plot_with_settings_ui(ns("plot")),
       DT::DTOutput(ns("table"))
+      # teal.widgets::table_with_settings_ui(ns("table"))
     ),
     pre_output = pre_output,
     post_output = post_output,
@@ -168,6 +169,11 @@ srv_g_volcanoplot <- function(id,
     })
     output$plot <- renderPlot(plot_r())
 
+    pws_p <- teal.widgets::plot_with_settings_srv(
+      id = "plot",
+      plot_r = plot_r
+    )
+
     # Display top genes if switched on.
     show_top_gene_diffexpr <- reactive({
       if (input$show_top_gene) {
@@ -195,6 +201,11 @@ srv_g_volcanoplot <- function(id,
         caption = "Top Differentiated Genes"
       )
     })
+
+    # pws_t <- teal.widgets::table_with_settings_srv(
+    #   id = "table",
+    #   table_r = show_top_gene_diffexpr
+    # )
 
     ### REPORTER
     if (with_reporter) {
@@ -230,10 +241,11 @@ srv_g_volcanoplot <- function(id,
 
         card$append_text(final_encodings, style = "verbatim")
         card$append_text("Plot", "header3")
-        card$append_plot(plot_r())
+        card$append_plot(plot_r(), dim = pws_p$dim())
         if (isTRUE(input$show_top_gene)) {
           card$append_text("Table", "header3")
           card$append_table(show_top_gene_diffexpr())
+          # card$append_table(show_top_gene_diffexpr(), dim = pws_t$dim())
         }
         if (!comment == "") {
           card$append_text("Comment", "header3")
