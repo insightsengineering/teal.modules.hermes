@@ -138,8 +138,7 @@ ui_g_pca <- function(id,
               width = 12,
               div(
                 class = "my-5",
-                plotOutput(ns("plot_cor"))
-                # teal.widgets::plot_with_settings_ui(ns("plot_cor"))
+                teal.widgets::plot_with_settings_ui(ns("plot_cor"))
               ),
               DT::DTOutput(ns("table_cor"))
             )
@@ -347,10 +346,10 @@ srv_g_pca <- function(id,
     })
     output$plot_cor <- renderPlot(plot_cor())
 
-    # pws_cor <- teal.widgets::plot_with_settings_srv(
-    #   id = "plot_cor",
-    #   plot_r = plot_cor
-    # )
+    pws_cor <- teal.widgets::plot_with_settings_srv(
+      id = "plot_cor",
+      plot_r = plot_cor
+    )
 
     ### REPORTER
     if (with_reporter) {
