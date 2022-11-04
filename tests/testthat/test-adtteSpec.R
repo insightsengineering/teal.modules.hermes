@@ -2,7 +2,7 @@
 
 test_that("h_km_mae_to_adtte function works as expected with a single gene", {
   mae <- hermes::multi_assay_experiment
-  adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
+  adtte <- scda::synthetic_cdisc_data("rcd_2022_06_27")$adtte %>%
     dplyr::mutate(CNSR = as.logical(.data$CNSR))
 
   result <- h_km_mae_to_adtte(
@@ -19,7 +19,7 @@ test_that("h_km_mae_to_adtte function also works when some ID variables are fact
   mae <- hermes::multi_assay_experiment
   SummarizedExperiment::colData(mae)$USUBJID <- # nolint
     factor(SummarizedExperiment::colData(mae)$USUBJID)
-  adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
+  adtte <- scda::synthetic_cdisc_data("rcd_2022_06_27")$adtte %>%
     dplyr::mutate(USUBJID = factor(USUBJID))
 
   result <- h_km_mae_to_adtte(
@@ -34,7 +34,7 @@ test_that("h_km_mae_to_adtte function also works when some ID variables are fact
 
 test_that("h_km_mae_to_adtte function works as expected with multiple genes", {
   mae <- hermes::multi_assay_experiment
-  adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
+  adtte <- scda::synthetic_cdisc_data("rcd_2022_06_27")$adtte %>%
     dplyr::mutate(CNSR = as.logical(.data$CNSR))
 
   result <- h_km_mae_to_adtte(
@@ -49,7 +49,7 @@ test_that("h_km_mae_to_adtte function works as expected with multiple genes", {
 
 test_that("h_km_mae_to_adtte function works as expected with a gene signature", {
   mae <- hermes::multi_assay_experiment
-  adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
+  adtte <- scda::synthetic_cdisc_data("rcd_2022_06_27")$adtte %>%
     dplyr::mutate(CNSR = as.logical(.data$CNSR))
 
   result <- h_km_mae_to_adtte(
@@ -65,7 +65,7 @@ test_that("h_km_mae_to_adtte function works as expected with a gene signature", 
 
 test_that("h_km_mae_to_adtte fails as expected with invalid settings", {
   mae <- hermes::multi_assay_experiment
-  adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
+  adtte <- scda::synthetic_cdisc_data("rcd_2022_06_27")$adtte %>%
     dplyr::mutate(CNSR = as.logical(.data$CNSR))
   good_adtte <- adtte
 
@@ -97,7 +97,7 @@ test_that("h_km_mae_to_adtte fails as expected with invalid settings", {
 
 test_that("h_km_mae_to_adtte warns when patients are not in ADTTE and therefore removed", {
   mae <- hermes::multi_assay_experiment
-  adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
+  adtte <- scda::synthetic_cdisc_data("rcd_2022_06_27")$adtte %>%
     dplyr::mutate(CNSR = as.logical(.data$CNSR))
 
   # Example with no matched patient IDs.
@@ -176,102 +176,56 @@ test_that("adtteSpecInput creates expected HTML", {
   ))
 })
 
-# adtteSpecServer ----
+# nolint start
 
 test_that("adtteSpecServer module works as expected in the test app", {
   skip_if_covr()
   skip_if_too_deep(5)
 
-  library(shinytest)
-  app <- ShinyDriver$new(testthat::test_path("adtteSpec"), loadTimeout = 1e5, debug = "all", phantomTimeout = 1e5)
-  on.exit(app$stop())
-  app$getDebugLog()
-  app$snapshotInit("test-app")
-  app$waitForShiny()
-  Sys.sleep(2.5)
-  ns <- module_ns(app)
+  app <- AppDriver$new(
+    app_dir = "adtteSpec",
+    name = "adtteSpecServer module works as expected in the test app"
+  )
 
-  msg <- app$waitForOutputElement(ns("summary"), "message")
+  app$wait_for_idle(timeout = 20000)
+  ns <- module_ns_shiny2(app)
 
-  app$setValue(ns("genes-genes"), "GeneID:28")
+  # check initialization
+  res <- app$get_values()
+  expect_equal(res$input[[ns("experiment-name")]], "hd1")
+  expect_equal(res$output[[ns("summary")]]$message, "please select at least one gene")
 
-  # Upon initialization the endpoint is not selected automatically, the user
-  # has to click this actively.
-  msg <- app$waitForOutputElement(ns("summary"), "message", ignore = list(msg))
-  expect_identical(msg, "please select an endpoint")
-  app$setValue(ns("adtte-paramcd"), "CRSD")
+  # check correct message
+  app$set_inputs(!!ns("genes-genes") := "GeneID:28")
+  res <- app$get_value(output = ns("summary"))
+  expect_equal(res$message, "please select an endpoint")
 
-  summary_result <- app$waitForValue(ns("summary"), iotype = "output")
-  expect_match(summary_result, "CRSD:5")
+  app$set_inputs(!!ns("adtte-paramcd") := "CRSD")
+  res <- app$get_value(output = ns("summary"))
+  expect_match(res, "CRSD")
 
-  app$setValue(ns("adtte-paramcd"), "PFS")
-  summary_result <- app$waitForValue(ns("summary"), iotype = "output")
-  expect_match(summary_result, "PFS:5")
+  app$set_inputs(!!ns("adtte-paramcd") := "PFS")
+  res <- app$get_value(output = ns("summary"))
+  expect_match(res, "PFS")
+
+  res <- app$get_value(input = ns("adtte-paramcd"))
 
   # Test what happens if selected endpoint (here PFS) is no longer in filtered data.
-  ns2 <- NS("teal-main_ui-filter_panel")
-  app$setValue(ns2("add_ADTTE_filter-filter-var_to_add"), "PARAMCD")
-  app$waitForValue(ns2("ADTTE_filter-filter-_var_PARAMCD-content-selection"))
-  app$setValue(ns2("ADTTE_filter-filter-_var_PARAMCD-content-selection"), "OS")
+  app$set_inputs(!!ns2("add_ADTTE_filter-filter-var_to_add") := "PARAMCD")
+  app$set_inputs(!!ns2("ADTTE_filter-filter-_var_PARAMCD-content-selection") := "OS")
 
-  # We expect to get a validation message (also a notification box but we cannot test that).
-  msg <- app$waitForOutputElement(ns("summary"), "message")
-  expect_identical(msg, "please select an endpoint")
-  paramcd <- app$waitForValue(ns("adtte-paramcd"), ignore = list(NULL))
-  expect_identical(paramcd, "")
+  app$wait_for_idle()
+  # We expect to get a validation message (also a notification box but we cannot test that)
+  res <- app$get_value(output = ns("summary"))
+  expect_equal(res$message, "please select an endpoint")
+  res <- app$get_value(input = ns("adtte-paramcd"))
+  expect_equal(res, "")
 
   # Now we update the filter by adding PFS back. However the user would have to
   # actively select it.
-  app$setValue(ns2("ADTTE_filter-filter-_var_PARAMCD-content-selection"), c("PFS", "OS"))
-  msg <- app$waitForOutputElement(ns("summary"), "message")
-  expect_identical(msg, "please select an endpoint")
+  app$set_inputs(!!ns2("ADTTE_filter-filter-_var_PARAMCD-content-selection") := c("PFS", "OS"))
+  res <- app$wait_for_value(output = ns("summary"))
+  expect_equal(res$message, "please select an endpoint")
 })
 
-test_that("results from adtteSpecServer are as expected", {
-  adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
-    dplyr::mutate(is_event = .data$CNSR == 0)
-  datasets <- mock_datasets(list(
-    MyMAE = hermes::multi_assay_experiment,
-    MyADTTE = adtte
-  ))
-  experiment_data <- reactiveVal(hermes::multi_assay_experiment[[1]])
-  experiment_name <- reactiveVal(names(hermes::multi_assay_experiment)[1])
-  assay <- reactiveVal("counts")
-  genes <- reactiveVal(hermes::gene_spec("GeneID:101927746"))
-  probs <- reactiveVal(0.33)
-  testServer(
-    adtteSpecServer,
-    args = list(
-      datasets = datasets,
-      mae_name = "MyMAE",
-      adtte_name = "MyADTTE",
-      adtte_vars = list(
-        aval = "AVAL",
-        avalu = "AVALU",
-        is_event = "is_event",
-        paramcd = "PARAMCD",
-        usubjid = "USUBJID"
-      ),
-      experiment_data = experiment_data,
-      experiment_name = experiment_name,
-      assay = assay,
-      genes = genes,
-      probs = probs
-    ),
-    expr = {
-      session$setInputs(paramcd = "CRSD")
-
-      time_unit <- time_unit()
-      expect_identical(time_unit, "DAYS")
-
-      gene_col <- gene_col()
-      expect_identical(gene_col, "GeneID.101927746")
-
-      dat <- binned_adtte_subset()
-      expect_data_frame(dat)
-      expect_identical(unique(as.character(dat$PARAMCD)), "CRSD")
-      expect_factor(dat$gene_factor)
-      expect_numeric(dat[[gene_col]])
-    }
-  )
-})
+# nolint end
