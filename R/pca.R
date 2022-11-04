@@ -344,7 +344,6 @@ srv_g_pca <- function(id,
         cluster_columns = cluster_columns
       )
     })
-    output$plot_cor <- renderPlot(plot_cor())
 
     pws_cor <- teal.widgets::plot_with_settings_srv(
       id = "plot_cor",
@@ -420,7 +419,7 @@ srv_g_pca <- function(id,
           card$append_text(final_encodings, style = "verbatim")
           card$append_text("Plot", "header3")
           card$append_plot(plot_cor())
-          # card$append_plot(plot_cor(), dim = pws_cor$dim())
+          card$append_plot(plot_cor(), dim = pws_cor$dim())
           card$append_text("Table", "header3")
           card$append_table(show_matrix_cor())
         }

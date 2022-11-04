@@ -245,7 +245,7 @@ srv_g_volcanoplot <- function(id,
         if (isTRUE(input$show_top_gene)) {
           card$append_text("Table", "header3")
           card$append_table(show_top_gene_diffexpr())
-          # card$append_table(show_top_gene_diffexpr(), dim = pws_t$dim())
+          card$append_table(show_top_gene_diffexpr())
         }
         if (!comment == "") {
           card$append_text("Comment", "header3")
