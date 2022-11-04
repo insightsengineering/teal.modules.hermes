@@ -37,7 +37,7 @@ NULL
 #' @examples
 #' check_tag("bla")
 #' check_tag(NULL, null.ok = TRUE)
-check_tag <- function(x, null.ok = FALSE) {
+check_tag <- function(x, null.ok = FALSE) { # nolint
   assert_flag(null.ok)
   ok <- (null.ok && test_null(x)) || test_class(x, "shiny.tag")
   if (!ok) {
@@ -106,7 +106,7 @@ test_reactive <- makeTestFunction(check_reactive)
 #'
 #' @examples
 #' assert_summary_funs(list(mean = colMeans, raw = NULL), null.ok = TRUE)
-assert_summary_funs <- function(x, null.ok = FALSE) {
+assert_summary_funs <- function(x, null.ok = FALSE) { # nolint
   assert_flag(null.ok)
   assert_list(
     x,
