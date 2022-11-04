@@ -61,6 +61,7 @@ Suggests:
     R6,
     rvest,
     scda (>= 0.1.5),
+    scda.2022
     shinytest (>= 1.5.0),
     testthat (>= 2.0)
 RdMacros:

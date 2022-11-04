@@ -8,6 +8,9 @@ upstream_repos:
   insightsengineering/hermes:
     repo: insightsengineering/hermes
     host: https://github.com
+  insightsengineering/scda.2022:
+    repo: insightsengineering/scda.2022
+    host: https://github.com
   insightsengineering/teal.logger:
     repo: insightsengineering/teal.logger
     host: https://github.com
