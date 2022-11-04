@@ -15,70 +15,57 @@ test_that("ui_g_quality creates expected HTML", {
 
 # tm_g_quality ----
 
-test_that("tm_g_quality works as expected in the sample app", {
-  skip_if_too_deep(5)
-  skip_if_covr()
+# nolint start
 
-  library(shinytest)
-  app <- ShinyDriver$new(testthat::test_path("quality"),
-    loadTimeout = 1e5,
-    debug = "all", phantomTimeout = 1e5, seed = 123
+test_that("quality module works as expected in the test app", {
+  skip_if_covr()
+  skip_if_too_deep(5)
+
+  app <- AppDriver$new(
+    app_dir = "quality",
+    name = "quality module works as expected in the test app",
+    variant = platform_variant()
   )
-  on.exit(app$stop())
-  app$getDebugLog()
-  app$snapshotInit("test-app")
-  Sys.sleep(2.5)
-  ns <- module_ns(app)
+
+  app$wait_for_idle(timeout = 20000)
+  ns <- module_ns_shiny2(app)
 
   # Check initial state of encodings.
-  initial_experiment_name <- app$waitForValue(ns("experiment-name"))
-  expect_identical(initial_experiment_name, "hd1")
+  res <- app$get_value(input = ns("experiment-name"))
+  expect_identical(res, "hd1")
 
-  initial_assay_name <- app$waitForValue(ns("assay-name"))
-  expect_identical(initial_assay_name, "counts")
+  res <- app$get_value(input = ns("assay-name"))
+  expect_identical(res, "counts")
 
-  initial_plot_type <- app$waitForValue(ns("plot_type"))
-  expect_identical(initial_plot_type, "Histogram")
+  res <- app$get_value(input = ns("plot_type"))
+  expect_identical(res, "Histogram")
 
   # Check that warning message for at least 2 genes works as expected.
-  app$setValue(ns("min_cpm"), 54356)
-  plot_message <- app$waitForOutputElement(ns("plot"), "message")
-  expect_identical(
-    plot_message,
-    "Please change gene filters to ensure that there are at least 2 genes"
-  )
+  app$set_inputs(!!ns("min_cpm") := 54356)
+  res <- app$wait_for_value(output = ns("plot"))
+  expect_identical(res$message, "Please change gene filters to ensure that there are at least 2 genes")
 
   # Initial plot.
-  expect_snapshot_screenshot(
-    app,
-    id = ns("plot"),
-    name = "initial_plot.png"
-  )
+  app$expect_screenshot()
 
   # Choose another experiment.
-  app$setValue(ns("experiment-name"), "hd3")
-  app$setValue(ns("min_depth"), "Specify")
+  app$set_inputs(!!ns("experiment-name") := "hd3")
+  app$set_inputs(!!ns("min_depth") := "Specify")
 
   # Check state of encodings again.
-  initial_min_cpm <- app$waitForValue(ns("min_cpm"))
-  expect_identical(initial_min_cpm, 26L)
+  res <- app$wait_for_value(input = ns("min_cpm"))
+  expect_identical(res, 26L)
 
-  initial_min_depth_continuous <- app$waitForValue(ns("min_depth_continuous"))
-  expect_identical(initial_min_depth_continuous, 1777260L)
+  res <- app$wait_for_value(input = ns("min_depth_continuous"))
+  expect_identical(res, 1777260L)
 
   # Final histogram plot.
-  expect_snapshot_screenshot(
-    app,
-    id = ns("plot"),
-    name = "final_plot.png"
-  )
+  app$expect_screenshot()
 
   # Change to another plot type so that we can choose another assay.
-  app$setValue(ns("plot_type"), "Top Genes Plot")
-  app$setValue(ns("assay-name"), "cpm")
-  expect_snapshot_screenshot(
-    app,
-    id = ns("plot"),
-    name = "top_genes_plot.png"
-  )
+  app$set_inputs(!!ns("plot_type") := "Top Genes Plot")
+  app$set_inputs(!!ns("assay-name") := "cpm")
+  app$expect_screenshot()
 })
+
+# nolint end

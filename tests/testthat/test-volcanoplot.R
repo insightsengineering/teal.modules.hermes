@@ -15,49 +15,42 @@ test_that("ui_g_volcanoplot creates expected HTML", {
 
 # tm_g_volcanoplot ----
 
-test_that("tm_g_volcanoplot works as expected in the sample app", {
+# nolint start
+
+test_that("volcanoplot module works as expected in the test app", {
+  skip_if_covr()
   skip_if_too_deep(5)
 
-  skip_if_covr()
-
-  library(shinytest)
-  app <- ShinyDriver$new(testthat::test_path("volcanoplot"),
-    loadTimeout = 1e5,
-    debug = "all", phantomTimeout = 1e5, seed = 123
+  app <- AppDriver$new(
+    app_dir = "volcanoplot",
+    name = "volcanoplot module works as expected in the test app",
+    variant = platform_variant()
   )
-  on.exit(app$stop())
-  app$getDebugLog()
-  app$snapshotInit("test-app")
-  Sys.sleep(2.5)
-  ns <- module_ns(app)
 
-  # Check initial state of encodings.
-  initial_experiment_name <- app$waitForValue(ns("experiment-name"))
-  expect_identical(initial_experiment_name, "hd1")
+  app$wait_for_idle(timeout = 20000)
+  ns <- module_ns_shiny2(app)
 
-  initial_compare_group <- app$waitForValue(ns("compare_group-sample_var"), ignore = "")
-  expect_identical(initial_compare_group, NULL)
+  # check initialization
+  res <- app$get_value(input = ns("experiment-name"))
+  expect_identical(res, "hd1")
 
-  output_message <- app$waitForOutputElement(ns("plot"), "message")
-  expect_identical(output_message, "Please select a group variable")
+  res <- app$get_value(input = ns("compare_group-sample_var"))
+  expect_null(res)
+
+  # check initial message
+  res <- app$get_value(output = ns("plot"))
+  expect_identical(res$message, "Please select a group variable")
 
   # Select an initial group variable.
-  app$setValue(ns("compare_group-sample_var"), "AGE18")
+  app$set_inputs(!!ns("compare_group-sample_var") := "AGE18")
+  app$wait_for_idle()
 
-  # Initial plot.
-  expect_snapshot_screenshot(
-    app,
-    id = ns("plot"),
-    name = "initial_plot.png"
-  )
+  app$expect_screenshot()
 
   # Now change the log2_fc_thresh and check that the plot is updated accordingly.
-  app$setValue(ns("log2_fc_thresh"), 8)
+  app$set_inputs(!!ns("log2_fc_thresh") := 8)
 
-  # Final plot.
-  expect_snapshot_screenshot(
-    app,
-    id = ns("plot"),
-    name = "final_plot.png"
-  )
+  app$expect_screenshot()
 })
+
+# nolint end

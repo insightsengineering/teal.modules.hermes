@@ -7,40 +7,44 @@ test_that("assaySpecInput creates expected HTML", {
   ))
 })
 
-# assaySpecServer ----
+# nolint start
 
-test_that("assaySpec module works as expected in the test app", {
+# assaySpecServer ----
+test_that("assaySpecServer module works as expected in the test app", {
   skip_if_covr()
   skip_if_too_deep(5)
 
-  library(shinytest)
-  app <- ShinyDriver$new(testthat::test_path("assaySpec"), loadTimeout = 1e5, debug = "all", phantomTimeout = 1e5)
-  on.exit(app$stop())
-  app$getDebugLog()
-  app$snapshotInit("test-app")
-  Sys.sleep(2.5)
-  ns <- module_ns(app)
-
-  # Validation message because no assays eligible in first experiment.
-  output_message <- app$waitForOutputElement(ns("result"), "message")
-  expect_identical(
-    output_message,
-    "No assays eligible for this experiment, please make sure to add normalized assays"
+  app <- AppDriver$new(
+    app_dir = "assaySpec",
+    name = "assaySpec module works as expected in the test app"
   )
 
+  # Validation message because no assays eligible in first experiment.
+  app$wait_for_idle(timeout = 20000)
+  ns <- module_ns_shiny2(app)
+  res <- app$get_value(output = ns("result"))
+  expect_identical(res$message, "No assays eligible for this experiment, please make sure to add normalized assays")
+
   # Select the second experiment and see that we can select the right assays.
-  app$setValue(ns("experiment-name"), "hd2")
+  app$set_inputs(!!ns("experiment-name") := "hd2")
+  app$wait_for_idle()
 
-  assay2 <- app$waitForValue(ns("assay-name"))
-  expect_identical(assay2, "rpkm")
-  result2 <- app$waitForValue(ns("result"), iotype = "output")
-  expect_match(result2, "rpkm")
+  res <- app$get_value(input = ns("assay-name"))
+  expect_identical(res, "rpkm")
 
-  app$setValue(ns("assay-name"), "voom")
-  assay3 <- app$waitForValue(ns("assay-name"))
-  expect_identical(assay3, "voom")
+  res <- app$get_value(output = ns("result"))
+  expect_identical(res, "[1] \"rpkm\"")
 
-  app$setValue(ns("assay-name"), "cpm")
-  assay4 <- app$waitForValue(ns("assay-name"), ignore = NULL)
-  expect_identical(assay4, "") # Because cpm should not be available.
+  app$set_inputs(!!ns("assay-name") := "voom")
+  app$wait_for_idle()
+  res <- app$get_value(output = ns("result"))
+  expect_identical(res, "[1] \"voom\"")
+
+  # Check that cpm should not be available.
+  app$set_inputs(!!ns("assay-name") := "cpm")
+  app$wait_for_idle()
+  res <- app$get_value(output = ns("result"))
+  expect_identical(res, "[1] \"\"")
 })
+
+# nolint end

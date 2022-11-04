@@ -16,52 +16,50 @@ test_that("ui_g_boxplot creates expected HTML", {
 
 # tm_g_boxplot ----
 
-test_that("tm_g_boxplot works as expected in the sample app", {
+# nolint start
+
+test_that("boxplot module works as expected in the test app", {
+  skip_if_covr()
   skip_if_too_deep(5)
 
-  skip_if_covr()
-
-  library(shinytest)
-  app <- ShinyDriver$new(testthat::test_path("boxplot"),
-    loadTimeout = 1e5,
-    debug = "all", phantomTimeout = 1e5, seed = 123
+  app <- AppDriver$new(
+    app_dir = "boxplot",
+    name = "boxplot module works as expected in the test app",
+    variant = platform_variant()
   )
-  on.exit(app$stop())
-  app$getDebugLog()
-  app$snapshotInit("test-app")
-  Sys.sleep(2.5)
-  ns <- module_ns(app)
 
-  # Check initial state of encodings.
-  initial_experiment_name <- app$waitForValue(ns("experiment-name"))
-  expect_identical(initial_experiment_name, "hd1")
+  app$wait_for_idle(timeout = 20000)
+  ns <- module_ns_shiny2(app)
 
-  initial_assay_name <- app$waitForValue(ns("assay-name"))
-  expect_identical(initial_assay_name, "counts")
+  # check initialization
+  res <- app$get_value(input = ns("experiment-name"))
+  expect_identical(res, "hd1")
 
-  initial_strat <- app$waitForValue(ns("strat-sample_var"), ignore = "")
-  expect_identical(initial_strat, NULL)
+  res <- app$get_value(input = ns("assay-name"))
+  expect_identical(res, "counts")
 
-  initial_genes <- app$waitForValue(ns("genes-genes"), ignore = "")
-  expect_identical(initial_genes, NULL)
+  res <- app$get_value(input = ns("strat-sample_var"))
+  expect_null(res)
 
-  # Initial validation message.
-  output_message <- app$waitForOutputElement(ns("plot"), "message")
-  expect_identical(output_message, "please select at least one gene")
+  res <- app$get_value(input = ns("genes-genes"))
+  expect_null(res)
+
+  # check initial message
+  res <- app$get_value(output = ns("plot"))
+  expect_equal(res$message, "please select at least one gene")
 
   # Do a couple of updates to obtain a plot.
-  app$setValues(
-    "jitter" = TRUE,
-    "violin" = TRUE,
-    "genes-genes" = "GeneID:5205",
-    "strat-sample_var" = "COUNTRY",
-    "color-sample_var" = "AGE18",
-    ns = ns
+  app$set_inputs(
+    !!ns("jitter") := TRUE,
+    !!ns("violin") := TRUE,
+    !!ns("genes-genes") := "GeneID:5205",
+    !!ns("strat-sample_var") := "COUNTRY",
+    !!ns("color-sample_var") := "AGE18"
   )
 
-  expect_snapshot_screenshot(
-    app,
-    id = ns("plot"),
-    name = "boxplot.png"
-  )
+  app$wait_for_idle()
+
+  app$expect_screenshot()
 })
+
+# nolint end

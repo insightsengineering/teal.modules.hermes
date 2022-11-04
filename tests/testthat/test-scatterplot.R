@@ -18,84 +18,67 @@ test_that("ui_g_scatterplot creates expected HTML", {
 
 # tm_g_scatterplot ----
 
-test_that("tm_g_scatterplot works as expected in the sample app", {
-  skip_if_too_deep(5)
+# nolint start
+
+test_that("scatterplot module works as expected in the test app", {
   skip_if_covr()
+  skip_if_too_deep(5)
 
-  library(shinytest)
-  app <- ShinyDriver$new(testthat::test_path("scatterplot"),
-    loadTimeout = 1e5,
-    debug = "all", phantomTimeout = 1e5, seed = 123
+  app <- AppDriver$new(
+    app_dir = "scatterplot",
+    name = "scatterplot module works as expected in the test app",
+    variant = platform_variant()
   )
-  on.exit(app$stop())
-  app$getDebugLog()
-  app$snapshotInit("test-app")
-  Sys.sleep(2.5)
-  ns <- module_ns(app)
 
-  # Check initial state of encodings.
-  initial_experiment_name <- app$waitForValue(ns("experiment-name"))
-  expect_identical(initial_experiment_name, "hd1")
+  app$wait_for_idle(timeout = 20000)
+  ns <- module_ns_shiny2(app)
 
-  plot_message <- app$waitForOutputElement(ns("plot"), "message")
-  expect_identical(
-    plot_message,
-    "No assays eligible for this experiment, please make sure to add normalized assays"
-  )
+  # check initialization
+  res <- app$get_value(input = ns("experiment-name"))
+  expect_identical(res, "hd1")
+
+  res <- app$get_value(output = ns("plot"))
+  expect_identical(res$message, "No assays eligible for this experiment, please make sure to add normalized assays")
 
   # Choose another experiment.
-  app$setValue(ns("experiment-name"), "hd2")
+  app$set_inputs(!!ns("experiment-name") := "hd2")
+  res <- app$wait_for_value(input = ns("assay-name"))
+  expect_identical(res, "cpm")
 
-  initial_assay_name <- app$waitForValue(ns("assay-name"))
-  expect_identical(initial_assay_name, "cpm")
+  app$wait_for_idle()
+  res <- app$get_value(input = ns("x_spec-genes"))
+  expect_null(res)
 
-  initial_x_var <- app$waitForValue(ns("x_spec-genes"), ignore = "")
-  expect_identical(initial_x_var, NULL)
+  res <- app$get_value(input = ns("y_spec-genes"))
+  expect_null(res)
 
-  initial_y_var <- app$waitForValue(ns("y_spec-genes"), ignore = "")
-  expect_identical(initial_y_var, NULL)
-
-  # Initially there is no plot.
-  plot_message <- app$waitForOutputElement(ns("plot"), "message")
-  expect_identical(
-    plot_message,
-    "please select at least one gene"
-  )
+  res <- app$get_value(output = ns("plot"))
+  expect_identical(res$message, "please select at least one gene")
 
   # Set one gene each.
-  app$setValue(ns("x_spec-genes"), "GeneID:503538")
-  app$setValue(ns("y_spec-genes"), "GeneID:8086")
+  app$set_inputs(
+    !!ns("x_spec-genes") := "GeneID:503538",
+    !!ns("y_spec-genes") := "GeneID:8086"
+  )
 
   # Change the sample filter and confirm that genes are not updated.
-  ns2 <- NS("teal-main_ui-filter_panel")
-  app$setValue(ns2("add_MAE_filter-subjects-var_to_add"), "ARM")
-
-  now_x_var <- app$waitForValue(ns("x_spec-genes"))
-  expect_identical(now_x_var, "GeneID:503538")
-
-  now_y_var <- app$waitForValue(ns("y_spec-genes"))
-  expect_identical(now_y_var, "GeneID:8086")
-
-  # Change the genes filter and confirm that genes are staying the same.
-  app$setValue(ns2("add_MAE_filter-hd2-row_to_add"), "chromosome")
-
-  now_x_var <- app$waitForValue(ns("x_spec-genes"))
-  expect_identical(now_x_var, "GeneID:503538")
-
-  now_y_var <- app$waitForValue(ns("y_spec-genes"))
-  expect_identical(now_y_var, "GeneID:8086")
+  app$set_inputs(!!ns2("add_MAE_filter-subjects-var_to_add") := "ARM")
+  res <- app$wait_for_value(input = ns("x_spec-genes"))
+  expect_identical(res, "GeneID:503538")
+  res <- app$wait_for_value(input = ns("y_spec-genes"))
+  expect_identical(res, "GeneID:8086")
 
   # Now change the experiment_name, genes, method.
-  app$setValue(ns("experiment-name"), "hd2")
-  app$setValue(ns("x_spec-genes"), "GeneID:441376")
-  app$setValue(ns("y_spec-genes"), "GeneID:79963")
-  app$setValue(ns("smooth_method"), "loess")
-  app$setValue(ns("facet_var-sample_var"), "AGE18")
-
-  # Final plot.
-  expect_snapshot_screenshot(
-    app,
-    id = ns("plot"),
-    name = "final_plot.png"
+  app$set_inputs(
+    !!ns("experiment-name") := "hd2",
+    !!ns("x_spec-genes") := "GeneID:441376",
+    !!ns("y_spec-genes") := "GeneID:79963",
+    !!ns("smooth_method") := "loess",
+    !!ns("facet_var-sample_var") := "AGE18"
   )
+
+  app$wait_for_idle()
+  app$expect_screenshot()
 })
+
+# nolint end
