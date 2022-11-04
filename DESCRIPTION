@@ -69,6 +69,7 @@ RdMacros:
 Remotes:
     insightsengineering/hermes@*release,
     insightsengineering/scda@*release,
+    insightsengineering/scda.2022@*release,
     insightsengineering/teal.data@*release,
     insightsengineering/teal.logger@*release,
     insightsengineering/teal.reporter@*release,
