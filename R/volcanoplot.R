@@ -71,7 +71,6 @@ ui_g_volcanoplot <- function(id,
     output = div(
       teal.widgets::plot_with_settings_ui(ns("plot")),
       DT::DTOutput(ns("table"))
-      # teal.widgets::table_with_settings_ui(ns("table"))
     ),
     pre_output = pre_output,
     post_output = post_output,
@@ -201,11 +200,6 @@ srv_g_volcanoplot <- function(id,
         caption = "Top Differentiated Genes"
       )
     })
-
-    # pws_t <- teal.widgets::table_with_settings_srv(
-    #   id = "table",
-    #   table_r = show_top_gene_diffexpr
-    # )
 
     ### REPORTER
     if (with_reporter) {
