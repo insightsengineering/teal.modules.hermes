@@ -127,7 +127,7 @@ ui_g_pca <- function(id,
               width = 12,
               div(
                 class = "my-5",
-                plotOutput(ns("plot_pca"))
+                teal.widgets::plot_with_settings_ui(ns("plot_pca"))
               ),
               DT::DTOutput(ns("table_pca"))
             )
@@ -138,7 +138,7 @@ ui_g_pca <- function(id,
               width = 12,
               div(
                 class = "my-5",
-                plotOutput(ns("plot_cor"))
+                teal.widgets::plot_with_settings_ui(ns("plot_cor"))
               ),
               DT::DTOutput(ns("table_cor"))
             )
@@ -324,6 +324,11 @@ srv_g_pca <- function(id,
     })
     output$plot_pca <- renderPlot(plot_pca())
 
+    pws_pca <- teal.widgets::plot_with_settings_srv(
+      id = "plot_pca",
+      plot_r = plot_pca
+    )
+
     # render correlation heatmap
     plot_cor <- reactive({
       # Resolve all reactivity.
@@ -339,7 +344,11 @@ srv_g_pca <- function(id,
         cluster_columns = cluster_columns
       )
     })
-    output$plot_cor <- renderPlot(plot_cor())
+
+    pws_cor <- teal.widgets::plot_with_settings_srv(
+      id = "plot_cor",
+      plot_r = plot_cor
+    )
 
     ### REPORTER
     if (with_reporter) {
@@ -381,7 +390,7 @@ srv_g_pca <- function(id,
           }
           card$append_text(final_encodings, style = "verbatim")
           card$append_text("Plot", "header3")
-          card$append_plot(plot_pca())
+          card$append_plot(plot_pca(), dim = pws_pca$dim())
           card$append_text("Table", "header3")
           card$append_table(show_matrix_pca())
         } else {
@@ -410,6 +419,7 @@ srv_g_pca <- function(id,
           card$append_text(final_encodings, style = "verbatim")
           card$append_text("Plot", "header3")
           card$append_plot(plot_cor())
+          card$append_plot(plot_cor(), dim = pws_cor$dim())
           card$append_text("Table", "header3")
           card$append_table(show_matrix_cor())
         }
