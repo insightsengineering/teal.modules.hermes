@@ -17,7 +17,7 @@
 #' @export
 #' @examples
 #' mae <- hermes::multi_assay_experiment
-#' adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
+#' adtte <- scda::synthetic_cdisc_data("rcd_2022_06_27")$adtte %>%
 #'   dplyr::mutate(CNSR = as.logical(CNSR))
 #'
 #' new_adtte <- h_km_mae_to_adtte(
@@ -100,7 +100,7 @@ h_km_mae_to_adtte <- function(adtte,
 #' @return The UI part.
 #' @seealso [adtteSpecServer()] for the module server and a complete example.
 #' @export
-adtteSpecInput <- function(inputId,
+adtteSpecInput <- function(inputId, # nolint
                            label_paramcd = "Select Endpoint") {
   assert_string(inputId)
   assert_string(label_paramcd, min.chars = 1L)
@@ -204,15 +204,15 @@ adtteSpecInput <- function(inputId,
 #'
 #' my_app <- function() {
 #'   mae <- hermes::multi_assay_experiment
-#'   adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
+#'   adtte <- scda::synthetic_cdisc_data("rcd_2022_06_27")$adtte %>%
 #'     dplyr::mutate(is_event = .data$CNSR == 0)
 #'
 #'   data <- teal_data(
 #'     dataset(
 #'       "ADTTE",
 #'       adtte,
-#'       code = 'adtte <- scda::synthetic_cdisc_data("rcd_2021_07_07")$adtte %>%
-#'         dplyr::mutate(is_event = .data$CNSR == 0)'
+#'       code = 'adtte <- scda::synthetic_cdisc_data("rcd_2022_06_27")$adtte %>% # nolint
+#'         dplyr::mutate(is_event = .data$CNSR == 0)' # nolint
 #'     ),
 #'     dataset("MAE", mae)
 #'   )
@@ -234,7 +234,7 @@ adtteSpecInput <- function(inputId,
 #' if (interactive()) {
 #'   my_app()
 #' }
-adtteSpecServer <- function(id,
+adtteSpecServer <- function(id, # nolint
                             datasets,
                             mae_name,
                             adtte_name,
@@ -256,7 +256,6 @@ adtteSpecServer <- function(id,
   assert_reactive(probs)
 
   moduleServer(id, function(input, output, session) {
-
     # Join ADTTE with gene data.
     adtte_joined <- reactive({
       experiment_data <- experiment_data()

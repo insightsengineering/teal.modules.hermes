@@ -13,282 +13,205 @@ test_that("ui_g_pca creates HTML", {
   testthat::expect_s3_class(result, "shiny.tag.list")
 })
 
-test_that("tm_g_pca works as expected in the sample app", {
-  skip_if_too_deep(5)
-  skip_if_covr()
+# pca Server ----
 
-  library(shinytest)
-  app <- ShinyDriver$new(testthat::test_path("pca"), loadTimeout = 1e5, debug = "all", phantomTimeout = 1e5, seed = 123)
-  on.exit(app$stop())
-  app$getDebugLog()
-  app$snapshotInit("test-app")
-  Sys.sleep(2.5)
-  ns <- module_ns(app)
+# nolint start
+
+test_that("pca module works as expected in the test app", {
+  skip_if_covr()
+  skip_if_too_deep(5)
+
+  app <- AppDriver$new(
+    app_dir = "pca",
+    name = "pca module works as expected in the test app",
+    variant = platform_variant()
+  )
+
+  app$wait_for_idle(timeout = 20000)
+  ns <- module_ns_shiny2(app)
 
   # Check initial state of encodings.
-  initial_experiment_name <- app$waitForValue(ns("experiment-name"))
-  expect_identical(initial_experiment_name, "hd1")
+  res <- app$get_value(input = ns("experiment-name"))
+  expect_identical(res, "hd1")
 
-  initial_assay_name <- app$waitForValue(ns("assay-name"))
-  expect_identical(initial_assay_name, "counts")
+  res <- app$get_value(input = ns("assay-name"))
+  expect_identical(res, "counts")
 
-  initial_tab <- app$waitForValue(ns("tab_selected"))
-  expect_identical(initial_tab, "PCA")
+  res <- app$get_value(input = ns("tab_selected"))
+  expect_identical(res, "PCA")
 
-  initial_xvar <- app$waitForValue(ns("x_var"))
-  expect_identical(initial_xvar, "1")
+  res <- app$get_value(input = ns("x_var"))
+  expect_identical(res, "1")
 
-  initial_yvar <- app$waitForValue(ns("y_var"))
-  expect_identical(initial_yvar, "2")
+  res <- app$get_value(input = ns("y_var"))
+  expect_identical(res, "2")
 
-  initial_varpct <- app$waitForValue(ns("var_pct"))
-  expect_identical(initial_varpct, TRUE)
+  res <- app$get_value(input = ns("var_pct"))
+  expect_true(res)
 
-  initial_label <- app$waitForValue(ns("label"))
-  expect_identical(initial_label, TRUE)
+  res <- app$get_value(input = ns("label"))
+  expect_true(res)
 
-  initial_matrix <- app$waitForValue(ns("show_matrix"))
-  expect_identical(initial_matrix, TRUE)
+  res <- app$get_value(input = ns("show_matrix"))
+  expect_true(res)
 
-  expect_snapshot_screenshot(
-    app,
-    id = ns("plot_pca"),
-    name = "initial_pca_plot.png"
-  )
-
-  expect_snapshot_screenshot(
-    app,
-    id = ns("table_pca"),
-    name = "initial_pca_table.png"
-  )
+  app$expect_screenshot()
 
   # Add a gene filter and deselect everything and check that it does not crash.
-  ns2 <- NS("teal-main_ui-filter_panel")
-  app$setValue(ns2("add_MAE_filter-hd1-row_to_add"), "symbol")
-  app$waitForValue(ns2("MAE_filter-hd1-rowData_var_symbol-content-selection"))
-  app$setValue(ns2("MAE_filter-hd1-rowData_var_symbol-content-selection"), character()) # Deselect everything.
-  plot_message <- app$waitForOutputElement(ns("plot_pca"), "message") # Only works without a crash.
-  expect_match(
-    plot_message,
-    "No genes or samples included in this experiment, please adjust filters"
-  )
-  app$click(ns2("MAE_filter-hd1-rowData_var_symbol-remove")) # Remove filter again.
+  app$set_inputs(!!ns2("add_MAE_filter-hd1-row_to_add") := "symbol")
+  app$wait_for_idle()
+  app$set_inputs(!!ns2("MAE_filter-hd1-rowData_var_symbol-content-selection") := character())
+  app$wait_for_idle()
+  res <- app$get_value(output = ns("plot_pca"))
+  expect_match(res$message, "No genes or samples included in this experiment, please adjust filters")
 
-  # Now update the tab selection.
-  app$setValue(ns("tab_selected"), "PC and Sample Correlation")
+  # Remove filters
+  app$click(ns2("MAE_filter-hd1-rowData_var_symbol-remove"))
 
-  initial_experiment_name <- app$waitForValue(ns("experiment-name"))
-  expect_identical(initial_experiment_name, "hd1")
+  # Update the tab selection.
+  app$set_inputs(!!ns("tab_selected") := "PC and Sample Correlation")
+  app$wait_for_idle()
 
-  initial_assay_name <- app$waitForValue(ns("assay-name"))
-  expect_identical(initial_assay_name, "counts")
+  res <- app$get_value(input = ns("experiment-name"))
+  expect_identical(res, "hd1")
 
-  initial_cluster <- app$waitForValue(ns("cluster_columns"))
-  expect_identical(initial_cluster, FALSE)
+  res <- app$get_value(input = ns("assay-name"))
+  expect_identical(res, "counts")
 
-  initial_label <- app$waitForValue(ns("show_matrix"))
-  expect_identical(initial_matrix, TRUE)
+  res <- app$get_value(input = ns("cluster_columns"))
+  expect_false(res)
 
-  expect_snapshot_screenshot(
-    app,
-    id = ns("plot_cor"),
-    name = "initial_cor_plot.png",
-    wait_for_plot = TRUE
-  )
+  res <- app$get_value(input = ns("show_matrix"))
+  expect_true(res)
 
-  expect_snapshot_screenshot(
-    app,
-    id = ns("table_cor"),
-    name = "initial_cor_table.png"
-  )
+  app$expect_screenshot()
 
   # Now update experiment name, assay name, cluster & matrix option on correlation tab.
-  app$setValue(ns("experiment-name"), "hd2")
-  app$setValue(ns("assay-name"), "voom")
-  app$setValue(ns("cluster_columns"), TRUE)
-  app$setValue(ns("show_matrix"), FALSE)
-
-  expect_snapshot_screenshot(
-    app,
-    id = ns("plot_cor"),
-    name = "update1_cor_plot.png",
-    wait_for_plot = TRUE
+  app$set_inputs(
+    !!ns("experiment-name") := "hd2",
+    !!ns("assay-name") := "voom",
+    !!ns("cluster_columns") := TRUE,
+    !!ns("show_matrix") := FALSE
   )
 
-  expect_snapshot_screenshot(
-    app,
-    id = ns("table_cor"),
-    name = "update1_cor_table.png"
-  )
+  # app$wait_for_idle()
+  app$expect_screenshot()
 
   # Now go back to pca tab and update experiment, assay name, variance % option,
   # label option and matrix option.
-  app$setValue(ns("tab_selected"), "PCA")
-  app$setValue(ns("assay-name"), "rpkm")
-  app$setValue(ns("x_var"), "3")
-  app$setValue(ns("y_var"), "4")
-  app$setValue(ns("var_pct"), FALSE)
-  app$setValue(ns("label"), FALSE)
-  app$setValue(ns("show_matrix"), FALSE)
-
-  expect_snapshot_screenshot(
-    app,
-    id = ns("plot_pca"),
-    name = "update2_pca_plot.png",
-    wait_for_plot = TRUE
+  app$set_inputs(
+    !!ns("tab_selected") := "PCA",
+    !!ns("assay-name") := "rpkm",
+    !!ns("x_var") := "3",
+    !!ns("y_var") := "4",
+    !!ns("var_pct") := FALSE,
+    !!ns("label") := FALSE,
+    !!ns("show_matrix") := FALSE
   )
 
-  expect_snapshot_screenshot(
-    app,
-    id = ns("table_pca"),
-    name = "update2_pca_table.png"
-  )
+  app$wait_for_idle()
+  app$expect_screenshot()
 
   # Update experiment / assay (ensure xvar and yvar revert back to PC1 and PC2, assay to counts)
   # and add color for pca.
-  app$setValue(ns("experiment-name"), "hd1")
-  Sys.sleep(0.5)
-  app$setValue(ns("color-sample_var"), "AGE18")
+  app$set_inputs(!!ns("experiment-name") := "hd1")
+  app$wait_for_idle()
+  app$set_inputs(!!ns("color-sample_var") := "AGE18")
+  app$wait_for_idle()
 
-  new_varpct <- app$waitForValue(ns("assay-name"))
-  expect_identical(new_varpct, "counts")
+  res <- app$get_value(input = ns("assay-name"))
+  expect_identical(res, "counts")
 
-  new_xvar <- app$waitForValue(ns("x_var"))
-  expect_identical(new_xvar, "1")
+  res <- app$get_value(input = ns("x_var"))
+  expect_identical(res, "1")
 
-  new_yvar <- app$waitForValue(ns("y_var"))
-  expect_identical(new_yvar, "2")
+  res <- app$get_value(input = ns("y_var"))
+  expect_identical(res, "2")
 
-  new_varpct <- app$waitForValue(ns("var_pct"))
-  expect_identical(new_varpct, FALSE)
+  res <- app$get_value(input = ns("var_pct"))
+  expect_false(res)
 
-  new_label <- app$waitForValue(ns("label"))
-  expect_identical(new_label, FALSE)
+  res <- app$get_value(input = ns("label"))
+  expect_false(res)
 
-  new_matrix <- app$waitForValue(ns("show_matrix"))
-  expect_identical(new_matrix, FALSE)
-
-  expect_snapshot_screenshot(
-    app,
-    id = ns("plot_pca"),
-    name = "update3_pca_plot.png",
-    wait_for_plot = TRUE
-  )
-
-  expect_snapshot_screenshot(
-    app,
-    id = ns("table_pca"),
-    name = "update3_pca_table.png"
-  )
+  res <- app$get_value(input = ns("show_matrix"))
+  expect_false(res)
 
   # Update xvar yvar in pca to be the same for a validate msg.
-  app$setValue(ns("x_var"), "2")
-  app$setValue(ns("y_var"), "2")
+  app$set_inputs(
+    !!ns("x_var") := "2",
+    !!ns("y_var") := "2"
+  )
 
-  plot_message <- app$waitForOutputElement(ns("plot_pca"), "message")
-  expect_identical(plot_message, "please select two different principal components")
+  res <- app$wait_for_value(output = ns("plot_pca"))
+  expect_identical(res$message, "please select two different principal components")
 
   # Update the inputs to PCA tab, hd1, counts, PC3, PC4, and add filters.
-  app$setValues(
-    ns = ns,
-    "tab_selected" = "PCA",
-    "experiment-name" = "hd1",
-    "assay-name" = "counts",
-    "x_var" = "3",
-    "y_var" = "4",
-    "var_pct" = TRUE,
-    "label" = TRUE,
-    "show_matrix" = TRUE
+  app$set_inputs(
+    !!ns("tab_selected") := "PCA",
+    !!ns("experiment-name") := "hd1",
+    !!ns("assay-name") := "counts",
+    !!ns("x_var") := "3",
+    !!ns("y_var") := "4",
+    !!ns("var_pct") := TRUE,
+    !!ns("label") := TRUE,
+    !!ns("show_matrix") := TRUE
   )
 
-  app$setValue(ns2("add_MAE_filter-subjects-var_to_add"), "SEX")
-  # Before selecting, it seems we need to wait a bit for the initial state.
-  app$waitForValue(ns2("MAE_filter-subjects-_var_SEX-content-selection"))
-  app$setValue(ns2("MAE_filter-subjects-_var_SEX-content-selection"), "M")
+  app$set_inputs(!!ns2("add_MAE_filter-subjects-var_to_add") := "SEX")
+  app$wait_for_idle()
+  app$set_inputs(!!ns2("MAE_filter-subjects-_var_SEX-content-selection") := "M")
 
   # Ensure xvar and yvar get resetted to pc1 and pc2.
-  new_xvar <- app$waitForValue(ns("x_var"))
-  expect_identical(new_xvar, "1")
+  app$wait_for_idle()
+  res <- app$get_value(input = ns("x_var"))
+  expect_identical(res, "1")
+  res <- app$get_value(input = ns("y_var"))
+  expect_identical(res, "2")
 
-  new_yvar <- app$waitForValue(ns("y_var"))
-  expect_identical(new_yvar, "2")
-
-  expect_snapshot_screenshot(
-    app,
-    id = ns("plot_pca"),
-    name = "update5_pca_plot.png",
-    wait_for_plot = TRUE
-  )
-
-  expect_snapshot_screenshot(
-    app,
-    id = ns("table_pca"),
-    name = "update5_pca_table.png"
-  )
+  app$expect_screenshot()
 
   # Update to cor tab.
-  app$setValue(ns("tab_selected"), "PC and Sample Correlation")
-
-  expect_snapshot_screenshot(
-    app,
-    id = ns("table_cor"),
-    name = "update5_cor_table.png"
-  )
-
-  # Update filter to F, look at PCA plot, to get another validate msg.
-  app$setValue(ns("tab_selected"), "PCA")
-  app$setValue(ns2("MAE_filter-subjects-_var_SEX-content-selection"), "F")
-
-  plot_message <- app$waitForOutputElement(ns("plot_pca"), "message")
-  expect_identical(plot_message, "Sample size is too small. PCA needs more than 2 samples.")
+  app$set_inputs(!!ns("tab_selected") := "PCA")
+  app$set_inputs(!!ns2("MAE_filter-subjects-_var_SEX-content-selection") := "F")
+  res <- app$wait_for_value(output = ns("plot_pca"))
+  expect_identical(res$message, "Sample size is too small. PCA needs more than 2 samples.")
 
   # Remove filter.
   app$click(ns2("MAE_filter-subjects-_var_SEX-remove"))
 
   # Initiate the use of Top Variance Genes filtering functionality.
-  app$setValue(ns("filter_top"), TRUE)
-  n_top_value <- app$waitForValue(ns("n_top"))
-  expect_identical(n_top_value, 500L)
+  app$set_inputs(!!ns("filter_top") := TRUE)
+  res <- app$wait_for_value(input = ns("n_top"))
+  expect_identical(res, 500L)
 
-  expect_snapshot_screenshot(
-    app,
-    id = ns("table_pca"),
-    name = "update6_pca_table.png"
-  )
+  app$expect_screenshot()
 
   # Change the number of top genes.
-  app$setValue(ns("n_top"), 777L)
+  app$set_inputs(!!ns("n_top") := 777L)
 
   # Change to another experiment and check that it did not change.
-  app$setValue(ns("experiment-name"), "hd2")
-  app$waitForShiny()
-  n_top_value2 <- app$waitForValue(ns("n_top"))
-  expect_identical(n_top_value2, 777L)
+  app$set_inputs(!!ns("experiment-name") := "hd2")
+  app$wait_for_idle()
+
+  res <- app$get_value(input = ns("n_top"))
+  expect_identical(res, 777L)
 
   # Increase number of top genes to maximum.
-  n_top_old <- app$setValue(ns("n_top"), 2500L)
-
-  # Take screenshot of table.
-  expect_snapshot_screenshot(
-    app,
-    id = ns("table_pca"),
-    name = "update7_pca_table.png"
-  )
+  app$set_inputs(!!ns("n_top") := 2500L)
+  app$wait_for_idle()
+  app$expect_screenshot()
 
   # Switch off gene filtering and check that table is still the same.
-  app$setValue(ns("filter_top"), FALSE)
-  expect_snapshot_screenshot(
-    app,
-    id = ns("table_pca"),
-    name = "update7_pca_table.png"
-  )
+  app$set_inputs(!!ns("filter_top") := FALSE)
+  app$wait_for_idle()
+  app$expect_screenshot()
 
   # Go back to first experiment and check that n_top stayed the same.
-  app$setValue(ns("experiment-name"), "hd1")
-  app$setValue(ns("filter_top"), TRUE)
-  n_top_value3 <- app$waitForValue(
-    ns("n_top"),
-    ignore = list(2500L, 777L)
-  )
-  expect_identical(n_top_value3, 1000L)
+  app$set_inputs(!!ns("experiment-name") := "hd1")
+  app$set_inputs(!!ns("filter_top") := "TRUE")
+  res <- app$wait_for_value(input = ns("n_top"))
+  expect_identical(res, 1000L)
 })
+
+# nolint end

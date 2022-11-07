@@ -10,7 +10,7 @@
 #' @return The UI part.
 #' @seealso [experimentSpecServer()] for the module server and a complete example.
 #' @export
-experimentSpecInput <- function(inputId,
+experimentSpecInput <- function(inputId, # nolint
                                 datasets,
                                 mae_name,
                                 label_experiments = "Select Experiment") {
@@ -205,7 +205,7 @@ h_gene_data <- function(object, name_annotation) {
 #' if (interactive()) {
 #'   my_app()
 #' }
-experimentSpecServer <- function(id,
+experimentSpecServer <- function(id, # nolint
                                  datasets,
                                  mae_name,
                                  name_annotation = "symbol",
@@ -219,7 +219,6 @@ experimentSpecServer <- function(id,
   assert_flag(with_mae_col_data)
 
   moduleServer(id, function(input, output, session) {
-
     # When the filtered data set of the chosen experiment changes, update the
     # experiment data object.
     data <- reactive({

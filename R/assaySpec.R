@@ -10,7 +10,7 @@
 #' @return The UI part.
 #' @seealso [assaySpecServer()] for the module server and a complete example.
 #' @export
-assaySpecInput <- function(inputId,
+assaySpecInput <- function(inputId, # nolint
                            label_assays = "Select Assay") {
   assert_string(inputId)
   assert_string(label_assays, min.chars = 1L)
@@ -96,7 +96,7 @@ assaySpecInput <- function(inputId,
 #' if (interactive()) {
 #'   my_app()
 #' }
-assaySpecServer <- function(id,
+assaySpecServer <- function(id, # nolint
                             assays,
                             exclude_assays = character()) {
   assert_string(id)
@@ -104,7 +104,6 @@ assaySpecServer <- function(id,
   assert_character(exclude_assays, any.missing = FALSE)
 
   moduleServer(id, function(input, output, session) {
-
     # When the assay names change, update the choices for assay.
     choices <- reactive({
       assays <- assays()
