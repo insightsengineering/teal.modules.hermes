@@ -132,7 +132,7 @@ ui_g_km <- function(id,
         )
       )
     ),
-    output = plotOutput(ns("km_plot")),
+    output = teal.widgets::plot_with_settings_ui(ns("plot")),
     pre_output = pre_output,
     post_output = post_output
   )
@@ -215,6 +215,11 @@ srv_g_km <- function(id,
 
     output$km_plot <- renderPlot(km_plot())
 
+    pws <- teal.widgets::plot_with_settings_srv(
+      id = "plot",
+      plot_r = km_plot
+    )
+
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment) {
@@ -249,7 +254,7 @@ srv_g_km <- function(id,
 
         card$append_text(final_encodings, style = "verbatim")
         card$append_text("Plot", "header3")
-        card$append_plot(km_plot())
+        card$append_plot(km_plot(), dim = pws$dim())
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)

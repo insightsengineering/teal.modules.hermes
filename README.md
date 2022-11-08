@@ -1,5 +1,9 @@
 # teal.modules.hermes: Teal Modules for RNAseq Data Analysis
 
+<!-- start badges -->
+[![Code Coverage](https://raw.githubusercontent.com/insightsengineering/teal.modules.hermes/_xml_coverage_reports/data/main/badge.svg)](https://raw.githubusercontent.com/insightsengineering/teal.modules.hermes/_xml_coverage_reports/data/main/coverage.xml)
+<!-- end badges -->
+
 Welcome to `teal.modules.hermes`! Jump right into an ad-hoc module example or read a bit more about what is what, i.e. how the pieces fit together.
 
 ## Ad-hoc module example

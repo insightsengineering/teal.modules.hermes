@@ -104,7 +104,7 @@ ui_g_barplot <- function(id,
         )
       )
     ),
-    output = plotOutput(ns("plot")),
+    output = teal.widgets::plot_with_settings_ui(ns("plot")),
     pre_output = pre_output,
     post_output = post_output
   )
@@ -180,7 +180,14 @@ srv_g_barplot <- function(id,
         percentiles = percentiles
       )
     })
+
     output$plot <- renderPlot(plot_r())
+
+    pws <- teal.widgets::plot_with_settings_srv(
+      id = "plot",
+      plot_r = plot_r
+    )
+
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment) {
@@ -215,7 +222,7 @@ srv_g_barplot <- function(id,
 
         card$append_text(final_encodings, style = "verbatim")
         card$append_text("Plot", "header3")
-        card$append_plot(plot_r())
+        card$append_plot(plot_r(), dim = pws$dim())
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)
