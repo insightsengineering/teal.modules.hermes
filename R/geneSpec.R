@@ -219,7 +219,7 @@ h_parse_genes <- function(words, choices) {
 #'
 #' @examples
 #' ui <- function(id,
-#'                datasets,
+#'                data,
 #'                funs) {
 #'   ns <- NS(id)
 #'   teal.widgets::standard_layout(
@@ -234,11 +234,11 @@ h_parse_genes <- function(words, choices) {
 #'   )
 #' }
 #' server <- function(id,
-#'                    datasets,
+#'                    data,
 #'                    funs) {
 #'   moduleServer(id, function(input, output, session) {
 #'     gene_choices <- reactive({
-#'       mae <- datasets$get_data("MAE", filtered = TRUE)
+#'       mae <- data[["MAE"]]()
 #'       object <- mae[[1]]
 #'       gene_ids <- rownames(object)
 #'       gene_names <- SummarizedExperiment::rowData(object)$symbol

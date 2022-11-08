@@ -19,13 +19,13 @@ selection super easy, see here for the UI part:
 
 ```r
 ui <- function(id,
-               datasets,
+               data,
                mae_name) {
   ns <- NS(id)
 
   teal.widgets::standard_layout(
     encoding = div(
-      experimentSpecInput(ns("experiment"), datasets, mae_name),
+      experimentSpecInput(ns("experiment"), data, mae_name),
       assaySpecInput(ns("assay"))
     ),
     output = plotOutput(ns("awesome_plot"))
@@ -41,11 +41,13 @@ Similarly for the server we use the modules, and call then our awesome plotting 
 srv <- function(input,
                 output,
                 session,
-                datasets,
+                data,
+                filter_panel_api,
                 mae_name) {
   experiment <- experimentSpecServer(
     "experiment",
-    datasets = datasets,
+    data = data,
+    filter_panel_api = filter_panel_api,
     mae_name = mae_name,
     name_annotation = NULL  # If you have a gene name column in your rowData, can specify here.
   )

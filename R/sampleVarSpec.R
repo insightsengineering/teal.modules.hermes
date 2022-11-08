@@ -202,9 +202,9 @@ validate_n_levels <- function(x, name, n_levels) {
 #'
 #' @examples
 #' ui <- function(id,
-#'                datasets) {
+#'                data) {
 #'   ns <- NS(id)
-#'   mae <- datasets$get_data("MAE", filtered = FALSE)
+#'   mae <- data[["MAE"]]()
 #'   experiment_name_choices <- names(mae)
 #'   teal.widgets::standard_layout(
 #'     encoding = div(
@@ -215,11 +215,11 @@ validate_n_levels <- function(x, name, n_levels) {
 #'   )
 #' }
 #' server <- function(id,
-#'                    datasets) {
+#'                    data) {
 #'   moduleServer(id, function(input, output, session) {
 #'     experiment_data <- reactive({
 #'       req(input$experiment_name)
-#'       mae <- datasets$get_data("MAE", filtered = TRUE)
+#'       mae <- data[["MAE"]]()
 #'       object <- mae[[input$experiment_name]]
 #'       SummarizedExperiment::colData(object) <- hermes::df_cols_to_factor(SummarizedExperiment::colData(object))
 #'       object

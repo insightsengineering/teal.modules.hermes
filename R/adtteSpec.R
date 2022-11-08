@@ -145,12 +145,12 @@ adtteSpecInput <- function(inputId, # nolint
 #'
 #' @examples
 #' ui <- function(id,
-#'                datasets) {
+#'                data) {
 #'   ns <- NS(id)
 #'
 #'   teal.widgets::standard_layout(
 #'     encoding = div(
-#'       experimentSpecInput(ns("experiment"), datasets = datasets, mae_name = "MAE"),
+#'       experimentSpecInput(ns("experiment"), data = data, mae_name = "MAE"),
 #'       assaySpecInput(ns("assay")),
 #'       geneSpecInput(ns("genes"), funs = list(Mean = colMeans)),
 #'       adtteSpecInput(ns("adtte"))
@@ -159,11 +159,12 @@ adtteSpecInput <- function(inputId, # nolint
 #'   )
 #' }
 #'
-#' server <- function(id, datasets) {
+#' server <- function(id, data, filter_panel_api) {
 #'   moduleServer(id, function(input, output, session) {
 #'     experiment <- experimentSpecServer(
 #'       "experiment",
-#'       datasets = datasets,
+#'       data = data,
+#'       filter_panel_api = filter_panel_api,
 #'       mae_name = "MAE"
 #'     )
 #'     assay <- assaySpecServer(
@@ -177,7 +178,7 @@ adtteSpecInput <- function(inputId, # nolint
 #'     )
 #'     adtte <- adtteSpecServer(
 #'       "adtte",
-#'       datasets = datasets,
+#'       data = data,
 #'       adtte_name = "ADTTE",
 #'       mae_name = "MAE",
 #'       adtte_vars = list(
@@ -235,7 +236,7 @@ adtteSpecInput <- function(inputId, # nolint
 #'   my_app()
 #' }
 adtteSpecServer <- function(id, # nolint
-                            datasets,
+                            data,
                             mae_name,
                             adtte_name,
                             adtte_vars,
@@ -245,7 +246,6 @@ adtteSpecServer <- function(id, # nolint
                             genes,
                             probs) {
   assert_string(id)
-  assert_r6(datasets)
   assert_string(mae_name)
   assert_string(adtte_name)
   assert_adtte_vars(adtte_vars)
@@ -271,8 +271,8 @@ adtteSpecServer <- function(id, # nolint
         assay
       )
 
-      mae <- datasets$get_data(mae_name, filtered = TRUE)
-      adtte <- datasets$get_data(adtte_name, filtered = TRUE)
+      mae <- data[[mae_name]]()
+      adtte <- data[[adtte_name]]()
 
       mae[[experiment_name]] <- experiment_data
       h_km_mae_to_adtte(

@@ -1,8 +1,8 @@
 # ui_g_barplot creates expected HTML
 
     Code
-      ui_g_barplot(id = "testid", datasets = datasets, mae_name = mae_name,
-        summary_funs = list(Mean = colMeans), pre_output = NULL, post_output = NULL)
+      ui_g_barplot(id = "testid", data = data, mae_name = mae_name, summary_funs = list(
+        Mean = colMeans), pre_output = NULL, post_output = NULL)
     Output
       <div class="row">
         <div>
@@ -118,7 +118,7 @@
                     <label class="control-label shiny-label-null" for="testid-x-genes" id="testid-x-genes-label"></label>
                     <div>
                       <select id="testid-x-genes" class="form-control" multiple="multiple"><option value=""></option></select>
-                      <script type="application/json" data-for="testid-x-genes" data-eval="[&quot;render&quot;]">{"render":"{\n          option: function(item, escape) {\n              return '<div> <span style = \"font-size: inherit;\">' + item.label + '<\/div>' +\n                ' <span style=\"color: #808080; font-size: xx-small;\" >' + item.value + '<\/div> <\/div>'\n            }\n          }","searchField":["value","label"],"maxOptions":200,"maxItems":200,"plugins":["selectize-plugin-a11y"]}</script>
+                      <script type="application/json" data-for="testid-x-genes" data-eval="[&quot;render&quot;]">{"render":"{\n          option: function(item, escape) {\n              return '<div> <span style=\"font-size: inherit;\">' + item.label + '<\/div>' +\n                ' <span style=\"color: #808080; font-size: xx-small;\" >' + item.value + '<\/div> <\/div>'\n            }\n          }","searchField":["value","label"],"maxOptions":200,"maxItems":200,"plugins":["selectize-plugin-a11y"]}</script>
                     </div>
                   </div>
                 </div>

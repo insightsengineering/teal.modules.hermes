@@ -20,19 +20,12 @@ tm_g_km(
   post_output = NULL
 )
 
-ui_g_km(
-  id,
-  datasets,
-  adtte_name,
-  mae_name,
-  summary_funs,
-  pre_output,
-  post_output
-)
+ui_g_km(id, data, adtte_name, mae_name, summary_funs, pre_output, post_output)
 
 srv_g_km(
   id,
-  datasets,
+  data,
+  filter_panel_api,
   reporter,
   adtte_name,
   mae_name,
@@ -82,9 +75,11 @@ elements can be useful).}
 
 \item{id}{(\code{string}) the shiny module id.}
 
-\item{datasets}{(\code{Datasets})\cr
-teal specific argument which is automatically passed to the UI and server
+\item{data}{(\code{tdata})\cr
+\code{tdata} object which is automatically passed to the UI and server
 functions, holding all the data sets provided in the app initialization.}
+
+\item{filter_panel_api}{(\code{FilterPanelAPI})\cr object describing the actual filter panel API.}
 
 \item{reporter}{(\code{Reporter}) object}
 }

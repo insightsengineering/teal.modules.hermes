@@ -3,10 +3,10 @@
 test_that("ui_g_scatterplot creates expected HTML", {
   mae_name <- "MyMAE"
   set.seed(123)
-  datasets <- mock_datasets(list(MyMAE = hermes::multi_assay_experiment))
+  data <- list(MyMAE = function() hermes::multi_assay_experiment)
   expect_snapshot(ui_g_scatterplot(
     id = "testid",
-    datasets = datasets,
+    data = data,
     mae_name = mae_name,
     summary_funs = list(
       Mean = colMeans

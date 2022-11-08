@@ -37,7 +37,7 @@ This defines the server part for the gene signature specification.
 }
 \examples{
 ui <- function(id,
-               datasets,
+               data,
                funs) {
   ns <- NS(id)
   teal.widgets::standard_layout(
@@ -52,11 +52,11 @@ ui <- function(id,
   )
 }
 server <- function(id,
-                   datasets,
+                   data,
                    funs) {
   moduleServer(id, function(input, output, session) {
     gene_choices <- reactive({
-      mae <- datasets$get_data("MAE", filtered = TRUE)
+      mae <- data[["MAE"]]()
       object <- mae[[1]]
       gene_ids <- rownames(object)
       gene_names <- SummarizedExperiment::rowData(object)$symbol

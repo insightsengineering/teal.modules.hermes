@@ -24,13 +24,13 @@ This defines the server part for the assay specification.
 }
 \examples{
 ui <- function(id,
-               datasets) {
+               data) {
   ns <- NS(id)
   teal.widgets::standard_layout(
     encoding = div(
       experimentSpecInput(
         ns("experiment"),
-        datasets,
+        data,
         "MAE"
       ),
       assaySpecInput(
@@ -42,12 +42,13 @@ ui <- function(id,
   )
 }
 
-server <- function(id, datasets) {
+server <- function(id, data, filter_panel_api) {
   moduleServer(id, module = function(input, output, session) {
     experiment <- experimentSpecServer(
-      "experiment",
-      datasets,
-      "MAE"
+      id = "experiment",
+      data = data,
+      filter_panel_api = filter_panel_api,
+      mae_name = "MAE"
     )
     assay <- assaySpecServer(
       "assay",

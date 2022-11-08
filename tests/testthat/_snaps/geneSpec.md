@@ -51,7 +51,7 @@
           <label class="control-label shiny-label-null" for="my_genes-genes" id="my_genes-genes-label"></label>
           <div>
             <select id="my_genes-genes" class="form-control" multiple="multiple"><option value=""></option></select>
-            <script type="application/json" data-for="my_genes-genes" data-eval="[&quot;render&quot;]">{"render":"{\n          option: function(item, escape) {\n              return '<div> <span style = \"font-size: inherit;\">' + item.label + '<\/div>' +\n                ' <span style=\"color: #808080; font-size: xx-small;\" >' + item.value + '<\/div> <\/div>'\n            }\n          }","searchField":["value","label"],"maxOptions":200,"maxItems":200,"plugins":["selectize-plugin-a11y"]}</script>
+            <script type="application/json" data-for="my_genes-genes" data-eval="[&quot;render&quot;]">{"render":"{\n          option: function(item, escape) {\n              return '<div> <span style=\"font-size: inherit;\">' + item.label + '<\/div>' +\n                ' <span style=\"color: #808080; font-size: xx-small;\" >' + item.value + '<\/div> <\/div>'\n            }\n          }","searchField":["value","label"],"maxOptions":200,"maxItems":200,"plugins":["selectize-plugin-a11y"]}</script>
           </div>
         </div>
       </div>

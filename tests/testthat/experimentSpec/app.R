@@ -1,14 +1,14 @@
 library(teal.modules.hermes)
 
 ui <- function(id,
-               datasets,
+               data,
                mae_name) {
   ns <- NS(id)
   teal.widgets::standard_layout(
     encoding = div(
       experimentSpecInput(
         ns("my_experiment"),
-        datasets,
+        data,
         mae_name,
         label_experiments = "Please choose experiment"
       ),
@@ -26,12 +26,14 @@ ui <- function(id,
 }
 
 server <- function(id,
-                   datasets,
+                   data,
+                   filter_panel_api,
                    mae_name) {
   moduleServer(id, function(input, output, session) {
     experiment <- experimentSpecServer(
       "my_experiment",
-      datasets,
+      data,
+      filter_panel_api,
       mae_name
     )
     result <- reactive({

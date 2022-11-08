@@ -1,8 +1,8 @@
 # ui_g_quality creates expected HTML
 
     Code
-      ui_g_quality(id = "testid", datasets = datasets, mae_name = mae_name,
-        pre_output = NULL, post_output = NULL)
+      ui_g_quality(id = "testid", data = data, mae_name = mae_name, pre_output = NULL,
+        post_output = NULL)
     Output
       <div class="row">
         <div>
