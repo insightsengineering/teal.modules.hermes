@@ -1,29 +1,24 @@
 # teal.modules.hermes: Teal Modules for RNAseq Data Analysis
 
 <!-- start badges -->
-[![Check 🛠](https://github.com/insightsengineering//actions/workflows/check.yaml/badge.svg)](https://github.com/insightsengineering//actions/workflows/check.yaml)
-[![Docs 📚](https://github.com/insightsengineering//actions/workflows/docs.yaml/badge.svg)](https://insightsengineering.github.io//)
-[![Code Coverage 📔](https://raw.githubusercontent.com/insightsengineering//_xml_coverage_reports/data/main/badge.svg)](https://raw.githubusercontent.com/insightsengineering//_xml_coverage_reports/data/main/coverage.xml)
+[![Check 🛠](https://github.com/insightsengineering/teal.modules.hermes/actions/workflows/check.yaml/badge.svg)](https://github.com/insightsengineering/teal.modules.hermes/actions/workflows/check.yaml)
+[![Docs 📚](https://github.com/insightsengineering/teal.modules.hermes/actions/workflows/docs.yaml/badge.svg)](https://insightsengineering.github.io/teal.modules.hermes/)
+[![Code Coverage 📔](https://raw.githubusercontent.com/insightsengineering/teal.modules.hermes/_xml_coverage_reports/data/main/badge.svg)](https://raw.githubusercontent.com/insightsengineering/teal.modules.hermes/_xml_coverage_reports/data/main/coverage.xml)
 
-![GitHub forks](https://img.shields.io/github/forks/insightsengineering/?style=social)
-![GitHub Repo stars](https://img.shields.io/github/stars/insightsengineering/?style=social)
+![GitHub forks](https://img.shields.io/github/forks/insightsengineering/teal.modules.hermes?style=social)
+![GitHub Repo stars](https://img.shields.io/github/stars/insightsengineering/teal.modules.hermes?style=social)
 
-![GitHub commit activity](https://img.shields.io/github/commit-activity/m/insightsengineering/)
-![GitHub contributors](https://img.shields.io/github/contributors/insightsengineering/)
-![GitHub last commit](https://img.shields.io/github/last-commit/insightsengineering/)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/insightsengineering/)
-![GitHub repo size](https://img.shields.io/github/repo-size/insightsengineering/)
-![GitHub language count](https://img.shields.io/github/languages/count/insightsengineering/)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/insightsengineering/teal.modules.hermes)
+![GitHub contributors](https://img.shields.io/github/contributors/insightsengineering/teal.modules.hermes)
+![GitHub last commit](https://img.shields.io/github/last-commit/insightsengineering/teal.modules.hermes)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/insightsengineering/teal.modules.hermes)
+![GitHub repo size](https://img.shields.io/github/repo-size/insightsengineering/teal.modules.hermes)
+![GitHub language count](https://img.shields.io/github/languages/count/insightsengineering/teal.modules.hermes)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![Current Version](https://img.shields.io/github/r-package/v/insightsengineering//main?color=purple\&label=package%20version)](https://github.com/insightsengineering//tree/main)
-[![Open Issues](https://img.shields.io/github/issues-raw/insightsengineering/?color=red\&label=open%20issues)](https://github.com/insightsengineering//issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc)
+[![Current Version](https://img.shields.io/github/r-package/v/insightsengineering/teal.modules.hermes/main?color=purple\&label=package%20version)](https://github.com/insightsengineering/teal.modules.hermes/tree/main)
+[![Open Issues](https://img.shields.io/github/issues-raw/insightsengineering/teal.modules.hermes?color=red\&label=open%20issues)](https://github.com/insightsengineering/teal.modules.hermes/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc)
 <!-- end badges -->
 
-# teal.modules.hermes: Teal Modules for RNAseq Data Analysis
-
-<!-- start badges -->
-[![Code Coverage](https://raw.githubusercontent.com/insightsengineering/teal.modules.hermes/_xml_coverage_reports/data/main/badge.svg)](https://raw.githubusercontent.com/insightsengineering/teal.modules.hermes/_xml_coverage_reports/data/main/coverage.xml)
-<!-- end badges -->
 
 Welcome to `teal.modules.hermes`! Jump right into an ad-hoc module example or read a bit more about what is what, i.e. how the pieces fit together.
 
