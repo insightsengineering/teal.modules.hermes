@@ -8,6 +8,11 @@ navbar:
     - icon: fa-github
       href: https://github.com/insightsengineering/teal.modules.hermes
 
+articles:
+  - title: All vignettes
+    contents:
+      - Getting Started
+
 reference:
   - title: Package
     contents:
