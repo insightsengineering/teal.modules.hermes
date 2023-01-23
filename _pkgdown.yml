@@ -12,7 +12,7 @@ navbar:
 articles:
   - title: All vignettes
     contents:
-      - Getting Started
+      - Getting_Started
 
 reference:
   - title: Package

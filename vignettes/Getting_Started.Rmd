@@ -8,7 +8,7 @@ output:
   BiocStyle::html_document:
     toc_float: true
 vignette: |
-  %\VignetteIndexEntry{IGetting Started}
+  %\VignetteIndexEntry{Getting Started}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options:

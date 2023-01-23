@@ -19,7 +19,6 @@
 [![Open Issues](https://img.shields.io/github/issues-raw/insightsengineering/teal.modules.hermes?color=red\&label=open%20issues)](https://github.com/insightsengineering/teal.modules.hermes/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc)
 <!-- end badges -->
 
-
 ## What is what
 
 ### What is `teal`?
