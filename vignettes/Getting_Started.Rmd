@@ -1,9 +1,6 @@
 ---
 title: "Getting Started"
 package: teal.modules.hermes
-author:
-  - name: Daniel Sabanés Bové
-    email: daniel.sabanes_bove@roche.com
 output:
   BiocStyle::html_document:
     toc_float: true
@@ -26,7 +23,7 @@ library(teal.modules.hermes)
 
 # Introduction
 
-`teal.modules.hermes` is a package implementing a number of `teal` modules for the exploration of `RNAseq` counts data. In addition of pre set modules, `teal.modules.hermes` enables quick and easy ad-hoc module creation.
+`teal.modules.hermes` is a package implementing a number of `teal` modules for the exploration of RNA-sequencing counts data. In addition to predefined modules, `teal.modules.hermes` enables quick and easy ad-hoc module creation.
 
 # Ad-hoc module example
 
