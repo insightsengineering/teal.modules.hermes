@@ -1,3 +1,4 @@
+---
 url: https://insightsengineering.github.io/teal.modules.hermes
 
 template:
@@ -7,6 +8,11 @@ navbar:
   right:
     - icon: fa-github
       href: https://github.com/insightsengineering/teal.modules.hermes
+
+articles:
+  - title: All vignettes
+    contents:
+      - Getting_Started
 
 reference:
   - title: Package
