@@ -78,7 +78,8 @@ server <- function(id,
       req(input$experiment_name)
       mae <- data[["MAE"]]()
       object <- mae[[input$experiment_name]]
-      SummarizedExperiment::colData(object) <- hermes::df_cols_to_factor(SummarizedExperiment::colData(object))
+      SummarizedExperiment::colData(object) <-
+        hermes::df_cols_to_factor(SummarizedExperiment::colData(object))
       object
     })
     facet_var_spec <- sampleVarSpecServer(
