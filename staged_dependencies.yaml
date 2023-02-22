@@ -2,8 +2,8 @@ current_repo:
   repo: insightsengineering/teal.modules.hermes
   host: https://github.com
 upstream_repos:
-  Roche/rtables:
-    repo: Roche/rtables
+  insightsengineering/rtables:
+    repo: insightsengineering/rtables
     host: https://github.com
   insightsengineering/hermes:
     repo: insightsengineering/hermes
