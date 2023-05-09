@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage line-rate="0.260682085456684" branch-rate="0" lines-covered="665" lines-valid="2551" branches-covered="0" branches-valid="0" complexity="0" version="3.6.1" timestamp="2023-03-17 10:04:28">
-  <sources/>
+<!DOCTYPE coverage SYSTEM "https://raw.githubusercontent.com/cobertura/cobertura/master/cobertura/src/site/htdocs/xml/coverage-04.dtd">
+<coverage line-rate="0.260682085456684" branch-rate="0" lines-covered="665" lines-valid="2551" branches-covered="0" branches-valid="0" complexity="0" version="3.6.2" timestamp="2023-05-09 10:12:52">
+  <sources>
+    <source>/__w/teal.modules.hermes/teal.modules.hermes/teal.modules.hermes</source>
+  </sources>
   <packages>
     <package name="teal.modules.hermes" line-rate="0.260682085456684" branch-rate="0" complexity="0">
       <classes>
         <class name="adtteSpec.R" filename="R/adtteSpec.R" line-rate="0.275641025641026" branch-rate="0" complexity="0">
           <methods>
-            <method name="h_km_mae_to_adtte" signature="" line-rate="1" branch-rate="0">
+            <method name="h_km_mae_to_adtte" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
                 <line number="47" hits="11" branch="false"/>
                 <line number="48" hits="11" branch="false"/>
@@ -45,7 +48,7 @@
                 <line number="88" hits="5" branch="false"/>
               </lines>
             </method>
-            <method name="adtteSpecInput" signature="" line-rate="1" branch-rate="0">
+            <method name="adtteSpecInput" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
                 <line number="105" hits="3" branch="false"/>
                 <line number="106" hits="3" branch="false"/>
@@ -57,7 +60,7 @@
                 <line number="114" hits="3" branch="false"/>
               </lines>
             </method>
-            <method name="adtteSpecServer" signature="" line-rate="0" branch-rate="0">
+            <method name="adtteSpecServer" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
                 <line number="248" hits="0" branch="false"/>
                 <line number="249" hits="0" branch="false"/>
@@ -336,7 +339,7 @@
         </class>
         <class name="assaySpec.R" filename="R/assaySpec.R" line-rate="0.181818181818182" branch-rate="0" complexity="0">
           <methods>
-            <method name="assaySpecInput" signature="" line-rate="1" branch-rate="0">
+            <method name="assaySpecInput" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
                 <line number="15" hits="9" branch="false"/>
                 <line number="16" hits="9" branch="false"/>
@@ -348,7 +351,7 @@
                 <line number="23" hits="9" branch="false"/>
               </lines>
             </method>
-            <method name="assaySpecServer" signature="" line-rate="0" branch-rate="0">
+            <method name="assaySpecServer" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
                 <line number="103" hits="0" branch="false"/>
                 <line number="104" hits="0" branch="false"/>
@@ -438,7 +441,7 @@
         </class>
         <class name="barplot.R" filename="R/barplot.R" line-rate="0.195266272189349" branch-rate="0" complexity="0">
           <methods>
-            <method name="tm_g_barplot" signature="" line-rate="0" branch-rate="0">
+            <method name="tm_g_barplot" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
                 <line number="40" hits="0" branch="false"/>
                 <line number="41" hits="0" branch="false"/>
@@ -466,7 +469,7 @@
                 <line number="64" hits="0" branch="false"/>
               </lines>
             </method>
-            <method name="ui_g_barplot" signature="" line-rate="1" branch-rate="0">
+            <method name="ui_g_barplot" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
                 <line number="76" hits="1" branch="false"/>
                 <line number="77" hits="1" branch="false"/>
@@ -503,7 +506,7 @@
                 <line number="110" hits="1" branch="false"/>
               </lines>
             </method>
-            <method name="srv_g_barplot" signature="" line-rate="0" branch-rate="0">
+            <method name="srv_g_barplot" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
                 <line number="123" hits="0" branch="false"/>
                 <line number="124" hits="0" branch="false"/>
@@ -606,7 +609,7 @@
                 <line number="235" hits="0" branch="false"/>
               </lines>
             </method>
-            <method name="sample_tm_g_barplot" signature="" line-rate="0" branch-rate="0">
+            <method name="sample_tm_g_barplot" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
                 <line number="247" hits="0" branch="false"/>
                 <line number="248" hits="0" branch="false"/>
@@ -798,7 +801,7 @@
         </class>
         <class name="boxplot.R" filename="R/boxplot.R" line-rate="0.162790697674419" branch-rate="0" complexity="0">
           <methods>
-            <method name="tm_g_boxplot" signature="" line-rate="0" branch-rate="0">
+            <method name="tm_g_boxplot" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
                 <line number="41" hits="0" branch="false"/>
                 <line number="42" hits="0" branch="false"/>
@@ -826,7 +829,7 @@
                 <line number="65" hits="0" branch="false"/>
               </lines>
             </method>
-            <method name="ui_g_boxplot" signature="" line-rate="1" branch-rate="0">
+            <method name="ui_g_boxplot" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
                 <line number="77" hits="1" branch="false"/>
                 <line number="78" hits="1" branch="false"/>
@@ -858,7 +861,7 @@
                 <line number="106" hits="1" branch="false"/>
               </lines>
             </method>
-            <method name="srv_g_boxplot" signature="" line-rate="0" branch-rate="0">
+            <method name="srv_g_boxplot" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
                 <line number="119" hits="0" branch="false"/>
                 <line number="120" hits="0" branch="false"/>
@@ -969,7 +972,7 @@
                 <line number="236" hits="0" branch="false"/>
               </lines>
             </method>
-            <method name="sample_tm_g_boxplot" signature="" line-rate="0" branch-rate="0">
+            <method name="sample_tm_g_boxplot" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
                 <line number="248" hits="0" branch="false"/>
                 <line number="249" hits="0" branch="false"/>
@@ -1164,7 +1167,7 @@
         </class>
         <class name="checkmate.R" filename="R/checkmate.R" line-rate="0.5" branch-rate="0" complexity="0">
           <methods>
-            <method name="check_tag" signature="" line-rate="1" branch-rate="0">
+            <method name="check_tag" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
                 <line number="41" hits="7" branch="false"/>
                 <line number="42" hits="6" branch="false"/>
@@ -1173,12 +1176,12 @@
                 <line number="46" hits="5" branch="false"/>
               </lines>
             </method>
-            <method name="check_reactive" signature="" line-rate="1" branch-rate="0">
+            <method name="check_reactive" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
                 <line number="80" hits="6" branch="false"/>
               </lines>
             </method>
-            <method name="assert_summary_funs" signature="" line-rate="0" branch-rate="0">
+            <method name="assert_summary_funs" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
                 <line number="110" hits="0" branch="false"/>
                 <line number="111" hits="0" branch="false"/>
@@ -1191,7 +1194,7 @@
                 <line number="118" hits="0" branch="false"/>
               </lines>
             </method>
-            <method name="assert_adtte_vars" signature="" line-rate="1" branch-rate="0">
+            <method name="assert_adtte_vars" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
                 <line number="137" hits="3" branch="false"/>
                 <line number="138" hits="2" branch="false"/>
@@ -1222,7 +1225,7 @@
         </class>
         <class name="experimentSpec.R" filename="R/experimentSpec.R" line-rate="0.370786516853933" branch-rate="0" complexity="0">
           <methods>
-            <method name="experimentSpecInput" signature="" line-rate="1" branch-rate="0">
+            <method name="experimentSpecInput" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
                 <line number="17" hits="9" branch="false"/>
                 <line number="18" hits="9" branch="false"/>
@@ -1237,7 +1240,7 @@
                 <line number="28" hits="9" branch="false"/>
               </lines>
             </method>
-            <method name="h_order_genes" signature="" line-rate="1" branch-rate="0">
+            <method name="h_order_genes" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
                 <line number="52" hits="4" branch="false"/>
                 <line number="53" hits="4" branch="false"/>
@@ -1247,7 +1250,7 @@
                 <line number="58" hits="4" branch="false"/>
               </lines>
             </method>
-            <method name="h_gene_data" signature="" line-rate="0.941176470588235" branch-rate="0">
+            <method name="h_gene_data" signature="" line-rate="0.941176470588235" branch-rate="0" complexity="0">
               <lines>
                 <line number="85" hits="2" branch="false"/>
                 <line number="86" hits="2" branch="false"/>
@@ -1268,7 +1271,7 @@
                 <line number="102" hits="2" branch="false"/>
               </lines>
             </method>
-            <method name="experimentSpecServer" signature="" line-rate="0" branch-rate="0">
+            <method name="experimentSpecServer" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
                 <line number="215" hits="0" branch="false"/>
                 <line number="216" hits="0" branch="false"/>
@@ -1422,7 +1425,7 @@
         </class>
         <class name="forestplot.R" filename="R/forestplot.R" line-rate="0.126903553299492" branch-rate="0" complexity="0">
           <methods>
-            <method name="tm_g_forest_tte" signature="" line-rate="0" branch-rate="0">
+            <method name="tm_g_forest_tte" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
                 <line number="60" hits="0" branch="false"/>
                 <line number="61" hits="0" branch="false"/>
@@ -1457,7 +1460,7 @@
                 <line number="91" hits="0" branch="false"/>
               </lines>
             </method>
-            <method name="ui_g_forest_tte" signature="" line-rate="1" branch-rate="0">
+            <method name="ui_g_forest_tte" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
                 <line number="104" hits="1" branch="false"/>
                 <line number="105" hits="1" branch="false"/>
@@ -1486,7 +1489,7 @@
                 <line number="130" hits="1" branch="false"/>
               </lines>
             </method>
-            <method name="srv_g_forest_tte" signature="" line-rate="0" branch-rate="0">
+            <method name="srv_g_forest_tte" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
                 <line number="147" hits="0" branch="false"/>
                 <line number="148" hits="0" branch="false"/>
@@ -1608,7 +1611,7 @@
                 <line number="275" hits="0" branch="false"/>
               </lines>
             </method>
-            <method name="sample_tm_g_forest_tte" signature="" line-rate="0" branch-rate="0">
+            <method name="sample_tm_g_forest_tte" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
                 <line number="288" hits="0" branch="false"/>
                 <line number="289" hits="0" branch="false"/>
@@ -1838,7 +1841,7 @@
         </class>
         <class name="geneSpec.R" filename="R/geneSpec.R" line-rate="0.4" branch-rate="0" complexity="0">
           <methods>
-            <method name="geneSpecInput" signature="" line-rate="1" branch-rate="0">
+            <method name="geneSpecInput" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
                 <line number="36" hits="7" branch="false"/>
                 <line number="37" hits="7" branch="false"/>
@@ -1937,7 +1940,7 @@
                 <line number="131" hits="7" branch="false"/>
               </lines>
             </method>
-            <method name="h_update_gene_selection" signature="" line-rate="0" branch-rate="0">
+            <method name="h_update_gene_selection" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
                 <line number="153" hits="0" branch="false"/>
                 <line number="154" hits="0" branch="false"/>
@@ -1956,7 +1959,7 @@
                 <line number="168" hits="0" branch="false"/>
               </lines>
             </method>
-            <method name="h_parse_genes" signature="" line-rate="1" branch-rate="0">
+            <method name="h_parse_genes" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
                 <line number="190" hits="2" branch="false"/>
                 <line number="191" hits="2" branch="false"/>
@@ -1967,7 +1970,7 @@
                 <line number="197" hits="2" branch="false"/>
               </lines>
             </method>
-            <method name="geneSpecServer" signature="" line-rate="0" branch-rate="0">
+            <method name="geneSpecServer" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
                 <line number="297" hits="0" branch="false"/>
                 <line number="298" hits="0" branch="false"/>
@@ -2092,7 +2095,7 @@
                 <line number="448" hits="0" branch="false"/>
               </lines>
             </method>
-            <method name="validate_gene_spec" signature="" line-rate="0" branch-rate="0">
+            <method name="validate_gene_spec" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
                 <line number="464" hits="0" branch="false"/>
                 <line number="465" hits="0" branch="false"/>
@@ -2374,7 +2377,7 @@
         </class>
         <class name="km.R" filename="R/km.R" line-rate="0.164021164021164" branch-rate="0" complexity="0">
           <methods>
-            <method name="tm_g_km" signature="" line-rate="0" branch-rate="0">
+            <method name="tm_g_km" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
                 <line number="63" hits="0" branch="false"/>
                 <line number="64" hits="0" branch="false"/>
@@ -2407,7 +2410,7 @@
                 <line number="92" hits="0" branch="false"/>
               </lines>
             </method>
-            <method name="ui_g_km" signature="" line-rate="1" branch-rate="0">
+            <method name="ui_g_km" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
                 <line number="105" hits="1" branch="false"/>
                 <line number="107" hits="1" branch="false"/>
@@ -2442,7 +2445,7 @@
                 <line number="138" hits="1" branch="false"/>
               </lines>
             </method>
-            <method name="srv_g_km" signature="" line-rate="0" branch-rate="0">
+            <method name="srv_g_km" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
                 <line number="153" hits="0" branch="false"/>
                 <line number="154" hits="0" branch="false"/>
@@ -2551,7 +2554,7 @@
                 <line number="267" hits="0" branch="false"/>
               </lines>
             </method>
-            <method name="sample_tm_g_km" signature="" line-rate="0" branch-rate="0">
+            <method name="sample_tm_g_km" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
                 <line number="280" hits="0" branch="false"/>
                 <line number="281" hits="0" branch="false"/>
@@ -2774,7 +2777,7 @@
         </class>
         <class name="pca.R" filename="R/pca.R" line-rate="0.233802816901408" branch-rate="0" complexity="0">
           <methods>
-            <method name="tm_g_pca" signature="" line-rate="0" branch-rate="0">
+            <method name="tm_g_pca" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
                 <line number="35" hits="0" branch="false"/>
                 <line number="36" hits="0" branch="false"/>
@@ -2798,7 +2801,7 @@
                 <line number="55" hits="0" branch="false"/>
               </lines>
             </method>
-            <method name="ui_g_pca" signature="" line-rate="1" branch-rate="0">
+            <method name="ui_g_pca" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
                 <line number="66" hits="1" branch="false"/>
                 <line number="67" hits="1" branch="false"/>
@@ -2885,7 +2888,7 @@
                 <line number="151" hits="1" branch="false"/>
               </lines>
             </method>
-            <method name="srv_g_pca" signature="" line-rate="0" branch-rate="0">
+            <method name="srv_g_pca" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
                 <line number="163" hits="0" branch="false"/>
                 <line number="164" hits="0" branch="false"/>
@@ -3128,7 +3131,7 @@
                 <line number="440" hits="0" branch="false"/>
               </lines>
             </method>
-            <method name="sample_tm_g_pca" signature="" line-rate="0" branch-rate="0">
+            <method name="sample_tm_g_pca" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
                 <line number="452" hits="0" branch="false"/>
                 <line number="453" hits="0" branch="false"/>
@@ -3506,7 +3509,7 @@
         </class>
         <class name="quality.R" filename="R/quality.R" line-rate="0.23489932885906" branch-rate="0" complexity="0">
           <methods>
-            <method name="top_gene_plot" signature="" line-rate="0" branch-rate="0">
+            <method name="top_gene_plot" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
                 <line number="18" hits="0" branch="false"/>
                 <line number="19" hits="0" branch="false"/>
@@ -3520,7 +3523,7 @@
                 <line number="27" hits="0" branch="false"/>
               </lines>
             </method>
-            <method name="heatmap_plot" signature="" line-rate="0" branch-rate="0">
+            <method name="heatmap_plot" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
                 <line number="47" hits="0" branch="false"/>
                 <line number="48" hits="0" branch="false"/>
@@ -3529,7 +3532,7 @@
                 <line number="51" hits="0" branch="false"/>
               </lines>
             </method>
-            <method name="tm_g_quality" signature="" line-rate="0" branch-rate="0">
+            <method name="tm_g_quality" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
                 <line number="89" hits="0" branch="false"/>
                 <line number="90" hits="0" branch="false"/>
@@ -3553,7 +3556,7 @@
                 <line number="109" hits="0" branch="false"/>
               </lines>
             </method>
-            <method name="ui_g_quality" signature="" line-rate="1" branch-rate="0">
+            <method name="ui_g_quality" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
                 <line number="120" hits="1" branch="false"/>
                 <line number="121" hits="1" branch="false"/>
@@ -3627,7 +3630,7 @@
                 <line number="191" hits="1" branch="false"/>
               </lines>
             </method>
-            <method name="srv_g_quality" signature="" line-rate="0" branch-rate="0">
+            <method name="srv_g_quality" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
                 <line number="203" hits="0" branch="false"/>
                 <line number="204" hits="0" branch="false"/>
@@ -3811,7 +3814,7 @@
                 <line number="407" hits="0" branch="false"/>
               </lines>
             </method>
-            <method name="sample_tm_g_quality" signature="" line-rate="0" branch-rate="0">
+            <method name="sample_tm_g_quality" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
                 <line number="419" hits="0" branch="false"/>
                 <line number="420" hits="0" branch="false"/>
@@ -4132,7 +4135,7 @@
         </class>
         <class name="sampleVarSpec.R" filename="R/sampleVarSpec.R" line-rate="0.556034482758621" branch-rate="0" complexity="0">
           <methods>
-            <method name="sampleVarSpecInput" signature="" line-rate="1" branch-rate="0">
+            <method name="sampleVarSpecInput" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
                 <line number="20" hits="8" branch="false"/>
                 <line number="21" hits="8" branch="false"/>
@@ -4171,7 +4174,7 @@
                 <line number="55" hits="8" branch="false"/>
               </lines>
             </method>
-            <method name="h_assign_to_group_list" signature="" line-rate="1" branch-rate="0">
+            <method name="h_assign_to_group_list" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
                 <line number="86" hits="2" branch="false"/>
                 <line number="87" hits="2" branch="false"/>
@@ -4186,7 +4189,7 @@
                 <line number="96" hits="2" branch="false"/>
               </lines>
             </method>
-            <method name="h_collapse_levels" signature="" line-rate="1" branch-rate="0">
+            <method name="h_collapse_levels" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
                 <line number="129" hits="3" branch="false"/>
                 <line number="130" hits="2" branch="false"/>
@@ -4200,7 +4203,7 @@
                 <line number="138" hits="1" branch="false"/>
               </lines>
             </method>
-            <method name="validate_n_levels" signature="" line-rate="1" branch-rate="0">
+            <method name="validate_n_levels" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
                 <line number="154" hits="3" branch="false"/>
                 <line number="155" hits="3" branch="false"/>
@@ -4217,7 +4220,7 @@
                 <line number="166" hits="2" branch="false"/>
               </lines>
             </method>
-            <method name="sampleVarSpecServer" signature="" line-rate="0.410958904109589" branch-rate="0">
+            <method name="sampleVarSpecServer" signature="" line-rate="0.410958904109589" branch-rate="0" complexity="0">
               <lines>
                 <line number="276" hits="2" branch="false"/>
                 <line number="277" hits="2" branch="false"/>
@@ -4367,7 +4370,7 @@
                 <line number="457" hits="2" branch="false"/>
               </lines>
             </method>
-            <method name="multiSampleVarSpecServer" signature="" line-rate="0" branch-rate="0">
+            <method name="multiSampleVarSpecServer" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
                 <line number="499" hits="0" branch="false"/>
                 <line number="500" hits="0" branch="false"/>
@@ -4626,7 +4629,7 @@
         </class>
         <class name="scatterplot.R" filename="R/scatterplot.R" line-rate="0.179640718562874" branch-rate="0" complexity="0">
           <methods>
-            <method name="tm_g_scatterplot" signature="" line-rate="0" branch-rate="0">
+            <method name="tm_g_scatterplot" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
                 <line number="40" hits="0" branch="false"/>
                 <line number="41" hits="0" branch="false"/>
@@ -4654,7 +4657,7 @@
                 <line number="64" hits="0" branch="false"/>
               </lines>
             </method>
-            <method name="ui_g_scatterplot" signature="" line-rate="1" branch-rate="0">
+            <method name="ui_g_scatterplot" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
                 <line number="76" hits="1" branch="false"/>
                 <line number="78" hits="1" branch="false"/>
@@ -4688,7 +4691,7 @@
                 <line number="109" hits="1" branch="false"/>
               </lines>
             </method>
-            <method name="srv_g_scatterplot" signature="" line-rate="0" branch-rate="0">
+            <method name="srv_g_scatterplot" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
                 <line number="122" hits="0" branch="false"/>
                 <line number="123" hits="0" branch="false"/>
@@ -4792,7 +4795,7 @@
                 <line number="234" hits="0" branch="false"/>
               </lines>
             </method>
-            <method name="sample_tm_g_scatterplot" signature="" line-rate="0" branch-rate="0">
+            <method name="sample_tm_g_scatterplot" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
                 <line number="246" hits="0" branch="false"/>
                 <line number="247" hits="0" branch="false"/>
@@ -4982,12 +4985,12 @@
         </class>
         <class name="utils.R" filename="R/utils.R" line-rate="0.6875" branch-rate="0" complexity="0">
           <methods>
-            <method name="is_blank" signature="" line-rate="1" branch-rate="0">
+            <method name="is_blank" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
                 <line number="17" hits="3" branch="false"/>
               </lines>
             </method>
-            <method name="h_extract_words" signature="" line-rate="1" branch-rate="0">
+            <method name="h_extract_words" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
                 <line number="37" hits="3" branch="false"/>
                 <line number="38" hits="2" branch="false"/>
@@ -4996,7 +4999,7 @@
                 <line number="41" hits="2" branch="false"/>
               </lines>
             </method>
-            <method name="include_css_files" signature="" line-rate="1" branch-rate="0">
+            <method name="include_css_files" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
                 <line number="55" hits="16" branch="false"/>
                 <line number="56" hits="16" branch="false"/>
@@ -5005,7 +5008,7 @@
                 <line number="59" hits="16" branch="false"/>
               </lines>
             </method>
-            <method name="include_js_files" signature="" line-rate="0" branch-rate="0">
+            <method name="include_js_files" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
                 <line number="74" hits="0" branch="false"/>
                 <line number="75" hits="0" branch="false"/>
@@ -5036,7 +5039,7 @@
         </class>
         <class name="volcanoplot.R" filename="R/volcanoplot.R" line-rate="0.155440414507772" branch-rate="0" complexity="0">
           <methods>
-            <method name="tm_g_volcanoplot" signature="" line-rate="0" branch-rate="0">
+            <method name="tm_g_volcanoplot" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
                 <line number="35" hits="0" branch="false"/>
                 <line number="36" hits="0" branch="false"/>
@@ -5061,7 +5064,7 @@
                 <line number="56" hits="0" branch="false"/>
               </lines>
             </method>
-            <method name="ui_g_volcanoplot" signature="" line-rate="1" branch-rate="0">
+            <method name="ui_g_volcanoplot" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
                 <line number="67" hits="1" branch="false"/>
                 <line number="68" hits="1" branch="false"/>
@@ -5095,7 +5098,7 @@
                 <line number="99" hits="1" branch="false"/>
               </lines>
             </method>
-            <method name="srv_g_volcanoplot" signature="" line-rate="0" branch-rate="0">
+            <method name="srv_g_volcanoplot" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
                 <line number="111" hits="0" branch="false"/>
                 <line number="112" hits="0" branch="false"/>
@@ -5228,7 +5231,7 @@
                 <line number="256" hits="0" branch="false"/>
               </lines>
             </method>
-            <method name="sample_tm_g_volcanoplot" signature="" line-rate="0" branch-rate="0">
+            <method name="sample_tm_g_volcanoplot" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
                 <line number="268" hits="0" branch="false"/>
                 <line number="269" hits="0" branch="false"/>
@@ -5444,7 +5447,7 @@
         </class>
         <class name="zzz.R" filename="R/zzz.R" line-rate="0" branch-rate="0" complexity="0">
           <methods>
-            <method name=".onLoad" signature="" line-rate="0" branch-rate="0">
+            <method name=".onLoad" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
                 <line number="2" hits="0" branch="false"/>
               </lines>
