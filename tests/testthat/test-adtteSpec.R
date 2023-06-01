@@ -186,7 +186,7 @@ test_that("adtteSpecServer module works as expected in the test app", {
 
   app <- AppDriver$new(
     app_dir = "adtteSpec",
-    name = "adtteSpecServer module works as expected in the test app",
+    name = "adtteSpecServe",
     variant = platform_variant()
   )
 
@@ -229,7 +229,7 @@ test_that("adtteSpecServer module works as expected in the test app", {
   app$set_inputs(!!ns2("ADTTE_filter-filter-_var_PARAMCD-content-inputs-selection") := c("PFS", "OS"))
   app$wait_for_idle()
   res <- app$get_value(output = ns("summary"))
-  expect_equal(res$message, "pplease select an endpoint")
+  expect_equal(res$message, "please select an endpoint")
 })
 
 # nolint end

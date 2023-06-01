@@ -24,7 +24,7 @@ test_that("boxplot module works as expected in the test app", {
 
   app <- AppDriver$new(
     app_dir = "boxplot",
-    name = "boxplot module works as expected in the test app",
+    name = "boxplot",
     variant = platform_variant()
   )
 

@@ -16,12 +16,13 @@ test_that("assaySpecServer module works as expected in the test app", {
 
   app <- AppDriver$new(
     app_dir = "assaySpec",
-    name = "assaySpec module works as expected in the test app"
+    name = "assaySpec"
   )
+
+  ns <- NS("teal-main_ui-root-assayspec_example-module")
 
   # Validation message because no assays eligible in first experiment.
   app$wait_for_idle(timeout = 20000)
-  ns <- module_ns_shiny2(app)
   res <- app$get_value(output = ns("result"))
   expect_identical(res$message, "No assays eligible for this experiment, please make sure to add normalized assays")
 

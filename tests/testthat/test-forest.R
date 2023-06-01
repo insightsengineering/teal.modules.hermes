@@ -28,7 +28,7 @@ test_that("forest_tte module works as expected in the test app", {
 
   app <- AppDriver$new(
     app_dir = "forest_tte",
-    name = "forest_tte module works as expected in the test app",
+    name = "forest_tte",
     variant = platform_variant()
   )
 

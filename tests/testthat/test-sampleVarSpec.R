@@ -174,7 +174,7 @@ test_that("sampleVarSpec module works as expected in the test app", {
 
   app <- AppDriver$new(
     app_dir = "sampleVarSpec",
-    name = "sampleVarSpec module works as expected in the test app",
+    name = "sampleVarSpec",
     variant = platform_variant()
   )
 

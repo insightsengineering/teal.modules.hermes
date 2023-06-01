@@ -25,7 +25,7 @@ test_that("quality module works as expected in the test app", {
 
   app <- AppDriver$new(
     app_dir = "quality",
-    name = "quality module works as expected in the test app",
+    name = "quality",
     variant = platform_variant()
   )
 

@@ -91,7 +91,8 @@ test_that("experimentSpec module works as expected in the test app", {
 
   app <- AppDriver$new(
     app_dir = "experimentSpec",
-    name = "experimentSpec module works as expected in the test app"
+    name = "experimentSpec",
+    variant = platform_variant()
   )
 
   app$wait_for_idle(timeout = 20000)

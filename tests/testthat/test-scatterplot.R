@@ -28,7 +28,7 @@ test_that("scatterplot module works as expected in the test app", {
 
   app <- AppDriver$new(
     app_dir = "scatterplot",
-    name = "scatterplot module works as expected in the test app",
+    name = "scatterplot",
     variant = platform_variant()
   )
 

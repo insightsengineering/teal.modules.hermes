@@ -23,7 +23,7 @@ test_that("volcanoplot module works as expected in the test app", {
 
   app <- AppDriver$new(
     app_dir = "volcanoplot",
-    name = "volcanoplot module works as expected in the test app",
+    name = "volcanoplot",
     variant = platform_variant()
   )
 

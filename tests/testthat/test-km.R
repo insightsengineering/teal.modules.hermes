@@ -29,7 +29,7 @@ test_that("km module works as expected in the test app", {
 
   app <- AppDriver$new(
     app_dir = "km",
-    name = "km module works as expected in the test app",
+    name = "km",
     variant = platform_variant()
   )
 

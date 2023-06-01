@@ -28,7 +28,7 @@ test_that("barplot module works as expected in the test app", {
 
   app <- AppDriver$new(
     app_dir = "barplot",
-    name = "barplot module works as expected in the test app",
+    name = "barplot",
     variant = platform_variant()
   )
 

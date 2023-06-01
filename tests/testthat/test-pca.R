@@ -23,7 +23,7 @@ test_that("pca module works as expected in the test app", {
 
   app <- AppDriver$new(
     app_dir = "pca",
-    name = "pca module works as expected in the test app",
+    name = "pca",
     variant = platform_variant()
   )
 
@@ -55,7 +55,7 @@ test_that("pca module works as expected in the test app", {
   res <- app$get_value(input = ns("show_matrix"))
   expect_true(res)
 
-  app$expect_select_screenshot(ns("plot_pca-plot_out_main"))
+  app$expect_select_screenshot(ns("plot_pca-plot_main"))
 
   # Add a gene filter and deselect everything and check that it does not crash.
   app$set_inputs(!!ns2("add_MAE_filter-hd1-row_to_add") := "symbol")
@@ -84,7 +84,7 @@ test_that("pca module works as expected in the test app", {
   res <- app$get_value(input = ns("show_matrix"))
   expect_true(res)
 
-  app$expect_select_screenshot(ns("plot_cor-plot_out_main"))
+  app$expect_select_screenshot(ns("plot_cor-plot_main"))
   app$expect_select_screenshot(ns("table_cor"))
 
   # Now update experiment name, assay name, cluster & matrix option on correlation tab.
@@ -96,7 +96,7 @@ test_that("pca module works as expected in the test app", {
   )
 
   # app$wait_for_idle()
-  app$expect_select_screenshot(ns("plot_cor-plot_out_main"))
+  app$expect_select_screenshot(ns("plot_cor-plot_main"))
 
   # Now go back to pca tab and update experiment, assay name, variance % option,
   # label option and matrix option.
@@ -111,7 +111,7 @@ test_that("pca module works as expected in the test app", {
   )
 
   app$wait_for_idle()
-  app$expect_select_screenshot(ns("plot_pca-plot_out_main"))
+  app$expect_select_screenshot(ns("plot_pca-plot_main"))
   app$expect_select_screenshot(ns("table_pca"))
 
   # Update experiment / assay (ensure xvar and yvar revert back to PC1 and PC2, assay to counts)
@@ -171,7 +171,7 @@ test_that("pca module works as expected in the test app", {
   res <- app$get_value(input = ns("y_var"))
   expect_identical(res, "2")
 
-  app$expect_select_screenshot(ns("plot_pca-plot_out_main"))
+  app$expect_select_screenshot(ns("plot_pca-plot_main"))
 
   # Update to cor tab.
   app$set_inputs(!!ns("tab_selected") := "PCA")
@@ -187,7 +187,7 @@ test_that("pca module works as expected in the test app", {
   res <- app$wait_for_value(input = ns("n_top"))
   expect_identical(res, 500L)
 
-  app$expect_select_screenshot(ns("plot_pca-plot_out_main"))
+  app$expect_select_screenshot(ns("plot_pca-plot_main"))
 
   # Change the number of top genes.
   app$set_inputs(!!ns("n_top") := 777L)
@@ -202,12 +202,12 @@ test_that("pca module works as expected in the test app", {
   # Increase number of top genes to maximum.
   app$set_inputs(!!ns("n_top") := 2500L)
   app$wait_for_idle()
-  app$expect_select_screenshot(ns("plot_pca-plot_out_main"))
+  app$expect_select_screenshot(ns("plot_pca-plot_main"))
 
   # Switch off gene filtering and check that table is still the same.
   app$set_inputs(!!ns("filter_top") := FALSE)
   app$wait_for_idle()
-  app$expect_select_screenshot(ns("plot_pca-plot_out_main"))
+  app$expect_select_screenshot(ns("plot_pca-plot_main"))
 
   # Go back to first experiment and check that n_top stayed the same.
   app$set_inputs(!!ns("experiment-name") := "hd1")

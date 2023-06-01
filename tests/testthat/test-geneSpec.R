@@ -40,12 +40,14 @@ test_that("geneSpec module works as expected in the test app", {
 
   app <- AppDriver$new(
     app_dir = "geneSpec",
-    name = "geneSpec module works as expected in the test app",
+    name = "geneSpec",
     variant = platform_variant()
   )
 
   app$wait_for_idle(timeout = 20000)
-  ns <- module_ns_shiny2(app)
+
+  ns <- NS("teal-main_ui-root-genespec_example-module")
+  # ns <- module_ns_shiny2(app)
 
   res <- app$get_value(input = ns("my_genes-genes"))
   expect_null(res)
