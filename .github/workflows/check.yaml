@@ -27,6 +27,7 @@ jobs:
     with:
       additional-env-vars: |
         _R_CHECK_CRAN_INCOMING_REMOTE_=false
+        NOT_CRAN=true
       additional-r-cmd-check-params: --as-cran
   coverage:
     name: Coverage 📔

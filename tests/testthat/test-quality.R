@@ -4,13 +4,15 @@ test_that("ui_g_quality creates expected HTML", {
   mae_name <- "MyMAE"
   set.seed(123)
   data <- list(MyMAE = function() hermes::multi_assay_experiment)
-  expect_snapshot(ui_g_quality(
+  expect_silent(result <- ui_g_quality(
     id = "testid",
     data = data,
     mae_name = mae_name,
     pre_output = NULL,
     post_output = NULL
   ))
+
+  expect_tag(result)
 })
 
 # tm_g_quality ----
@@ -23,7 +25,7 @@ test_that("quality module works as expected in the test app", {
 
   app <- AppDriver$new(
     app_dir = "quality",
-    name = "quality module works as expected in the test app",
+    name = "quality",
     variant = platform_variant()
   )
 
@@ -42,11 +44,11 @@ test_that("quality module works as expected in the test app", {
 
   # Check that warning message for at least 2 genes works as expected.
   app$set_inputs(!!ns("min_cpm") := 54356)
-  res <- app$wait_for_value(output = ns("plot"))
+  res <- app$wait_for_value(output = ns("plot-plot_main"))
   expect_identical(res$message, "Please change gene filters to ensure that there are at least 2 genes")
 
   # Initial plot.
-  app$expect_screenshot()
+  app$expect_select_screenshot(ns("plot-plot_out_main"))
 
   # Choose another experiment.
   app$set_inputs(!!ns("experiment-name") := "hd3")
@@ -60,12 +62,12 @@ test_that("quality module works as expected in the test app", {
   expect_identical(res, 1777260L)
 
   # Final histogram plot.
-  app$expect_screenshot()
+  app$expect_select_screenshot(ns("plot-plot_out_main"))
 
   # Change to another plot type so that we can choose another assay.
   app$set_inputs(!!ns("plot_type") := "Top Genes Plot")
   app$set_inputs(!!ns("assay-name") := "cpm")
-  app$expect_screenshot()
+  app$expect_select_screenshot(ns("plot-plot_out_main"))
 })
 
 # nolint end

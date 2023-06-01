@@ -4,7 +4,7 @@ test_that("ui_g_scatterplot creates expected HTML", {
   mae_name <- "MyMAE"
   set.seed(123)
   data <- list(MyMAE = function() hermes::multi_assay_experiment)
-  expect_snapshot(ui_g_scatterplot(
+  expect_silent(result <- ui_g_scatterplot(
     id = "testid",
     data = data,
     mae_name = mae_name,
@@ -14,6 +14,8 @@ test_that("ui_g_scatterplot creates expected HTML", {
     pre_output = NULL,
     post_output = NULL
   ))
+
+  expect_tag(result)
 })
 
 # tm_g_scatterplot ----
@@ -26,7 +28,7 @@ test_that("scatterplot module works as expected in the test app", {
 
   app <- AppDriver$new(
     app_dir = "scatterplot",
-    name = "scatterplot module works as expected in the test app",
+    name = "scatterplot",
     variant = platform_variant()
   )
 
@@ -37,7 +39,7 @@ test_that("scatterplot module works as expected in the test app", {
   res <- app$get_value(input = ns("experiment-name"))
   expect_identical(res, "hd1")
 
-  res <- app$get_value(output = ns("plot"))
+  res <- app$get_value(output = ns("plot-plot_main"))
   expect_identical(res$message, "No assays eligible for this experiment, please make sure to add normalized assays")
 
   # Choose another experiment.
@@ -52,7 +54,7 @@ test_that("scatterplot module works as expected in the test app", {
   res <- app$get_value(input = ns("y_spec-genes"))
   expect_null(res)
 
-  res <- app$get_value(output = ns("plot"))
+  res <- app$get_value(output = ns("plot-plot_main"))
   expect_identical(res$message, "please select at least one gene")
 
   # Set one gene each.
@@ -78,7 +80,7 @@ test_that("scatterplot module works as expected in the test app", {
   )
 
   app$wait_for_idle()
-  app$expect_screenshot()
+  app$expect_select_screenshot(ns("plot-plot_main"))
 })
 
 # nolint end

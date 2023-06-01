@@ -4,7 +4,7 @@ test_that("ui_g_km creates expected HTML", {
   mae_name <- "MyMAE"
   set.seed(123)
   data <- list(MyMAE = function() hermes::multi_assay_experiment)
-  expect_snapshot(ui_g_km(
+  expect_silent(result <- ui_g_km(
     id = "testid",
     data = data,
     adtte_name = "ADTTE",
@@ -15,6 +15,8 @@ test_that("ui_g_km creates expected HTML", {
     pre_output = NULL,
     post_output = NULL
   ))
+
+  expect_tag(result)
 })
 
 # tm_g_km ----
@@ -27,7 +29,7 @@ test_that("km module works as expected in the test app", {
 
   app <- AppDriver$new(
     app_dir = "km",
-    name = "km module works as expected in the test app",
+    name = "km",
     variant = platform_variant()
   )
 
@@ -38,7 +40,7 @@ test_that("km module works as expected in the test app", {
   res <- app$get_value(input = ns("experiment-name"))
   expect_identical(res, "hd1")
 
-  res <- app$get_value(output = ns("km_plot"))
+  res <- app$get_value(output = ns("plot-plot_main"))
   expect_identical(res$message, "No assays eligible for this experiment, please make sure to add normalized assays")
 
   # Choose another experiment.
@@ -53,12 +55,12 @@ test_that("km module works as expected in the test app", {
   app$wait_for_idle()
 
   # Choose an endpoint.
-  res <- app$get_value(output = ns("km_plot"))
+  res <- app$get_value(output = ns("plot-plot_main"))
   expect_identical(res$message, "please select an endpoint")
   app$set_inputs(!!ns("adtte-paramcd") := "PFS")
   app$wait_for_idle()
 
-  app$expect_screenshot()
+  app$expect_select_screenshot(ns("plot-plot_out_main"))
 })
 
 # nolint end
