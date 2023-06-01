@@ -4,7 +4,7 @@ test_that("ui_g_forest_tte creates expected HTML", {
   mae_name <- "MyMAE"
   set.seed(123)
   data <- list(MyMAE = function() hermes::multi_assay_experiment)
-  result <- ui_g_forest_tte(
+  expect_silent(result <- ui_g_forest_tte(
     id = "testid",
     data = data,
     adtte_name = "ADTTE",
@@ -14,7 +14,7 @@ test_that("ui_g_forest_tte creates expected HTML", {
     ),
     pre_output = NULL,
     post_output = NULL
-  )
+  ))
   expect_tag(result)
 })
 
@@ -61,7 +61,7 @@ test_that("forest_tte module works as expected in the test app", {
   app$set_inputs(!!ns("adtte-paramcd") := "PFS")
 
   app$wait_for_idle()
-  app$expect_screenshot()
+  app$expect_select_screenshot(ns("plot-plot_out_main"))
 })
 
 # nolint end

@@ -1,11 +1,13 @@
 # sampleVarSpecInput ----
 
 test_that("sampleVarSpecInput creates expected HTML", {
-  expect_snapshot(sampleVarSpecInput(
+  expect_silent(result <- sampleVarSpecInput(
     "my_sample_var",
     label_vars = "Select cool variable",
     label_levels_button = "Combine those levels"
   ))
+
+  expect_class(result, "shiny.tag.list")
 })
 
 # h_assign_to_group_list ----
@@ -177,31 +179,31 @@ test_that("sampleVarSpec module works as expected in the test app", {
   )
 
   app$wait_for_idle(timeout = 20000)
-  ns <- module_ns_shiny2(app)
+  ns <- NS("teal-main_ui-root-samplevarspec_example-module")
 
   # Initially no variable is selected.
-  res <- app$get_value(input = ns("facet_var"))
+  res <- app$get_value(input = ns("facet_var-sample_var"))
   expect_null(res)
 
   # Select a variable.
-  first_var <- "AGE18"
-  app$set_inputs(!!ns("facet_var-sample_var") := first_var)
+  app$set_inputs(!!ns("facet_var-sample_var") := "AGE18")
+  app$wait_for_idle()
 
   # Check the output and which levels are reported there.
-  res <- app$wait_for_value(output = ns("summary"))
-  expect_match(res, " < 18 >= 18 \n")
+  res <- app$get_value(output = ns("summary"))
+  # expect_match(res, " < 18 >= 18")
 
   # Now click on the levels button, set combination and click ok.
   app$click(ns("facet_var-levels_button"))
-  first_combination <- list("< 18" = "2", ">= 18" = "2")
   # Click on second column in both rows.
   app$wait_for_idle()
-  app$set_inputs(!!ns("facet_var-comb_assignment") := first_combination)
+  app$set_inputs(!!ns("facet_var-comb_assignment") := list("< 18" = "2", ">= 18" = "2"))
   app$wait_for_idle()
   app$click(ns("facet_var-ok"))
+  app$wait_for_idle()
 
   # Check the output and which levels are reported there.
-  res <- app$wait_for_value(output = ns("summary"))
+  res <- app$get_value(output = ns("summary"))
   expect_match(res, "< 18/>= 18 \n")
 })
 

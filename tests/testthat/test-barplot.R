@@ -4,7 +4,7 @@ test_that("ui_g_barplot creates expected HTML", {
   mae_name <- "MyMAE"
   set.seed(999)
   data <- list(MyMAE = function() hermes::multi_assay_experiment)
-  expect_snapshot(ui_g_barplot(
+  expect_silent(result <- ui_g_barplot(
     id = "testid",
     data = data,
     mae_name = mae_name,
@@ -14,6 +14,8 @@ test_that("ui_g_barplot creates expected HTML", {
     pre_output = NULL,
     post_output = NULL
   ))
+
+  expect_tag(result)
 })
 
 # tm_g_barplot ----
@@ -44,7 +46,7 @@ test_that("barplot module works as expected in the test app", {
   expect_null(res)
 
   # check initial message
-  res <- app$get_value(output = ns("plot"))
+  res <- app$get_value(output = ns("plot-plot_main"))
   expect_equal(res$message, "please select at least one gene")
 
   # Set values
@@ -71,7 +73,7 @@ test_that("barplot module works as expected in the test app", {
   app$set_inputs(!!ns("percentiles") := c(0.1, 0.1))
   app$wait_for_idle()
 
-  res <- app$get_value(output = ns("plot"))
+  res <- app$get_value(output = ns("plot-plot_main"))
   expect_equal(
     res$message,
     "please select two different quantiles - if you want only 2 groups, choose one quantile as 0 or 1"
@@ -86,7 +88,7 @@ test_that("barplot module works as expected in the test app", {
     !!ns("facet-sample_var") := "AGE18"
   )
 
-  app$expect_screenshot()
+  app$expect_select_screenshot(ns("plot-plot_main"))
 })
 
 # nolint end

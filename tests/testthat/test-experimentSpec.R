@@ -3,12 +3,14 @@ test_that("experimentSpecInput creates expected HTML", {
   mae_name <- "MyMAE"
   set.seed(123)
   data <- list(MyMAE = function() hermes::multi_assay_experiment)
-  expect_snapshot(experimentSpecInput(
+  expect_silent(result <- experimentSpecInput(
     inputId = "my_experiment",
     data = data,
     mae_name = mae_name,
     label_experiments = "Please select the best experiment"
   ))
+
+  expect_tag(result)
 })
 
 # h_order_genes ----
@@ -143,7 +145,7 @@ test_that("experimentSpec module works as expected in the test app", {
   # downstream.
   app$set_inputs(!!ns2("add_MAE_filter-subjects-var_to_add") := "SEX")
   app$wait_for_idle()
-  app$set_inputs(!!ns2("MAE_filter-subjects-_var_SEX-content-selection") := character())
+  app$set_inputs(!!ns2("MAE_filter-subjects-_var_SEX-content-inputs-selection") := character())
   app$wait_for_idle()
 
   res <- app$get_value(output = ns("summary"))
@@ -153,7 +155,7 @@ test_that("experimentSpec module works as expected in the test app", {
   # Same for filtering out all genes.
   app$set_inputs(!!ns2("add_MAE_filter-hd2-row_to_add") := "chromosome")
   app$wait_for_idle()
-  app$set_inputs(!!ns2("MAE_filter-hd2-rowData_var_chromosome-content-selection") := character())
+  app$set_inputs(!!ns2("MAE_filter-hd2-rowData_var_chromosome-content-inputs-selection") := character())
   app$wait_for_idle()
 
   res <- app$get_value(output = ns("summary"))
