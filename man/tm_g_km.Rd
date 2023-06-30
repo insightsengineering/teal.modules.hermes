@@ -5,7 +5,7 @@
 \alias{ui_g_km}
 \alias{srv_g_km}
 \alias{sample_tm_g_km}
-\title{Teal Module for \code{Kaplan-Meier} Plot}
+\title{Teal Module for Kaplan-Meier Plot}
 \usage{
 tm_g_km(
   label,
@@ -89,7 +89,7 @@ Shiny module to be used in the teal app.
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-This teal module produces a grid style \code{Kaplan-Meier} plot for data with
+This teal module produces a grid style Kaplan-Meier plot for data with
 \code{ADaM} structure.
 }
 \section{Functions}{
