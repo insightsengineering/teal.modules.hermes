@@ -120,11 +120,11 @@ assert_summary_funs <- function(x, null.ok = FALSE) { # nolint
 
 # assert_adtte_vars ----
 
-#' Check for ADTTE Variables
+#' Check for `ADTTE` Variables
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
-#' Check whether `x` is a list of ADTTE variables.
+#' Check whether `x` is a list of `ADTTE` variables.
 #'
 #' @inheritParams assertion_arguments
 #' @seealso [`assertions`] for more details.

@@ -6,7 +6,7 @@
 [![Code Coverage 📔](https://raw.githubusercontent.com/insightsengineering/teal.modules.hermes/_xml_coverage_reports/data/main/badge.svg)](https://raw.githubusercontent.com/insightsengineering/teal.modules.hermes/_xml_coverage_reports/data/main/coverage.xml)
 
 ![GitHub forks](https://img.shields.io/github/forks/insightsengineering/teal.modules.hermes?style=social)
-![GitHub Repo stars](https://img.shields.io/github/stars/insightsengineering/teal.modules.hermes?style=social)
+![GitHub repo stars](https://img.shields.io/github/stars/insightsengineering/teal.modules.hermes?style=social)
 
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/insightsengineering/teal.modules.hermes)
 ![GitHub contributors](https://img.shields.io/github/contributors/insightsengineering/teal.modules.hermes)
@@ -24,21 +24,21 @@
 ### What is `teal`?
 
 `teal` is a shiny-based interactive exploration framework for analyzing clinical trials data. `teal` currently provides a dynamic filtering facility and diverse data viewers. `teal` shiny applications are built using standard [shiny modules](https://shiny.rstudio.com/articles/modules.html).
-See [github](https://insightsengineering.github.io/teal) for more details.
+See [`teal` page](https://insightsengineering.github.io/teal) for more details.
 
 ### What is `hermes`?
 
 `hermes` facilitates preprocessing, analyzing, and reporting of RNA-seq data.
-The core functionality is built on the BioConductor ecosystem, especially the `SummarizedExperiment` class from which the `HermesData` class inherits.
+The core functionality is built on the `BioConductor` ecosystem, especially the `SummarizedExperiment` class from which the `HermesData` class inherits.
 See the [vignette](https://insightsengineering.github.io/hermes/articles/hermes.html) for more details.
 
 ### So what is then `teal.modules.hermes`?
 
-`teal.modules.hermes` provides `teal` modules (which can be used as part of any `teal` app), for interactive RNA-seq data analysis using `hermes`. Again it is heavily built on the BioConductor classes, in particular `MultiAssayExperiment` (MAE) which is expected to contain the `HermesData` experiments.
+`teal.modules.hermes` provides `teal` modules (which can be used as part of any `teal` app), for interactive RNA-seq data analysis using `hermes`. Again it is heavily built on the `BioConductor` classes, in particular `MultiAssayExperiment` (MAE) which is expected to contain the `HermesData` experiments.
 
 ## Installation
 
-For releases from August 2022 it is recommended that you [create and use a Github PAT](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token) to install the latest version of this package. Once you have the PAT, run the following:
+For releases from August 2022 it is recommended that you [create and use a GitHub PAT](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token) to install the latest version of this package. Once you have the PAT, run the following:
 
 ```r
 Sys.setenv(GITHUB_PAT = "your_access_token_here")

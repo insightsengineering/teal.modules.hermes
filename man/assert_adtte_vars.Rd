@@ -2,7 +2,7 @@
 % Please edit documentation in R/checkmate.R
 \name{assert_adtte_vars}
 \alias{assert_adtte_vars}
-\title{Check for ADTTE Variables}
+\title{Check for \code{ADTTE} Variables}
 \usage{
 assert_adtte_vars(x)
 }
@@ -12,7 +12,7 @@ assert_adtte_vars(x)
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-Check whether \code{x} is a list of ADTTE variables.
+Check whether \code{x} is a list of \code{ADTTE} variables.
 }
 \examples{
 assert_adtte_vars(list(aval = "AV", is_event = "EV", paramcd = "PC", usubjid = "ID", avalu = "u"))

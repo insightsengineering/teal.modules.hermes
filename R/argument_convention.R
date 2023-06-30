@@ -13,9 +13,9 @@
 #' @param inputId (`string`)\cr
 #'   the ID used to call the module input.
 #' @param adtte_name (`string`)\cr
-#'   name of the ADTTE dataset.
+#'   name of the `ADTTE` dataset.
 #' @param adtte_vars (named `list` of `string`)\cr
-#'   names of the variables to use in the ADTTE dataset. It should comprise elements:
+#'   names of the variables to use in the `ADTTE` dataset. It should comprise elements:
 #'   - `aval`: the numeric time-to-event variable.
 #'   - `avalu`: the variable holding the unit of `aval`.
 #'   - `is_event`: the logical event variable. It needs to be `TRUE`
@@ -63,7 +63,7 @@ NULL
 #' @param add (`AssertCollection` or `NULL`)\cr collection to store
 #'   assertion messages, see [`checkmate::AssertCollection`].
 #' @param info (`string`)\cr extra information to be included in the
-#'   message for the testthat reporter, see [testthat::expect_that()].
+#'   message for the `testthat` reporter, see [testthat::expect_that()].
 #' @param label (`string`)\cr name of the checked object to print in
 #'   messages. Defaults to the heuristic implemented in [checkmate::vname()].
 #'

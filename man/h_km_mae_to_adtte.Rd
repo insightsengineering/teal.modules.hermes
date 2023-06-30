@@ -2,7 +2,7 @@
 % Please edit documentation in R/adtteSpec.R
 \name{h_km_mae_to_adtte}
 \alias{h_km_mae_to_adtte}
-\title{Data Preprocessing for ADTTE Module}
+\title{Data Preprocessing for \code{ADTTE} Module}
 \usage{
 h_km_mae_to_adtte(
   adtte,

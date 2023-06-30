@@ -21,7 +21,7 @@
 * Rewrote modules to use `moduleServer` and updated call to `plot_with_settings_srv` after changes in `teal.devel`.
 * Replaced calls to `teal::root_modules` with `teal::modules` following deprecation of `teal::root_modules`.
 * Added basic logging to the modules.
-* Fixed the `geneSpecInput` so that the hermes app doesn't fail anymore (on chrome) on an experiment with no genes.
+* Fixed the `geneSpecInput` so that the `hermes` app doesn't fail anymore (on chrome) on an experiment with no genes.
 
 # teal.modules.hermes 0.1.1
 
@@ -43,7 +43,7 @@
 * `tm_g_barplot` is a barplot module for RNA-seq gene expression analysis.
 * `tm_g_boxplot` is a boxplot module for RNA-seq gene expression analysis.
 * `tm_g_forest_tte` is a survival forest plot module to analyze RNA-seq gene expression data together with survival data.
-* `tm_g_km` is a Kaplan-Meier plot module to analyze RNA-seq gene expression data together with survival data.
+* `tm_g_km` is a `Kaplan-Meier` plot module to analyze RNA-seq gene expression data together with survival data.
 * `tm_g_pca` is a principal components analysis plot module for RNA-seq gene expression analysis.
 * `tm_g_quality` is a quality control module for RNA-seq gene expression data.
 * `tm_g_scatterplot` is a scatterplot module for RNA-seq gene expression analysis.
