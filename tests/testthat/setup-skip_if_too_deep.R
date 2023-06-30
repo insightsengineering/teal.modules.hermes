@@ -22,7 +22,7 @@ testing_depth <- function() { # nolint # nousage
   testing_depth
 }
 
-#' Skipping tests in the testthat pipeline under specific scope
+#' Skipping tests in the `testthat` pipeline under specific scope
 #' @description This function should be used per each \code{testthat::test_that} call.
 #'   Each of the call should specify an appropriate depth value.
 #'   The depth value will set the appropriate scope so more/less time consuming tests could be recognized.

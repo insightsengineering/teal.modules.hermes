@@ -3,7 +3,7 @@
 #' @description `r lifecycle::badge("experimental")`
 #'
 #' This teal module produces a grid style Kaplan-Meier plot for data with
-#' ADaM structure.
+#' `ADaM` structure.
 #'
 #' @inheritParams module_arguments
 #'

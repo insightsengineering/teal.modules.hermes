@@ -1,4 +1,4 @@
-#' Data Preprocessing for ADTTE Module
+#' Data Preprocessing for `ADTTE` Module
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
@@ -88,11 +88,11 @@ h_km_mae_to_adtte <- function(adtte,
   )
 }
 
-#' Module Input for ADTTE Specification
+#' Module Input for `ADTTE` Specification
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
-#' This defines the input for the ADTTE specification.
+#' This defines the input for the `ADTTE` specification.
 #'
 #' @inheritParams module_arguments
 #' @param label_paramcd (`string`)\cr label for the endpoint (`PARAMCD`) selection.
@@ -114,12 +114,12 @@ adtteSpecInput <- function(inputId, # nolint
   )
 }
 
-#' Module Server for ADTTE Specification
+#' Module Server for `ADTTE` Specification
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
-#' This defines the server part for the ADTTE specification. The resulting data
-#' set `binned_adtte_subset` contains the subset of ADTTE selected by the time-to-event
+#' This defines the server part for the `ADTTE` specification. The resulting data
+#' set `binned_adtte_subset` contains the subset of `ADTTE` selected by the time-to-event
 #' endpoint, joined together with the gene information extracted from specified assay
 #' and experiment, as numeric and factor columns. The factor column is created by binning
 #' the numeric column according to the quantile cutoffs specified in `probs`.
@@ -133,7 +133,7 @@ adtteSpecInput <- function(inputId, # nolint
 #'   into.
 #'
 #' @return List with the following elements:
-#'   - `binned_adtte_subset`: reactive containing the joined ADTTE and gene data.
+#'   - `binned_adtte_subset`: reactive containing the joined `ADTTE` and gene data.
 #'   - `gene_col`: reactive containing the string with the column name of the original
 #'        numeric gene variable.
 #'   - `gene_factor`: string with the variable name for the binned gene data.

@@ -2,7 +2,7 @@
 % Please edit documentation in R/adtteSpec.R
 \name{adtteSpecInput}
 \alias{adtteSpecInput}
-\title{Module Input for ADTTE Specification}
+\title{Module Input for \code{ADTTE} Specification}
 \usage{
 adtteSpecInput(inputId, label_paramcd = "Select Endpoint")
 }
@@ -18,7 +18,7 @@ The UI part.
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-This defines the input for the ADTTE specification.
+This defines the input for the \code{ADTTE} specification.
 }
 \seealso{
 \code{\link[=adtteSpecServer]{adtteSpecServer()}} for the module server and a complete example.

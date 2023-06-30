@@ -2,7 +2,7 @@
 % Please edit documentation in R/adtteSpec.R
 \name{adtteSpecServer}
 \alias{adtteSpecServer}
-\title{Module Server for ADTTE Specification}
+\title{Module Server for \code{ADTTE} Specification}
 \usage{
 adtteSpecServer(
   id,
@@ -28,10 +28,10 @@ functions, holding all the data sets provided in the app initialization.}
 name of the MAE data used in the teal module.}
 
 \item{adtte_name}{(\code{string})\cr
-name of the ADTTE dataset.}
+name of the \code{ADTTE} dataset.}
 
 \item{adtte_vars}{(named \code{list} of \code{string})\cr
-names of the variables to use in the ADTTE dataset. It should comprise elements:
+names of the variables to use in the \code{ADTTE} dataset. It should comprise elements:
 \itemize{
 \item \code{aval}: the numeric time-to-event variable.
 \item \code{avalu}: the variable holding the unit of \code{aval}.
@@ -57,7 +57,7 @@ into.}
 \value{
 List with the following elements:
 \itemize{
-\item \code{binned_adtte_subset}: reactive containing the joined ADTTE and gene data.
+\item \code{binned_adtte_subset}: reactive containing the joined \code{ADTTE} and gene data.
 \item \code{gene_col}: reactive containing the string with the column name of the original
 numeric gene variable.
 \item \code{gene_factor}: string with the variable name for the binned gene data.
@@ -67,8 +67,8 @@ numeric gene variable.
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-This defines the server part for the ADTTE specification. The resulting data
-set \code{binned_adtte_subset} contains the subset of ADTTE selected by the time-to-event
+This defines the server part for the \code{ADTTE} specification. The resulting data
+set \code{binned_adtte_subset} contains the subset of \code{ADTTE} selected by the time-to-event
 endpoint, joined together with the gene information extracted from specified assay
 and experiment, as numeric and factor columns. The factor column is created by binning
 the numeric column according to the quantile cutoffs specified in \code{probs}.

@@ -15,10 +15,10 @@ menu item label of the module in the teal app.}
 the ID used to call the module input.}
 
 \item{adtte_name}{(\code{string})\cr
-name of the ADTTE dataset.}
+name of the \code{ADTTE} dataset.}
 
 \item{adtte_vars}{(named \code{list} of \code{string})\cr
-names of the variables to use in the ADTTE dataset. It should comprise elements:
+names of the variables to use in the \code{ADTTE} dataset. It should comprise elements:
 \itemize{
 \item \code{aval}: the numeric time-to-event variable.
 \item \code{avalu}: the variable holding the unit of \code{aval}.

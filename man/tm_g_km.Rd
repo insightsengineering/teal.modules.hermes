@@ -41,13 +41,13 @@ sample_tm_g_km()
 menu item label of the module in the teal app.}
 
 \item{adtte_name}{(\code{string})\cr
-name of the ADTTE dataset.}
+name of the \code{ADTTE} dataset.}
 
 \item{mae_name}{(\code{string})\cr
 name of the MAE data used in the teal module.}
 
 \item{adtte_vars}{(named \code{list} of \code{string})\cr
-names of the variables to use in the ADTTE dataset. It should comprise elements:
+names of the variables to use in the \code{ADTTE} dataset. It should comprise elements:
 \itemize{
 \item \code{aval}: the numeric time-to-event variable.
 \item \code{avalu}: the variable holding the unit of \code{aval}.
@@ -90,7 +90,7 @@ Shiny module to be used in the teal app.
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 This teal module produces a grid style Kaplan-Meier plot for data with
-ADaM structure.
+\code{ADaM} structure.
 }
 \section{Functions}{
 \itemize{
