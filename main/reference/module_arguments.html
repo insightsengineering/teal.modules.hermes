@@ -12,7 +12,7 @@ hermes teal modules."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.hermes</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.4.9011</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.4.9012</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -29,14 +29,6 @@ hermes teal modules."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.hermes/main">main</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.hermes/latest-tag">latest-tag</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.hermes/v0.1.4">v0.1.4</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -83,12 +75,12 @@ the ID used to call the module input.</p></dd>
 
 <dt>adtte_name</dt>
 <dd><p>(<code>string</code>)<br>
-name of the ADTTE dataset.</p></dd>
+name of the <code>ADTTE</code> dataset.</p></dd>
 
 
 <dt>adtte_vars</dt>
 <dd><p>(named <code>list</code> of <code>string</code>)<br>
-names of the variables to use in the ADTTE dataset. It should comprise elements:</p><ul><li><p><code>aval</code>: the numeric time-to-event variable.</p></li>
+names of the variables to use in the <code>ADTTE</code> dataset. It should comprise elements:</p><ul><li><p><code>aval</code>: the numeric time-to-event variable.</p></li>
 <li><p><code>avalu</code>: the variable holding the unit of <code>aval</code>.</p></li>
 <li><p><code>is_event</code>: the logical event variable. It needs to be <code>TRUE</code>
 when there was an observed event, and <code>FALSE</code> if the time is censored without
