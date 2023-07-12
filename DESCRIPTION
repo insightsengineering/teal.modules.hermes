@@ -1,8 +1,8 @@
 Type: Package
 Package: teal.modules.hermes
 Title: RNA-Seq Analysis Modules to Add to a Teal Application
-Version: 0.1.4.9013
-Date: 2023-06-30
+Version: 0.1.4.9014
+Date: 2023-07-12
 Authors@R: c(
     person("Daniel", "Sabanés Bové", , "daniel.sabanes_bove@roche.com", role = c("aut", "cre")),
     person("Nikolas", "Burkoff", role = "aut"),
@@ -81,6 +81,6 @@ Config/Needs/website: insightsengineering/nesttemplate
 Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-US
+LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
-LazyData: true
