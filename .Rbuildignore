@@ -43,3 +43,4 @@ coverage.*
 ^\.markdownlint\.json$
 ^\.markdownlintignore$
 ^\.pre-commit-config\.yaml$
+data-raw/data.R
