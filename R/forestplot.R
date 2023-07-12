@@ -12,14 +12,14 @@
 #'
 #' @examples
 #' mae <- hermes::multi_assay_experiment
-#' adtte <- scda::synthetic_cdisc_data("rcd_2022_06_27")$adtte %>%
+#' adtte <- teal.modules.hermes::rADTTE %>%
 #'   dplyr::mutate(is_event = (.data$CNSR == 0))
 #'
 #' data <- teal_data(
 #'   dataset(
 #'     "ADTTE",
 #'     adtte,
-#'     code = "adtte <- scda::synthetic_cdisc_data('rcd_2021_07_07')$adtte %>%
+#'     code = "adtte <- teal.modules.hermes::rADTTE %>%
 #'       dplyr::mutate(is_event = (.data$CNSR == 0))"
 #'   ),
 #'   dataset("MAE", mae)
@@ -286,15 +286,15 @@ srv_g_forest_tte <- function(id,
 sample_tm_g_forest_tte <- function() { # nolint
 
   mae <- hermes::multi_assay_experiment
-  adtte <- scda::synthetic_cdisc_data("rcd_2022_06_27")$adtte %>%
+  adtte <- teal.modules.hermes::rADTTE %>%
     dplyr::mutate(is_event = .data$CNSR == 0)
 
   data <- teal.data::teal_data(
     teal.data::dataset(
       "ADTTE",
       adtte,
-      code = 'adtte <- scda::synthetic_cdisc_data("rcd_2022_06_27")$adtte %>%
-        dplyr::mutate(is_event = .data$CNSR == 0)'
+      code = "adtte <- teal.modules.hermes::rADTTE %>%
+        dplyr::mutate(is_event = .data$CNSR == 0)"
     ),
     teal.data::dataset("MAE", mae)
   )

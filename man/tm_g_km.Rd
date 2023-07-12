@@ -5,7 +5,7 @@
 \alias{ui_g_km}
 \alias{srv_g_km}
 \alias{sample_tm_g_km}
-\title{Teal Module for Kaplan-Meier Plot}
+\title{Teal Module for \code{Kaplan-Meier} Plot}
 \usage{
 tm_g_km(
   label,
@@ -89,7 +89,7 @@ Shiny module to be used in the teal app.
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-This teal module produces a grid style Kaplan-Meier plot for data with
+This teal module produces a grid style \code{Kaplan-Meier} plot for data with
 \code{ADaM} structure.
 }
 \section{Functions}{
@@ -103,14 +103,14 @@ This teal module produces a grid style Kaplan-Meier plot for data with
 }}
 \examples{
 mae <- hermes::multi_assay_experiment
-adtte <- scda::synthetic_cdisc_data("rcd_2022_06_27")$adtte \%>\%
+adtte <- teal.modules.hermes::rADTTE \%>\%
   dplyr::mutate(is_event = (.data$CNSR == 0))
 
 data <- teal_data(
   dataset(
     "ADTTE",
     adtte,
-    code = "adtte <- scda::synthetic_cdisc_data('rcd_2021_07_07')$adtte \%>\%
+    code = "adtte <- teal.modules.hermes::rADTTE \%>\%
       dplyr::mutate(is_event = (.data$CNSR == 0))"
   ),
   dataset("MAE", mae)

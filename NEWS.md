@@ -1,5 +1,7 @@
 # teal.modules.hermes 0.1.4.9013
 
+* Removed `scda` from dependencies.
+
 ### Breaking changes
 
 * Replaced `datasets` argument containing `FilteredData` with the new arguments `data` (`tdata` object) and `filter_panel_api` (`FilterPanelAPI`).
@@ -43,7 +45,7 @@
 * `tm_g_barplot` is a barplot module for RNA-seq gene expression analysis.
 * `tm_g_boxplot` is a boxplot module for RNA-seq gene expression analysis.
 * `tm_g_forest_tte` is a survival forest plot module to analyze RNA-seq gene expression data together with survival data.
-* `tm_g_km` is a Kaplan-Meier plot module to analyze RNA-seq gene expression data together with survival data.
+* `tm_g_km` is a `Kaplan-Meier` plot module to analyze RNA-seq gene expression data together with survival data.
 * `tm_g_pca` is a principal components analysis plot module for RNA-seq gene expression analysis.
 * `tm_g_quality` is a quality control module for RNA-seq gene expression data.
 * `tm_g_scatterplot` is a scatterplot module for RNA-seq gene expression analysis.
