@@ -293,8 +293,8 @@ sample_tm_g_forest_tte <- function() { # nolint
     teal.data::dataset(
       "ADTTE",
       adtte,
-      code = 'adtte <- teal.modules.hermes::rADTTE %>%
-        dplyr::mutate(is_event = .data$CNSR == 0)'
+      code = "adtte <- teal.modules.hermes::rADTTE %>%
+        dplyr::mutate(is_event = .data$CNSR == 0)"
     ),
     teal.data::dataset("MAE", mae)
   )
