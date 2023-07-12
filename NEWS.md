@@ -1,5 +1,7 @@
 # teal.modules.hermes 0.1.4.9013
 
+* Removed `scda` from dependencies.
+
 ### Breaking changes
 
 * Replaced `datasets` argument containing `FilteredData` with the new arguments `data` (`tdata` object) and `filter_panel_api` (`FilterPanelAPI`).

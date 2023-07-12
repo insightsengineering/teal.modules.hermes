@@ -103,14 +103,14 @@ This teal module produces a grid style \code{Kaplan-Meier} plot for data with
 }}
 \examples{
 mae <- hermes::multi_assay_experiment
-adtte <- scda::synthetic_cdisc_data("rcd_2022_06_27")$adtte \%>\%
+adtte <- teal.modules.hermes::rADTTE \%>\%
   dplyr::mutate(is_event = (.data$CNSR == 0))
 
 data <- teal_data(
   dataset(
     "ADTTE",
     adtte,
-    code = "adtte <- scda::synthetic_cdisc_data('rcd_2021_07_07')$adtte \%>\%
+    code = "adtte <- teal.modules.hermes::rADTTE \%>\%
       dplyr::mutate(is_event = (.data$CNSR == 0))"
   ),
   dataset("MAE", mae)
