@@ -39,15 +39,14 @@ test_that("geneSpec module works as expected in the test app", {
   skip_if_too_deep(5)
 
   app <- AppDriver$new(
-    app_dir = "geneSpec",
+    app_dir = test_path("geneSpec"),
     name = "geneSpec",
     variant = platform_variant()
   )
 
   app$wait_for_idle(timeout = 20000)
 
-  ns <- NS("teal-main_ui-root-genespec_example-module")
-  # ns <- module_ns_shiny2(app)
+  ns <- module_ns_shiny2(app)
 
   res <- app$get_value(input = ns("my_genes-genes"))
   expect_null(res)
@@ -73,12 +72,12 @@ test_that("geneSpec module works as expected in the test app", {
   expect_identical(res, "mean(ABCF2, ABO, ..., ADAMTS5)")
 
   # Add chromosome filters for the first experiment.
-  app$set_inputs(!!ns2("add_MAE_filter-hd1-row_to_add") := "chromosome")
+  app$set_inputs(!!ns2("add-MAE-hd1-row_to_add") := "chromosome")
 
   # Lock the gene selection.
   app$set_inputs(!!ns("my_genes-lock_button") := TRUE)
   app$wait_for_idle()
-  app$set_inputs(!!ns2("MAE_filter-hd1-rowData_var_chromosome-content-inputs-selection") := c("1", "2"))
+  app$set_inputs(!!ns2("active-MAE-hd1-MAE_chromosome_hd1_subset-inputs-selection") := c("1", "2"))
   app$wait_for_idle()
 
   # Confirm that gene selection was not changed.
@@ -107,7 +106,7 @@ test_that("geneSpec module works as expected in the test app", {
   expect_identical(res, "mean(ACP1, ACTN2)")
 
   # Remove the filter.
-  app$click(ns2("MAE_filter-hd1-rowData_var_chromosome-content-remove"))
+  app$click(ns2("active-MAE-hd1-MAE_chromosome_hd1_subset-remove"))
 
   # Select a gene via text input.
   app$click(ns("my_genes-text_button"))

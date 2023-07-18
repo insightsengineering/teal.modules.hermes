@@ -23,7 +23,7 @@ test_that("boxplot module works as expected in the test app", {
   skip_if_too_deep(5)
 
   app <- AppDriver$new(
-    app_dir = "boxplot",
+    app_dir = test_path("boxplot"),
     name = "boxplot",
     variant = platform_variant()
   )

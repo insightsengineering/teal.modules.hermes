@@ -17,7 +17,7 @@ testing_depth <- function() { # nolint # nousage
     warning = function(warning) 3
   )
 
-  if (length(testing_depth) != 1 || is.na(testing_depth)) testing_depth <- 3
+  if (length(testing_depth) != 1 || is.na(testing_depth)) testing_depth <- 5
 
   testing_depth
 }

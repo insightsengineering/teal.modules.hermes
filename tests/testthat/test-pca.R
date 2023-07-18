@@ -22,7 +22,7 @@ test_that("pca module works as expected in the test app", {
   skip_if_too_deep(5)
 
   app <- AppDriver$new(
-    app_dir = "pca",
+    app_dir = test_path("pca"),
     name = "pca",
     variant = platform_variant()
   )
@@ -58,15 +58,15 @@ test_that("pca module works as expected in the test app", {
   app$expect_select_screenshot(ns("plot_pca-plot_main"))
 
   # Add a gene filter and deselect everything and check that it does not crash.
-  app$set_inputs(!!ns2("add_MAE_filter-hd1-row_to_add") := "symbol")
+  app$set_inputs(!!ns2("add-MAE-hd1-row_to_add") := "symbol")
   app$wait_for_idle()
-  app$set_inputs(!!ns2("MAE_filter-hd1-rowData_var_symbol-content-inputs-selection") := character())
+  app$set_inputs(!!ns2("active-MAE-hd1-MAE_symbol_hd1_subset-inputs-selection") := character())
   app$wait_for_idle()
   res <- app$get_value(output = ns("plot_pca-plot_main"))
   expect_match(res$message, "No genes or samples included in this experiment, please adjust filters")
 
   # Remove filters
-  app$click(ns2("MAE_filter-hd1-rowData_var_symbol-content-remove"))
+  app$click(ns2("add-MAE-hd1-MAE_symbol_hd1_subset-content-remove"))
 
   # Update the tab selection.
   app$set_inputs(!!ns("tab_selected") := "PC and Sample Correlation")
@@ -160,9 +160,9 @@ test_that("pca module works as expected in the test app", {
     !!ns("show_matrix") := TRUE
   )
 
-  app$set_inputs(!!ns2("add_MAE_filter-subjects-var_to_add") := "SEX")
+  app$set_inputs(!!ns2("add-MAE-subjects-var_to_add") := "SEX")
   app$wait_for_idle()
-  app$set_inputs(!!ns2("MAE_filter-subjects-_var_SEX-content-inputs-selection") := "M")
+  app$set_inputs(!!ns2("active-MAE-subjects-MAE_SEX-inputs-selection") := "M")
 
   # Ensure xvar and yvar get resetted to pc1 and pc2.
   app$wait_for_idle(timeout = 20000)
@@ -175,7 +175,7 @@ test_that("pca module works as expected in the test app", {
 
   # Update to cor tab.
   app$set_inputs(!!ns("tab_selected") := "PCA")
-  app$set_inputs(!!ns2("MAE_filter-subjects-_var_SEX-content-inputs-selection") := "F")
+  app$set_inputs(!!ns2("active-MAE-subjects-MAE_SEX-inputs-selection") := "F")
   res <- app$wait_for_value(output = ns("plot_pca"))
   expect_identical(res$message, "Sample size is too small. PCA needs more than 2 samples.")
 

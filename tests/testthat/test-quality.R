@@ -24,7 +24,7 @@ test_that("quality module works as expected in the test app", {
   skip_if_too_deep(5)
 
   app <- AppDriver$new(
-    app_dir = "quality",
+    app_dir = test_path("quality"),
     name = "quality",
     variant = platform_variant()
   )
