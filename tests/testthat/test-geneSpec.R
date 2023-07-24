@@ -77,7 +77,15 @@ test_that("geneSpec module works as expected in the test app", {
   # Lock the gene selection.
   app$set_inputs(!!ns("my_genes-lock_button") := TRUE)
   app$wait_for_idle()
+  app$set_inputs(
+    !!ns2("active-MAE-hd2-MAE_chromosome_hd1_subset-inputs-selection_open") := TRUE,
+    allow_no_input_binding_ = TRUE
+  )
   app$set_inputs(!!ns2("active-MAE-hd1-MAE_chromosome_hd1_subset-inputs-selection") := c("1", "2"))
+  app$set_inputs(
+    !!ns2("active-MAE-hd1-MAE_chromosome_hd1_subset-inputs-selection_open") := FALSE,
+    allow_no_input_binding_ = TRUE
+  )
   app$wait_for_idle()
 
   # Confirm that gene selection was not changed.

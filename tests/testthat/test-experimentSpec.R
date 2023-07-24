@@ -156,7 +156,15 @@ test_that("experimentSpec module works as expected in the test app", {
   # Same for filtering out all genes.
   app$set_inputs(!!ns2("add-MAE-hd2-row_to_add") := "chromosome")
   app$wait_for_idle()
-  app$set_inputs(!!ns2("active-MAE-hd2-MAE_chromosome_hd2_subset-inputs-selection") := character())
+  app$set_inputs(
+    !!ns2("active-MAE-hd2-MAE_chromosome_hd2_subset-inputs-selection_open") := TRUE,
+    allow_no_input_binding_ = TRUE
+  )
+  app$set_inputs(!!ns2("active-MAE-hd2-MAE_chromosome_hd2_subset-inputs-selection") := character(0))
+  app$set_inputs(
+    !!ns2("active-MAE-hd2-MAE_chromosome_hd2_subset-inputs-selection_open") := FALSE,
+    allow_no_input_binding_ = TRUE
+  )
   app$wait_for_idle()
 
   res <- app$get_value(output = ns("summary"))
