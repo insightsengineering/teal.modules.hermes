@@ -186,7 +186,7 @@ srv_g_boxplot <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment) {
-        card <- teal.reporter::TealReportCard$new()
+        card <- teal::TealReportCard$new()
         card$set_name("Boxplot")
         card$append_text("Boxplot", "header2")
         card$append_fs(filter_panel_api$get_filter_state())
