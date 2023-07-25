@@ -28,7 +28,7 @@ test_that("km module works as expected in the test app", {
   skip_if_too_deep(5)
 
   app <- AppDriver$new(
-    app_dir = "km",
+    app_dir = test_path("km"),
     name = "km",
     variant = platform_variant()
   )

@@ -231,7 +231,7 @@ srv_g_forest_tte <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment) {
-        card <- teal.reporter::TealReportCard$new()
+        card <- teal::TealReportCard$new()
         card$set_name("Forest Plot")
         card$append_text("Forest Plot", "header2")
         card$append_fs(filter_panel_api$get_filter_state())

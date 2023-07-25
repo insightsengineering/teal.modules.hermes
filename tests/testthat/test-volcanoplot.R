@@ -22,7 +22,7 @@ test_that("volcanoplot module works as expected in the test app", {
   skip_if_too_deep(5)
 
   app <- AppDriver$new(
-    app_dir = "volcanoplot",
+    app_dir = test_path("volcanoplot"),
     name = "volcanoplot",
     variant = platform_variant()
   )

@@ -90,7 +90,7 @@ test_that("experimentSpec module works as expected in the test app", {
   skip_if_too_deep(5)
 
   app <- AppDriver$new(
-    app_dir = "experimentSpec",
+    app_dir = test_path("experimentSpec"),
     name = "experimentSpec",
     variant = platform_variant()
   )
@@ -144,26 +144,34 @@ test_that("experimentSpec module works as expected in the test app", {
 
   # Filtering out all samples does give a validation message, so we are safe
   # downstream.
-  app$set_inputs(!!ns2("add_MAE_filter-subjects-var_to_add") := "SEX")
+  app$set_inputs(!!ns2("add-MAE-subjects-var_to_add") := "SEX")
   app$wait_for_idle()
-  app$set_inputs(!!ns2("MAE_filter-subjects-_var_SEX-content-inputs-selection") := character())
+  app$set_inputs(!!ns2("active-MAE-subjects-MAE_SEX-inputs-selection") := character())
   app$wait_for_idle()
 
   res <- app$get_value(output = ns("summary"))
   expect_match(res$message, "No genes or samples included in this experiment, please adjust filters")
-  app$click(ns2("MAE_filter-remove_filters"))
+  app$click(ns2("active-MAE-remove_filters"))
 
   # Same for filtering out all genes.
-  app$set_inputs(!!ns2("add_MAE_filter-hd2-row_to_add") := "chromosome")
+  app$set_inputs(!!ns2("add-MAE-hd2-row_to_add") := "chromosome")
   app$wait_for_idle()
-  app$set_inputs(!!ns2("MAE_filter-hd2-rowData_var_chromosome-content-inputs-selection") := character())
+  app$set_inputs(
+    !!ns2("active-MAE-hd2-MAE_chromosome_hd2_subset-inputs-selection_open") := TRUE,
+    allow_no_input_binding_ = TRUE
+  )
+  app$set_inputs(!!ns2("active-MAE-hd2-MAE_chromosome_hd2_subset-inputs-selection") := character(0))
+  app$set_inputs(
+    !!ns2("active-MAE-hd2-MAE_chromosome_hd2_subset-inputs-selection_open") := FALSE,
+    allow_no_input_binding_ = TRUE
+  )
   app$wait_for_idle()
 
   res <- app$get_value(output = ns("summary"))
   expect_match(res$message, "No genes or samples included in this experiment, please adjust filters")
 
   # return to initial situation
-  app$click(ns2("MAE_filter-remove_filters"))
+  app$click(ns2("active-MAE-remove_filters"))
   app$wait_for_idle()
 
   res <- app$get_value(output = ns("summary"))

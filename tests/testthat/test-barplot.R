@@ -27,7 +27,7 @@ test_that("barplot module works as expected in the test app", {
   skip_if_too_deep(5)
 
   app <- AppDriver$new(
-    app_dir = "barplot",
+    app_dir = test_path("barplot"),
     name = "barplot",
     variant = platform_variant()
   )

@@ -27,7 +27,7 @@ test_that("scatterplot module works as expected in the test app", {
   skip_if_too_deep(5)
 
   app <- AppDriver$new(
-    app_dir = "scatterplot",
+    app_dir = test_path("scatterplot"),
     name = "scatterplot",
     variant = platform_variant()
   )
@@ -64,7 +64,7 @@ test_that("scatterplot module works as expected in the test app", {
   )
 
   # Change the sample filter and confirm that genes are not updated.
-  app$set_inputs(!!ns2("add_MAE_filter-subjects-var_to_add") := "ARM")
+  app$set_inputs(!!ns2("add-MAE-subjects-var_to_add") := "ARM")
   res <- app$wait_for_value(input = ns("x_spec-genes"))
   expect_identical(res, "GeneID:503538")
   res <- app$wait_for_value(input = ns("y_spec-genes"))
