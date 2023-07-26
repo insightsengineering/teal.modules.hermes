@@ -68,14 +68,6 @@ VignetteBuilder:
     knitr
 RdMacros:
     lifecycle
-Remotes:
-    insightsengineering/hermes@*release,
-    insightsengineering/teal.data@*release,
-    insightsengineering/teal.logger@*release,
-    insightsengineering/teal.reporter@*release,
-    insightsengineering/teal.widgets@*release,
-    insightsengineering/teal@*release,
-    insightsengineering/tern@*release
 biocViews:
 Config/Needs/website: insightsengineering/nesttemplate
 Config/testthat/edition: 3
