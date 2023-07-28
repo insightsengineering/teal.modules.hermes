@@ -15,11 +15,11 @@ test_that("assaySpecServer module works as expected in the test app", {
   skip_if_too_deep(5)
 
   app <- AppDriver$new(
-    app_dir = "assaySpec",
+    app_dir = test_path("assaySpec"),
     name = "assaySpec"
   )
 
-  ns <- NS("teal-main_ui-root-assayspec_example-module")
+  ns <- module_ns_shiny2(app)
 
   # Validation message because no assays eligible in first experiment.
   app$wait_for_idle(timeout = 20000)

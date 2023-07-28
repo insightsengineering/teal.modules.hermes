@@ -358,7 +358,7 @@ srv_g_pca <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment) {
-        card <- teal.reporter::TealReportCard$new()
+        card <- teal::TealReportCard$new()
         card$set_name("PCA")
         card$append_text("PCA", "header2")
         card$append_fs(filter_panel_api$get_filter_state())

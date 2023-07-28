@@ -173,13 +173,13 @@ test_that("sampleVarSpec module works as expected in the test app", {
   skip_if_too_deep(5)
 
   app <- AppDriver$new(
-    app_dir = "sampleVarSpec",
+    app_dir = test_path("sampleVarSpec"),
     name = "sampleVarSpec",
     variant = platform_variant()
   )
 
   app$wait_for_idle(timeout = 20000)
-  ns <- NS("teal-main_ui-root-samplevarspec_example-module")
+  ns <- module_ns_shiny2(app)
 
   # Initially no variable is selected.
   res <- app$get_value(input = ns("facet_var-sample_var"))
