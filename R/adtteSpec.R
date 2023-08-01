@@ -225,7 +225,7 @@ adtteSpecInput <- function(inputId, # nolint
 #'         label = "adtteSpec example",
 #'         server = server,
 #'         ui = ui,
-#'         filters = "all"
+#'         datanames = "all"
 #'       )
 #'     )
 #'   )

@@ -194,7 +194,7 @@ tm_g_levels <- function(label,
       pre_output = pre_output,
       post_output = post_output
     ),
-    filters = "all"
+    datanames = "all"
   )
 }
 ```
@@ -563,7 +563,7 @@ tm_g_example <- function(label,
       pre_output = pre_output,
       post_output = post_output
     ),
-    filters = "all"
+    datanames = "all"
   )
 }
 

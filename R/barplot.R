@@ -60,7 +60,7 @@ tm_g_barplot <- function(label,
       pre_output = pre_output,
       post_output = post_output
     ),
-    filters = mae_name
+    datanames = mae_name
   )
 }
 

@@ -83,7 +83,7 @@ my_app <- function() {
         label = "gene names design",
         server = server,
         ui = ui,
-        filters = "all"
+        datanames = "all"
       )
     )
   )

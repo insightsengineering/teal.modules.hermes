@@ -260,7 +260,7 @@ tm_g_scatterplot <- function(label = "Simple MAE module",
     ui = ui_scatterplot,
     ui_args = list(dataname = dataname),
     server_args = list(dataname = dataname),
-    filters = "all"
+    datanames = "all"
   )
 }
 ```
