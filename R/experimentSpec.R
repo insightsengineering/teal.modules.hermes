@@ -196,7 +196,7 @@ h_gene_data <- function(object, name_annotation) {
 #'         server_args = list(mae_name = mae_name),
 #'         ui = ui,
 #'         ui_args = list(mae_name = mae_name),
-#'         filters = "all"
+#'         datanames = "all"
 #'       )
 #'     )
 #'   )

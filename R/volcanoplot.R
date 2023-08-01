@@ -52,7 +52,7 @@ tm_g_volcanoplot <- function(label,
       pre_output = pre_output,
       post_output = post_output
     ),
-    filters = mae_name
+    datanames = mae_name
   )
 }
 

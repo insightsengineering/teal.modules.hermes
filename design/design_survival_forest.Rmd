@@ -338,7 +338,7 @@ tm_g_surv_forest <- function(label = "Simple MAE module",
     ui = ui_surv_forest,
     ui_args = list(dataname = dataname),
     server_args = list(dataname = dataname),
-    filters = "all"
+    datanames = "all"
   )
 }
 ```

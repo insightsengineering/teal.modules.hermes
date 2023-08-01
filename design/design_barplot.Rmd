@@ -299,7 +299,7 @@ tm_g_barplot <- function(label = "Simple MAE module",
     ui = ui_barplot,
     ui_args = list(dataname = dataname),
     server_args = list(dataname = dataname),
-    filters = "all"
+    datanames = "all"
   )
 }
 ```

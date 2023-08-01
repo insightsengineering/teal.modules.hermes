@@ -88,7 +88,7 @@ tm_g_km <- function(label,
       pre_output = pre_output,
       post_output = post_output
     ),
-    filters = c(adtte_name, mae_name)
+    datanames = c(adtte_name, mae_name)
   )
 }
 

@@ -255,7 +255,7 @@ validate_n_levels <- function(x, name, n_levels) {
 #'         label = "sampleVarSpec example",
 #'         server = server,
 #'         ui = ui,
-#'         filters = "all"
+#'         datanames = "all"
 #'       )
 #'     )
 #'   )
