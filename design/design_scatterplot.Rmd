@@ -130,7 +130,6 @@ ui_scatterplot <- function(id, datasets, dataname) {
 
 ```{r}
 srv_scatterplot <- function(input, output, session, datasets, dataname) {
-
   # Reactive for experiment data since that is used in multiple places below.
   experiment_data <- reactive({
     mae <- datasets$get_data(dataname, filtered = TRUE)

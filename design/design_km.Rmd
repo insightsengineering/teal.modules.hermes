@@ -87,7 +87,6 @@ ui_made_up_merge_pr <- function(id, ...) {
 
 ## Server Function
 ```{r}
-
 srv_made_up_merge_pr <- function(input, output, session, datasets, dataname) {
   teal.code::init_chunks()
 
@@ -137,7 +136,6 @@ srv_made_up_merge_pr <- function(input, output, session, datasets, dataname) {
 
 ## Libraries, Preprocessing
 ```{r}
-
 library(teal)
 library(hermes)
 library(random.cdisc.data)
@@ -250,7 +248,6 @@ Goal: create a merged ADTTE given an ADTTE and MAE object.
 Not exported.
 
 ```{r}
-
 # h_km_mae_to_adtte
 #
 # A function to help with merging of MAE/SE to ADTTE object for use with `g_km`. NOTE: We assume that each patient
@@ -269,7 +266,6 @@ Not exported.
 
 # NOTE: assay_var should be one of counts, "cpm", "rpkm", "tpm", "voom"
 h_km_mae_to_adtte <- function(adtte, mae, gene_var, se_var = "se1", assay_var = "counts") {
-
   # get SE from MAE
   mae <- mae
   se <- mae[[se_var]]

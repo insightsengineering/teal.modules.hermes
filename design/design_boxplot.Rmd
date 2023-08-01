@@ -110,7 +110,6 @@ Note that:
 
 
 ```{r}
-
 # helper function
 empty_select_input <- function(input_id, label, ...) {
   selectInput(
@@ -144,7 +143,6 @@ ui_boxplot <- function(id, datasets, dataname) {
 
 ```{r}
 srv_boxplot <- function(input, output, session, datasets, dataname) {
-
   # Reactive function for experiment data since it is used in multiple places below.
   experiment_data <- reactive({
     mae <- datasets$get_data(dataname, filtered = TRUE)
