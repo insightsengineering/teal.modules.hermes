@@ -88,7 +88,7 @@ assaySpecInput <- function(inputId, # nolint
 #'         label = "assaySpec example",
 #'         server = server,
 #'         ui = ui,
-#'         filters = "all"
+#'         datanames = "all"
 #'       )
 #'     )
 #'   )

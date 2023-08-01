@@ -10,7 +10,7 @@ tm_made_up_merge_pr <- function(label = "PR merge",
     ui = ui_made_up_merge_pr,
     ui_args = args,
     server_args = list(dataname = dataname),
-    filters = "all"
+    datanames = "all"
   )
 }
 ui_made_up_merge_pr <- function(id, ...) {
