@@ -285,10 +285,7 @@ sampleVarSpecServer <- function(id, # nolint
 
   moduleServer(id, function(input, output, session) {
 
-    to_observe <- reactive({list(experiment_name(), original_data())})
-
-    start_col_data <- eventReactive(to_observe(), {
-
+    start_col_data <- reactive({
       object <- original_data()
       col_data <- SummarizedExperiment::colData(object)
       if (explicit_na) {
