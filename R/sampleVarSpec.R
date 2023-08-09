@@ -284,7 +284,11 @@ sampleVarSpecServer <- function(id, # nolint
   assert_string(label_modal_title)
 
   moduleServer(id, function(input, output, session) {
-    start_col_data <- eventReactive(experiment_name(), {
+
+    to_observe <- reactive({list(experiment_name(), original_data())})
+
+    start_col_data <- eventReactive(to_observe(), {
+
       object <- original_data()
       col_data <- SummarizedExperiment::colData(object)
       if (explicit_na) {
@@ -308,11 +312,14 @@ sampleVarSpecServer <- function(id, # nolint
     # When the colData variables change, update the choices for sample_var.
     observeEvent(col_data_vars(), {
       col_data_vars <- col_data_vars()
+
+      sel <- intersect(input$sample_var, col_data_vars)
+
       teal.widgets::updateOptionalSelectInput(
         session,
         "sample_var",
         choices = col_data_vars,
-        selected = character()
+        selected = sel
       )
     })
 

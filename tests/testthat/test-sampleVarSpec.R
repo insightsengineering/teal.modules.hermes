@@ -191,10 +191,24 @@ test_that("sampleVarSpec module works as expected in the test app", {
 
   # Check the output and which levels are reported there.
   res <- app$get_value(output = ns("summary"))
-  # expect_match(res, " < 18 >= 18")
+  expect_match(res, " < 18 >= 18 \n    4     1 ")
+
+  # Filter panel works as expected
+  app$set_inputs("teal-main_ui-filter_panel-add-MAE-subjects-var_to_add" = "AGE18")
+  app$wait_for_idle()
+  app$set_inputs("teal-main_ui-filter_panel-active-MAE-subjects-MAE_AGE18-inputs-selection" = "< 18")
+  app$wait_for_idle()
+
+  res <- app$get_value(output = ns("summary"))
+  expect_equal(res, "< 18 \n   4 ")
+
+  app$click("teal-main_ui-filter_panel-active-MAE-subjects-MAE_AGE18-remove")
+  res <- app$get_value(output = ns("summary"))
+  expect_equal(res, " < 18 >= 18 \n    4     1 ")
 
   # Now click on the levels button, set combination and click ok.
   app$click(ns("facet_var-levels_button"))
+
   # Click on second column in both rows.
   app$wait_for_idle()
   app$set_inputs(!!ns("facet_var-comb_assignment") := list("< 18" = "2", ">= 18" = "2"))
@@ -204,7 +218,7 @@ test_that("sampleVarSpec module works as expected in the test app", {
 
   # Check the output and which levels are reported there.
   res <- app$get_value(output = ns("summary"))
-  expect_match(res, "< 18/>= 18 \n")
+  expect_match(res, "< 18/>= 18 \n         5 ")
 })
 
 # nolint end
