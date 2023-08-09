@@ -284,11 +284,11 @@ sampleVarSpecServer <- function(id, # nolint
   assert_string(label_modal_title)
 
   moduleServer(id, function(input, output, session) {
-
-    to_observe <- reactive({list(experiment_name(), original_data())})
+    to_observe <- reactive({
+      list(experiment_name(), original_data())
+    })
 
     start_col_data <- eventReactive(to_observe(), {
-
       object <- original_data()
       col_data <- SummarizedExperiment::colData(object)
       if (explicit_na) {
