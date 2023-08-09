@@ -353,6 +353,9 @@ sampleVarSpecServer <- function(id, # nolint
         if (!is.null(num_levels)) {
           validate_n_levels(sample_var_vector, sample_var, num_levels)
         }
+        # error here
+        # start_col_data triggers on change of experiment (eventReactive(experiment_name())
+        # so original_data@colData and start_col_data have different size (after and before filtering)
         SummarizedExperiment::colData(transformed_data)[[sample_var]] <- sample_var_vector
       }
 
