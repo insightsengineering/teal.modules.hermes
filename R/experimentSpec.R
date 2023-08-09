@@ -253,7 +253,12 @@ experimentSpecServer <- function(id, # nolint
       name <- input$name
       req(name)
 
-      filter_states <- filter_panel_api$get_filter_state()[[mae_name]][[name]]["subset"]
+      filter_states <- Filter(
+        function(slice) {
+          slice$dataname == mae_name && slice$experiment == name && slice$arg == "subset"
+        },
+        filter_panel_api$get_filter_state()
+      )
       filter_states
     })
 
