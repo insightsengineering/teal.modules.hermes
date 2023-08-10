@@ -2,6 +2,9 @@
 
 * Removed `scda` from dependencies.
 
+### Bug Fixes
+* Filtering data with the filter panel now correctly triggers the `sampleVarSpecModule`.
+
 ### Breaking changes
 
 * Replaced `datasets` argument containing `FilteredData` with the new arguments `data` (`tdata` object) and `filter_panel_api` (`FilterPanelAPI`).
