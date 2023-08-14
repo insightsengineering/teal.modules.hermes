@@ -30,7 +30,7 @@ Depends:
     ggplot2,
     R (>= 3.6),
     shiny,
-    teal (>= 0.13.0.9027)
+    teal (>= 0.14.0)
 Imports:
     checkmate,
     DT,
@@ -47,10 +47,10 @@ Imports:
     stats,
     stringr,
     SummarizedExperiment,
-    teal.data (>= 0.2.0.9007),
+    teal.data (>= 0.3.0),
     teal.logger (>= 0.1.1),
-    teal.reporter (>= 0.1.1.9020),
-    teal.widgets (>= 0.3.0.9010),
+    teal.reporter (>= 0.2.0),
+    teal.widgets (>= 0.4.0),
     tern (>= 0.7.10)
 Suggests:
     BiocStyle,
