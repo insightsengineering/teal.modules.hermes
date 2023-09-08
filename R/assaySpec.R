@@ -22,7 +22,7 @@ assaySpecInput <- function(inputId, # nolint
       label = label_assays,
       choices = character(0),
       options = list(
-        placeholder = "Select an eligible assay..."
+        placeholder = "- Nothing selected -"
       )
     ),
     include_js_files("dropdown.js")
@@ -138,7 +138,6 @@ assaySpecServer <- function(id, # nolint
         "toggle_dropdown",
         list(input_id = session$ns("name"), disabled = rlang::is_empty(choices))
       )
-
     })
 
     reactive({

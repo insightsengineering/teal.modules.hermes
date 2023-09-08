@@ -112,7 +112,7 @@ adtteSpecInput <- function(inputId, # nolint
       inputId = ns("paramcd"),
       label = label_paramcd,
       choices = "",
-      options = list(placeholder = "Select an endpoint...")
+      options = list(placeholder = "- Nothing selected -")
     ),
     include_js_files("dropdown.js")
   )

@@ -107,7 +107,7 @@ geneSpecInput <- function(inputId, # nolint
         multiple = TRUE,
         selected = 1,
         options = list(
-          placeholder = "Select one or more genes...",
+          placeholder = "- Nothing selected -",
           render = I("{
           option: function(item, escape) {
               return '<div> <span style=\"font-size: inherit;\">' + item.label + '</div>' +
