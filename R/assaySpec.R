@@ -136,7 +136,7 @@ assaySpecServer <- function(id, # nolint
       updateSelectizeInput(session, "name", choices = choices)
       session$sendCustomMessage(
         "toggle_dropdown",
-        list(input_id = session$ns("name"), disabled = rlang::is_empty(choices))
+        list(input_id = session$ns("name"), disabled = (length(choices) == 0))
       )
     })
 

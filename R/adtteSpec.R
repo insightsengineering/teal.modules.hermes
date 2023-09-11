@@ -328,7 +328,7 @@ adtteSpecServer <- function(id, # nolint
       )
       session$sendCustomMessage(
         "toggle_dropdown",
-        list(input_id = session$ns("paramcd"), disabled = rlang::is_empty(paramcd_choices))
+        list(input_id = session$ns("paramcd"), disabled = (length(paramcd_choices) == 0))
       )
     })
 
