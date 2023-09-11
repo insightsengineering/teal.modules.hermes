@@ -21,6 +21,6 @@ Shiny.addCustomMessageHandler('toggle_dropdown', function(message) {
     }
   } else {
     // Fallback in case selectize is not enabled
-    el.disabled = disabled ? "disabled" : "";
+    el.disabled = disabled ? 'disabled' : '';
   }
 });
