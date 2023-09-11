@@ -2,7 +2,7 @@
 
 ### Miscellaneous
 * Added placeholders for `assaySpec`, `adtteSpec` and `geneSpec` inputs when no option is selected.
-* Disabled the dropdown input for `assaySpec` and `adtteSpec` when there are no options available.
+* Disabled the select input for `assaySpec` and `adtteSpec` when there are no options available.
 
 # teal.modules.hermes 0.1.5
 
