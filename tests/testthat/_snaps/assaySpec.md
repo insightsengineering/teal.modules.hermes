@@ -6,7 +6,7 @@
       <div class="form-group shiny-input-container">
         <label class="control-label" id="my_assay-name-label" for="my_assay-name">Please select the best assay</label>
         <div>
-          <select class="shiny-input-select form-control" id="my_assay-name"></select>
+          <select id="my_assay-name" class="form-control"></select>
           <script type="application/json" data-for="my_assay-name">{"placeholder":"- Nothing selected -","plugins":["selectize-plugin-a11y"]}</script>
         </div>
       </div>
