@@ -60,13 +60,16 @@ test_that("pca module works as expected in the test app", {
   # Add a gene filter and deselect everything and check that it does not crash.
   app$set_inputs(!!ns2("add-MAE-hd1-row_to_add") := "symbol")
   app$wait_for_idle()
+  app$set_inputs(!!ns2("active-MAE-hd1-MAE_symbol_hd1_subset-inputs-selection_open") := TRUE, allow_no_input_binding_ = TRUE)
   app$set_inputs(!!ns2("active-MAE-hd1-MAE_symbol_hd1_subset-inputs-selection") := character())
+  app$set_inputs(!!ns2("active-MAE-hd1-MAE_symbol_hd1_subset-inputs-selection_open") := FALSE, allow_no_input_binding_ = TRUE)
+
   app$wait_for_idle()
   res <- app$get_value(output = ns("plot_pca-plot_main"))
   expect_match(res$message, "No genes or samples included in this experiment, please adjust filters")
 
   # Remove filters
-  app$click(ns2("add-MAE-hd1-MAE_symbol_hd1_subset-content-remove"))
+  app$click(ns2("active-MAE-hd1-MAE_symbol_hd1_subset-remove"))
 
   # Update the tab selection.
   app$set_inputs(!!ns("tab_selected") := "PC and Sample Correlation")
@@ -175,12 +178,16 @@ test_that("pca module works as expected in the test app", {
 
   # Update to cor tab.
   app$set_inputs(!!ns("tab_selected") := "PCA")
+  app$set_inputs(!!ns2("active-MAE-subjects-MAE_SEX-inputs-selection_open") := TRUE, allow_no_input_binding_ = TRUE)
   app$set_inputs(!!ns2("active-MAE-subjects-MAE_SEX-inputs-selection") := "F")
-  res <- app$wait_for_value(output = ns("plot_pca"))
+  app$set_inputs(!!ns2("active-MAE-subjects-MAE_SEX-inputs-selection_open") := FALSE, allow_no_input_binding_ = TRUE)
+
+  app$wait_for_idle()
+  res <- app$get_value(output = ns("plot_pca-plot_main"))
   expect_identical(res$message, "Sample size is too small. PCA needs more than 2 samples.")
 
   # Remove filter.
-  app$click(ns2("MAE_filter-subjects-_var_SEX-remove"))
+  app$click(ns2("active-MAE-subjects-MAE_SEX-remove"))
 
   # Initiate the use of Top Variance Genes filtering functionality.
   app$set_inputs(!!ns("filter_top") := TRUE)
@@ -213,7 +220,7 @@ test_that("pca module works as expected in the test app", {
   app$set_inputs(!!ns("experiment-name") := "hd1")
   app$set_inputs(!!ns("filter_top") := "TRUE")
   res <- app$wait_for_value(input = ns("n_top"))
-  expect_identical(res, 1000L)
+  expect_identical(res, 2500L)
 })
 
 # nolint end
