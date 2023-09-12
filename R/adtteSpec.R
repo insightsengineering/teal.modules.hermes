@@ -107,10 +107,14 @@ adtteSpecInput <- function(inputId, # nolint
 
   ns <- NS(inputId)
 
-  selectInput(
-    inputId = ns("paramcd"),
-    label = label_paramcd,
-    choices = ""
+  tagList(
+    selectizeInput(
+      inputId = ns("paramcd"),
+      label = label_paramcd,
+      choices = "",
+      options = list(placeholder = "- Nothing selected -")
+    ),
+    include_js_files("dropdown.js")
   )
 }
 
@@ -295,6 +299,12 @@ adtteSpecServer <- function(id, # nolint
       sort(unique(adtte_joined[[adtte_vars$paramcd]])) # Order should not matter.
     })
 
+    # Start by disabling selection, will be overriden if there are valid choices.
+    session$sendCustomMessage(
+      "toggle_dropdown",
+      list(input_id = session$ns("paramcd"), disabled = TRUE)
+    )
+
     # Once available endpoints change, we update choices (and also the selection
     # if nothing was selected earlier) and warn the user if previous endpoint is
     # not available.
@@ -310,11 +320,15 @@ adtteSpecServer <- function(id, # nolint
         ))
         ""
       }
-      updateSelectInput(
-        session,
+      updateSelectizeInput(
         "paramcd",
         choices = paramcd_choices,
-        selected = new_selected
+        selected = new_selected,
+        session = session
+      )
+      session$sendCustomMessage(
+        "toggle_dropdown",
+        list(input_id = session$ns("paramcd"), disabled = (length(paramcd_choices) == 0))
       )
     })
 
