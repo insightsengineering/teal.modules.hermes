@@ -38,7 +38,7 @@ repos:
           - insightsengineering/teal.reporter
           - insightsengineering/teal.widgets
           - tern
-          # Added for envirnoment to build
+          # Added for environment to build
           - insightsengineering/teal.slice
           - insightsengineering/teal.transform
           - bioc::edgeR
