@@ -15,26 +15,33 @@ repos:
       - id: roxygenize
         name: Regenerate package documentation
         additional_dependencies:
-          - checkmate
-          - digest
-          - dplyr
           - ggplot2
-          - glue
-          - grDevices
+          - shiny
+          - insightsengineering/teal
+          - checkmate
+          - DT
+          - edgeR
+          - forcats
+          - bioc::hermes
           - lifecycle
           - logger
-          - magrittr
-          - methods
           - bioc::MultiAssayExperiment
-          - R6
-          - rlang
           - rtables
-          - shinyjs
+          - S4Vectors
+          - shinyRadioMatrix
           - shinyWidgets
           - stats
+          - stringr
           - bioc::SummarizedExperiment
-          - utils
-          - yaml
+          - insightsengineering/teal.data
+          - insightsengineering/teal.logger
+          - insightsengineering/teal.reporter
+          - insightsengineering/teal.widgets
+          - tern
+          # Added for envirnoment to build
+          - insightsengineering/teal.slice
+          - insightsengineering/teal.transform
+          - bioc::edgeR
       - id: spell-check
         name: Check spelling with `spelling`
         exclude: >
