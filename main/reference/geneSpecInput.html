@@ -12,7 +12,7 @@ This defines the input for the gene signature specification."><!-- mathjax --><s
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.hermes</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.5.9002</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -29,15 +29,6 @@ This defines the input for the gene signature specification."><!-- mathjax --><s
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.hermes/main">main</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.hermes/latest-tag">latest-tag</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.hermes/v0.1.5">v0.1.5</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.hermes/v0.1.4">v0.1.4</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -187,8 +178,8 @@ selection drop down menu.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   &lt;div class="form-group shiny-input-container"&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;label class="control-label shiny-label-null" for="my_genes-genes" id="my_genes-genes-label"&gt;&lt;/label&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;div&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       &lt;select id="my_genes-genes" class="form-control" multiple="multiple"&gt;&lt;option value=""&gt;&lt;/option&gt;&lt;/select&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       &lt;script type="application/json" data-for="my_genes-genes" data-eval="[&amp;quot;render&amp;quot;]"&gt;{"render":"{\n          option: function(item, escape) {\n              return '&lt;div&gt; &lt;span style=\"font-size: inherit;\"&gt;' + item.label + '&lt;\/div&gt;' +\n                ' &lt;span style=\"color: #808080; font-size: xx-small;\" &gt;' + item.value + '&lt;\/div&gt; &lt;\/div&gt;'\n            }\n          }","searchField":["value","label"],"maxOptions":200,"maxItems":200,"plugins":["selectize-plugin-a11y"]}&lt;/script&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       &lt;select class="shiny-input-select form-control" id="my_genes-genes" multiple="multiple"&gt;&lt;option value=""&gt;&lt;/option&gt;&lt;/select&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       &lt;script type="application/json" data-for="my_genes-genes" data-eval="[&amp;quot;render&amp;quot;]"&gt;{"placeholder":"- Nothing selected -","render":"{\n          option: function(item, escape) {\n              return '&lt;div&gt; &lt;span style=\"font-size: inherit;\"&gt;' + item.label + '&lt;\/div&gt;' +\n                ' &lt;span style=\"color: #808080; font-size: xx-small;\" &gt;' + item.value + '&lt;\/div&gt; &lt;\/div&gt;'\n            }\n          }","searchField":["value","label"],"maxOptions":200,"maxItems":200,"plugins":["selectize-plugin-a11y"]}&lt;/script&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;/div&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   &lt;/div&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;/div&gt;</span>
@@ -196,7 +187,7 @@ selection drop down menu.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   &lt;div class="form-group shiny-input-container"&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;label class="control-label" id="my_genes-fun_name-label" for="my_genes-fun_name"&gt;Please select function&lt;/label&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;div&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       &lt;select id="my_genes-fun_name"&gt;&lt;option value="mean" selected&gt;mean&lt;/option&gt;&lt;/select&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       &lt;select id="my_genes-fun_name" class="shiny-input-select"&gt;&lt;option value="mean" selected&gt;mean&lt;/option&gt;&lt;/select&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       &lt;script type="application/json" data-for="my_genes-fun_name" data-nonempty=""&gt;{"plugins":["selectize-plugin-a11y"]}&lt;/script&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;/div&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   &lt;/div&gt;</span>
