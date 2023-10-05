@@ -194,8 +194,6 @@ srv_g_barplot <- function(id,
         card <- card_template(
           title = "Barplot",
           label = label,
-          description = NULL,
-          with_filter = TRUE,
           filter_panel_api = filter_panel_api
         )
         card$append_text("Selected Options", "header3")
