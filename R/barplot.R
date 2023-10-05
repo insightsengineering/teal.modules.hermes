@@ -190,11 +190,12 @@ srv_g_barplot <- function(id,
 
     ### REPORTER
     if (with_reporter) {
-      card_fun <- function(comment) {
-        card <- teal::TealReportCard$new()
-        card$set_name("Barplot")
-        card$append_text("Barplot", "header2")
-        card$append_fs(filter_panel_api$get_filter_state())
+      card_fun <- function(comment, label) {
+        card <- card_template(
+          title = "Barplot",
+          label = label,
+          filter_panel_api = filter_panel_api
+        )
         card$append_text("Selected Options", "header3")
         encodings_list <- list(
           "Experiment:",
