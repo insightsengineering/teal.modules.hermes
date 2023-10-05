@@ -189,8 +189,6 @@ srv_g_boxplot <- function(id,
         card <- card_template(
           title = "Boxplot",
           label = label,
-          description = NULL,
-          with_filter = TRUE,
           filter_panel_api = filter_panel_api
         )
         card$append_text("Selected Options", "header3")

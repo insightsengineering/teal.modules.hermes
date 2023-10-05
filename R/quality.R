@@ -358,7 +358,6 @@ srv_g_quality <- function(id,
           title = "Quality Control Plot",
           label = label,
           description = tools::toTitleCase(input$plot_type),
-          with_filter = TRUE,
           filter_panel_api = filter_panel_api
         )
         card$append_text("Selected Options", "header3")

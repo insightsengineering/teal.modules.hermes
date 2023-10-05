@@ -4,7 +4,7 @@
 \alias{card_template}
 \title{Template function to generate reporter card for \code{teal.modules.hermes}}
 \usage{
-card_template(title, label, description = NULL, with_filter, filter_panel_api)
+card_template(title, label, description = NULL, filter_panel_api)
 }
 \arguments{
 \item{title}{(\code{character(1)}) title of the card (unless overwritten by label)}
@@ -12,8 +12,6 @@ card_template(title, label, description = NULL, with_filter, filter_panel_api)
 \item{label}{(\code{character(1)}) label provided by the user when adding the card}
 
 \item{description}{(\code{character(1)}) optional additional description}
-
-\item{with_filter}{(\code{logical(1)}) flag indicating to add filter state}
 
 \item{filter_panel_api}{(\code{FilterPanelAPI}) object with API that allows the generation
 of the filter state in the report}
