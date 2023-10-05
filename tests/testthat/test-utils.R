@@ -39,4 +39,3 @@ testthat::test_that("card_template function returns TealReportCard object with a
   testthat::expect_equal(card$get_name(), "Card title")
   testthat::expect_length(card$get_content(), 4)
 })
-
