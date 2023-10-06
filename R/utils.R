@@ -89,10 +89,10 @@ include_js_files <- function(pattern = "*") { # nolint
 #'
 #' @keywords internal
 card_template <- function(title, label, description = NULL, filter_panel_api) {
-  checkmate::assert_string(title)
-  checkmate::assert_string(label)
-  checkmate::assert_string(description, null.ok = TRUE)
-  checkmate::assert_class(filter_panel_api, classes = "FilterPanelAPI")
+  assert_string(title)
+  assert_string(label)
+  assert_string(description, null.ok = TRUE)
+  assert_class(filter_panel_api, classes = "FilterPanelAPI")
 
   card <- teal::TealReportCard$new()
   title <- if (label == "") title else label
