@@ -18,28 +18,3 @@ test_that("h_extract_words works as expected", {
     "All elements must have at least 1 characters, but element 1 has 0 characters."
   )
 })
-
-test_that("card_template function returns TealReportCard object with appropriate content and labels", {
-  fd <- teal.slice::init_filtered_data(list(iris = list(dataset = iris)))
-  filter_panel_api <- teal.slice::FilterPanelAPI$new(fd)
-
-  card <- shiny::isolate(card_template(
-    title = "Card title",
-    label = "Card label",
-    description = NULL,
-    filter_panel_api = filter_panel_api
-  ))
-  expect_s3_class(card, c("TealReportCard"))
-  expect_equal(card$get_name(), "Card label")
-  expect_length(card$get_content(), 3)
-
-  card <- shiny::isolate(card_template(
-    title = "Card title",
-    label = "",
-    description = "Description text",
-    filter_panel_api = filter_panel_api
-  ))
-  expect_s3_class(card, c("TealReportCard"))
-  expect_equal(card$get_name(), "Card title")
-  expect_length(card$get_content(), 4)
-})

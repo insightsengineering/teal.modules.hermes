@@ -208,9 +208,10 @@ srv_g_volcanoplot <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment, label) {
-        card <- card_template(
+        card <- teal.reporter::card_template(
           title = "Volcano Plot",
           label = label,
+          with_filter = TRUE,
           filter_panel_api = filter_panel_api
         )
         card$append_text("Selected Options", "header3")
