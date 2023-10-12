@@ -231,7 +231,7 @@ srv_g_forest_tte <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment, label) {
-        card <- teal::report_card_template(
+        card <- report_card_template(
           title = "Forest Plot",
           label = label,
           with_filter = TRUE,

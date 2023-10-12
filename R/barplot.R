@@ -191,7 +191,7 @@ srv_g_barplot <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment, label) {
-        card <- teal::report_card_template(
+        card <- report_card_template(
           title = "Barplot",
           label = label,
           with_filter = TRUE,
