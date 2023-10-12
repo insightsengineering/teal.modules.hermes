@@ -354,7 +354,7 @@ srv_g_quality <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment, label) {
-        card <- teal.reporter::card_template(
+        card <- teal::report_card_template(
           title = "Quality Control Plot",
           label = label,
           description = tools::toTitleCase(input$plot_type),

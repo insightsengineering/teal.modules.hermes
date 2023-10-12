@@ -186,7 +186,7 @@ srv_g_scatterplot <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment, label) {
-        card <- teal.reporter::card_template(
+        card <- teal::report_card_template(
           title = "Scatter Plot",
           label = label,
           with_filter = TRUE,
