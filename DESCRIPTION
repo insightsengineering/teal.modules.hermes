@@ -1,8 +1,8 @@
 Type: Package
 Package: teal.modules.hermes
 Title: RNA-Seq Analysis Modules to Add to a Teal Application
-Version: 0.1.5.9005
-Date: 2023-09-13
+Version: 0.1.5.9006
+Date: 2023-10-13
 Authors@R: c(
     person("Daniel", "Sabanés Bové", , "daniel.sabanes_bove@roche.com", role = c("aut", "cre")),
     person("Nikolas", "Burkoff", role = "aut"),
