@@ -357,11 +357,13 @@ srv_g_pca <- function(id,
 
     ### REPORTER
     if (with_reporter) {
-      card_fun <- function(comment) {
-        card <- teal::TealReportCard$new()
-        card$set_name("PCA")
-        card$append_text("PCA", "header2")
-        card$append_fs(filter_panel_api$get_filter_state())
+      card_fun <- function(comment, label) {
+        card <- report_card_template(
+          title = "PCA",
+          label = label,
+          with_filter = TRUE,
+          filter_panel_api = filter_panel_api
+        )
         card$append_text("Selected Options", "header3")
         if (input$tab_selected == "PCA") {
           encodings_list <- list(

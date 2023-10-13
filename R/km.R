@@ -222,11 +222,13 @@ srv_g_km <- function(id,
 
     ### REPORTER
     if (with_reporter) {
-      card_fun <- function(comment) {
-        card <- teal::TealReportCard$new()
-        card$set_name("Kaplan-Meier Plot")
-        card$append_text("Kaplan-Meier Plot", "header2")
-        card$append_fs(filter_panel_api$get_filter_state())
+      card_fun <- function(comment, label) {
+        card <- report_card_template(
+          title = "Kaplan-Meier Plot",
+          label = label,
+          with_filter = TRUE,
+          filter_panel_api = filter_panel_api
+        )
         card$append_text("Selected Options", "header3")
         encodings_list <- list(
           "Experiment:",
