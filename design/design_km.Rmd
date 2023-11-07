@@ -158,8 +158,14 @@ mae <- multi_assay_experiment # from hermes
 
 choices_endpoints <- levels(adtte$PARAMCD)
 
-data <- teal_data(MAE = mae, ADSL = adsl, ADTTE = adtte) %>%
-  mutate_join_keys("MAE", "MAE", c("STUDYID", "USUBJID")) # TODO: to be fixed
+data <- teal_data(MAE = mae, ADSL = adsl, ADTTE = adtte)
+
+datanames <- datanames(data)
+data@join_keys <- cdisc_join_keys(!!!datanames)
+data@join_keys$mutate(
+  "MAE", "MAE", c("STUDYID", "USUBJID")
+)
+
 ```
 
 ## App Launch

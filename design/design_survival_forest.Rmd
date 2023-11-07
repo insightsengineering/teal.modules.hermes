@@ -32,8 +32,12 @@ adtte <- ex_adtte
 
 # Example MAE data and merge datasets.
 MAE <- multi_assay_experiment
-data <- teal_data(MAE = mae, ADSL = ex_adsl, ADTTE = ex_adtte) %>%
-  mutate_join_keys("MAE", "MAE", c("STUDYID", "USUBJID")) # TODO: to be fixed
+data <- teal_data(MAE = mae, ADSL = ex_adsl, ADTTE = ex_adtte)
+datanames <- datanames(data)
+data@join_keys <- cdisc_join_keys(!!!datanames)
+data@join_keys$mutate(
+  "MAE", "MAE", c("STUDYID", "USUBJID")
+)
 
 # Get raw ADTTE.
 adtte_raw <- get_raw_data(adtte)

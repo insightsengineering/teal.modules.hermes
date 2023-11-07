@@ -110,8 +110,12 @@ adtte$CNSR[100:110] <- NA
 
 mae <- multi_assay_experiment # from hermes
 
-data <- cdisc_data(MAE = mae, ADSL = adsl, ADTTE = adtte) %>%
-  mutate_join_keys("MAE", "MAE", c("STUDYID", "USUBJID")) # TODO: to be fixed
+data <- cdisc_data(MAE = mae, ADSL = adsl, ADTTE = adtte)
+datanames <- datanames(data)
+data@join_keys <- cdisc_join_keys(!!!datanames)
+data@join_keys$mutate(
+  "MAE", "MAE", c("STUDYID", "USUBJID")
+)
 
 app <- init(
   data = data,
