@@ -107,6 +107,7 @@ geneSpecInput <- function(inputId, # nolint
         multiple = TRUE,
         selected = 1,
         options = list(
+          placeholder = "- Nothing selected -",
           render = I("{
           option: function(item, escape) {
               return '<div> <span style=\"font-size: inherit;\">' + item.label + '</div>' +
@@ -277,7 +278,7 @@ h_parse_genes <- function(words, choices) {
 #'         server_args = list(funs = funs),
 #'         ui = ui,
 #'         ui_args = list(funs = funs),
-#'         filters = "all"
+#'         datanames = "all"
 #'       )
 #'     )
 #'   )

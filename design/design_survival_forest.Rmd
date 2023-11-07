@@ -188,7 +188,6 @@ ui_surv_forest <- function(id, datasets, dataname) {
 
 ```{r}
 srv_surv_forest <- function(input, output, session, datasets, dataname) {
-
   # When the filtered data set of the chosen experiment changes, update the
   # experiment data object.
   experiment_data <- reactive({
@@ -338,7 +337,7 @@ tm_g_surv_forest <- function(label = "Simple MAE module",
     ui = ui_surv_forest,
     ui_args = list(dataname = dataname),
     server_args = list(dataname = dataname),
-    filters = "all"
+    datanames = "all"
   )
 }
 ```

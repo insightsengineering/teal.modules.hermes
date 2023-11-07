@@ -16,10 +16,16 @@ assaySpecInput <- function(inputId, # nolint
   assert_string(label_assays, min.chars = 1L)
 
   ns <- NS(inputId)
-  selectInput(
-    inputId = ns("name"),
-    label = label_assays,
-    choices = ""
+  tagList(
+    selectizeInput(
+      inputId = ns("name"),
+      label = label_assays,
+      choices = character(0),
+      options = list(
+        placeholder = "- Nothing selected -"
+      )
+    ),
+    include_js_files("dropdown.js")
   )
 }
 
@@ -88,7 +94,7 @@ assaySpecInput <- function(inputId, # nolint
 #'         label = "assaySpec example",
 #'         server = server,
 #'         ui = ui,
-#'         filters = "all"
+#'         datanames = "all"
 #'       )
 #'     )
 #'   )
@@ -119,15 +125,18 @@ assaySpecServer <- function(id, # nolint
           hermes::h_short_list(removed_assays), "as per app specifications"
         ))
       }
+      if (length(remaining_assays) == 0) {
+        remaining_assays <- character(0)
+      }
       remaining_assays
     })
 
     observeEvent(choices(), {
       choices <- choices()
-      updateSelectInput(
-        session,
-        "name",
-        choices = choices
+      updateSelectizeInput(session, "name", choices = choices)
+      session$sendCustomMessage(
+        "toggle_dropdown",
+        list(input_id = session$ns("name"), disabled = (length(choices) == 0))
       )
     })
 

@@ -6,7 +6,7 @@ default_language_version:
   python: python3
 repos:
   - repo: https://github.com/lorenzwalthert/precommit
-    rev: v0.3.2.9013
+    rev: v0.3.2.9021
     hooks:
       - id: style-files
         name: Style code with `styler`
@@ -15,26 +15,33 @@ repos:
       - id: roxygenize
         name: Regenerate package documentation
         additional_dependencies:
-          - checkmate
-          - digest
-          - dplyr
           - ggplot2
-          - glue
-          - grDevices
+          - shiny
+          - insightsengineering/teal
+          - checkmate
+          - DT
+          - edgeR
+          - forcats
+          - bioc::hermes
           - lifecycle
           - logger
-          - magrittr
-          - methods
           - bioc::MultiAssayExperiment
-          - R6
-          - rlang
           - rtables
-          - shinyjs
+          - S4Vectors
+          - shinyRadioMatrix
           - shinyWidgets
           - stats
+          - stringr
           - bioc::SummarizedExperiment
-          - utils
-          - yaml
+          - insightsengineering/teal.data
+          - insightsengineering/teal.logger
+          - insightsengineering/teal.reporter
+          - insightsengineering/teal.widgets
+          - tern
+          # Added for environment to build
+          - insightsengineering/teal.slice
+          - insightsengineering/teal.transform
+          - bioc::edgeR
       - id: spell-check
         name: Check spelling with `spelling`
         exclude: >
@@ -108,7 +115,7 @@ repos:
           design/.*
           )$
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v3.0.0
+    rev: v3.0.3
     hooks:
       - id: prettier
         exclude: >
@@ -116,7 +123,7 @@ repos:
           design/.*
           )$
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v4.5.0
     hooks:
       - id: check-added-large-files
         args: ["--maxkb=1000"]

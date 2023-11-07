@@ -1,17 +1,29 @@
-# teal.modules.hermes 0.1.4.9016
+# teal.modules.hermes 0.1.5.9006
 
-* Removed `scda` from dependencies.
+### Miscellaneous
+* Added placeholders for `assaySpec`, `adtteSpec` and `geneSpec` inputs when no option is selected.
+* Disabled the select input for `assaySpec` and `adtteSpec` when there are no options available.
+
+# teal.modules.hermes 0.1.5
+
+### Bug Fixes
+* Filtering data with the filter panel now correctly triggers the `sampleVarSpecModule`.
 
 ### Breaking changes
-
 * Replaced `datasets` argument containing `FilteredData` with the new arguments `data` (`tdata` object) and `filter_panel_api` (`FilterPanelAPI`).
 
+### Miscellaneous
+* Removed `scda` from dependencies.
+* Migrate to `shinytest2`.
+
 # teal.modules.hermes 0.1.4
+
+* Added the `teal.reporter` functionality to all modules.
+* Add installation instruction
 
 # teal.modules.hermes 0.1.3
 
 * Improve the selection of sample variables in the forest module (`tm_g_forest_tte`) such that only categorical variables can be selected in the first place.
-* Added the `teal.reporter` functionality to all modules.
 
 ### Miscellaneous
 * Added a template to the `pkgdown` site.

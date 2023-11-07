@@ -65,7 +65,7 @@ app <- init(
       server_args = list(mae_name = mae_name),
       ui = ui,
       ui_args = list(mae_name = mae_name),
-      filters = mae_name
+      datanames = mae_name
     )
   ),
   header = tags$h1("Slow App")

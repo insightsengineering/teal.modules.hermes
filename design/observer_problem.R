@@ -18,7 +18,7 @@ tm_g_scatterplot <- function(label,
       pre_output = pre_output,
       post_output = post_output
     ),
-    filters = "all"
+    datanames = "all"
   )
 }
 
@@ -55,9 +55,6 @@ srv_g_scatterplot <- function(input,
                               session,
                               datasets,
                               mae_name) {
-
-
-
   # When the filtered data set of the chosen experiment changes, update the
   # experiment data object.
   experiment_name <- reactive({

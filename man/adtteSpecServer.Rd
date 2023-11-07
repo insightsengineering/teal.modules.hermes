@@ -155,7 +155,7 @@ my_app <- function() {
         label = "adtteSpec example",
         server = server,
         ui = ui,
-        filters = "all"
+        datanames = "all"
       )
     )
   )

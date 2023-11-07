@@ -95,7 +95,7 @@ my_app <- function() {
         server_args = list(funs = funs),
         ui = ui,
         ui_args = list(funs = funs),
-        filters = "all"
+        datanames = "all"
       )
     )
   )

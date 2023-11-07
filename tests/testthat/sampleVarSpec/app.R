@@ -49,7 +49,7 @@ my_app <- function() {
         label = "sampleVarSpec example",
         server = server,
         ui = ui,
-        filters = "all"
+        datanames = "all"
       )
     )
   )
