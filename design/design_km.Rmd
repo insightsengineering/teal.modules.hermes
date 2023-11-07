@@ -140,36 +140,26 @@ library(teal)
 library(hermes)
 library(random.cdisc.data)
 library(dplyr)
-adsl <- cdisc_dataset("ADSL", radsl(cached = TRUE, na_percentage = 0.2)) %>%
-  mutate_dataset(
-    "ADSL$SEX[1:20] <- NA
-     ADSL$AGE[21:30] <- Inf
-     ADSL$AGE[31:40] <- NaN
-     ADSL$EOSDT[51:60] <- NA
-     ADSL$EOSDT[71:70] <- NA
-     ADSL$all_na <- NA
-     ADSL$unknown <- as.list(ADSL$SEX)"
-  )
-adtte <- cdisc_dataset("ADTTE", radtte(cached = TRUE, seed = 1)) %>%
-  mutate_dataset(
-    "ADTTE$CNSR <- as.logical(ADTTE$CNSR)
-     ADTTE$CNSR[100:110] <- NA"
-  )
+
+adsl = radsl(cached = TRUE, na_percentage = 0.2)
+adsl$SEX[1:20] <- NA
+adsl$AGE[21:30] <- Inf
+adsl$AGE[31:40] <- NaN
+adsl$EOSDT[51:60] <- NA
+adsl$EOSDT[71:70] <- NA
+adsl$all_na <- NA
+adsl$unknown <- as.list(ADSL$SEX)
+     
+adtte = radtte(cached = TRUE, seed = 1)
+adtte$CNSR <- as.logical(ADTTE$CNSR)
+adtte$CNSR[100:110] <- NA
 
 mae <- multi_assay_experiment # from hermes
-mae <- dataset("MAE", mae)
-
-adtte <- radtte(cached = TRUE, seed = 1) %>%
-  mutate(
-    "ADTTE$CNSR <- as.logical(ADTTE$CNSR)
-     ADTTE$CNSR[100:110] <- NA"
-  )
 
 choices_endpoints <- levels(adtte$PARAMCD)
 
-
-data <- teal_data(mae, adsl, adtte) %>%
-  mutate_join_keys("MAE", "MAE", c("STUDYID", "USUBJID"))
+data <- teal_data(MAE = mae, ADSL = adsl, ADTTE = adtte) %>%
+  mutate_join_keys("MAE", "MAE", c("STUDYID", "USUBJID")) # TODO: to be fixed
 ```
 
 ## App Launch

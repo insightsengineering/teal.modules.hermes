@@ -95,27 +95,23 @@ srv_made_up_merge_pr <- function(input, output, session, datasets, dataname) {
 library(teal)
 library(hermes)
 library(random.cdisc.data)
-adsl <- cdisc_dataset("ADSL", radsl(cached = TRUE, na_percentage = 0.2)) %>%
-  mutate_dataset(
-    "ADSL$SEX[1:20] <- NA
-    ADSL$AGE[21:30] <- Inf
-    ADSL$AGE[31:40] <- NaN
-    ADSL$EOSDT[51:60] <- NA
-    ADSL$EOSDT[71:70] <- NA
-    ADSL$all_na <- NA
-    ADSL$unknown <- as.list(ADSL$SEX)"
-  )
-adtte <- cdisc_dataset("ADTTE", radtte(cached = TRUE)) %>%
-  mutate_dataset(
-    "ADTTE$CNSR <- as.logical(ADTTE$CNSR)
-    ADTTE$CNSR[100:110] <- NA"
-  )
+adsl = radsl(cached = TRUE, na_percentage = 0.2)
+adsl$SEX[1:20] <- NA
+adsl$AGE[21:30] <- Inf
+adsl$AGE[31:40] <- NaN
+adsl$EOSDT[51:60] <- NA
+adsl$EOSDT[71:70] <- NA
+adsl$all_na <- NA
+adsl$unknown <- as.list(ADSL$SEX)
 
+adtte = radtte(cached = TRUE)
+adtte$CNSR <- as.logical(ADTTE$CNSR)
+adtte$CNSR[100:110] <- NA
 
 mae <- multi_assay_experiment # from hermes
 
-data <- cdisc_data(dataset("MAE", mae), adsl, adtte) %>%
-  mutate_join_keys("MAE", "MAE", c("STUDYID", "USUBJID"))
+data <- cdisc_data(MAE = mae, ADSL = adsl, ADTTE = adtte) %>%
+  mutate_join_keys("MAE", "MAE", c("STUDYID", "USUBJID")) # TODO: to be fixed
 
 app <- init(
   data = data,
