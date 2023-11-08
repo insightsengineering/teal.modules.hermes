@@ -266,9 +266,7 @@ h_parse_genes <- function(words, choices) {
 #' }
 #' funs <- list(mean = colMeans)
 #' my_app <- function() {
-#'   mae <- hermes::multi_assay_experiment
-#'   mae_data <- dataset("MAE", mae)
-#'   data <- teal_data(mae_data)
+#'   data <- teal_data(MAE = hermes::multi_assay_experiment)
 #'   app <- init(
 #'     data = data,
 #'     modules = modules(

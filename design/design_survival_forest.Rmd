@@ -24,17 +24,18 @@ We want to design a simple survival forest plot teal module.
 ## General module workflow
 
 ```{r}
-# Example ADSL data converted into a CDISCDataset object.
-adsl <- cdisc_dataset("ADSL", ex_adsl)
+# Example ADSL data
+adsl <- ex_adsl
 
-# Example ADTTE data converted into a CDISCDataset object.
-adtte <- cdisc_dataset("ADTTE", ex_adtte)
+# Example ADTTE data
+adtte <- ex_adtte
 
 # Example MAE data and merge datasets.
 MAE <- multi_assay_experiment
-mae <- dataset("MAE", MAE)
-data <- teal_data(mae, adsl, adtte) %>%
-  mutate_join_keys("MAE", "MAE", c("STUDYID", "USUBJID"))
+data <- teal_data(MAE = mae, ADSL = ex_adsl, ADTTE = ex_adtte)
+datanames <- datanames(data)
+join_keys(data) <- cdisc_join_keys(!!!datanames)
+join_keys(data)["MAE"] <- c("STUDYID", "USUBJID")
 
 # Get raw ADTTE.
 adtte_raw <- get_raw_data(adtte)
