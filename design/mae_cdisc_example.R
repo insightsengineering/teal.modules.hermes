@@ -95,7 +95,7 @@ srv_made_up_merge_pr <- function(input, output, session, datasets, dataname) {
 library(teal)
 library(hermes)
 library(random.cdisc.data)
-adsl = radsl(cached = TRUE, na_percentage = 0.2)
+adsl <- radsl(cached = TRUE, na_percentage = 0.2)
 adsl$SEX[1:20] <- NA
 adsl$AGE[21:30] <- Inf
 adsl$AGE[31:40] <- NaN
@@ -104,7 +104,7 @@ adsl$EOSDT[71:70] <- NA
 adsl$all_na <- NA
 adsl$unknown <- as.list(adsl$SEX)
 
-adtte = radtte(cached = TRUE)
+adtte <- radtte(cached = TRUE)
 adtte$CNSR <- as.logical(adtte$CNSR)
 adtte$CNSR[100:110] <- NA
 
