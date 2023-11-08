@@ -56,10 +56,7 @@ server <- function(id,
 }
 
 my_app <- function() {
-  mae <- hermes::multi_assay_experiment
-  mae_name <- "MAE"
-  mae_data <- teal.data::dataset(mae_name, mae)
-  data <- teal.data::teal_data(mae_data)
+  data <- teal.data::teal_data(MAE = hermes::multi_assay_experiment)
   app <- teal::init(
     data = data,
     modules = teal::modules(

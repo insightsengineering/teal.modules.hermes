@@ -114,9 +114,9 @@ my_app <- function() {
       module(
         label = "experimentSpec example",
         server = server,
-        server_args = list(mae_name = mae_name),
+        server_args = list(mae_name = "MAE"),
         ui = ui,
-        ui_args = list(mae_name = mae_name),
+        ui_args = list(mae_name = "MAE"),
         datanames = "all"
       )
     )

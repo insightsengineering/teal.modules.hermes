@@ -284,18 +284,15 @@ srv_g_forest_tte <- function(id,
 #' }
 sample_tm_g_forest_tte <- function() { # nolint
 
-  mae <- hermes::multi_assay_experiment
   adtte <- teal.modules.hermes::rADTTE %>%
-    dplyr::mutate(is_event = .data$CNSR == 0)
+    dplyr::mutate(is_event = (.data$CNSR == 0))
 
-  data <- teal.data::teal_data(
-    teal.data::dataset(
-      "ADTTE",
-      adtte,
-      code = "adtte <- teal.modules.hermes::rADTTE %>%
-        dplyr::mutate(is_event = .data$CNSR == 0)"
-    ),
-    teal.data::dataset("MAE", mae)
+  data <- teal_data(
+    ADTTE = adtte,
+    MAE = hermes::multi_assay_experiment,
+    code =
+       "adtte <- teal.modules.hermes::rADTTE %>%
+        dplyr::mutate(is_event = (.data$CNSR == 0))"
   )
 
   app <- teal::init(
