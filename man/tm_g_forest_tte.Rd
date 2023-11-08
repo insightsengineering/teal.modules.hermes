@@ -121,9 +121,9 @@ This module provides an interactive survival forest plot.
 \examples{
 data <- teal_data()
 data <- within(data, {
-  ADTTE = teal.modules.hermes::rADTTE \%>\%
+  ADTTE <- teal.modules.hermes::rADTTE \%>\%
     dplyr::mutate(is_event = .data$CNSR == 0)
-  MAE = hermes::multi_assay_experiment
+  MAE <- hermes::multi_assay_experiment
 })
 datanames <- c("ADTTE", "MAE")
 datanames(data) <- datanames
