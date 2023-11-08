@@ -35,9 +35,7 @@ MAE <- multi_assay_experiment
 data <- teal_data(MAE = mae, ADSL = ex_adsl, ADTTE = ex_adtte)
 datanames <- datanames(data)
 join_keys(data) <- cdisc_join_keys(!!!datanames)
-data@join_keys$mutate(
-  "MAE", "MAE", c("STUDYID", "USUBJID")
-)
+join_keys(data)["MAE"] <- c("STUDYID", "USUBJID")
 
 # Get raw ADTTE.
 adtte_raw <- get_raw_data(adtte)

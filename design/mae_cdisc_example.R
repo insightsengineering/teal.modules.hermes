@@ -102,10 +102,10 @@ adsl$AGE[31:40] <- NaN
 adsl$EOSDT[51:60] <- NA
 adsl$EOSDT[71:70] <- NA
 adsl$all_na <- NA
-adsl$unknown <- as.list(ADSL$SEX)
+adsl$unknown <- as.list(adsl$SEX)
 
 adtte = radtte(cached = TRUE)
-adtte$CNSR <- as.logical(ADTTE$CNSR)
+adtte$CNSR <- as.logical(adtte$CNSR)
 adtte$CNSR[100:110] <- NA
 
 mae <- multi_assay_experiment # from hermes
@@ -113,9 +113,7 @@ mae <- multi_assay_experiment # from hermes
 data <- cdisc_data(MAE = mae, ADSL = adsl, ADTTE = adtte)
 datanames <- datanames(data)
 join_keys(data) <- cdisc_join_keys(!!!datanames)
-data@join_keys$mutate(
-  "MAE", "MAE", c("STUDYID", "USUBJID")
-)
+join_keys(data)["MAE"] <- c("STUDYID", "USUBJID")
 
 app <- init(
   data = data,
