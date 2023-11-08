@@ -141,7 +141,7 @@ my_app <- function() {
     ADTTE = adtte,
     MAE = hermes::multi_assay_experiment,
     code =
-       "adtte <- teal.modules.hermes::rADTTE
+       "adtte <- teal.modules.hermes::rADTTE \%>\%
         dplyr::mutate(is_event = .data$CNSR == 0)"
   )
 
