@@ -40,6 +40,7 @@ Imports:
     lifecycle,
     logger (>= 0.2.0),
     MultiAssayExperiment,
+    rlang,
     rtables (>= 0.5.1),
     S4Vectors,
     shinyRadioMatrix (>= 0.2.1),
