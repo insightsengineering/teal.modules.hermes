@@ -112,7 +112,7 @@ mae <- multi_assay_experiment # from hermes
 
 data <- cdisc_data(MAE = mae, ADSL = adsl, ADTTE = adtte)
 datanames <- datanames(data)
-data@join_keys <- cdisc_join_keys(!!!datanames)
+join_keys(data) <- cdisc_join_keys(!!!datanames)
 data@join_keys$mutate(
   "MAE", "MAE", c("STUDYID", "USUBJID")
 )

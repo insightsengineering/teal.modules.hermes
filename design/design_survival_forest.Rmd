@@ -34,7 +34,7 @@ adtte <- ex_adtte
 MAE <- multi_assay_experiment
 data <- teal_data(MAE = mae, ADSL = ex_adsl, ADTTE = ex_adtte)
 datanames <- datanames(data)
-data@join_keys <- cdisc_join_keys(!!!datanames)
+join_keys(data) <- cdisc_join_keys(!!!datanames)
 data@join_keys$mutate(
   "MAE", "MAE", c("STUDYID", "USUBJID")
 )
