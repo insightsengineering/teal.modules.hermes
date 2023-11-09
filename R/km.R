@@ -277,9 +277,9 @@ srv_g_km <- function(id,
 sample_tm_g_km <- function() { # nolint
   data <- teal_data()
   data <- within(data, {
-    ADTTE <- teal.modules.hermes::rADTTE %>%
+    ADTTE <- teal.modules.hermes::rADTTE %>% # nolint
       dplyr::mutate(is_event = .data$CNSR == 0)
-    MAE <- hermes::multi_assay_experiment
+    MAE <- hermes::multi_assay_experiment # nolint
   })
   datanames <- c("ADTTE", "MAE")
   datanames(data) <- datanames
