@@ -183,19 +183,16 @@ h_gene_data <- function(object, name_annotation) {
 #' }
 #'
 #' my_app <- function() {
-#'   mae <- hermes::multi_assay_experiment
-#'   mae_name <- "MAE"
-#'   mae_data <- dataset(mae_name, mae)
-#'   data <- teal_data(mae_data)
+#'   data <- teal_data(MAE = hermes::multi_assay_experiment)
 #'   app <- init(
 #'     data = data,
 #'     modules = modules(
 #'       module(
 #'         label = "experimentSpec example",
 #'         server = server,
-#'         server_args = list(mae_name = mae_name),
+#'         server_args = list(mae_name = "MAE"),
 #'         ui = ui,
-#'         ui_args = list(mae_name = mae_name),
+#'         ui_args = list(mae_name = "MAE"),
 #'         datanames = "all"
 #'       )
 #'     )

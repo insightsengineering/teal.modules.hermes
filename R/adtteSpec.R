@@ -208,19 +208,15 @@ adtteSpecInput <- function(inputId, # nolint
 #' }
 #'
 #' my_app <- function() {
-#'   mae <- hermes::multi_assay_experiment
-#'   adtte <- teal.modules.hermes::rADTTE %>%
-#'     dplyr::mutate(is_event = .data$CNSR == 0)
-#'
-#'   data <- teal_data(
-#'     dataset(
-#'       "ADTTE",
-#'       adtte,
-#'       code = "adtte <- teal.modules.hermes::rADTTE
-#'         dplyr::mutate(is_event = .data$CNSR == 0)"
-#'     ),
-#'     dataset("MAE", mae)
-#'   )
+#'   data <- teal_data()
+#'   data <- within(data, {
+#'     ADTTE <- teal.modules.hermes::rADTTE %>%
+#'       dplyr::mutate(is_event = .data$CNSR == 0)
+#'     MAE <- hermes::multi_assay_experiment
+#'   })
+#'   datanames <- c("ADTTE", "MAE")
+#'   datanames(data) <- datanames
+#'   join_keys(data) <- cdisc_join_keys(!!!datanames)
 #'
 #'   app <- init(
 #'     data = data,

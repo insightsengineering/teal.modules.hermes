@@ -4,6 +4,10 @@
 * Added placeholders for `assaySpec`, `adtteSpec` and `geneSpec` inputs when no option is selected.
 * Disabled the select input for `assaySpec` and `adtteSpec` when there are no options available.
 
+### Enhancements
+
+* Updated the documentation and vignettes with the new way of specifying data for `teal::init()`. The `data` argument accepts `teal_data` object.
+
 # teal.modules.hermes 0.1.5
 
 ### Bug Fixes
