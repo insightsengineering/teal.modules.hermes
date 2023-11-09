@@ -12,19 +12,16 @@
 #' @export
 #'
 #' @examples
-#' mae <- hermes::multi_assay_experiment
-#' adtte <- teal.modules.hermes::rADTTE %>%
-#'   dplyr::mutate(is_event = (.data$CNSR == 0))
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADTTE <- teal.modules.hermes::rADTTE %>%
+#'     dplyr::mutate(is_event = .data$CNSR == 0)
+#'   MAE <- hermes::multi_assay_experiment
+#' })
+#' datanames <- c("ADTTE", "MAE")
+#' datanames(data) <- datanames
+#' join_keys(data) <- cdisc_join_keys(!!!datanames)
 #'
-#' data <- teal_data(
-#'   dataset(
-#'     "ADTTE",
-#'     adtte,
-#'     code = "adtte <- teal.modules.hermes::rADTTE %>%
-#'       dplyr::mutate(is_event = (.data$CNSR == 0))"
-#'   ),
-#'   dataset("MAE", mae)
-#' )
 #'
 #' modules <- modules(
 #'   tm_g_km(
@@ -278,20 +275,15 @@ srv_g_km <- function(id,
 #'   sample_tm_g_km()
 #' }
 sample_tm_g_km <- function() { # nolint
-
-  mae <- hermes::multi_assay_experiment
-  adtte <- teal.modules.hermes::rADTTE %>%
-    dplyr::mutate(is_event = (.data$CNSR == 0))
-
-  data <- teal.data::teal_data(
-    teal.data::dataset(
-      "ADTTE",
-      adtte,
-      code = "adtte <- teal.modules.hermes::rADTTE %>%
-        dplyr::mutate(is_event = (.data$CNSR == 0))"
-    ),
-    teal.data::dataset("MAE", mae)
-  )
+  data <- teal_data()
+  data <- within(data, {
+    ADTTE <- teal.modules.hermes::rADTTE %>%
+      dplyr::mutate(is_event = .data$CNSR == 0)
+    MAE <- hermes::multi_assay_experiment
+  })
+  datanames <- c("ADTTE", "MAE")
+  datanames(data) <- datanames
+  join_keys(data) <- cdisc_join_keys(!!!datanames)
 
   modules <- teal::modules(
     tm_g_km(
