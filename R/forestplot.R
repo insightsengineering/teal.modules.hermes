@@ -19,7 +19,7 @@
 #' })
 #' datanames <- c("ADTTE", "MAE")
 #' datanames(data) <- datanames
-#' join_keys(data) <- cdisc_join_keys(!!!datanames)
+#' join_keys(data) <- default_cdisc_join_keys[datanames]
 #'
 #' app <- init(
 #'   data = data,
@@ -291,7 +291,7 @@ sample_tm_g_forest_tte <- function() { # nolint
   })
   datanames <- c("ADTTE", "MAE")
   datanames(data) <- datanames
-  join_keys(data) <- cdisc_join_keys(!!!datanames)
+  join_keys(data) <- default_cdisc_join_keys[datanames]
 
   app <- teal::init(
     data = data,

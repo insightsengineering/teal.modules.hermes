@@ -20,7 +20,7 @@
 #' })
 #' datanames <- c("ADTTE", "MAE")
 #' datanames(data) <- datanames
-#' join_keys(data) <- cdisc_join_keys(!!!datanames)
+#' join_keys(data) <- default_cdisc_join_keys[datanames]
 #'
 #'
 #' modules <- modules(
@@ -283,7 +283,7 @@ sample_tm_g_km <- function() { # nolint
   })
   datanames <- c("ADTTE", "MAE")
   datanames(data) <- datanames
-  join_keys(data) <- cdisc_join_keys(!!!datanames)
+  join_keys(data) <- default_cdisc_join_keys[datanames]
 
   modules <- teal::modules(
     tm_g_km(
