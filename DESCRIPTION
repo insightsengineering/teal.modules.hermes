@@ -48,7 +48,7 @@ Imports:
     stats,
     stringr,
     SummarizedExperiment,
-    teal.data (>= 0.3.0.9008),
+    teal.data (>= 0.3.0.9009),
     teal.logger (>= 0.1.1),
     teal.reporter (>= 0.2.0),
     teal.widgets (>= 0.4.0),
