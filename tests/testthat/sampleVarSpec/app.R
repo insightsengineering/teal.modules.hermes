@@ -51,7 +51,7 @@ my_app <- function() {
       )
     )
   )
-  runApp(app)
+  shinyApp(app$ui, app$server)
 }
 
 my_app()
