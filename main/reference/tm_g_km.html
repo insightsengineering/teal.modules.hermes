@@ -14,7 +14,7 @@ ADaM structure."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.hermes</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.5.9004</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.5.9006</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -31,15 +31,6 @@ ADaM structure."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.hermes/main">main</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.hermes/latest-tag">latest-tag</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.hermes/v0.1.5">v0.1.5</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.hermes/v0.1.4">v0.1.4</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -184,19 +175,16 @@ functions, holding all the data sets provided in the app initialization.</p></dd
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">mae</span> <span class="op">&lt;-</span> <span class="fu">hermes</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/hermes/man/multi_assay_experiment.html" class="external-link">multi_assay_experiment</a></span></span></span>
-<span class="r-in"><span><span class="va">adtte</span> <span class="op">&lt;-</span> <span class="fu">teal.modules.hermes</span><span class="fu">::</span><span class="va"><a href="rADTTE.html">rADTTE</a></span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
-<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>is_event <span class="op">=</span> <span class="op">(</span><span class="va">.data</span><span class="op">$</span><span class="va">CNSR</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">teal_data</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">within</a></span><span class="op">(</span><span class="va">data</span>, <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">ADTTE</span> <span class="op">&lt;-</span> <span class="fu">teal.modules.hermes</span><span class="fu">::</span><span class="va"><a href="rADTTE.html">rADTTE</a></span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>is_event <span class="op">=</span> <span class="va">.data</span><span class="op">$</span><span class="va">CNSR</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">MAE</span> <span class="op">&lt;-</span> <span class="fu">hermes</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/hermes/man/multi_assay_experiment.html" class="external-link">multi_assay_experiment</a></span></span></span>
+<span class="r-in"><span><span class="op">}</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">datanames</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ADTTE"</span>, <span class="st">"MAE"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">datanames</span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">datanames</span></span></span>
+<span class="r-in"><span><span class="fu">join_keys</span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">[</span><span class="st">"ADTTE"</span>, <span class="st">"ADTTE"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"STUDYID"</span>, <span class="st">"USUBJID"</span>, <span class="st">"PARAMCD"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">teal_data</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="fu">dataset</span><span class="op">(</span></span></span>
-<span class="r-in"><span>    <span class="st">"ADTTE"</span>,</span></span>
-<span class="r-in"><span>    <span class="va">adtte</span>,</span></span>
-<span class="r-in"><span>    code <span class="op">=</span> <span class="st">"adtte &lt;- teal.modules.hermes::rADTTE %&gt;%</span></span></span>
-<span class="r-in"><span><span class="st">      dplyr::mutate(is_event = (.data$CNSR == 0))"</span></span></span>
-<span class="r-in"><span>  <span class="op">)</span>,</span></span>
-<span class="r-in"><span>  <span class="fu">dataset</span><span class="op">(</span><span class="st">"MAE"</span>, <span class="va">mae</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">modules</span> <span class="op">&lt;-</span> <span class="fu">modules</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="fu">tm_g_km</span><span class="op">(</span></span></span>
@@ -205,7 +193,7 @@ functions, holding all the data sets provided in the app initialization.</p></dd
 <span class="r-in"><span>    mae_name <span class="op">=</span> <span class="st">"MAE"</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2023-09-13 11:51:04.0479 pid:1128 token:[] teal.modules.hermes Initializing tm_g_km</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2023-11-20 11:35:44.0656 pid:1278 token:[] teal.modules.hermes Initializing tm_g_km</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu">init</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  data <span class="op">=</span> <span class="va">data</span>,</span></span>
