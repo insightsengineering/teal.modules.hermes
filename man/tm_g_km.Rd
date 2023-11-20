@@ -102,19 +102,16 @@ This teal module produces a grid style \code{Kaplan-Meier} plot for data with
 
 }}
 \examples{
-mae <- hermes::multi_assay_experiment
-adtte <- teal.modules.hermes::rADTTE \%>\%
-  dplyr::mutate(is_event = (.data$CNSR == 0))
+data <- teal_data()
+data <- within(data, {
+  ADTTE <- teal.modules.hermes::rADTTE \%>\%
+    dplyr::mutate(is_event = .data$CNSR == 0)
+  MAE <- hermes::multi_assay_experiment
+})
+datanames <- c("ADTTE", "MAE")
+datanames(data) <- datanames
+join_keys(data)["ADTTE", "ADTTE"] <- c("STUDYID", "USUBJID", "PARAMCD")
 
-data <- teal_data(
-  dataset(
-    "ADTTE",
-    adtte,
-    code = "adtte <- teal.modules.hermes::rADTTE \%>\%
-      dplyr::mutate(is_event = (.data$CNSR == 0))"
-  ),
-  dataset("MAE", mae)
-)
 
 modules <- modules(
   tm_g_km(

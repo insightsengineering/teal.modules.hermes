@@ -62,10 +62,7 @@ server <- function(id, data, filter_panel_api) {
 }
 
 my_app <- function() {
-  mae <- hermes::multi_assay_experiment
-  mae_name <- "MAE"
-  mae_data <- dataset(mae_name, mae)
-  data <- teal_data(mae_data)
+  data <- teal_data(MAE = hermes::multi_assay_experiment)
   app <- init(
     data = data,
     modules = modules(

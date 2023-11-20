@@ -39,9 +39,7 @@ server <- function(id,
 }
 
 my_app <- function() {
-  mae <- hermes::multi_assay_experiment
-  mae_data <- teal.data::dataset("MAE", mae)
-  data <- teal.data::teal_data(mae_data)
+  data <- teal.data::teal_data(MAE = hermes::multi_assay_experiment)
   app <- teal::init(
     data = data,
     modules = teal::modules(
@@ -53,7 +51,7 @@ my_app <- function() {
       )
     )
   )
-  runApp(app)
+  shinyApp(app$ui, app$server)
 }
 
 my_app()
