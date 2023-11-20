@@ -30,7 +30,7 @@ Depends:
     ggplot2,
     R (>= 3.6),
     shiny,
-    teal (>= 0.14.0)
+    teal (>= 0.14.0.9019)
 Imports:
     checkmate,
     DT,
@@ -47,7 +47,7 @@ Imports:
     stats,
     stringr,
     SummarizedExperiment,
-    teal.data (>= 0.3.0.9009),
+    teal.data (>= 0.3.0.9010),
     teal.logger (>= 0.1.1),
     teal.reporter (>= 0.2.0),
     teal.widgets (>= 0.4.0),
