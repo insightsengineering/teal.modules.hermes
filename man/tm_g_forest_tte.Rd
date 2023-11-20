@@ -127,7 +127,7 @@ data <- within(data, {
 })
 datanames <- c("ADTTE", "MAE")
 datanames(data) <- datanames
-join_keys(data) <- default_cdisc_join_keys[datanames]
+join_keys(data)["ADTTE", "ADTTE"] <- c("STUDYID", "USUBJID", "PARAMCD")
 
 app <- init(
   data = data,
