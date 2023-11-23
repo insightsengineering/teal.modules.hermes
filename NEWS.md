@@ -1,9 +1,9 @@
-# teal.modules.hermes 0.1.5.9006
+# teal.modules.hermes 0.1.5.9007
 
 ### Miscellaneous
 * Added placeholders for `assaySpec`, `adtteSpec` and `geneSpec` inputs when no option is selected.
 * Disabled the select input for `assaySpec` and `adtteSpec` when there are no options available.
-* For module developers: The module gets `teal_data` object in the ui and `reactive(<teal_data>)` in the server
+* For module developers: The module gets `teal_data` object in the UI and `reactive(<teal_data>)` in the server
 
 ### Enhancements
 
