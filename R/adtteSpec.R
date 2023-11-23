@@ -254,6 +254,8 @@ adtteSpecServer <- function(id, # nolint
   assert_reactive(assay)
   assert_reactive(genes)
   assert_reactive(probs)
+  checkmate::assert_class(data, "reactive")
+  checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
     # Join ADTTE with gene data.
@@ -271,8 +273,8 @@ adtteSpecServer <- function(id, # nolint
         assay
       )
 
-      mae <- data[[mae_name]]()
-      adtte <- data[[adtte_name]]()
+      mae <- data()[[mae_name]]
+      adtte <- data()[[adtte_name]]
 
       mae[[experiment_name]] <- experiment_data
       h_km_mae_to_adtte(

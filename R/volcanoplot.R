@@ -108,7 +108,8 @@ srv_g_volcanoplot <- function(id,
                               exclude_assays) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   assert_class(filter_panel_api, "FilterPanelAPI")
-  assert_class(data, "tdata")
+  checkmate::assert_class(data, "reactive")
+  checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
     experiment_data <- experimentSpecServer(

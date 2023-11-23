@@ -4,9 +4,10 @@
 \alias{module_arguments}
 \title{Standard Module Arguments}
 \arguments{
-\item{data}{(\code{tdata})\cr
-\code{tdata} object which is automatically passed to the UI and server
-functions, holding all the data sets provided in the app initialization.}
+\item{data}{(\code{teal_data} or \code{reactive})\cr
+\code{teal_data} object which is automatically passed to the UI and
+\verb{reactive(<teal_data>)} in the case of server functions,
+holding all the data sets provided in the app initialization.}
 
 \item{label}{(\code{string})\cr
 menu item label of the module in the teal app.}

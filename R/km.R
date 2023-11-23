@@ -99,8 +99,8 @@ ui_g_km <- function(id,
                     summary_funs,
                     pre_output,
                     post_output) {
+  checkmate::assert_class(data, "teal_data")
   ns <- NS(id)
-
   teal.widgets::standard_layout(
     encoding = div(
       ### Reporter
@@ -149,7 +149,8 @@ srv_g_km <- function(id,
                      exclude_assays) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   assert_class(filter_panel_api, "FilterPanelAPI")
-  assert_class(data, "tdata")
+  checkmate::assert_class(data, "reactive")
+  checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
     experiment <- experimentSpecServer(

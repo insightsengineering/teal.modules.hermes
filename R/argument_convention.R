@@ -5,9 +5,10 @@
 #' The documentation to this function lists all the conventional arguments in
 #' `hermes` teal modules.
 #'
-#' @param data (`tdata`)\cr
-#'   `tdata` object which is automatically passed to the UI and server
-#'   functions, holding all the data sets provided in the app initialization.
+#' @param data (`teal_data` or `reactive`)\cr
+#' `teal_data` object which is automatically passed to the UI and
+#' `reactive(<teal_data>)` in the case of server functions,
+#' holding all the data sets provided in the app initialization.
 #' @param label (`string`)\cr
 #'   menu item label of the module in the teal app.
 #' @param inputId (`string`)\cr

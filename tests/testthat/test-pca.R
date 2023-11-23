@@ -2,7 +2,7 @@
 
 test_that("ui_g_pca creates HTML", {
   mae_name <- "MyMAE"
-  data <- list(MyMAE = function() hermes::multi_assay_experiment)
+  data <- teal.data::teal_data(MyMAE = function() hermes::multi_assay_experiment)
   result <- ui_g_pca(
     id = "testid",
     data = data,

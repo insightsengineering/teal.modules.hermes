@@ -3,7 +3,7 @@
 test_that("ui_g_scatterplot creates expected HTML", {
   mae_name <- "MyMAE"
   set.seed(123)
-  data <- list(MyMAE = function() hermes::multi_assay_experiment)
+  data <- teal.data::teal_data(MyMAE = function() hermes::multi_assay_experiment)
   expect_silent(result <- ui_g_scatterplot(
     id = "testid",
     data = data,

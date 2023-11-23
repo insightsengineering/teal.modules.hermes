@@ -61,8 +61,9 @@ ui_g_pca <- function(id,
                      mae_name,
                      pre_output,
                      post_output) {
+  checkmate::assert_class(data, "teal_data")
   ns <- NS(id)
-  mae <- data[[mae_name]]()
+  mae <- data[[mae_name]]
   experiment_name_choices <- names(mae)
 
   tagList(
@@ -160,7 +161,8 @@ srv_g_pca <- function(id,
                       exclude_assays) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   assert_class(filter_panel_api, "FilterPanelAPI")
-  assert_class(data, "tdata")
+  checkmate::assert_class(data, "reactive")
+  checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
     experiment <- experimentSpecServer(

@@ -17,7 +17,7 @@ experimentSpecInput <- function(inputId, # nolint
   assert_string(inputId)
   assert_string(mae_name, min.chars = 1L)
   assert_string(label_experiments, min.chars = 1L)
-  mae <- data[[mae_name]]()
+  mae <- data[[mae_name]]
   name_choices <- names(mae)
 
   ns <- NS(inputId)
@@ -210,7 +210,8 @@ experimentSpecServer <- function(id, # nolint
                                  sample_vars_as_factors = TRUE,
                                  with_mae_col_data = TRUE) {
   assert_string(id)
-  assert_class(data, "tdata")
+  checkmate::assert_class(data, "reactive")
+  checkmate::assert_class(shiny::isolate(data()), "teal_data")
   assert_string(mae_name, min.chars = 1L)
   assert_string(name_annotation, min.chars = 1L, null.ok = TRUE)
   assert_flag(sample_vars_as_factors)
@@ -222,7 +223,7 @@ experimentSpecServer <- function(id, # nolint
     data_return <- reactive({
       name <- input$name
       req(name)
-      mae <- data[[mae_name]]()
+      mae <- data()[[mae_name]]
       orig_object <- mae[[name]]
       validate(need(
         hermes::is_hermes_data(orig_object),
