@@ -81,7 +81,7 @@ ui <- function(id,
 
   teal.widgets::standard_layout(
     encoding = div(
-      experimentSpecInput(ns("experiment"), data = data, mae_name = "MAE"),
+      experimentSpecInput(ns("experiment"), data = reactive(data), mae_name = "MAE"),
       assaySpecInput(ns("assay")),
       geneSpecInput(ns("genes"), funs = list(Mean = colMeans)),
       adtteSpecInput(ns("adtte"))
