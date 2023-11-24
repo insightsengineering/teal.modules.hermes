@@ -150,6 +150,7 @@ adtteSpecInput <- function(inputId, # nolint
 #' @examples
 #' ui <- function(id,
 #'                data) {
+#'   checkmate::assert_class(data, "teal_data")
 #'   ns <- NS(id)
 #'
 #'   teal.widgets::standard_layout(
@@ -164,6 +165,8 @@ adtteSpecInput <- function(inputId, # nolint
 #' }
 #'
 #' server <- function(id, data, filter_panel_api) {
+#'   checkmate::assert_class(data, "reactive")
+#'   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 #'   moduleServer(id, function(input, output, session) {
 #'     experiment <- experimentSpecServer(
 #'       "experiment",
