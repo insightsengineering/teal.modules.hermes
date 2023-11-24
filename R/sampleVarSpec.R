@@ -203,8 +203,9 @@ validate_n_levels <- function(x, name, n_levels) {
 #' @examples
 #' ui <- function(id,
 #'                data) {
+#'   checkmate::assert_class(data, "teal_data")
 #'   ns <- NS(id)
-#'   mae <- data[["MAE"]]()
+#'   mae <- data[["MAE"]]
 #'   experiment_name_choices <- names(mae)
 #'   teal.widgets::standard_layout(
 #'     encoding = div(
@@ -216,10 +217,12 @@ validate_n_levels <- function(x, name, n_levels) {
 #' }
 #' server <- function(id,
 #'                    data) {
+#'   checkmate::assert_class(data, "reactive")
+#'   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 #'   moduleServer(id, function(input, output, session) {
 #'     experiment_data <- reactive({
 #'       req(input$experiment_name)
-#'       mae <- data[["MAE"]]()
+#'       mae <- data()[["MAE"]]
 #'       object <- mae[[input$experiment_name]]
 #'       SummarizedExperiment::colData(object) <-
 #'         hermes::df_cols_to_factor(SummarizedExperiment::colData(object))

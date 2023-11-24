@@ -150,11 +150,12 @@ adtteSpecInput <- function(inputId, # nolint
 #' @examples
 #' ui <- function(id,
 #'                data) {
+#'   checkmate::assert_class(data, "teal_data")
 #'   ns <- NS(id)
 #'
 #'   teal.widgets::standard_layout(
 #'     encoding = div(
-#'       experimentSpecInput(ns("experiment"), data = data, mae_name = "MAE"),
+#'       experimentSpecInput(ns("experiment"), data = reactive(data), mae_name = "MAE"),
 #'       assaySpecInput(ns("assay")),
 #'       geneSpecInput(ns("genes"), funs = list(Mean = colMeans)),
 #'       adtteSpecInput(ns("adtte"))
@@ -164,6 +165,8 @@ adtteSpecInput <- function(inputId, # nolint
 #' }
 #'
 #' server <- function(id, data, filter_panel_api) {
+#'   checkmate::assert_class(data, "reactive")
+#'   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 #'   moduleServer(id, function(input, output, session) {
 #'     experiment <- experimentSpecServer(
 #'       "experiment",
