@@ -39,6 +39,7 @@ This defines the server part for the gene signature specification.
 ui <- function(id,
                data,
                funs) {
+  checkmate::assert_class(data, "teal_data")
   ns <- NS(id)
   teal.widgets::standard_layout(
     encoding = div(
@@ -54,6 +55,8 @@ ui <- function(id,
 server <- function(id,
                    data,
                    funs) {
+  checkmate::assert_class(data, "reactive")
+  checkmate::assert_class(shiny::isolate(data()), "teal_data")
   moduleServer(id, function(input, output, session) {
     gene_choices <- reactive({
       mae <- data()[["MAE"]]

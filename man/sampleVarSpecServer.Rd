@@ -60,6 +60,7 @@ If \code{num_levels} is specified then only factor columns will be available.
 \examples{
 ui <- function(id,
                data) {
+  checkmate::assert_class(data, "teal_data")
   ns <- NS(id)
   mae <- data[["MAE"]]
   experiment_name_choices <- names(mae)
@@ -73,6 +74,8 @@ ui <- function(id,
 }
 server <- function(id,
                    data) {
+  checkmate::assert_class(data, "reactive")
+  checkmate::assert_class(shiny::isolate(data()), "teal_data")
   moduleServer(id, function(input, output, session) {
     experiment_data <- reactive({
       req(input$experiment_name)
