@@ -58,17 +58,12 @@ which are not completely missing (\code{NA}) will be shown for selection.
 If \code{num_levels} is specified then only factor columns will be available.
 }
 \examples{
-ui <- function(id,
-               data) {
+ui <- function(id) {
   checkmate::assert_class(data, "teal_data")
   ns <- NS(id)
-  mae <- data[["MAE"]]
-  experiment_name_choices <- names(mae)
+
   teal.widgets::standard_layout(
-    encoding = div(
-      selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
-      sampleVarSpecInput(ns("facet_var"), "Select faceting variable")
-    ),
+    encoding = uiOutput(ns("encoding_ui")),
     output = plotOutput(ns("plot"))
   )
 }
@@ -77,6 +72,14 @@ server <- function(id,
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
   moduleServer(id, function(input, output, session) {
+    output$encoding_ui <- renderUI({
+      mae <- data()[["MAE"]]
+      experiment_name_choices <- names(mae)
+      div(
+        selectInput(session$ns("experiment_name"), "Select experiment", experiment_name_choices),
+        sampleVarSpecInput(session$ns("facet_var"), "Select faceting variable")
+      )
+    })
     experiment_data <- reactive({
       req(input$experiment_name)
       mae <- data()[["MAE"]]

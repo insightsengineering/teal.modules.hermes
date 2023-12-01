@@ -75,18 +75,11 @@ and experiment, as numeric and factor columns. The factor column is created by b
 the numeric column according to the quantile cutoffs specified in \code{probs}.
 }
 \examples{
-ui <- function(id,
-               data) {
-  checkmate::assert_class(data, "teal_data")
+ui <- function(id) {
   ns <- NS(id)
 
   teal.widgets::standard_layout(
-    encoding = div(
-      experimentSpecInput(ns("experiment"), data = reactive(data), mae_name = "MAE"),
-      assaySpecInput(ns("assay")),
-      geneSpecInput(ns("genes"), funs = list(Mean = colMeans)),
-      adtteSpecInput(ns("adtte"))
-    ),
+    encoding = uiOutput(ns("encoding_ui")),
     output = verbatimTextOutput(ns("summary"))
   )
 }
@@ -95,6 +88,14 @@ server <- function(id, data, filter_panel_api) {
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
   moduleServer(id, function(input, output, session) {
+    output$asdf <- renderUI({
+      div(
+        experimentSpecInput(session$ns("experiment"), data, mae_name = "MAE"),
+        assaySpecInput(session$ns("assay")),
+        geneSpecInput(session$ns("genes"), funs = list(Mean = colMeans)),
+        adtteSpecInput(session$ns("adtte"))
+      )
+    })
     experiment <- experimentSpecServer(
       "experiment",
       data = data,

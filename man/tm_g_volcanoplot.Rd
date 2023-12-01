@@ -15,7 +15,7 @@ tm_g_volcanoplot(
   post_output = NULL
 )
 
-ui_g_volcanoplot(id, data, mae_name, pre_output, post_output)
+ui_g_volcanoplot(id, mae_name, pre_output, post_output)
 
 srv_g_volcanoplot(
   id,

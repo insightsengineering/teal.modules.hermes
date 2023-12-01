@@ -17,7 +17,7 @@ tm_g_barplot(
   post_output = NULL
 )
 
-ui_g_barplot(id, data, mae_name, summary_funs, pre_output, post_output)
+ui_g_barplot(id, mae_name, summary_funs, pre_output, post_output)
 
 srv_g_barplot(
   id,

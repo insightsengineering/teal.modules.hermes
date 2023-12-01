@@ -24,7 +24,6 @@ tm_g_forest_tte(
 
 ui_g_forest_tte(
   id,
-  data,
   adtte_name,
   mae_name,
   summary_funs,

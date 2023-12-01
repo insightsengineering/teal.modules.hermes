@@ -17,7 +17,7 @@ tm_g_boxplot(
   post_output = NULL
 )
 
-ui_g_boxplot(id, data, mae_name, summary_funs, pre_output, post_output)
+ui_g_boxplot(id, mae_name, summary_funs, pre_output, post_output)
 
 srv_g_boxplot(
   id,

@@ -20,7 +20,7 @@ tm_g_km(
   post_output = NULL
 )
 
-ui_g_km(id, data, adtte_name, mae_name, summary_funs, pre_output, post_output)
+ui_g_km(id, adtte_name, mae_name, summary_funs, pre_output, post_output)
 
 srv_g_km(
   id,

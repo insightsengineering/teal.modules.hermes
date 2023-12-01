@@ -15,7 +15,7 @@ tm_g_pca(
   post_output = NULL
 )
 
-ui_g_pca(id, data, mae_name, pre_output, post_output)
+ui_g_pca(id, mae_name, pre_output, post_output)
 
 srv_g_pca(id, data, filter_panel_api, reporter, mae_name, exclude_assays)
 

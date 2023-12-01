@@ -15,7 +15,7 @@ tm_g_quality(
   post_output = NULL
 )
 
-ui_g_quality(id, data, mae_name, pre_output, post_output)
+ui_g_quality(id, mae_name, pre_output, post_output)
 
 srv_g_quality(id, data, filter_panel_api, reporter, mae_name, exclude_assays)
 
