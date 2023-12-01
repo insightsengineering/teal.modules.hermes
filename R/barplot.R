@@ -66,12 +66,10 @@ tm_g_barplot <- function(label,
 #' @inheritParams module_arguments
 #' @export
 ui_g_barplot <- function(id,
-                         data,
                          mae_name,
                          summary_funs,
                          pre_output,
                          post_output) {
-  checkmate::assert_class(data, "teal_data")
   ns <- NS(id)
   teal.widgets::standard_layout(
     encoding = div(
@@ -80,7 +78,7 @@ ui_g_barplot <- function(id,
       ###
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
-      experimentSpecInput(ns("experiment"), data, mae_name),
+      uiOutput(ns("experiment_ui")),
       assaySpecInput(ns("assay")),
       sampleVarSpecInput(ns("facet"), "Select Facet Variable"),
       geneSpecInput(ns("x"), summary_funs),
@@ -124,6 +122,9 @@ srv_g_barplot <- function(id,
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
   moduleServer(id, function(input, output, session) {
+    output$experiment_ui <- renderUI({
+      experimentSpecInput(session$ns("experiment"), data(), mae_name)
+    })
     experiment <- experimentSpecServer(
       "experiment",
       data = data,
