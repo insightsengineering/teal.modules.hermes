@@ -21,7 +21,7 @@ server <- function(id,
                    funs) {
   moduleServer(id, function(input, output, session) {
     gene_choices <- reactive({
-      mae <- data[["MAE"]]()
+      mae <- data()[["MAE"]]
       object <- mae[[1]]
       gene_ids <- rownames(object)
       gene_names <- SummarizedExperiment::rowData(object)$symbol

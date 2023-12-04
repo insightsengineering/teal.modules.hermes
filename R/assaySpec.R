@@ -56,7 +56,7 @@ assaySpecInput <- function(inputId, # nolint
 #'   moduleServer(id, module = function(input, output, session) {
 #'     output$encoding_ui <- renderUI({
 #'       div(
-#'         experimentSpecInput(session$ns("experiment"), data(), "MAE"),
+#'         experimentSpecInput(session$ns("experiment"), data, "MAE"),
 #'         assaySpecInput(
 #'           session$ns("assay"),
 #'           label_assays = "Please choose assay"

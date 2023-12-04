@@ -5,7 +5,6 @@ test_that("ui_g_volcanoplot creates expected HTML", {
   data <- list(MyMAE = function() hermes::multi_assay_experiment)
   expect_silent(result <- ui_g_volcanoplot(
     id = "testid",
-    data = data,
     mae_name = mae_name,
     pre_output = NULL,
     post_output = NULL

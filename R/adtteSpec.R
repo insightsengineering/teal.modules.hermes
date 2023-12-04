@@ -161,7 +161,7 @@ adtteSpecInput <- function(inputId, # nolint
 #'   checkmate::assert_class(data, "reactive")
 #'   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 #'   moduleServer(id, function(input, output, session) {
-#'     output$asdf <- renderUI({
+#'     output$encoding_ui <- renderUI({
 #'       div(
 #'         experimentSpecInput(session$ns("experiment"), data, mae_name = "MAE"),
 #'         assaySpecInput(session$ns("assay")),

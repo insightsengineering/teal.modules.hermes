@@ -20,10 +20,9 @@ adtteSpecServer(
 \arguments{
 \item{id}{(\code{string}) the shiny module id.}
 
-\item{data}{(\code{teal_data} or \code{reactive})\cr
-\code{teal_data} object which is automatically passed to the UI and
-\verb{reactive(<teal_data>)} in the case of server functions,
-holding all the data sets provided in the app initialization.}
+\item{data}{(\code{reactive})\cr
+\verb{reactive(<teal_data>)} holding all the data sets provided
+during app initialization after going through the filters.}
 
 \item{mae_name}{(\code{string})\cr
 name of the MAE data used in the teal module.}
@@ -88,7 +87,7 @@ server <- function(id, data, filter_panel_api) {
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
   moduleServer(id, function(input, output, session) {
-    output$asdf <- renderUI({
+    output$encoding_ui <- renderUI({
       div(
         experimentSpecInput(session$ns("experiment"), data, mae_name = "MAE"),
         assaySpecInput(session$ns("assay")),

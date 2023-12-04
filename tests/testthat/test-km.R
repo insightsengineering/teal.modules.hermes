@@ -6,7 +6,6 @@ test_that("ui_g_km creates expected HTML", {
   data <- teal.data::teal_data(MyMAE = function() hermes::multi_assay_experiment)
   expect_silent(result <- ui_g_km(
     id = "testid",
-    data = data,
     adtte_name = "ADTTE",
     mae_name = mae_name,
     summary_funs = list(

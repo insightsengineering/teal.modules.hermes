@@ -111,7 +111,7 @@ srv_g_volcanoplot <- function(id,
 
   moduleServer(id, function(input, output, session) {
     output$experiment_ui <- renderUI({
-      experimentSpecInput(session$ns("experiment"), data(), mae_name)
+      experimentSpecInput(session$ns("experiment"), data, mae_name)
     })
     experiment_data <- experimentSpecServer(
       "experiment",

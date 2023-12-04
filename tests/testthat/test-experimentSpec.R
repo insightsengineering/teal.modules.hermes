@@ -2,15 +2,21 @@
 test_that("experimentSpecInput creates expected HTML", {
   mae_name <- "MyMAE"
   set.seed(123)
-  data <- list(MyMAE = function() hermes::multi_assay_experiment)
-  expect_silent(result <- experimentSpecInput(
-    inputId = "my_experiment",
-    data = data,
-    mae_name = mae_name,
-    label_experiments = "Please select the best experiment"
-  ))
+  server <- function(input, output, session) {
+    data <- reactive(teal_data(MyMAE = hermes::multi_assay_experiment))
+    result <- experimentSpecInput(
+      inputId = "my_experiment",
+      data = data,
+      mae_name = mae_name,
+      label_experiments = "Please select the best experiment"
+    )
+  }
 
-  expect_tag(result)
+  testServer(server, {
+    expect_silent(
+      expect_tag(result)
+    )
+  })
 })
 
 # h_order_genes ----

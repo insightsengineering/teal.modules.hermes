@@ -6,7 +6,6 @@ test_that("ui_g_forest_tte creates expected HTML", {
   data <- teal.data::teal_data(MyMAE = function() hermes::multi_assay_experiment)
   expect_silent(result <- ui_g_forest_tte(
     id = "testid",
-    data = data,
     adtte_name = "ADTTE",
     mae_name = mae_name,
     summary_funs = list(

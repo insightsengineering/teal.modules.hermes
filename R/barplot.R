@@ -123,7 +123,7 @@ srv_g_barplot <- function(id,
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
   moduleServer(id, function(input, output, session) {
     output$experiment_ui <- renderUI({
-      experimentSpecInput(session$ns("experiment"), data(), mae_name)
+      experimentSpecInput(session$ns("experiment"), data, mae_name)
     })
     experiment <- experimentSpecServer(
       "experiment",
