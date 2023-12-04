@@ -214,6 +214,7 @@ adtteSpecInput <- function(inputId, # nolint
 #' my_app <- function() {
 #'   data <- teal_data()
 #'   data <- within(data, {
+#'     ADSL <- teal.data::rADSL
 #'     ADTTE <- teal.modules.hermes::rADTTE %>%
 #'       dplyr::mutate(is_event = .data$CNSR == 0)
 #'     MAE <- hermes::multi_assay_experiment
