@@ -24,7 +24,6 @@ tm_g_forest_tte(
 
 ui_g_forest_tte(
   id,
-  data,
   adtte_name,
   mae_name,
   summary_funs,
@@ -93,10 +92,9 @@ and maximum plot width.}
 
 \item{id}{(\code{string}) the shiny module id.}
 
-\item{data}{(\code{teal_data} or \code{reactive})\cr
-\code{teal_data} object which is automatically passed to the UI and
-\verb{reactive(<teal_data>)} in the case of server functions,
-holding all the data sets provided in the app initialization.}
+\item{data}{(\code{reactive})\cr
+\verb{reactive(<teal_data>)} holding all the data sets provided
+during app initialization after going through the filters.}
 
 \item{filter_panel_api}{(\code{FilterPanelAPI})\cr object describing the actual filter panel API.}
 

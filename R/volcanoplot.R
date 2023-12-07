@@ -58,12 +58,10 @@ tm_g_volcanoplot <- function(label,
 #' @inheritParams module_arguments
 #' @export
 ui_g_volcanoplot <- function(id,
-                             data,
                              mae_name,
                              pre_output,
                              post_output) {
   ns <- NS(id)
-  mae <- data[[mae_name]]
 
   teal.widgets::standard_layout(
     output = div(
@@ -78,7 +76,7 @@ ui_g_volcanoplot <- function(id,
       ###
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
-      experimentSpecInput(ns("experiment"), data, mae_name),
+      uiOutput(ns("experiment_ui")),
       assaySpecInput(ns("assay")),
       sampleVarSpecInput(ns("compare_group"), "Compare Groups", "Please group here into 2 levels"),
       tags$label("Show Top Differentiated Genes"),
@@ -112,6 +110,9 @@ srv_g_volcanoplot <- function(id,
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    output$experiment_ui <- renderUI({
+      experimentSpecInput(session$ns("experiment"), data, mae_name)
+    })
     experiment_data <- experimentSpecServer(
       "experiment",
       data = data,

@@ -36,10 +36,7 @@ Reactive \code{\link[hermes:GeneSpec]{hermes::GeneSpec}} which can be used as in
 This defines the server part for the gene signature specification.
 }
 \examples{
-ui <- function(id,
-               data,
-               funs) {
-  checkmate::assert_class(data, "teal_data")
+ui <- function(id, funs) {
   ns <- NS(id)
   teal.widgets::standard_layout(
     encoding = div(

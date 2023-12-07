@@ -219,10 +219,7 @@ h_parse_genes <- function(words, choices) {
 #' @export
 #'
 #' @examples
-#' ui <- function(id,
-#'                data,
-#'                funs) {
-#'   checkmate::assert_class(data, "teal_data")
+#' ui <- function(id, funs) {
 #'   ns <- NS(id)
 #'   teal.widgets::standard_layout(
 #'     encoding = div(

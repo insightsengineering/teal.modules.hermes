@@ -15,7 +15,7 @@ tm_g_pca(
   post_output = NULL
 )
 
-ui_g_pca(id, data, mae_name, pre_output, post_output)
+ui_g_pca(id, mae_name, pre_output, post_output)
 
 srv_g_pca(id, data, filter_panel_api, reporter, mae_name, exclude_assays)
 
@@ -40,10 +40,9 @@ elements can be useful).}
 
 \item{id}{(\code{string}) the shiny module id.}
 
-\item{data}{(\code{teal_data} or \code{reactive})\cr
-\code{teal_data} object which is automatically passed to the UI and
-\verb{reactive(<teal_data>)} in the case of server functions,
-holding all the data sets provided in the app initialization.}
+\item{data}{(\code{reactive})\cr
+\verb{reactive(<teal_data>)} holding all the data sets provided
+during app initialization after going through the filters.}
 
 \item{filter_panel_api}{(\code{FilterPanelAPI})\cr object describing the actual filter panel API.}
 
