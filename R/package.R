@@ -7,7 +7,7 @@
 
 #' @import ggplot2
 #' @import shiny
-#' @import teal
+#' @import teal teal.data
 #' @importFrom S4Vectors setListElement DataFrame
 #' @importFrom lifecycle deprecate_soft
 NULL
