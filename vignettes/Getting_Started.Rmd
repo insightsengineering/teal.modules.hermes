@@ -37,16 +37,11 @@ In `teal.modules.hermes` we provide modules that make the experiment and assay
 selection super easy, see here for the UI part:
 
 ```{r}
-ui <- function(id,
-               data,
-               mae_name) {
+ui <- function(id, mae_name) {
   ns <- NS(id)
 
   teal.widgets::standard_layout(
-    encoding = div(
-      experimentSpecInput(ns("experiment"), data, mae_name),
-      assaySpecInput(ns("assay"))
-    ),
+    encoding = uiOutput(ns("encoding_ui")),
     output = plotOutput(ns("awesome_plot"))
   )
 }
@@ -63,6 +58,12 @@ srv <- function(input,
                 data,
                 filter_panel_api,
                 mae_name) {
+  output$encoding_ui <- renderUI({
+    div(
+      experimentSpecInput(session$ns("experiment"), data, mae_name),
+      assaySpecInput(session$ns("assay"))
+    )
+  })
   experiment <- experimentSpecServer(
     "experiment",
     data = data,
@@ -94,9 +95,7 @@ Now let's assume you want to spin up your app for an MAE.
 ```{r}
 awesome_app <- function(mae, label = "My awesome app") {
   mae_name <- "MAE"
-  mae <- hermes::lapply(mae, hermes::HermesData)
-  mae_data <- dataset(mae_name, mae)
-  data <- teal_data(mae_data)
+  data <- teal_data(MAE = hermes::lapply(mae, hermes::HermesData))
   app <- init(
     data = data,
     modules = teal::modules(

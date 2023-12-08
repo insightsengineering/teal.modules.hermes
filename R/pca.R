@@ -57,13 +57,10 @@ tm_g_pca <- function(label,
 #' @inheritParams module_arguments
 #' @export
 ui_g_pca <- function(id,
-                     data,
                      mae_name,
                      pre_output,
                      post_output) {
   ns <- NS(id)
-  mae <- data[[mae_name]]()
-  experiment_name_choices <- names(mae)
 
   tagList(
     teal.widgets::standard_layout(
@@ -74,7 +71,7 @@ ui_g_pca <- function(id,
         ###
         tags$label("Encodings", class = "text-primary"),
         helpText("Analysis of MAE:", tags$code(mae_name)),
-        experimentSpecInput(ns("experiment"), data, mae_name),
+        uiOutput(ns("experiment_ui")),
         assaySpecInput(ns("assay")),
         conditionalPanel(
           condition = "input.tab_selected == 'PCA'",
@@ -160,9 +157,13 @@ srv_g_pca <- function(id,
                       exclude_assays) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   assert_class(filter_panel_api, "FilterPanelAPI")
-  assert_class(data, "tdata")
+  checkmate::assert_class(data, "reactive")
+  checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    output$experiment_ui <- renderUI({
+      experimentSpecInput(session$ns("experiment"), data, mae_name)
+    })
     experiment <- experimentSpecServer(
       "experiment",
       data = data,

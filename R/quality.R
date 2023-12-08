@@ -111,7 +111,6 @@ tm_g_quality <- function(label,
 #' @inheritParams module_arguments
 #' @export
 ui_g_quality <- function(id,
-                         data,
                          mae_name,
                          pre_output,
                          post_output) {
@@ -123,7 +122,7 @@ ui_g_quality <- function(id,
       ###
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
-      experimentSpecInput(ns("experiment"), data, mae_name),
+      uiOutput(ns("experiment_ui")),
       selectInput(
         ns("plot_type"),
         "Plot Type",
@@ -200,9 +199,13 @@ srv_g_quality <- function(id,
                           exclude_assays) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   assert_class(filter_panel_api, "FilterPanelAPI")
-  assert_class(data, "tdata")
+  checkmate::assert_class(data, "reactive")
+  checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    output$experiment_ui <- renderUI({
+      experimentSpecInput(session$ns("experiment"), data, mae_name)
+    })
     experiment <- experimentSpecServer(
       "experiment",
       data = data,

@@ -219,9 +219,7 @@ h_parse_genes <- function(words, choices) {
 #' @export
 #'
 #' @examples
-#' ui <- function(id,
-#'                data,
-#'                funs) {
+#' ui <- function(id, funs) {
 #'   ns <- NS(id)
 #'   teal.widgets::standard_layout(
 #'     encoding = div(
@@ -237,9 +235,11 @@ h_parse_genes <- function(words, choices) {
 #' server <- function(id,
 #'                    data,
 #'                    funs) {
+#'   checkmate::assert_class(data, "reactive")
+#'   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 #'   moduleServer(id, function(input, output, session) {
 #'     gene_choices <- reactive({
-#'       mae <- data[["MAE"]]()
+#'       mae <- data()[["MAE"]]
 #'       object <- mae[[1]]
 #'       gene_ids <- rownames(object)
 #'       gene_names <- SummarizedExperiment::rowData(object)$symbol

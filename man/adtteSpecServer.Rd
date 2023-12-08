@@ -20,9 +20,9 @@ adtteSpecServer(
 \arguments{
 \item{id}{(\code{string}) the shiny module id.}
 
-\item{data}{(\code{tdata})\cr
-\code{tdata} object which is automatically passed to the UI and server
-functions, holding all the data sets provided in the app initialization.}
+\item{data}{(\code{reactive})\cr
+\verb{reactive(<teal_data>)} holding all the data sets provided
+during app initialization after going through the filters.}
 
 \item{mae_name}{(\code{string})\cr
 name of the MAE data used in the teal module.}
@@ -74,23 +74,27 @@ and experiment, as numeric and factor columns. The factor column is created by b
 the numeric column according to the quantile cutoffs specified in \code{probs}.
 }
 \examples{
-ui <- function(id,
-               data) {
+ui <- function(id) {
   ns <- NS(id)
 
   teal.widgets::standard_layout(
-    encoding = div(
-      experimentSpecInput(ns("experiment"), data = data, mae_name = "MAE"),
-      assaySpecInput(ns("assay")),
-      geneSpecInput(ns("genes"), funs = list(Mean = colMeans)),
-      adtteSpecInput(ns("adtte"))
-    ),
+    encoding = uiOutput(ns("encoding_ui")),
     output = verbatimTextOutput(ns("summary"))
   )
 }
 
 server <- function(id, data, filter_panel_api) {
+  checkmate::assert_class(data, "reactive")
+  checkmate::assert_class(shiny::isolate(data()), "teal_data")
   moduleServer(id, function(input, output, session) {
+    output$encoding_ui <- renderUI({
+      div(
+        experimentSpecInput(session$ns("experiment"), data, mae_name = "MAE"),
+        assaySpecInput(session$ns("assay")),
+        geneSpecInput(session$ns("genes"), funs = list(Mean = colMeans)),
+        adtteSpecInput(session$ns("adtte"))
+      )
+    })
     experiment <- experimentSpecServer(
       "experiment",
       data = data,
@@ -136,6 +140,7 @@ server <- function(id, data, filter_panel_api) {
 my_app <- function() {
   data <- teal_data()
   data <- within(data, {
+    ADSL <- teal.data::rADSL
     ADTTE <- teal.modules.hermes::rADTTE \%>\%
       dplyr::mutate(is_event = .data$CNSR == 0)
     MAE <- hermes::multi_assay_experiment
