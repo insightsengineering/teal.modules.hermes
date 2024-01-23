@@ -21,7 +21,7 @@ server <- function(id,
                    funs) {
   moduleServer(id, function(input, output, session) {
     gene_choices <- reactive({
-      mae <- data[["MAE"]]()
+      mae <- data()[["MAE"]]
       object <- mae[[1]]
       gene_ids <- rownames(object)
       gene_names <- SummarizedExperiment::rowData(object)$symbol
@@ -49,9 +49,7 @@ server <- function(id,
 
 funs <- list(mean = colMeans)
 my_app <- function() {
-  mae <- hermes::multi_assay_experiment
-  mae_data <- teal.data::dataset("MAE", mae)
-  data <- teal.data::teal_data(mae_data)
+  data <- teal.data::teal_data(MAE = hermes::multi_assay_experiment)
   app <- teal::init(
     data = data,
     modules = teal::modules(

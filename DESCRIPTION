@@ -1,8 +1,8 @@
 Type: Package
 Package: teal.modules.hermes
 Title: RNA-Seq Analysis Modules to Add to a Teal Application
-Version: 0.1.5.9006
-Date: 2023-10-13
+Version: 0.1.5.9010
+Date: 2023-12-12
 Authors@R: c(
     person("Daniel", "Sabanés Bové", , "daniel.sabanes_bove@roche.com", role = c("aut", "cre")),
     person("Nikolas", "Burkoff", role = "aut"),
@@ -30,7 +30,7 @@ Depends:
     ggplot2,
     R (>= 3.6),
     shiny,
-    teal (>= 0.14.0)
+    teal (>= 0.14.0.9027)
 Imports:
     checkmate,
     DT,
@@ -47,7 +47,7 @@ Imports:
     stats,
     stringr,
     SummarizedExperiment,
-    teal.data (>= 0.3.0),
+    teal.data (>= 0.3.0.9018),
     teal.logger (>= 0.1.1),
     teal.reporter (>= 0.2.0),
     teal.widgets (>= 0.4.0),

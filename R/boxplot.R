@@ -12,9 +12,7 @@
 #' @export
 #'
 #' @examples
-#' mae <- hermes::multi_assay_experiment
-#' mae_data <- dataset("MAE", mae)
-#' data <- teal_data(mae_data)
+#' data <- teal_data(MAE = hermes::multi_assay_experiment)
 #' app <- init(
 #'   data = data,
 #'   modules = modules(
@@ -69,7 +67,6 @@ tm_g_boxplot <- function(label,
 #' @inheritParams module_arguments
 #' @export
 ui_g_boxplot <- function(id,
-                         data,
                          mae_name,
                          summary_funs,
                          pre_output,
@@ -82,7 +79,7 @@ ui_g_boxplot <- function(id,
       ###
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
-      experimentSpecInput(ns("experiment"), data, mae_name),
+      uiOutput(ns("experiment_ui")),
       assaySpecInput(ns("assay")),
       geneSpecInput(ns("genes"), summary_funs),
       tags$label("Jitter"),
@@ -118,9 +115,13 @@ srv_g_boxplot <- function(id,
                           summary_funs) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   assert_class(filter_panel_api, "FilterPanelAPI")
-  assert_class(data, "tdata")
+  checkmate::assert_class(data, "reactive")
+  checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    output$experiment_ui <- renderUI({
+      experimentSpecInput(session$ns("experiment"), data, mae_name)
+    })
     experiment <- experimentSpecServer(
       "experiment",
       data = data,
@@ -247,9 +248,7 @@ srv_g_boxplot <- function(id,
 #'   sample_tm_g_boxplot()
 #' }
 sample_tm_g_boxplot <- function() {
-  mae <- hermes::multi_assay_experiment
-  mae_data <- teal.data::dataset("MAE", mae)
-  data <- teal.data::teal_data(mae_data)
+  data <- teal.data::teal_data(MAE = hermes::multi_assay_experiment)
   app <- teal::init(
     data = data,
     modules = teal::modules(

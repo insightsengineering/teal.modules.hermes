@@ -12,19 +12,16 @@
 #' @export
 #'
 #' @examples
-#' mae <- hermes::multi_assay_experiment
-#' adtte <- teal.modules.hermes::rADTTE %>%
-#'   dplyr::mutate(is_event = (.data$CNSR == 0))
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADTTE <- teal.modules.hermes::rADTTE %>%
+#'     dplyr::mutate(is_event = .data$CNSR == 0)
+#'   MAE <- hermes::multi_assay_experiment
+#' })
+#' datanames <- c("ADTTE", "MAE")
+#' datanames(data) <- datanames
+#' join_keys(data)["ADTTE", "ADTTE"] <- c("STUDYID", "USUBJID", "PARAMCD")
 #'
-#' data <- teal_data(
-#'   dataset(
-#'     "ADTTE",
-#'     adtte,
-#'     code = "adtte <- teal.modules.hermes::rADTTE %>%
-#'       dplyr::mutate(is_event = (.data$CNSR == 0))"
-#'   ),
-#'   dataset("MAE", mae)
-#' )
 #'
 #' modules <- modules(
 #'   tm_g_km(
@@ -96,14 +93,12 @@ tm_g_km <- function(label,
 #' @inheritParams module_arguments
 #' @export
 ui_g_km <- function(id,
-                    data,
                     adtte_name,
                     mae_name,
                     summary_funs,
                     pre_output,
                     post_output) {
   ns <- NS(id)
-
   teal.widgets::standard_layout(
     encoding = div(
       ### Reporter
@@ -111,7 +106,7 @@ ui_g_km <- function(id,
       ###
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
-      experimentSpecInput(ns("experiment"), data, mae_name),
+      uiOutput(ns("experiment_ui")),
       assaySpecInput(ns("assay")),
       geneSpecInput(ns("genes"), summary_funs),
       helpText("Analysis of ADTTE:", tags$code(adtte_name)),
@@ -152,9 +147,13 @@ srv_g_km <- function(id,
                      exclude_assays) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   assert_class(filter_panel_api, "FilterPanelAPI")
-  assert_class(data, "tdata")
+  checkmate::assert_class(data, "reactive")
+  checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    output$experiment_ui <- renderUI({
+      experimentSpecInput(session$ns("experiment"), data, mae_name)
+    })
     experiment <- experimentSpecServer(
       "experiment",
       data = data,
@@ -278,20 +277,15 @@ srv_g_km <- function(id,
 #'   sample_tm_g_km()
 #' }
 sample_tm_g_km <- function() { # nolint
-
-  mae <- hermes::multi_assay_experiment
-  adtte <- teal.modules.hermes::rADTTE %>%
-    dplyr::mutate(is_event = (.data$CNSR == 0))
-
-  data <- teal.data::teal_data(
-    teal.data::dataset(
-      "ADTTE",
-      adtte,
-      code = "adtte <- teal.modules.hermes::rADTTE %>%
-        dplyr::mutate(is_event = (.data$CNSR == 0))"
-    ),
-    teal.data::dataset("MAE", mae)
-  )
+  data <- teal_data()
+  data <- within(data, {
+    ADTTE <- teal.modules.hermes::rADTTE %>% # nolint
+      dplyr::mutate(is_event = .data$CNSR == 0)
+    MAE <- hermes::multi_assay_experiment # nolint
+  })
+  datanames <- c("ADTTE", "MAE")
+  datanames(data) <- datanames
+  join_keys(data)["ADTTE", "ADTTE"] <- c("STUDYID", "USUBJID", "PARAMCD")
 
   modules <- teal::modules(
     tm_g_km(

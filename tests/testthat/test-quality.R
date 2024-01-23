@@ -3,10 +3,9 @@
 test_that("ui_g_quality creates expected HTML", {
   mae_name <- "MyMAE"
   set.seed(123)
-  data <- list(MyMAE = function() hermes::multi_assay_experiment)
+  data <- teal.data::teal_data(MyMAE = function() hermes::multi_assay_experiment)
   expect_silent(result <- ui_g_quality(
     id = "testid",
-    data = data,
     mae_name = mae_name,
     pre_output = NULL,
     post_output = NULL

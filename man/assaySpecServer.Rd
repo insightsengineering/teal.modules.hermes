@@ -23,27 +23,25 @@ The chosen assay as a reactive string.
 This defines the server part for the assay specification.
 }
 \examples{
-ui <- function(id,
-               data) {
+ui <- function(id) {
   ns <- NS(id)
   teal.widgets::standard_layout(
-    encoding = div(
-      experimentSpecInput(
-        ns("experiment"),
-        data,
-        "MAE"
-      ),
-      assaySpecInput(
-        ns("assay"),
-        label_assays = "Please choose assay"
-      )
-    ),
+    encoding = uiOutput(ns("encoding_ui")),
     output = textOutput(ns("result"))
   )
 }
 
 server <- function(id, data, filter_panel_api) {
   moduleServer(id, module = function(input, output, session) {
+    output$encoding_ui <- renderUI({
+      div(
+        experimentSpecInput(session$ns("experiment"), data, "MAE"),
+        assaySpecInput(
+          session$ns("assay"),
+          label_assays = "Please choose assay"
+        )
+      )
+    })
     experiment <- experimentSpecServer(
       id = "experiment",
       data = data,
@@ -62,10 +60,7 @@ server <- function(id, data, filter_panel_api) {
 }
 
 my_app <- function() {
-  mae <- hermes::multi_assay_experiment
-  mae_name <- "MAE"
-  mae_data <- dataset(mae_name, mae)
-  data <- teal_data(mae_data)
+  data <- teal_data(MAE = hermes::multi_assay_experiment)
   app <- init(
     data = data,
     modules = modules(

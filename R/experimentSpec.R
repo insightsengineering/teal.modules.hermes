@@ -17,7 +17,7 @@ experimentSpecInput <- function(inputId, # nolint
   assert_string(inputId)
   assert_string(mae_name, min.chars = 1L)
   assert_string(label_experiments, min.chars = 1L)
-  mae <- data[[mae_name]]()
+  mae <- data()[[mae_name]]
   name_choices <- names(mae)
 
   ns <- NS(inputId)
@@ -183,19 +183,16 @@ h_gene_data <- function(object, name_annotation) {
 #' }
 #'
 #' my_app <- function() {
-#'   mae <- hermes::multi_assay_experiment
-#'   mae_name <- "MAE"
-#'   mae_data <- dataset(mae_name, mae)
-#'   data <- teal_data(mae_data)
+#'   data <- teal_data(MAE = hermes::multi_assay_experiment)
 #'   app <- init(
 #'     data = data,
 #'     modules = modules(
 #'       module(
 #'         label = "experimentSpec example",
 #'         server = server,
-#'         server_args = list(mae_name = mae_name),
+#'         server_args = list(mae_name = "MAE"),
 #'         ui = ui,
-#'         ui_args = list(mae_name = mae_name),
+#'         ui_args = list(mae_name = "MAE"),
 #'         datanames = "all"
 #'       )
 #'     )
@@ -213,7 +210,8 @@ experimentSpecServer <- function(id, # nolint
                                  sample_vars_as_factors = TRUE,
                                  with_mae_col_data = TRUE) {
   assert_string(id)
-  assert_class(data, "tdata")
+  checkmate::assert_class(data, "reactive")
+  checkmate::assert_class(shiny::isolate(data()), "teal_data")
   assert_string(mae_name, min.chars = 1L)
   assert_string(name_annotation, min.chars = 1L, null.ok = TRUE)
   assert_flag(sample_vars_as_factors)
@@ -225,7 +223,7 @@ experimentSpecServer <- function(id, # nolint
     data_return <- reactive({
       name <- input$name
       req(name)
-      mae <- data[[mae_name]]()
+      mae <- data()[[mae_name]]
       orig_object <- mae[[name]]
       validate(need(
         hermes::is_hermes_data(orig_object),

@@ -15,9 +15,9 @@ experimentSpecInput(
 \item{inputId}{(\code{string})\cr
 the ID used to call the module input.}
 
-\item{data}{(\code{tdata})\cr
-\code{tdata} object which is automatically passed to the UI and server
-functions, holding all the data sets provided in the app initialization.}
+\item{data}{(\code{reactive})\cr
+\verb{reactive(<teal_data>)} holding all the data sets provided
+during app initialization after going through the filters.}
 
 \item{mae_name}{(\code{string})\cr
 name of the MAE data used in the teal module.}

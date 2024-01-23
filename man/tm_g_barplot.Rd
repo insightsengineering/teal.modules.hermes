@@ -17,7 +17,7 @@ tm_g_barplot(
   post_output = NULL
 )
 
-ui_g_barplot(id, data, mae_name, summary_funs, pre_output, post_output)
+ui_g_barplot(id, mae_name, summary_funs, pre_output, post_output)
 
 srv_g_barplot(
   id,
@@ -54,9 +54,9 @@ elements can be useful).}
 
 \item{id}{(\code{string}) the shiny module id.}
 
-\item{data}{(\code{tdata})\cr
-\code{tdata} object which is automatically passed to the UI and server
-functions, holding all the data sets provided in the app initialization.}
+\item{data}{(\code{reactive})\cr
+\verb{reactive(<teal_data>)} holding all the data sets provided
+during app initialization after going through the filters.}
 
 \item{filter_panel_api}{(\code{FilterPanelAPI})\cr object describing the actual filter panel API.}
 
@@ -81,9 +81,7 @@ analysis.
 
 }}
 \examples{
-mae <- hermes::multi_assay_experiment
-mae_data <- dataset("MAE", mae)
-data <- teal_data(mae_data)
+data <- teal_data(MAE = hermes::multi_assay_experiment)
 app <- init(
   data = data,
   modules = modules(

@@ -36,9 +36,7 @@ Reactive \code{\link[hermes:GeneSpec]{hermes::GeneSpec}} which can be used as in
 This defines the server part for the gene signature specification.
 }
 \examples{
-ui <- function(id,
-               data,
-               funs) {
+ui <- function(id, funs) {
   ns <- NS(id)
   teal.widgets::standard_layout(
     encoding = div(
@@ -54,9 +52,11 @@ ui <- function(id,
 server <- function(id,
                    data,
                    funs) {
+  checkmate::assert_class(data, "reactive")
+  checkmate::assert_class(shiny::isolate(data()), "teal_data")
   moduleServer(id, function(input, output, session) {
     gene_choices <- reactive({
-      mae <- data[["MAE"]]()
+      mae <- data()[["MAE"]]
       object <- mae[[1]]
       gene_ids <- rownames(object)
       gene_names <- SummarizedExperiment::rowData(object)$symbol
@@ -83,9 +83,7 @@ server <- function(id,
 }
 funs <- list(mean = colMeans)
 my_app <- function() {
-  mae <- hermes::multi_assay_experiment
-  mae_data <- dataset("MAE", mae)
-  data <- teal_data(mae_data)
+  data <- teal_data(MAE = hermes::multi_assay_experiment)
   app <- init(
     data = data,
     modules = modules(

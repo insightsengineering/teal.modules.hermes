@@ -17,9 +17,9 @@ experimentSpecServer(
 \arguments{
 \item{id}{(\code{string}) the shiny module id.}
 
-\item{data}{(\code{tdata})\cr
-\code{tdata} object which is automatically passed to the UI and server
-functions, holding all the data sets provided in the app initialization.}
+\item{data}{(\code{reactive})\cr
+\verb{reactive(<teal_data>)} holding all the data sets provided
+during app initialization after going through the filters.}
 
 \item{filter_panel_api}{(\code{FilterPanelAPI})\cr object describing the actual filter panel API.}
 
@@ -107,19 +107,16 @@ server <- function(id,
 }
 
 my_app <- function() {
-  mae <- hermes::multi_assay_experiment
-  mae_name <- "MAE"
-  mae_data <- dataset(mae_name, mae)
-  data <- teal_data(mae_data)
+  data <- teal_data(MAE = hermes::multi_assay_experiment)
   app <- init(
     data = data,
     modules = modules(
       module(
         label = "experimentSpec example",
         server = server,
-        server_args = list(mae_name = mae_name),
+        server_args = list(mae_name = "MAE"),
         ui = ui,
-        ui_args = list(mae_name = mae_name),
+        ui_args = list(mae_name = "MAE"),
         datanames = "all"
       )
     )

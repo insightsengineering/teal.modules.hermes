@@ -201,25 +201,31 @@ validate_n_levels <- function(x, name, n_levels) {
 #' @export
 #'
 #' @examples
-#' ui <- function(id,
-#'                data) {
+#' ui <- function(id) {
+#'   checkmate::assert_class(data, "teal_data")
 #'   ns <- NS(id)
-#'   mae <- data[["MAE"]]()
-#'   experiment_name_choices <- names(mae)
+#'
 #'   teal.widgets::standard_layout(
-#'     encoding = div(
-#'       selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
-#'       sampleVarSpecInput(ns("facet_var"), "Select faceting variable")
-#'     ),
+#'     encoding = uiOutput(ns("encoding_ui")),
 #'     output = plotOutput(ns("plot"))
 #'   )
 #' }
 #' server <- function(id,
 #'                    data) {
+#'   checkmate::assert_class(data, "reactive")
+#'   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 #'   moduleServer(id, function(input, output, session) {
+#'     output$encoding_ui <- renderUI({
+#'       mae <- data()[["MAE"]]
+#'       experiment_name_choices <- names(mae)
+#'       div(
+#'         selectInput(session$ns("experiment_name"), "Select experiment", experiment_name_choices),
+#'         sampleVarSpecInput(session$ns("facet_var"), "Select faceting variable")
+#'       )
+#'     })
 #'     experiment_data <- reactive({
 #'       req(input$experiment_name)
-#'       mae <- data[["MAE"]]()
+#'       mae <- data()[["MAE"]]
 #'       object <- mae[[input$experiment_name]]
 #'       SummarizedExperiment::colData(object) <-
 #'         hermes::df_cols_to_factor(SummarizedExperiment::colData(object))
@@ -245,9 +251,7 @@ validate_n_levels <- function(x, name, n_levels) {
 #'   })
 #' }
 #' my_app <- function() {
-#'   mae <- hermes::multi_assay_experiment
-#'   mae_data <- dataset("MAE", mae)
-#'   data <- teal_data(mae_data)
+#'   data <- teal_data(MAE = hermes::multi_assay_experiment)
 #'   app <- init(
 #'     data = data,
 #'     modules = modules(
@@ -419,9 +423,9 @@ sampleVarSpecServer <- function(id, # nolint
 
           old_values <- names(assign_lists[[experiment_name]][[sample_var]])
           if (!is.null(old_values) &&
-            length(old_values) == length(sample_var_levels) &&
-            all(sort(old_values) == sort(sample_var_levels))) {
-            selected_groups <- assign_lists[[experiment_name]][[sample_var]]
+            length(old_values) == length(sample_var_levels) && # nolint
+            all(sort(old_values) == sort(sample_var_levels))) { # nolint
+            selected_groups <- assign_lists[[experiment_name]][[sample_var]] # nolint
           }
 
           showModal(combModal(

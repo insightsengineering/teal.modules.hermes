@@ -24,7 +24,6 @@ tm_g_forest_tte(
 
 ui_g_forest_tte(
   id,
-  data,
   adtte_name,
   mae_name,
   summary_funs,
@@ -93,9 +92,9 @@ and maximum plot width.}
 
 \item{id}{(\code{string}) the shiny module id.}
 
-\item{data}{(\code{tdata})\cr
-\code{tdata} object which is automatically passed to the UI and server
-functions, holding all the data sets provided in the app initialization.}
+\item{data}{(\code{reactive})\cr
+\verb{reactive(<teal_data>)} holding all the data sets provided
+during app initialization after going through the filters.}
 
 \item{filter_panel_api}{(\code{FilterPanelAPI})\cr object describing the actual filter panel API.}
 
@@ -119,19 +118,16 @@ This module provides an interactive survival forest plot.
 
 }}
 \examples{
-mae <- hermes::multi_assay_experiment
-adtte <- teal.modules.hermes::rADTTE \%>\%
-  dplyr::mutate(is_event = (.data$CNSR == 0))
+data <- teal_data()
+data <- within(data, {
+  ADTTE <- teal.modules.hermes::rADTTE \%>\%
+    dplyr::mutate(is_event = .data$CNSR == 0)
+  MAE <- hermes::multi_assay_experiment
+})
+datanames <- c("ADTTE", "MAE")
+datanames(data) <- datanames
+join_keys(data)["ADTTE", "ADTTE"] <- c("STUDYID", "USUBJID", "PARAMCD")
 
-data <- teal_data(
-  dataset(
-    "ADTTE",
-    adtte,
-    code = "adtte <- teal.modules.hermes::rADTTE \%>\%
-      dplyr::mutate(is_event = (.data$CNSR == 0))"
-  ),
-  dataset("MAE", mae)
-)
 app <- init(
   data = data,
   modules = modules(
