@@ -68,21 +68,21 @@ server <- function(id,
                    filter_panel_api,
                    mae_name) {
   moduleServer(id, function(input, output, session) {
-  output$encoding_ui <- renderUI({
-  div(
-      experimentSpecInput(
-        session$ns("my_experiment"),
-        data,
-        mae_name,
-        label_experiments = "Please choose experiment"
-      ),
-      selectInput(
-        session$ns("property"),
-        "Please choose property",
-        c("data", "name", "genes", "assays")
+    output$encoding_ui <- renderUI({
+      div(
+        experimentSpecInput(
+          session$ns("my_experiment"),
+          data,
+          mae_name,
+          label_experiments = "Please choose experiment"
+        ),
+        selectInput(
+          session$ns("property"),
+          "Please choose property",
+          c("data", "name", "genes", "assays")
+        )
       )
-    )
-  })
+    })
     experiment <- experimentSpecServer(
       "my_experiment",
       data,
@@ -90,7 +90,7 @@ server <- function(id,
       mae_name
     )
     result <- reactive({
-    req(input$property)
+      req(input$property)
       switch(input$property,
         data = experiment$data(),
         name = experiment$name(),
