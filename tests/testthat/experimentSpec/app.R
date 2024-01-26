@@ -1,17 +1,10 @@
 library(teal.modules.hermes)
 
-ui <- function(id,
-               data,
-               mae_name) {
+ui <- function(id) {
   ns <- NS(id)
   teal.widgets::standard_layout(
     encoding = div(
-      experimentSpecInput(
-        ns("my_experiment"),
-        data,
-        mae_name,
-        label_experiments = "Please choose experiment"
-      ),
+      uiOutput(ns("experiment_ui")),
       selectInput(
         ns("property"),
         "Please choose property",
@@ -30,6 +23,14 @@ server <- function(id,
                    filter_panel_api,
                    mae_name) {
   moduleServer(id, function(input, output, session) {
+    output$experiment_ui <- renderUI({
+      experimentSpecInput(
+        session$ns("my_experiment"),
+        data,
+        mae_name,
+        label_experiments = "Please choose experiment"
+      )
+    })
     experiment <- experimentSpecServer(
       "my_experiment",
       data,
@@ -63,9 +64,8 @@ my_app <- function() {
       teal::module(
         label = "experimentSpec example",
         server = server,
-        server_args = list(mae_name = mae_name),
+        server_args = list(mae_name = "MAE"),
         ui = ui,
-        ui_args = list(mae_name = mae_name),
         datanames = "all"
       )
     )
