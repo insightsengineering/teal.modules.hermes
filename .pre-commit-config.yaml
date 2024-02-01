@@ -24,7 +24,6 @@ repos:
           - forcats
           - bioc::hermes
           - lifecycle
-          - logger
           - bioc::MultiAssayExperiment
           - rtables
           - S4Vectors
