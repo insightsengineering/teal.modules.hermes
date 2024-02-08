@@ -23,9 +23,9 @@ Authors@R: c(
   )
 Description: RNA-seq analysis teal modules based on the `hermes` package.
 License: Apache License 2.0 | file LICENSE
-URL: https://github.com/insightsengineering/teal.modules.hermes/
-BugReports:
-    https://github.com/insightsengineering/teal.modules.hermes/issues
+URL: https://insightsengineering.github.io/teal.modules.hermes/,
+    https://github.com/insightsengineering/teal.modules.hermes/
+BugReports: https://github.com/insightsengineering/teal.modules.hermes/issues
 Depends:
     ggplot2,
     R (>= 3.6),
