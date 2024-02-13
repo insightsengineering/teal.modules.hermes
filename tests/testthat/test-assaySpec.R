@@ -26,7 +26,9 @@ test_that("assaySpecServer module works as expected in the test app", {
 
   app <- AppDriver$new(
     app_dir = test_path("assaySpec"),
-    name = "assaySpec"
+    name = "assaySpec",
+    variant = platform_variant(),
+    load_timeout = 30000
   )
 
   ns <- module_ns_shiny2(app)

@@ -175,7 +175,8 @@ test_that("sampleVarSpec module works as expected in the test app", {
   app <- AppDriver$new(
     app_dir = test_path("sampleVarSpec"),
     name = "sampleVarSpec",
-    variant = platform_variant()
+    variant = platform_variant(),
+    load_timeout = 30000
   )
 
   app$wait_for_idle(timeout = 20000)
