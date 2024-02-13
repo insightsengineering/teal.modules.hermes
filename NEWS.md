@@ -1,4 +1,4 @@
-# teal.modules.hermes 0.1.5.9010
+# teal.modules.hermes 0.1.5.9012
 
 ### Miscellaneous
 * Added placeholders for `assaySpec`, `adtteSpec` and `geneSpec` inputs when no option is selected.
