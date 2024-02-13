@@ -191,7 +191,7 @@ test_that("sampleVarSpec module works as expected in the test app", {
 
   # Check the output and which levels are reported there.
   res <- app$get_value(output = ns("summary"))
-  expect_match(res, " < 18 >= 18 \n    4     1 ")
+  expect_match(as.character(res), " < 18 >= 18 \n    4     1 ")
 
   # Filter panel works as expected
   app$set_inputs("teal-main_ui-filter_panel-add-MAE-subjects-var_to_add" = "AGE18")
