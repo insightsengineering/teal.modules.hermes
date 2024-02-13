@@ -41,6 +41,7 @@ Other contributors:
   \item Benoit Falquet [contributor]
   \item Mahmoud Hallal [contributor]
   \item Tim Treis [contributor]
+  \item Vedha Viyash [contributor]
   \item F. Hoffmann-La Roche AG [copyright holder, funder]
 }
 
