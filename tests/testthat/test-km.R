@@ -40,7 +40,7 @@ test_that("km module works as expected in the test app", {
   res <- app$get_value(input = ns("experiment-name"))
   expect_identical(res, "hd1")
 
-  res <- app$get_value(output = ns("plot-plot_main"))
+  res <- app$get_value(output = ns("plot-plot_out_main"))
   expect_identical(res$message, "No assays eligible for this experiment, please make sure to add normalized assays")
 
   # Choose another experiment.
@@ -55,7 +55,7 @@ test_that("km module works as expected in the test app", {
   app$wait_for_idle()
 
   # Choose an endpoint.
-  res <- app$get_value(output = ns("plot-plot_main"))
+  res <- app$get_value(output = ns("plot-plot_out_main"))
   expect_identical(res$message, "please select an endpoint")
   app$set_inputs(!!ns("adtte-paramcd") := "PFS")
   app$wait_for_idle()

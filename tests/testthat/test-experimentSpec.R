@@ -174,11 +174,17 @@ test_that("experimentSpec module works as expected in the test app", {
   )
   app$wait_for_idle()
 
+  app$set_inputs(!!ns("my_experiment-name") := "hd2")
+  app$wait_for_idle()
+
   res <- app$get_value(output = ns("summary"))
   expect_match(res$message, "No genes or samples included in this experiment, please adjust filters")
 
   # return to initial situation
   app$click(ns2("active-MAE-remove_filters"))
+  app$wait_for_idle()
+
+  app$set_inputs(!!ns("my_experiment-name") := "hd2")
   app$wait_for_idle()
 
   res <- app$get_value(output = ns("summary"))

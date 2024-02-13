@@ -24,7 +24,8 @@ test_that("pca module works as expected in the test app", {
     app_dir = test_path("pca"),
     name = "pca",
     variant = platform_variant(),
-    load_timeout = 30000
+    load_timeout = 30000,
+    seed = default_app_seed
   )
 
   app$wait_for_idle(timeout = 20000)
@@ -98,7 +99,7 @@ test_that("pca module works as expected in the test app", {
     !!ns("show_matrix") := FALSE
   )
 
-  # app$wait_for_idle()
+  app$wait_for_idle()
   app$expect_select_screenshot(ns("plot_cor-plot_main"))
 
   # Now go back to pca tab and update experiment, assay name, variance % option,

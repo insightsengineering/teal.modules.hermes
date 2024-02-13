@@ -29,7 +29,8 @@ test_that("scatterplot module works as expected in the test app", {
     app_dir = test_path("scatterplot"),
     name = "scatterplot",
     variant = platform_variant(),
-    load_timeout = 30000
+    load_timeout = 30000,
+    seed = default_app_seed
   )
 
   app$wait_for_idle(timeout = 20000)
@@ -39,7 +40,7 @@ test_that("scatterplot module works as expected in the test app", {
   res <- app$get_value(input = ns("experiment-name"))
   expect_identical(res, "hd1")
 
-  res <- app$get_value(output = ns("plot-plot_main"))
+  res <- app$get_value(output = ns("plot-plot_out_main"))
   expect_identical(res$message, "No assays eligible for this experiment, please make sure to add normalized assays")
 
   # Choose another experiment.
@@ -54,7 +55,7 @@ test_that("scatterplot module works as expected in the test app", {
   res <- app$get_value(input = ns("y_spec-genes"))
   expect_null(res)
 
-  res <- app$get_value(output = ns("plot-plot_main"))
+  res <- app$get_value(output = ns("plot-plot_out_main"))
   expect_identical(res$message, "please select at least one gene")
 
   # Set one gene each.
@@ -64,8 +65,10 @@ test_that("scatterplot module works as expected in the test app", {
   )
 
   # Change the sample filter and confirm that genes are not updated.
-  app$set_inputs(!!ns2("add-MAE-subjects-var_to_add") := "ARM")
-  res <- app$wait_for_value(input = ns("x_spec-genes"))
+  app$set_inputs(!!ns2("add-MAE-subjects-add_filter") := "ARM")
+  app$wait_for_idle()
+
+  res <- app$get_value(input = ns("x_spec-genes"))
   expect_identical(res, "GeneID:503538")
   res <- app$wait_for_value(input = ns("y_spec-genes"))
   expect_identical(res, "GeneID:8086")
@@ -80,7 +83,7 @@ test_that("scatterplot module works as expected in the test app", {
   )
 
   app$wait_for_idle()
-  app$expect_select_screenshot(ns("plot-plot_main"))
+  app$expect_select_screenshot(ns("plot-plot_out_main"))
 })
 
 # nolint end
