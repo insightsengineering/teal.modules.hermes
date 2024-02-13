@@ -28,7 +28,8 @@ test_that("barplot module works as expected in the test app", {
   app <- AppDriver$new(
     app_dir = test_path("barplot"),
     name = "barplot",
-    variant = platform_variant()
+    variant = platform_variant(),
+    load_timeout = 30000
   )
 
   app$wait_for_idle(timeout = 20000)

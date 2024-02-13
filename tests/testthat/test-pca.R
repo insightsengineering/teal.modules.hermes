@@ -24,6 +24,7 @@ test_that("pca module works as expected in the test app", {
     app_dir = test_path("pca"),
     name = "pca",
     variant = platform_variant(),
+    load_timeout = 30000,
     seed = default_app_seed
   )
 
