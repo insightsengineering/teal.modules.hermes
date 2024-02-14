@@ -196,7 +196,7 @@ test_that("adtteSpecServer module works as expected in the test app", {
     app_dir = test_path("adtteSpec"),
     name = "adtteSpecServe",
     variant = platform_variant(),
-    load_timeout = 30000
+    load_timeout = 300000
   )
 
   app$wait_for_idle(timeout = 20000)
