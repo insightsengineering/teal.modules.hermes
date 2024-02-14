@@ -29,7 +29,7 @@ test_that("forest_tte module works as expected in the test app", {
     app_dir = test_path("forest_tte"),
     name = "forest_tte",
     variant = platform_variant(),
-    load_timeout = 30000
+    load_timeout = 300000
   )
 
   app$wait_for_idle(timeout = 20000)

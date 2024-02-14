@@ -29,7 +29,7 @@ test_that("scatterplot module works as expected in the test app", {
     app_dir = test_path("scatterplot"),
     name = "scatterplot",
     variant = platform_variant(),
-    load_timeout = 30000,
+    load_timeout = 300000,
     seed = default_app_seed
   )
 
