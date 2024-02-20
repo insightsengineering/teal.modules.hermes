@@ -88,6 +88,7 @@ test_that("barplot module works as expected in the test app", {
     !!ns("facet-sample_var") := "AGE18"
   )
 
+  app$wait_for_idle()
   app$expect_select_screenshot(ns("plot-plot_out_main"))
 })
 
