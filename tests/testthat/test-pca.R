@@ -56,7 +56,7 @@ test_that("pca module works as expected in the test app", {
   res <- app$get_value(input = ns("show_matrix"))
   expect_true(res)
 
-  app$expect_select_screenshot(ns("plot_pca-plot_main")) #1
+  app$expect_select_screenshot(ns("plot_pca-plot_main")) # 1
 
   # Add a gene filter and deselect everything and check that it does not crash.
   app$set_inputs(!!ns2("add-MAE-hd1-row_to_add") := "symbol")
@@ -88,8 +88,8 @@ test_that("pca module works as expected in the test app", {
   res <- app$get_value(input = ns("show_matrix"))
   expect_true(res)
 
-  app$expect_select_screenshot(ns("plot_cor-plot_main")) #2
-  app$expect_select_screenshot(ns("table_cor")) #3
+  app$expect_select_screenshot(ns("plot_cor-plot_main")) # 2
+  app$expect_select_screenshot(ns("table_cor")) # 3
 
   # Now update experiment name, assay name, cluster & matrix option on correlation tab.
   app$set_inputs(!!ns("experiment-name") := "hd2")
@@ -98,7 +98,7 @@ test_that("pca module works as expected in the test app", {
   app$set_inputs(!!ns("show_matrix") := FALSE)
 
   app$wait_for_idle()
-  app$expect_select_screenshot(ns("plot_cor-plot_main")) #4
+  app$expect_select_screenshot(ns("plot_cor-plot_main")) # 4
 
   # Now go back to pca tab and update experiment, assay name, variance % option,
   # label option and matrix option.
