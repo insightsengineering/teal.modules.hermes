@@ -17,7 +17,7 @@ experimentSpecInput <- function(inputId, # nolint
   assert_string(inputId)
   assert_string(mae_name, min.chars = 1L)
   assert_string(label_experiments, min.chars = 1L)
-  mae <- data()[[mae_name]]
+  mae <- shiny::isolate(data()[[mae_name]])
   name_choices <- names(mae)
 
   ns <- NS(inputId)

@@ -156,6 +156,10 @@ test_that("experimentSpec module works as expected in the test app", {
   app$set_inputs(!!ns2("active-MAE-subjects-MAE_SEX-inputs-selection") := character())
   app$wait_for_idle()
 
+  # Experiment selection is not affected by filtering
+  res <- app$get_value(input = ns("my_experiment-name"))
+  expect_identical(res, "hd2")
+
   res <- app$get_value(output = ns("summary"))
   expect_match(res$message, "No genes or samples included in this experiment, please adjust filters")
   app$click(ns2("active-MAE-remove_filters"))
@@ -174,8 +178,9 @@ test_that("experimentSpec module works as expected in the test app", {
   )
   app$wait_for_idle()
 
-  app$set_inputs(!!ns("my_experiment-name") := "hd2")
-  app$wait_for_idle()
+  # Experiment selection is not affected by filtering
+  res <- app$get_value(input = ns("my_experiment-name"))
+  expect_identical(res, "hd2")
 
   res <- app$get_value(output = ns("summary"))
   expect_match(res$message, "No genes or samples included in this experiment, please adjust filters")
@@ -184,8 +189,9 @@ test_that("experimentSpec module works as expected in the test app", {
   app$click(ns2("active-MAE-remove_filters"))
   app$wait_for_idle()
 
-  app$set_inputs(!!ns("my_experiment-name") := "hd2")
-  app$wait_for_idle()
+  # Experiment selection is not affected by removing filters
+  res <- app$get_value(input = ns("my_experiment-name"))
+  expect_identical(res, "hd2")
 
   res <- app$get_value(output = ns("summary"))
   expect_match(res, "HermesData object with 9 samples of 2500 genes")

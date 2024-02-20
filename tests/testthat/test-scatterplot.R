@@ -59,13 +59,22 @@ test_that("scatterplot module works as expected in the test app", {
   expect_identical(res$message, "please select at least one gene")
 
   # Set one gene each.
-  app$set_inputs(
-    !!ns("x_spec-genes") := "GeneID:503538",
-    !!ns("y_spec-genes") := "GeneID:8086"
-  )
+  app$set_inputs(!!ns("x_spec-genes") := "GeneID:503538")
+  app$set_inputs(!!ns("y_spec-genes") := "GeneID:8086")
+
+  app$wait_for_idle()
 
   # Change the sample filter and confirm that genes are not updated.
-  app$set_inputs(!!ns2("add-MAE-subjects-add_filter") := "ARM")
+  app$set_inputs(!!ns2("add-MAE-subjects-var_to_add") := "SEX")
+  app$set_inputs(!!ns2("active-MAE-subjects-MAE_SEX-inputs-selection") := "F")
+
+  res <- app$get_value(input = ns("x_spec-genes"))
+  expect_identical(res, "GeneID:503538")
+  res <- app$wait_for_value(input = ns("y_spec-genes"))
+  expect_identical(res, "GeneID:8086")
+
+  # Remove sample filter
+  app$click(ns2("active-MAE-subjects-MAE_SEX-remove"))
   app$wait_for_idle()
 
   res <- app$get_value(input = ns("x_spec-genes"))
@@ -74,13 +83,11 @@ test_that("scatterplot module works as expected in the test app", {
   expect_identical(res, "GeneID:8086")
 
   # Now change the experiment_name, genes, method.
-  app$set_inputs(
-    !!ns("experiment-name") := "hd2",
-    !!ns("x_spec-genes") := "GeneID:441376",
-    !!ns("y_spec-genes") := "GeneID:79963",
-    !!ns("smooth_method") := "loess",
-    !!ns("facet_var-sample_var") := "AGE18"
-  )
+  app$set_inputs(!!ns("experiment-name") := "hd2")
+  app$set_inputs(!!ns("x_spec-genes") := "GeneID:441376")
+  app$set_inputs(!!ns("y_spec-genes") := "GeneID:79963")
+  app$set_inputs(!!ns("smooth_method") := "loess")
+  app$set_inputs(!!ns("facet_var-sample_var") := "AGE18")
 
   app$wait_for_idle()
   app$expect_select_screenshot(ns("plot-plot_out_main"))
