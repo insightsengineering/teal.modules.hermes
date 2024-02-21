@@ -56,7 +56,7 @@ test_that("pca module works as expected in the test app", {
   res <- app$get_value(input = ns("show_matrix"))
   expect_true(res)
 
-  app$expect_select_screenshot(ns("plot_pca-plot_main"))
+  app$expect_select_screenshot(ns("plot_pca-plot_main")) # 1
 
   # Add a gene filter and deselect everything and check that it does not crash.
   app$set_inputs(!!ns2("add-MAE-hd1-row_to_add") := "symbol")
@@ -88,31 +88,27 @@ test_that("pca module works as expected in the test app", {
   res <- app$get_value(input = ns("show_matrix"))
   expect_true(res)
 
-  app$expect_select_screenshot(ns("plot_cor-plot_main"))
-  app$expect_select_screenshot(ns("table_cor"))
+  app$expect_select_screenshot(ns("plot_cor-plot_main")) # 2
+  app$expect_select_screenshot(ns("table_cor")) # 3
 
   # Now update experiment name, assay name, cluster & matrix option on correlation tab.
-  app$set_inputs(
-    !!ns("experiment-name") := "hd2",
-    !!ns("assay-name") := "voom",
-    !!ns("cluster_columns") := TRUE,
-    !!ns("show_matrix") := FALSE
-  )
+  app$set_inputs(!!ns("experiment-name") := "hd2")
+  app$set_inputs(!!ns("assay-name") := "voom")
+  app$set_inputs(!!ns("cluster_columns") := TRUE)
+  app$set_inputs(!!ns("show_matrix") := FALSE)
 
   app$wait_for_idle()
-  app$expect_select_screenshot(ns("plot_cor-plot_main"))
+  app$expect_select_screenshot(ns("plot_cor-plot_main")) # 4
 
   # Now go back to pca tab and update experiment, assay name, variance % option,
   # label option and matrix option.
-  app$set_inputs(
-    !!ns("tab_selected") := "PCA",
-    !!ns("assay-name") := "rpkm",
-    !!ns("x_var") := "3",
-    !!ns("y_var") := "4",
-    !!ns("var_pct") := FALSE,
-    !!ns("label") := FALSE,
-    !!ns("show_matrix") := FALSE
-  )
+  app$set_inputs(!!ns("tab_selected") := "PCA")
+  app$set_inputs(!!ns("assay-name") := "rpkm")
+  app$set_inputs(!!ns("x_var") := "3")
+  app$set_inputs(!!ns("y_var") := "4")
+  app$set_inputs(!!ns("var_pct") := FALSE)
+  app$set_inputs(!!ns("label") := FALSE)
+  app$set_inputs(!!ns("show_matrix") := FALSE)
 
   app$wait_for_idle()
   app$expect_select_screenshot(ns("plot_pca-plot_main"))
@@ -153,16 +149,14 @@ test_that("pca module works as expected in the test app", {
   expect_identical(res$message, "please select two different principal components")
 
   # Update the inputs to PCA tab, hd1, counts, PC3, PC4, and add filters.
-  app$set_inputs(
-    !!ns("tab_selected") := "PCA",
-    !!ns("experiment-name") := "hd1",
-    !!ns("assay-name") := "counts",
-    !!ns("x_var") := "3",
-    !!ns("y_var") := "4",
-    !!ns("var_pct") := TRUE,
-    !!ns("label") := TRUE,
-    !!ns("show_matrix") := TRUE
-  )
+  app$set_inputs(!!ns("tab_selected") := "PCA")
+  app$set_inputs(!!ns("experiment-name") := "hd1")
+  app$set_inputs(!!ns("assay-name") := "counts")
+  app$set_inputs(!!ns("x_var") := "3")
+  app$set_inputs(!!ns("y_var") := "4")
+  app$set_inputs(!!ns("var_pct") := TRUE)
+  app$set_inputs(!!ns("label") := TRUE)
+  app$set_inputs(!!ns("show_matrix") := TRUE)
 
   app$set_inputs(!!ns2("add-MAE-subjects-var_to_add") := "SEX")
   app$wait_for_idle()
