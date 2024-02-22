@@ -216,6 +216,7 @@ test_that("pca module works as expected in the test app", {
   app$set_inputs(!!ns("filter_top") := "TRUE")
   res <- app$wait_for_value(input = ns("n_top"))
   expect_identical(res, 2500L)
+  app$stop()
 })
 
 # nolint end

@@ -60,6 +60,8 @@ test_that("boxplot module works as expected in the test app", {
   app$wait_for_idle()
 
   app$expect_select_screenshot(ns("plot-plot_out_main"))
+
+  app$stop()
 })
 
 # nolint end

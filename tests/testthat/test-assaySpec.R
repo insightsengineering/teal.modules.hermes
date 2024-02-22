@@ -58,6 +58,8 @@ test_that("assaySpecServer module works as expected in the test app", {
   app$wait_for_idle()
   res <- app$get_value(output = ns("result"))
   expect_identical(res, "[1] \"\"")
+
+  app$stop()
 })
 
 # nolint end

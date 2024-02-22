@@ -220,6 +220,7 @@ test_that("sampleVarSpec module works as expected in the test app", {
   # Check the output and which levels are reported there.
   res <- app$get_value(output = ns("summary"))
   expect_match(res, "< 18/>= 18 \n         5 ")
+  app$stop()
 })
 
 # nolint end
