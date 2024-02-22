@@ -68,6 +68,7 @@ test_that("quality module works as expected in the test app", {
   app$set_inputs(!!ns("plot_type") := "Top Genes Plot")
   app$set_inputs(!!ns("assay-name") := "cpm")
   app$expect_select_screenshot(ns("plot-plot_out_main"))
+  app$stop()
 })
 
 # nolint end

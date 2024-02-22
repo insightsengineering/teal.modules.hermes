@@ -239,6 +239,8 @@ test_that("adtteSpecServer module works as expected in the test app", {
   app$wait_for_idle()
   res <- app$get_value(output = ns("summary"))
   expect_equal(res$message, "please select an endpoint")
+
+  app$stop()
 })
 
 # nolint end

@@ -125,6 +125,8 @@ test_that("geneSpec module works as expected in the test app", {
   app$wait_for_idle()
   res <- app$get_value(input = ns("my_genes-genes"))
   expect_set_equal(res, c("GeneID:10061", "GeneID:28"))
+
+  app$stop()
 })
 
 # nolint end

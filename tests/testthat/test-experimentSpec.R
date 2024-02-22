@@ -195,6 +195,8 @@ test_that("experimentSpec module works as expected in the test app", {
 
   res <- app$get_value(output = ns("summary"))
   expect_match(res, "HermesData object with 9 samples of 2500 genes")
+
+  app$stop()
 })
 
 # nolint end
