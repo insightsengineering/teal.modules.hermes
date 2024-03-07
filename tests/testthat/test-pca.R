@@ -108,7 +108,6 @@ test_that("pca module works as expected in the test app", {
   app$set_inputs(!!ns("y_var") := "4")
   app$set_inputs(!!ns("var_pct") := FALSE)
   app$set_inputs(!!ns("label") := FALSE)
-  app$set_inputs(!!ns("show_matrix") := FALSE)
 
   app$wait_for_idle()
   app$expect_select_screenshot(ns("plot_pca-plot_main"))
@@ -149,9 +148,6 @@ test_that("pca module works as expected in the test app", {
   expect_identical(res$message, "please select two different principal components")
 
   # Update the inputs to PCA tab, hd1, counts, PC3, PC4, and add filters.
-  app$set_inputs(!!ns("tab_selected") := "PCA")
-  app$set_inputs(!!ns("experiment-name") := "hd1")
-  app$set_inputs(!!ns("assay-name") := "counts")
   app$set_inputs(!!ns("x_var") := "3")
   app$set_inputs(!!ns("y_var") := "4")
   app$set_inputs(!!ns("var_pct") := TRUE)
@@ -172,7 +168,6 @@ test_that("pca module works as expected in the test app", {
   app$expect_select_screenshot(ns("plot_pca-plot_main"))
 
   # Update to cor tab.
-  app$set_inputs(!!ns("tab_selected") := "PCA")
   app$set_inputs(!!ns2("active-MAE-subjects-MAE_SEX-inputs-selection_open") := TRUE, allow_no_input_binding_ = TRUE)
   app$set_inputs(!!ns2("active-MAE-subjects-MAE_SEX-inputs-selection") := "F")
   app$set_inputs(!!ns2("active-MAE-subjects-MAE_SEX-inputs-selection_open") := FALSE, allow_no_input_binding_ = TRUE)
@@ -213,7 +208,6 @@ test_that("pca module works as expected in the test app", {
 
   # Go back to first experiment and check that n_top stayed the same.
   app$set_inputs(!!ns("experiment-name") := "hd1")
-  app$set_inputs(!!ns("filter_top") := "TRUE")
   res <- app$wait_for_value(input = ns("n_top"))
   expect_identical(res, 2500L)
   app$stop()
