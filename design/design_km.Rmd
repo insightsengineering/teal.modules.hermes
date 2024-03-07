@@ -44,7 +44,7 @@ ui_made_up_merge_pr <- function(id, ...) {
         tabPanel(title = "ADSL", verbatimTextOutput(outputId = ns("adsl_data_table")))
       )
     ),
-    encoding = div(
+    encoding = tags$div(
       teal.widgets::optionalSelectInput(
         inputId = ns("select_experiment"),
         label = "Select experiment",
@@ -78,7 +78,7 @@ ui_made_up_merge_pr <- function(id, ...) {
         choices = c("12", "24", "36", "48", "60", "72", "84", "96")
       )
     ),
-    forms = div(
+    forms = tags$div(
       actionButton(ns("show_rcode"), "Show R Code", width = "100%")
     )
   )

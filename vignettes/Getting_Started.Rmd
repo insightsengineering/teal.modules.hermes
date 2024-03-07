@@ -59,7 +59,7 @@ srv <- function(input,
                 filter_panel_api,
                 mae_name) {
   output$encoding_ui <- renderUI({
-    div(
+    tags$div(
       experimentSpecInput(session$ns("experiment"), data, mae_name),
       assaySpecInput(session$ns("assay"))
     )
