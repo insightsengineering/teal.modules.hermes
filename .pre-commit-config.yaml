@@ -6,7 +6,7 @@ default_language_version:
   python: python3
 repos:
   - repo: https://github.com/lorenzwalthert/precommit
-    rev: v0.3.2.9027
+    rev: v0.4.0
     hooks:
       - id: style-files
         name: Style code with `styler`
@@ -114,7 +114,7 @@ repos:
           design/.*
           )$
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v4.0.0-alpha.4
+    rev: v4.0.0-alpha.8
     hooks:
       - id: prettier
         exclude: >

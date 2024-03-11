@@ -26,7 +26,9 @@ test_that("assaySpecServer module works as expected in the test app", {
 
   app <- AppDriver$new(
     app_dir = test_path("assaySpec"),
-    name = "assaySpec"
+    name = "assaySpec",
+    variant = platform_variant(),
+    load_timeout = 300000
   )
 
   ns <- module_ns_shiny2(app)
@@ -56,6 +58,8 @@ test_that("assaySpecServer module works as expected in the test app", {
   app$wait_for_idle()
   res <- app$get_value(output = ns("result"))
   expect_identical(res, "[1] \"\"")
+
+  app$stop()
 })
 
 # nolint end

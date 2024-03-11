@@ -24,7 +24,8 @@ test_that("boxplot module works as expected in the test app", {
   app <- AppDriver$new(
     app_dir = test_path("boxplot"),
     name = "boxplot",
-    variant = platform_variant()
+    variant = platform_variant(),
+    load_timeout = 300000
   )
 
   app$wait_for_idle(timeout = 20000)
@@ -44,7 +45,7 @@ test_that("boxplot module works as expected in the test app", {
   expect_null(res)
 
   # check initial message
-  res <- app$get_value(output = ns("plot-plot_main"))
+  res <- app$get_value(output = ns("plot-plot_out_main"))
   expect_equal(res$message, "please select at least one gene")
 
   # Do a couple of updates to obtain a plot.
@@ -58,7 +59,9 @@ test_that("boxplot module works as expected in the test app", {
 
   app$wait_for_idle()
 
-  app$expect_select_screenshot(ns("plot-plot_main"))
+  app$expect_select_screenshot(ns("plot-plot_out_main"))
+
+  app$stop()
 })
 
 # nolint end

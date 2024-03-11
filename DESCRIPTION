@@ -1,8 +1,8 @@
 Type: Package
 Package: teal.modules.hermes
 Title: RNA-Seq Analysis Modules to Add to a Teal Application
-Version: 0.1.5.9010
-Date: 2023-12-12
+Version: 0.1.6.9004
+Date: 2024-03-11
 Authors@R: c(
     person("Daniel", "Sabanés Bové", , "daniel.sabanes_bove@roche.com", role = c("aut", "cre")),
     person("Nikolas", "Burkoff", role = "aut"),
@@ -19,24 +19,26 @@ Authors@R: c(
     person("Benoit", "Falquet", role = "ctb"),
     person("Mahmoud", "Hallal", role = "ctb"),
     person("Tim", "Treis", role = "ctb"),
+    person("Vedha", "Viyash", role = "ctb"),
     person("F. Hoffmann-La Roche AG", role = c("cph", "fnd"))
   )
 Description: RNA-seq analysis teal modules based on the `hermes` package.
 License: Apache License 2.0 | file LICENSE
-URL: https://github.com/insightsengineering/teal.modules.hermes/
-BugReports:
+URL: https://insightsengineering.github.io/teal.modules.hermes/,
+    https://github.com/insightsengineering/teal.modules.hermes/
+BugReports: 
     https://github.com/insightsengineering/teal.modules.hermes/issues
 Depends:
     ggplot2,
-    R (>= 3.6),
+    R (>= 4.1),
     shiny,
-    teal (>= 0.14.0.9027)
+    teal (>= 0.15.0)
 Imports:
     checkmate,
     DT,
     edgeR,
     forcats,
-    hermes (>= 0.99.5),
+    hermes (>= 1.7.1),
     lifecycle,
     MultiAssayExperiment,
     rtables (>= 0.5.1),
@@ -75,4 +77,4 @@ Encoding: UTF-8
 Language: en-US
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1

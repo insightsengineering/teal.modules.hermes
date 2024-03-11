@@ -25,7 +25,8 @@ test_that("quality module works as expected in the test app", {
   app <- AppDriver$new(
     app_dir = test_path("quality"),
     name = "quality",
-    variant = platform_variant()
+    variant = platform_variant(),
+    load_timeout = 300000
   )
 
   app$wait_for_idle(timeout = 20000)
@@ -43,7 +44,7 @@ test_that("quality module works as expected in the test app", {
 
   # Check that warning message for at least 2 genes works as expected.
   app$set_inputs(!!ns("min_cpm") := 54356)
-  res <- app$wait_for_value(output = ns("plot-plot_main"))
+  res <- app$wait_for_value(output = ns("plot-plot_out_main"))
   expect_identical(res$message, "Please change gene filters to ensure that there are at least 2 genes")
 
   # Initial plot.
@@ -67,6 +68,7 @@ test_that("quality module works as expected in the test app", {
   app$set_inputs(!!ns("plot_type") := "Top Genes Plot")
   app$set_inputs(!!ns("assay-name") := "cpm")
   app$expect_select_screenshot(ns("plot-plot_out_main"))
+  app$stop()
 })
 
 # nolint end

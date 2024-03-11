@@ -1,8 +1,6 @@
 library(teal.modules.hermes)
 
-ui <- function(id,
-               data,
-               funs) {
+ui <- function(id, funs) {
   ns <- NS(id)
   teal.widgets::standard_layout(
     encoding = div(

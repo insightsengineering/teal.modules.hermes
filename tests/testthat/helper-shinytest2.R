@@ -10,6 +10,7 @@ module_ns_shiny2 <- function(app) {
 }
 
 ns2 <- NS("teal-main_ui-filter_panel")
+default_app_seed <- 123
 
 # expect_select_screenshot ----
 shinytest2::AppDriver$set(
