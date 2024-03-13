@@ -155,7 +155,7 @@ test_that("pca module works as expected in the test app", {
   app$set_inputs(!!ns("show_matrix") := TRUE)
 
   app$set_inputs(!!ns2("add-MAE-subjects-var_to_add") := "SEX")
-  app$wait_for_idle()
+  app$wait_for_idle(timeout = 40000)
   app$set_inputs(!!ns2("active-MAE-subjects-MAE_SEX-inputs-selection") := "M")
 
   # Ensure xvar and yvar get resetted to pc1 and pc2.

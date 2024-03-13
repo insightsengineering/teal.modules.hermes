@@ -32,6 +32,7 @@ test_that("quality module works as expected in the test app", {
   app$wait_for_idle(timeout = 20000)
   ns <- module_ns_shiny2(app)
 
+
   # Check initial state of encodings.
   res <- app$get_value(input = ns("experiment-name"))
   expect_identical(res, "hd1")
@@ -67,6 +68,7 @@ test_that("quality module works as expected in the test app", {
   # Change to another plot type so that we can choose another assay.
   app$set_inputs(!!ns("plot_type") := "Top Genes Plot")
   app$set_inputs(!!ns("assay-name") := "cpm")
+  app$wait_for_idle(timeout = 30000)
   app$expect_select_screenshot(ns("plot-plot_out_main"))
   app$stop()
 })
