@@ -75,7 +75,7 @@ server <- function(id,
     output$encoding_ui <- renderUI({
       mae <- data()[["MAE"]]
       experiment_name_choices <- names(mae)
-      div(
+      tags$div(
         selectInput(session$ns("experiment_name"), "Select experiment", experiment_name_choices),
         sampleVarSpecInput(session$ns("facet_var"), "Select faceting variable")
       )

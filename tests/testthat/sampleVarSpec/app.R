@@ -4,7 +4,7 @@ ui <- function(id) {
   ns <- NS(id)
 
   teal.widgets::standard_layout(
-    encoding = div(
+    encoding = tags$div(
       uiOutput(ns("experiment_ui")),
       sampleVarSpecInput(ns("facet_var"), "Select variable")
     ),
