@@ -170,7 +170,7 @@ ui_surv_forest <- function(id, datasets, dataname) {
   mae <- datasets$get_data(dataname, filtered = TRUE)
   experiment_name_choices <- names(mae)
   teal.widgets::standard_layout(
-    encoding = div(
+    encoding = tags$div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(dataname)),
       selectInput(ns("experiment_name"), "Select Experiment", experiment_name_choices),

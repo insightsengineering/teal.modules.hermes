@@ -72,7 +72,7 @@ ui_g_barplot <- function(id,
                          post_output) {
   ns <- NS(id)
   teal.widgets::standard_layout(
-    encoding = div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###

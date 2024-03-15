@@ -64,13 +64,13 @@ ui_g_volcanoplot <- function(id,
   ns <- NS(id)
 
   teal.widgets::standard_layout(
-    output = div(
+    output = tags$div(
       teal.widgets::plot_with_settings_ui(ns("plot")),
       DT::DTOutput(ns("table"))
     ),
     pre_output = pre_output,
     post_output = post_output,
-    encoding = div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###

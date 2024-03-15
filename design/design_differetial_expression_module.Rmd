@@ -49,7 +49,7 @@ ui_volcanoplot <- function(id, datasets, dataname) {
 
   teal.widgets::standard_layout(
     output = plotOutput(ns("plot")),
-    encoding = div(
+    encoding = tags$div(
       selectInput(ns("experiment_name"), "Select experiment", names(mae)),
       selectInput(ns("facetvar"), "Facet by", choices = c("SEX" = "SEX", "AGE18" = "AGE18")),
       sliderInput(ns("log2_fc_thresh"), "Log2 folder change threshold", value = 2.5, min = 0.1, max = 10),
