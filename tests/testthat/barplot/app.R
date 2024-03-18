@@ -1,3 +1,3 @@
 library(teal.modules.hermes)
 
-sample_tm_g_barplot()
+sample_tm_g_barplot(.test = TRUE)

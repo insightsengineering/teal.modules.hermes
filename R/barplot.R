@@ -34,7 +34,8 @@ tm_g_barplot <- function(label,
                            Max = matrixStats::colMaxs
                          ),
                          pre_output = NULL,
-                         post_output = NULL) {
+                         post_output = NULL,
+                         .test = FALSE) {
   logger::log_info("Initializing tm_g_barplot")
   assert_string(label)
   assert_string(mae_name)
@@ -42,6 +43,7 @@ tm_g_barplot <- function(label,
   assert_summary_funs(summary_funs)
   assert_tag(pre_output, null.ok = TRUE)
   assert_tag(post_output, null.ok = TRUE)
+  assert_flag(.test)
 
   module(
     label = label,
@@ -49,14 +51,16 @@ tm_g_barplot <- function(label,
     server_args = list(
       mae_name = mae_name,
       exclude_assays = exclude_assays,
-      summary_funs = summary_funs
+      summary_funs = summary_funs,
+      .test = .test
     ),
     ui = ui_g_barplot,
     ui_args = list(
       mae_name = mae_name,
       summary_funs = summary_funs,
       pre_output = pre_output,
-      post_output = post_output
+      post_output = post_output,
+      .test = .test
     ),
     datanames = mae_name
   )
@@ -69,7 +73,8 @@ ui_g_barplot <- function(id,
                          mae_name,
                          summary_funs,
                          pre_output,
-                         post_output) {
+                         post_output,
+                         .test = FALSE) {
   ns <- NS(id)
   teal.widgets::standard_layout(
     encoding = div(
@@ -101,7 +106,10 @@ ui_g_barplot <- function(id,
         )
       )
     ),
-    output = teal.widgets::plot_with_settings_ui(ns("plot")),
+    output = div(
+      if (.test) verbatimTextOutput(ns("table")) else NULL,
+      teal.widgets::plot_with_settings_ui(ns("plot"))
+    ),
     pre_output = pre_output,
     post_output = post_output
   )
@@ -116,11 +124,13 @@ srv_g_barplot <- function(id,
                           reporter,
                           mae_name,
                           exclude_assays,
-                          summary_funs) {
+                          summary_funs,
+                          .test = FALSE) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   assert_class(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
+  assert_flag(.test)
   moduleServer(id, function(input, output, session) {
     output$experiment_ui <- renderUI({
       experimentSpecInput(session$ns("experiment"), data, mae_name)
@@ -189,6 +199,13 @@ srv_g_barplot <- function(id,
       plot_r = plot_r
     )
 
+    if (.test) {
+      table_r <- reactive({
+        str(layer_data(plot_r()))
+      })
+      output$table <- renderPrint(table_r())
+    }
+
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment, label) {
@@ -230,6 +247,7 @@ srv_g_barplot <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
+
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
@@ -246,14 +264,15 @@ srv_g_barplot <- function(id,
 #' if (interactive()) {
 #'   sample_tm_g_barplot()
 #' }
-sample_tm_g_barplot <- function() {
+sample_tm_g_barplot <- function(.test = FALSE) {
   data <- teal.data::teal_data(MAE = hermes::multi_assay_experiment)
   app <- teal::init(
     data = data,
     modules = teal::modules(
       tm_g_barplot(
         label = "barplot",
-        mae_name = "MAE"
+        mae_name = "MAE",
+        .test = .test
       )
     )
   )
