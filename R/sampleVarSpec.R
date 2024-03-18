@@ -322,10 +322,9 @@ sampleVarSpecServer <- function(id, # nolint
       sel <- intersect(input$sample_var, col_data_vars)
 
       teal.widgets::updateOptionalSelectInput(
-        session,
-        "sample_var",
+        inputId = "sample_var",
         choices = col_data_vars,
-        selected = sel
+        selected = restoreInput(ns("sample_var"), sel)
       )
     })
 

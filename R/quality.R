@@ -244,24 +244,21 @@ srv_g_quality <- function(id,
       properties <- experiment_properties()
 
       teal.widgets::updateOptionalSelectInput(
-        session,
-        "annotate",
+        inputId = "annotate",
         choices = properties$annotations,
-        selected = "WidthBP"
+        selected = restoreInput(ns("annotate"), "WidthBP")
       )
       updateSliderInput(
-        session,
-        "min_cpm",
+        inputId = "min_cpm",
         min = properties$min_cpm_calc,
         max = properties$max_cpm_calc,
-        value = properties$min_cpm_calc
+        value = restoreInput(ns("min_cpm"), properties$min_cpm_calc)
       )
       updateSliderInput(
-        session,
-        "min_depth_continuous",
+        inputId = "min_depth_continuous",
         min = properties$min_depth_calc,
         max = properties$max_depth_calc,
-        value = properties$min_depth_calc
+        value = restoreInput(ns("min_depth_continuous"), properties$min_depth_calc)
       )
     })
 

@@ -196,9 +196,8 @@ srv_g_pca <- function(id,
       if (filter_top) {
         n_top <- input$n_top
         updateSliderInput(
-          session = session,
           inputId = "n_top",
-          value = min(n_top, n_genes),
+          value = restoreInput(ns("n_top"), min(n_top, n_genes)),
           max = n_genes
         )
       }
@@ -233,10 +232,9 @@ srv_g_pca <- function(id,
       id_names <- c("x_var", "y_var")
       for (i in seq_along(id_names)) {
         updateSelectizeInput(
-          session,
-          id_names[i],
+          inputId = id_names[i],
           choices = pc_choices,
-          selected = pc_choices[i]
+          selected = restoreInput(ns(id_names[i]), pc_choices[i])
         )
       }
     })

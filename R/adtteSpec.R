@@ -328,12 +328,11 @@ adtteSpecServer <- function(id, # nolint
       updateSelectizeInput(
         "paramcd",
         choices = paramcd_choices,
-        selected = new_selected,
-        session = session
+        selected = restoreInput(ns("paramcd"), new_selected)
       )
       session$sendCustomMessage(
         "toggle_dropdown",
-        list(input_id = session$ns("paramcd"), disabled = (length(paramcd_choices) == 0))
+        list(input_id = ns("paramcd"), disabled = (length(paramcd_choices) == 0))
       )
     })
 

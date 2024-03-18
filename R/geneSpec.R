@@ -156,8 +156,8 @@ h_update_gene_selection <- function(session,
   updateSelectizeInput(
     session = session,
     inputId = inputId,
-    selected = selected[is_new_selected],
     choices = stats::setNames(choices$id, choices$name),
+    selected = restoreInput(session$ns(inputId), selected[is_new_selected]),
     server = TRUE
   )
 
