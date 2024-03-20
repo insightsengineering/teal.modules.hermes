@@ -35,7 +35,7 @@ tm_g_scatterplot <- function(label,
                              ),
                              pre_output = NULL,
                              post_output = NULL) {
-  logger::log_info("Initializing tm_g_scatterplot")
+  message("Initializing tm_g_scatterplot")
   assert_string(label)
   assert_string(mae_name)
   assert_character(exclude_assays, any.missing = FALSE)

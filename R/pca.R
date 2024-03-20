@@ -30,7 +30,7 @@ tm_g_pca <- function(label,
                      exclude_assays = character(),
                      pre_output = NULL,
                      post_output = NULL) {
-  logger::log_info("Initializing tm_g_pca")
+  message("Initializing tm_g_pca")
   assert_string(label)
   assert_string(mae_name)
   assert_tag(pre_output, null.ok = TRUE)
