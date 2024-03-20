@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE coverage SYSTEM "https://raw.githubusercontent.com/cobertura/cobertura/master/cobertura/src/site/htdocs/xml/coverage-04.dtd">
-<coverage line-rate="0.261102603369066" branch-rate="0" lines-covered="682" lines-valid="2612" branches-covered="0" branches-valid="0" complexity="0" version="3.6.4" timestamp="2024-03-18 12:26:09.505782">
+<coverage line-rate="0.261002678913127" branch-rate="0" lines-covered="682" lines-valid="2613" branches-covered="0" branches-valid="0" complexity="0" version="3.6.4" timestamp="2024-03-20 14:51:54.774851">
   <sources>
     <source>/__w/teal.modules.hermes/teal.modules.hermes/teal.modules.hermes</source>
   </sources>
   <packages>
-    <package name="teal.modules.hermes" line-rate="0.261102603369066" branch-rate="0" complexity="0">
+    <package name="teal.modules.hermes" line-rate="0.261002678913127" branch-rate="0" complexity="0">
       <classes>
         <class name="adtteSpec.R" filename="R/adtteSpec.R" line-rate="0.276470588235294" branch-rate="0" complexity="0">
           <methods>
@@ -5572,11 +5572,13 @@
             <method name=".onLoad" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
                 <line number="2" hits="0" branch="false"/>
+                <line number="3" hits="0" branch="false"/>
               </lines>
             </method>
           </methods>
           <lines>
             <line number="2" hits="0" branch="false"/>
+            <line number="3" hits="0" branch="false"/>
           </lines>
         </class>
       </classes>
