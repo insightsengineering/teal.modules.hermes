@@ -55,7 +55,7 @@ tm_g_forest_tte <- function(label,
                             plot_height = c(600L, 200L, 2000L),
                             plot_width = c(1360L, 500L, 2000L),
                             .test = FALSE) {
-  logger::log_info("Initializing tm_g_forest_tte")
+  message("Initializing tm_g_forest_tte")
   assert_string(label)
   assert_string(adtte_name)
   assert_string(mae_name)

@@ -31,7 +31,7 @@ tm_g_pca <- function(label,
                      pre_output = NULL,
                      post_output = NULL,
                      .test = FALSE) {
-  logger::log_info("Initializing tm_g_pca")
+  message("Initializing tm_g_pca")
   assert_string(label)
   assert_string(mae_name)
   assert_tag(pre_output, null.ok = TRUE)

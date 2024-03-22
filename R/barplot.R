@@ -36,7 +36,7 @@ tm_g_barplot <- function(label,
                          pre_output = NULL,
                          post_output = NULL,
                          .test = FALSE) {
-  logger::log_info("Initializing tm_g_barplot")
+  message("Initializing tm_g_barplot")
   assert_string(label)
   assert_string(mae_name)
   assert_character(exclude_assays)

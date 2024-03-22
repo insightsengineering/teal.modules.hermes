@@ -31,7 +31,7 @@ tm_g_volcanoplot <- function(label,
                              pre_output = NULL,
                              post_output = NULL,
                              .test = FALSE) {
-  logger::log_info("Initializing tm_g_volcanoplot")
+  message("Initializing tm_g_volcanoplot")
   assert_string(label)
   assert_string(mae_name)
   assert_character(exclude_assays)
