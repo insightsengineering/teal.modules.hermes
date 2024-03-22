@@ -40,7 +40,7 @@ test_that("scatterplot module works as expected in the test app", {
   res <- app$get_value(input = ns("experiment-name"))
   expect_identical(res, "hd1")
 
-  res <- app$get_value(output = ns("plot-plot_out_main"))
+  res <- app$get_value(output = ns("table"))
   expect_identical(res$message, "No assays eligible for this experiment, please make sure to add normalized assays")
 
   # Choose another experiment.
@@ -55,7 +55,7 @@ test_that("scatterplot module works as expected in the test app", {
   res <- app$get_value(input = ns("y_spec-genes"))
   expect_null(res)
 
-  res <- app$get_value(output = ns("plot-plot_out_main"))
+  res <- app$get_value(output = ns("table"))
   expect_identical(res$message, "please select at least one gene")
 
   # Set one gene each.
@@ -90,7 +90,10 @@ test_that("scatterplot module works as expected in the test app", {
   app$set_inputs(!!ns("facet_var-sample_var") := "AGE18")
 
   app$wait_for_idle()
-  app$expect_select_screenshot(ns("plot-plot_out_main"))
+  res <- app$get_value(output = ns("table"))
+  expect_snapshot(
+    cat(res)
+  )
 
   app$stop()
 })

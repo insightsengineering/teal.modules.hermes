@@ -34,7 +34,8 @@ tm_g_scatterplot <- function(label,
                                Max = matrixStats::colMaxs
                              ),
                              pre_output = NULL,
-                             post_output = NULL) {
+                             post_output = NULL,
+                             .test = FALSE) {
   logger::log_info("Initializing tm_g_scatterplot")
   assert_string(label)
   assert_string(mae_name)
@@ -49,14 +50,16 @@ tm_g_scatterplot <- function(label,
     server_args = list(
       mae_name = mae_name,
       summary_funs = summary_funs,
-      exclude_assays = exclude_assays
+      exclude_assays = exclude_assays,
+      .test = .test
     ),
     ui = ui_g_scatterplot,
     ui_args = list(
       mae_name = mae_name,
       summary_funs = summary_funs,
       pre_output = pre_output,
-      post_output = post_output
+      post_output = post_output,
+      .test = .test
     ),
     datanames = mae_name
   )
@@ -69,7 +72,8 @@ ui_g_scatterplot <- function(id,
                              mae_name,
                              summary_funs,
                              pre_output,
-                             post_output) {
+                             post_output,
+                             .test = FALSE) {
   ns <- NS(id)
 
   smooth_method_choices <- c(
@@ -100,7 +104,10 @@ ui_g_scatterplot <- function(id,
         )
       )
     ),
-    output = teal.widgets::plot_with_settings_ui(ns("plot")),
+    output = div(
+      if (.test) verbatimTextOutput(ns("table")) else NULL,
+      teal.widgets::plot_with_settings_ui(ns("plot"))
+    ),
     pre_output = pre_output,
     post_output = post_output
   )
@@ -115,7 +122,8 @@ srv_g_scatterplot <- function(id,
                               reporter,
                               mae_name,
                               exclude_assays,
-                              summary_funs) {
+                              summary_funs,
+                              .test = FALSE) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   assert_class(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
@@ -184,6 +192,10 @@ srv_g_scatterplot <- function(id,
       plot_r = plot_r
     )
 
+    if (.test) {
+      output$table <- renderPrint(plot_r())
+    }
+
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment, label) {
@@ -245,14 +257,15 @@ srv_g_scatterplot <- function(id,
 #' if (interactive()) {
 #'   sample_tm_g_scatterplot()
 #' }
-sample_tm_g_scatterplot <- function() {
+sample_tm_g_scatterplot <- function(.test = FALSE) {
   data <- teal.data::teal_data(MAE = hermes::multi_assay_experiment)
   app <- teal::init(
     data = data,
     modules = teal::modules(
       tm_g_scatterplot(
         label = "scatterplot",
-        mae_name = "MAE"
+        mae_name = "MAE",
+        .test = .test
       )
     )
   )

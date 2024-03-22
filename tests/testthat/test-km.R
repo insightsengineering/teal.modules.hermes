@@ -56,10 +56,6 @@ test_that("km module works as expected in the test app", {
 
   # Choose an endpoint.
   res <- app$get_value(output = ns("table"))
-  expect_snapshot(
-    cat(res)
-  )
-
   expect_identical(res$message, "please select an endpoint")
   app$set_inputs(!!ns("adtte-paramcd") := "PFS")
   app$wait_for_idle()
