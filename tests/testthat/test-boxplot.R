@@ -45,7 +45,7 @@ test_that("boxplot module works as expected in the test app", {
   expect_null(res)
 
   # check initial message
-  res <- app$get_value(output = ns("plot-plot_out_main"))
+  res <- app$get_value(output = ns("table"))
   expect_equal(res$message, "please select at least one gene")
 
   # Do a couple of updates to obtain a plot.
@@ -59,7 +59,8 @@ test_that("boxplot module works as expected in the test app", {
 
   app$wait_for_idle()
 
-  app$expect_select_screenshot(ns("plot-plot_out_main"))
+  res <- app$get_value(output = ns("table"))
+  expect_snapshot(cat(res))
 
   app$stop()
 })
