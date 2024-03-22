@@ -132,7 +132,7 @@ h_gene_data <- function(object, name_annotation) {
 #'   ns <- NS(id)
 #'   teal.widgets::standard_layout(
 #'     encoding = uiOutput(ns("encoding_ui")),
-#'     output = div(
+#'     output = tags$div(
 #'       verbatimTextOutput(ns("summary")),
 #'       verbatimTextOutput(ns("head"))
 #'     )
@@ -145,7 +145,7 @@ h_gene_data <- function(object, name_annotation) {
 #'                    mae_name) {
 #'   moduleServer(id, function(input, output, session) {
 #'     output$encoding_ui <- renderUI({
-#'       div(
+#'       tags$div(
 #'         experimentSpecInput(
 #'           session$ns("my_experiment"),
 #'           data,

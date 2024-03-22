@@ -78,7 +78,7 @@ ui_g_boxplot <- function(id,
                          .test = FALSE) {
   ns <- NS(id)
   teal.widgets::standard_layout(
-    encoding = div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###

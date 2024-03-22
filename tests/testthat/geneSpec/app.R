@@ -3,7 +3,7 @@ library(teal.modules.hermes)
 ui <- function(id, funs) {
   ns <- NS(id)
   teal.widgets::standard_layout(
-    encoding = div(
+    encoding = tags$div(
       geneSpecInput(
         ns("my_genes"),
         funs = funs,

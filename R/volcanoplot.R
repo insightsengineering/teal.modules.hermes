@@ -75,7 +75,7 @@ ui_g_volcanoplot <- function(id,
     ),
     pre_output = pre_output,
     post_output = post_output,
-    encoding = div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###

@@ -33,7 +33,7 @@ ui_g_scatterplot <- function(id,
   experiment_name_choices <- c("a", "b", "c")
 
   teal.widgets::standard_layout(
-    encoding = div(
+    encoding = tags$div(
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
       selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices, experiment_name_choices[1]),

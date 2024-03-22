@@ -69,7 +69,7 @@ ui_g_pca <- function(id,
   tagList(
     teal.widgets::standard_layout(
       include_css_files(pattern = "*"),
-      encoding = div(
+      encoding = tags$div(
         ### Reporter
         teal.reporter::simple_reporter_ui(ns("simple_reporter")),
         ###
@@ -115,7 +115,7 @@ ui_g_pca <- function(id,
           )
         )
       ),
-      output = div(
+      output = tags$div(
         style = "display:flow-root",
         tabsetPanel(
           id = ns("tab_selected"),

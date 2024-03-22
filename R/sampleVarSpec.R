@@ -24,26 +24,26 @@ sampleVarSpecInput <- function(inputId, # nolint
   ns <- NS(inputId)
   tagList(
     include_css_files(pattern = "*"),
-    div(
+    tags$div(
       class = "row",
-      div(
+      tags$div(
         class = "col-sm-8",
         tags$label(
           class = "control-label",
           label_vars
         )
       ),
-      div(
+      tags$div(
         class = "col-sm-4",
         actionButton(
           ns("levels_button"),
-          span(icon("fas fa-table")),
+          tags$span(icon("fas fa-table")),
           title = label_levels_button,
           class = "pull-right list-genes"
         )
       )
     ),
-    div(
+    tags$div(
       class = "custom-select-input",
       teal.widgets::optionalSelectInput(
         ns("sample_var"),
@@ -218,7 +218,7 @@ validate_n_levels <- function(x, name, n_levels) {
 #'     output$encoding_ui <- renderUI({
 #'       mae <- data()[["MAE"]]
 #'       experiment_name_choices <- names(mae)
-#'       div(
+#'       tags$div(
 #'         selectInput(session$ns("experiment_name"), "Select experiment", experiment_name_choices),
 #'         sampleVarSpecInput(session$ns("facet_var"), "Select faceting variable")
 #'       )
@@ -390,7 +390,7 @@ sampleVarSpecServer <- function(id, # nolint
           choices = seq_len(n_max_groups),
           selected = selected_groups
         ),
-        span(label_modal_title),
+        tags$span(label_modal_title),
         footer = tagList(
           modalButton("Cancel"),
           actionButton(session$ns("ok"), "OK")
