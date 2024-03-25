@@ -14,7 +14,7 @@ ADaM structure."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.hermes</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.6.9006</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.6.9007</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -31,16 +31,6 @@ ADaM structure."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.hermes/main">main</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.hermes/latest-tag">latest-tag</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.hermes/v0.1.6">v0.1.6</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.hermes/v0.1.5">v0.1.5</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.hermes/v0.1.4">v0.1.4</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -80,10 +70,19 @@ ADaM structure."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
 <span>  summary_funs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>Mean <span class="op">=</span> <span class="va">colMeans</span>, Median <span class="op">=</span> <span class="fu">matrixStats</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/matrixStats/man/rowMedians.html" class="external-link">colMedians</a></span>, Max <span class="op">=</span></span>
 <span>    <span class="fu">matrixStats</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/matrixStats/man/rowRanges.html" class="external-link">colMaxs</a></span><span class="op">)</span>,</span>
 <span>  pre_output <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  post_output <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  post_output <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  .test <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">ui_g_km</span><span class="op">(</span><span class="va">id</span>, <span class="va">adtte_name</span>, <span class="va">mae_name</span>, <span class="va">summary_funs</span>, <span class="va">pre_output</span>, <span class="va">post_output</span><span class="op">)</span></span>
+<span><span class="fu">ui_g_km</span><span class="op">(</span></span>
+<span>  <span class="va">id</span>,</span>
+<span>  <span class="va">adtte_name</span>,</span>
+<span>  <span class="va">mae_name</span>,</span>
+<span>  <span class="va">summary_funs</span>,</span>
+<span>  <span class="va">pre_output</span>,</span>
+<span>  <span class="va">post_output</span>,</span>
+<span>  .test <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">srv_g_km</span><span class="op">(</span></span>
 <span>  <span class="va">id</span>,</span>
@@ -94,10 +93,11 @@ ADaM structure."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
 <span>  <span class="va">mae_name</span>,</span>
 <span>  <span class="va">adtte_vars</span>,</span>
 <span>  <span class="va">summary_funs</span>,</span>
-<span>  <span class="va">exclude_assays</span></span>
+<span>  <span class="va">exclude_assays</span>,</span>
+<span>  .test <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">sample_tm_g_km</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">sample_tm_g_km</span><span class="op">(</span>.test <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -150,6 +150,10 @@ placed before the output to put the output into context (for example a title).</
 <dd><p>(<code>shiny.tag</code> or <code>NULL</code>)<br>
 placed after the output to put the output into context (for example the <code><a href="https://rdrr.io/pkg/shiny/man/helpText.html" class="external-link">shiny::helpText()</a></code>
 elements can be useful).</p></dd>
+
+
+<dt>.test</dt>
+<dd><p>(<code>flag</code>)<br> whether to display the internal structure of the plot for testing purposes.</p></dd>
 
 
 <dt>id</dt>
