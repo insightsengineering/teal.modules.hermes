@@ -19,7 +19,8 @@ tm_g_forest_tte(
   pre_output = NULL,
   post_output = NULL,
   plot_height = c(600L, 200L, 2000L),
-  plot_width = c(1360L, 500L, 2000L)
+  plot_width = c(1360L, 500L, 2000L),
+  .test = FALSE
 )
 
 ui_g_forest_tte(
@@ -28,7 +29,8 @@ ui_g_forest_tte(
   mae_name,
   summary_funs,
   pre_output,
-  post_output
+  post_output,
+  .test = FALSE
 )
 
 srv_g_forest_tte(
@@ -42,10 +44,11 @@ srv_g_forest_tte(
   exclude_assays,
   summary_funs,
   plot_height,
-  plot_width
+  plot_width,
+  .test = FALSE
 )
 
-sample_tm_g_forest_tte()
+sample_tm_g_forest_tte(.test = FALSE)
 }
 \arguments{
 \item{label}{(\code{string})\cr
@@ -89,6 +92,8 @@ and maximum plot height.}
 
 \item{plot_width}{(\code{list})\cr list of integers to set the default, minimum,
 and maximum plot width.}
+
+\item{.test}{(\code{flag})\cr whether to display the internal structure of the plot for testing purposes.}
 
 \item{id}{(\code{string}) the shiny module id.}
 

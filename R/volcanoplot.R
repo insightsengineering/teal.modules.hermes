@@ -29,7 +29,8 @@ tm_g_volcanoplot <- function(label,
                              mae_name,
                              exclude_assays = character(),
                              pre_output = NULL,
-                             post_output = NULL) {
+                             post_output = NULL,
+                             .test = FALSE) {
   message("Initializing tm_g_volcanoplot")
   assert_string(label)
   assert_string(mae_name)
@@ -42,13 +43,15 @@ tm_g_volcanoplot <- function(label,
     server = srv_g_volcanoplot,
     server_args = list(
       mae_name = mae_name,
-      exclude_assays = exclude_assays
+      exclude_assays = exclude_assays,
+      .test = .test
     ),
     ui = ui_g_volcanoplot,
     ui_args = list(
       mae_name = mae_name,
       pre_output = pre_output,
-      post_output = post_output
+      post_output = post_output,
+      .test = .test
     ),
     datanames = mae_name
   )
@@ -60,11 +63,13 @@ tm_g_volcanoplot <- function(label,
 ui_g_volcanoplot <- function(id,
                              mae_name,
                              pre_output,
-                             post_output) {
+                             post_output,
+                             .test = FALSE) {
   ns <- NS(id)
 
   teal.widgets::standard_layout(
-    output = tags$div(
+    output = div(
+      if (.test) verbatimTextOutput(ns("test")) else NULL,
       teal.widgets::plot_with_settings_ui(ns("plot")),
       DT::DTOutput(ns("table"))
     ),
@@ -103,7 +108,8 @@ srv_g_volcanoplot <- function(id,
                               filter_panel_api,
                               reporter,
                               mae_name,
-                              exclude_assays) {
+                              exclude_assays,
+                              .test = FALSE) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   assert_class(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
@@ -205,6 +211,11 @@ srv_g_volcanoplot <- function(id,
       )
     })
 
+    if (.test) {
+      output$test <- renderPrint(layer_data(plot_r()))
+    }
+
+
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment, label) {
@@ -266,14 +277,15 @@ srv_g_volcanoplot <- function(id,
 #' if (interactive()) {
 #'   sample_tm_g_volcanoplot()
 #' }
-sample_tm_g_volcanoplot <- function() {
+sample_tm_g_volcanoplot <- function(.test = FALSE) {
   data <- teal.data::teal_data(MAE = hermes::multi_assay_experiment)
   app <- teal::init(
     data = data,
     modules = teal::modules(
       tm_g_volcanoplot(
         label = "volcanoplot",
-        mae_name = "MAE"
+        mae_name = "MAE",
+        .test = .test
       )
     )
   )

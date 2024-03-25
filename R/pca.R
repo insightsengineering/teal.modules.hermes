@@ -29,7 +29,8 @@ tm_g_pca <- function(label,
                      mae_name,
                      exclude_assays = character(),
                      pre_output = NULL,
-                     post_output = NULL) {
+                     post_output = NULL,
+                     .test = FALSE) {
   message("Initializing tm_g_pca")
   assert_string(label)
   assert_string(mae_name)
@@ -41,13 +42,15 @@ tm_g_pca <- function(label,
     server = srv_g_pca,
     server_args = list(
       mae_name = mae_name,
-      exclude_assays = exclude_assays
+      exclude_assays = exclude_assays,
+      .test = .test
     ),
     ui = ui_g_pca,
     ui_args = list(
       mae_name = mae_name,
       pre_output = pre_output,
-      post_output = post_output
+      post_output = post_output,
+      .test = .test
     ),
     datanames = mae_name
   )
@@ -59,7 +62,8 @@ tm_g_pca <- function(label,
 ui_g_pca <- function(id,
                      mae_name,
                      pre_output,
-                     post_output) {
+                     post_output,
+                     .test = FALSE) {
   ns <- NS(id)
 
   tagList(
@@ -120,7 +124,8 @@ ui_g_pca <- function(id,
             "PCA",
             column(
               width = 12,
-              tags$div(
+              if (.test) verbatimTextOutput(ns("test_pca")) else NULL,
+              div(
                 class = "my-5",
                 teal.widgets::plot_with_settings_ui(ns("plot_pca"))
               ),
@@ -131,7 +136,8 @@ ui_g_pca <- function(id,
             "PC and Sample Correlation",
             column(
               width = 12,
-              tags$div(
+              if (.test) verbatimTextOutput(ns("test_cor")) else NULL,
+              div(
                 class = "my-5",
                 teal.widgets::plot_with_settings_ui(ns("plot_cor"))
               ),
@@ -154,7 +160,8 @@ srv_g_pca <- function(id,
                       filter_panel_api,
                       reporter,
                       mae_name,
-                      exclude_assays) {
+                      exclude_assays,
+                      .test = FALSE) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   assert_class(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
@@ -354,6 +361,11 @@ srv_g_pca <- function(id,
       plot_r = plot_cor
     )
 
+    if (.test) {
+      output$test_pca <- renderPrint(layer_data(plot_pca()))
+      output$test_cor <- renderPrint(show_matrix_cor())
+    }
+
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment, label) {
@@ -449,14 +461,15 @@ srv_g_pca <- function(id,
 #' if (interactive()) {
 #'   sample_tm_g_pca()
 #' }
-sample_tm_g_pca <- function() {
+sample_tm_g_pca <- function(.test = FALSE) {
   data <- teal.data::teal_data(MAE = hermes::multi_assay_experiment)
   app <- teal::init(
     data = data,
     modules = teal::modules(
       tm_g_pca(
         label = "pca",
-        mae_name = "MAE"
+        mae_name = "MAE",
+        .test = .test
       )
     )
   )

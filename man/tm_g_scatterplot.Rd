@@ -14,10 +14,18 @@ tm_g_scatterplot(
   summary_funs = list(Mean = colMeans, Median = matrixStats::colMedians, Max =
     matrixStats::colMaxs),
   pre_output = NULL,
-  post_output = NULL
+  post_output = NULL,
+  .test = FALSE
 )
 
-ui_g_scatterplot(id, mae_name, summary_funs, pre_output, post_output)
+ui_g_scatterplot(
+  id,
+  mae_name,
+  summary_funs,
+  pre_output,
+  post_output,
+  .test = FALSE
+)
 
 srv_g_scatterplot(
   id,
@@ -26,10 +34,11 @@ srv_g_scatterplot(
   reporter,
   mae_name,
   exclude_assays,
-  summary_funs
+  summary_funs,
+  .test = FALSE
 )
 
-sample_tm_g_scatterplot()
+sample_tm_g_scatterplot(.test = FALSE)
 }
 \arguments{
 \item{label}{(\code{string})\cr
@@ -51,6 +60,8 @@ placed before the output to put the output into context (for example a title).}
 \item{post_output}{(\code{shiny.tag} or \code{NULL})\cr
 placed after the output to put the output into context (for example the \code{\link[shiny:helpText]{shiny::helpText()}}
 elements can be useful).}
+
+\item{.test}{(\code{flag})\cr whether to display the internal structure of the plot for testing purposes.}
 
 \item{id}{(\code{string}) the shiny module id.}
 
