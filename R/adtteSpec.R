@@ -263,6 +263,8 @@ adtteSpecServer <- function(id, # nolint
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    ns <- session$ns
+
     # Join ADTTE with gene data.
     adtte_joined <- reactive({
       experiment_data <- experiment_data()
@@ -305,7 +307,7 @@ adtteSpecServer <- function(id, # nolint
     # Start by disabling selection, will be overriden if there are valid choices.
     session$sendCustomMessage(
       "toggle_dropdown",
-      list(input_id = session$ns("paramcd"), disabled = TRUE)
+      list(input_id = ns("paramcd"), disabled = TRUE)
     )
 
     # Once available endpoints change, we update choices (and also the selection
@@ -326,12 +328,11 @@ adtteSpecServer <- function(id, # nolint
       updateSelectizeInput(
         "paramcd",
         choices = paramcd_choices,
-        selected = new_selected,
-        session = session
+        selected = restoreInput(ns("paramcd"), new_selected)
       )
       session$sendCustomMessage(
         "toggle_dropdown",
-        list(input_id = session$ns("paramcd"), disabled = (length(paramcd_choices) == 0))
+        list(input_id = ns("paramcd"), disabled = (length(paramcd_choices) == 0))
       )
     })
 

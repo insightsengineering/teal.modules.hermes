@@ -159,8 +159,10 @@ srv_g_km <- function(id,
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    ns <- session$ns
+
     output$experiment_ui <- renderUI({
-      experimentSpecInput(session$ns("experiment"), data, mae_name)
+      experimentSpecInput(ns("experiment"), data, mae_name)
     })
     experiment <- experimentSpecServer(
       "experiment",

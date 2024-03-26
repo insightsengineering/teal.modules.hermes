@@ -106,6 +106,8 @@ assaySpecServer <- function(id, # nolint
   assert_character(exclude_assays, any.missing = FALSE)
 
   moduleServer(id, function(input, output, session) {
+    ns <- session$ns
+
     # When the assay names change, update the choices for assay.
     choices <- reactive({
       assays <- assays()
@@ -131,7 +133,7 @@ assaySpecServer <- function(id, # nolint
       updateSelectizeInput(session, "name", choices = choices)
       session$sendCustomMessage(
         "toggle_dropdown",
-        list(input_id = session$ns("name"), disabled = (length(choices) == 0))
+        list(input_id = ns("name"), disabled = (length(choices) == 0))
       )
     })
 
