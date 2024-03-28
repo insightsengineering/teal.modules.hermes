@@ -29,37 +29,36 @@ test_that("boxplot module works as expected in the test app", {
   )
 
   app$wait_for_idle(timeout = 20000)
-  ns <- module_ns_shiny2(app)
+
 
   # check initialization
-  res <- app$get_value(input = ns("experiment-name"))
+  res <- app$get_active_module_input("experiment-name")
   expect_identical(res, "hd1")
 
-  res <- app$get_value(input = ns("assay-name"))
+  res <- app$get_active_module_input("assay-name")
   expect_identical(res, "counts")
 
-  res <- app$get_value(input = ns("strat-sample_var"))
+  res <- app$get_active_module_input("strat-sample_var")
   expect_null(res)
 
-  res <- app$get_value(input = ns("genes-genes"))
+  res <- app$get_active_module_input("genes-genes")
   expect_null(res)
 
   # check initial message
-  res <- app$get_value(output = ns("table"))
+  res <- app$get_active_module_output("table")
   expect_equal(res$message, "please select at least one gene")
 
   # Do a couple of updates to obtain a plot.
-  app$set_inputs(
-    !!ns("jitter") := TRUE,
-    !!ns("violin") := TRUE,
-    !!ns("genes-genes") := "GeneID:5205",
-    !!ns("strat-sample_var") := "COUNTRY",
-    !!ns("color-sample_var") := "AGE18"
-  )
+  app$set_module_input("jitter", TRUE)
+  app$set_module_input("violin", TRUE)
+  app$set_module_input("genes-genes", "GeneID:5205")
+  app$set_module_input("strat-sample_var", "COUNTRY")
+  app$set_module_input("color-sample_var", "AGE18")
+
 
   app$wait_for_idle()
 
-  res <- app$get_value(output = ns("table"))
+  res <- app$get_active_module_output("table")
   expect_snapshot(cat(res))
 
   app$stop()

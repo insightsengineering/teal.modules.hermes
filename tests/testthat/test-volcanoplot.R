@@ -29,31 +29,31 @@ test_that("volcanoplot module works as expected in the test app", {
   )
 
   app$wait_for_idle(timeout = 20000)
-  ns <- module_ns_shiny2(app)
+
 
   # check initialization
-  res <- app$get_value(input = ns("experiment-name"))
+  res <- app$get_active_module_input("experiment-name")
   expect_identical(res, "hd1")
 
-  res <- app$get_value(input = ns("compare_group-sample_var"))
+  res <- app$get_active_module_input("compare_group-sample_var")
   expect_null(res)
 
   # check initial message
-  res <- app$get_value(output = ns("test"))
+  res <- app$get_active_module_output("test")
   expect_identical(res$message, "Please select a group variable")
 
   # Select an initial group variable.
-  app$set_inputs(!!ns("compare_group-sample_var") := "AGE18")
+  app$set_module_input("compare_group-sample_var", "AGE18")
   app$wait_for_idle(timeout = 30000)
 
-  res <- app$get_value(output = ns("test"))
+  res <- app$get_active_module_output("test")
   expect_snapshot(cat(res))
 
   # Now change the log2_fc_thresh and check that the plot is updated accordingly.
-  app$set_inputs(!!ns("log2_fc_thresh") := 8)
+  app$set_module_input("log2_fc_thresh", 8)
   app$wait_for_idle(timeout = 30000)
 
-  res <- app$get_value(output = ns("test"))
+  res <- app$get_active_module_output("test")
   expect_snapshot(cat(res))
   app$stop()
 })
