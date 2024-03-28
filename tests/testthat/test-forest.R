@@ -33,35 +33,35 @@ test_that("forest_tte module works as expected in the test app", {
   )
 
   app$wait_for_idle(timeout = 20000)
-  ns <- module_ns_shiny2(app)
+
 
   # check initialization
-  res <- app$get_value(input = ns("experiment-name"))
+  res <- app$get_active_module_input("experiment-name")
   expect_identical(res, "hd1")
 
-  res <- app$get_value(output = ns("table"))
+  res <- app$get_active_module_output("table")
   expect_identical(
     res$message,
     "No assays eligible for this experiment, please make sure to add normalized assays"
   )
 
   # Choose another experiment.
-  app$set_inputs(!!ns("experiment-name") := "hd2")
+  app$set_module_input("experiment-name", "hd2")
 
   res <- app$wait_for_value(input = ns("assay-name"))
   expect_identical(res, "cpm")
 
   # Choose a gene signature.
-  app$set_inputs(!!ns("genes-genes") := c("GeneID:101927746", "GeneID:1820"))
+  app$set_module_input("genes-genes", c("GeneID:101927746", "GeneID:1820"))
 
   res <- app$wait_for_value(output = ns("plot-plot_out_main"))
   expect_identical(res$message, "please select an endpoint")
 
   # Choose an endpoint.
-  app$set_inputs(!!ns("adtte-paramcd") := "PFS")
+  app$set_module_input("adtte-paramcd", "PFS")
 
   app$wait_for_idle()
-  res <- app$get_value(output = ns("table"))
+  res <- app$get_active_module_output("table")
   expect_snapshot(
     cat(res)
   )

@@ -180,18 +180,18 @@ test_that("sampleVarSpec module works as expected in the test app", {
   )
 
   app$wait_for_idle(timeout = 20000)
-  ns <- module_ns_shiny2(app)
+
 
   # Initially no variable is selected.
-  res <- app$get_value(input = ns("facet_var-sample_var"))
+  res <- app$get_active_module_input("facet_var-sample_var")
   expect_null(res)
 
   # Select a variable.
-  app$set_inputs(!!ns("facet_var-sample_var") := "AGE18")
+  app$set_module_input("facet_var-sample_var", "AGE18")
   app$wait_for_idle()
 
   # Check the output and which levels are reported there.
-  res <- app$get_value(output = ns("summary"))
+  res <- app$get_active_module_output("summary")
   expect_match(as.character(res), " < 18 >= 18 \n    4     1 ")
 
   # Filter panel works as expected
@@ -200,11 +200,11 @@ test_that("sampleVarSpec module works as expected in the test app", {
   app$set_inputs("teal-main_ui-filter_panel-active-MAE-subjects-MAE_AGE18-inputs-selection" = "< 18")
   app$wait_for_idle()
 
-  res <- app$get_value(output = ns("summary"))
+  res <- app$get_active_module_output("summary")
   expect_equal(res, "< 18 \n   4 ")
 
   app$click("teal-main_ui-filter_panel-active-MAE-subjects-MAE_AGE18-remove")
-  res <- app$get_value(output = ns("summary"))
+  res <- app$get_active_module_output("summary")
   expect_equal(res, " < 18 >= 18 \n    4     1 ")
 
   # Now click on the levels button, set combination and click ok.
@@ -212,13 +212,13 @@ test_that("sampleVarSpec module works as expected in the test app", {
 
   # Click on second column in both rows.
   app$wait_for_idle()
-  app$set_inputs(!!ns("facet_var-comb_assignment") := list("< 18" = "2", ">= 18" = "2"))
+  app$set_module_input("facet_var-comb_assignment", list("< 18" = "2", ">= 18" = "2"))
   app$wait_for_idle()
   app$click(ns("facet_var-ok"))
   app$wait_for_idle()
 
   # Check the output and which levels are reported there.
-  res <- app$get_value(output = ns("summary"))
+  res <- app$get_active_module_output("summary")
   expect_match(res, "< 18/>= 18 \n         5 ")
   app$stop()
 })
