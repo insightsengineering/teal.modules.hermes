@@ -76,23 +76,21 @@ test_that("e2e: tm_g_forest_tte module works as expected in the test app", {
   # Choose another experiment.
   app$set_module_input("experiment-name", "hd2")
 
-  res <- app$wait_for_value(input = ns("assay-name"))
+  res <- app$wait_for_active_module_value(input = "assay-name")
   expect_identical(res, "cpm")
 
   # Choose a gene signature.
   app$set_module_input("genes-genes", c("GeneID:101927746", "GeneID:1820"))
 
-  res <- app$wait_for_value(output = ns("plot-plot_out_main"))
+  res <- app$wait_for_active_module_value(output = "plot-plot_out_main")
   expect_identical(res$message, "please select an endpoint")
 
   # Choose an endpoint.
   app$set_module_input("adtte-paramcd", "PFS")
 
   app$wait_for_idle()
-  res <- app$get_active_module_output("table")
-  expect_snapshot(
-    cat(res)
-  )
+  app$expect_screenshot(selector = app$active_module_element("table"))
+
 
   app$stop()
 })

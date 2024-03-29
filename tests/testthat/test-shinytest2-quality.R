@@ -54,40 +54,31 @@ test_that("e2e: quality module works as expected in the test app", {
 
   # Check that warning message for at least 2 genes works as expected.
   app$set_module_input("min_cpm", 54356)
-  res <- app$wait_for_value(output = ns("table"))
+  res <- app$wait_for_active_module_value(output = "table")
   expect_identical(res$message, "Please change gene filters to ensure that there are at least 2 genes")
 
   # Initial plot.
-  res <- app$get_active_module_output("table")
-  expect_snapshot(
-    res
-  )
+  app$expect_screenshot(selector = app$active_module_element("table"))
 
   # Choose another experiment.
   app$set_module_input("experiment-name", "hd3")
   app$set_module_input("min_depth", "Specify")
 
   # Check state of encodings again.
-  res <- app$wait_for_value(input = ns("min_cpm"))
+  res <- app$wait_for_active_module_value(input = "min_cpm")
   expect_identical(res, 26L)
 
-  res <- app$wait_for_value(input = ns("min_depth_continuous"))
+  res <- app$wait_for_active_module_value(input = "min_depth_continuous")
   expect_identical(res, 1777260L)
 
   # Final histogram plot.
-  res <- app$get_active_module_output("table")
-  expect_snapshot(
-    cat(res)
-  )
+  app$expect_screenshot(selector = app$active_module_element("table"))
 
   # Change to another plot type so that we can choose another assay.
   app$set_module_input("plot_type", "Top Genes Plot")
   app$set_module_input("assay-name", "cpm")
   app$wait_for_idle(timeout = 30000)
-  res <- app$get_active_module_output("table")
-  expect_snapshot(
-    cat(res)
-  )
+  app$expect_screenshot(selector = app$active_module_element("table"))
   app$stop()
 })
 

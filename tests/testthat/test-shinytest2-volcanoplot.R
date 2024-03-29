@@ -62,15 +62,13 @@ test_that("volcanoplot module works as expected in the test app", {
   app$set_module_input("compare_group-sample_var", "AGE18")
   app$wait_for_idle(timeout = 30000)
 
-  res <- app$get_active_module_output("test")
-  expect_snapshot(cat(res))
+  app$expect_screenshot(selector = app$active_module_element("test"))
 
   # Now change the log2_fc_thresh and check that the plot is updated accordingly.
   app$set_module_input("log2_fc_thresh", 8)
   app$wait_for_idle(timeout = 30000)
 
-  res <- app$get_active_module_output("test")
-  expect_snapshot(cat(res))
+  app$expect_screenshot(selector = app$active_module_element("test"))
   app$stop()
 })
 

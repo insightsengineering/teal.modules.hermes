@@ -63,10 +63,8 @@ test_that("pca module works as expected in the test app", {
   res <- app$get_active_module_input("show_matrix")
   expect_true(res)
 
-  res <- app$get_active_module_output("test_pca")
-  expect_snapshot(
-    cat(res)
-  )
+  app$expect_screenshot(selector = app$active_module_element("test_pca"))
+
 
   # Add a gene filter and deselect everything and check that it does not crash.
   app$set_module_input("add-MAE-hd1-row_to_add", "symbol")
@@ -98,10 +96,8 @@ test_that("pca module works as expected in the test app", {
   res <- app$get_active_module_input("show_matrix")
   expect_true(res)
 
-  res <- app$get_active_module_output("test_cor")
-  expect_snapshot(
-    cat(res)
-  )
+  app$expect_screenshot(selector = app$active_module_element("test_cor"))
+
 
   # Now update experiment name, assay name, cluster & matrix option on correlation tab.
   app$set_module_input("experiment-name", "hd2")
@@ -110,10 +106,8 @@ test_that("pca module works as expected in the test app", {
   app$set_module_input("show_matrix", FALSE)
 
   app$wait_for_idle()
-  res <- app$get_active_module_output("test_cor")
-  expect_snapshot(
-    cat(res)
-  )
+  app$expect_screenshot(selector = app$active_module_element("test_cor"))
+
 
   # Now go back to pca tab and update experiment, assay name, variance % option,
   # label option and matrix option.
@@ -125,10 +119,8 @@ test_that("pca module works as expected in the test app", {
   app$set_module_input("label", FALSE)
 
   app$wait_for_idle()
-  res <- app$get_active_module_output("test_pca")
-  expect_snapshot(
-    cat(res)
-  )
+  app$expect_screenshot(selector = app$active_module_element("test_pca"))
+
 
   # Update experiment / assay (ensure xvar and yvar revert back to PC1 and PC2, assay to counts)
   # and add color for pca.
@@ -160,7 +152,7 @@ test_that("pca module works as expected in the test app", {
   app$set_module_input("y_var", "2")
 
 
-  res <- app$wait_for_value(output = ns("plot_pca-plot_main"))
+  res <- app$wait_for_active_module_value(output = "plot_pca-plot_main")
   expect_identical(res$message, "please select two different principal components")
 
   # Update the inputs to PCA tab, hd1, counts, PC3, PC4, and add filters.
@@ -181,10 +173,8 @@ test_that("pca module works as expected in the test app", {
   res <- app$get_active_module_input("y_var")
   expect_identical(res, "2")
 
-  res <- app$get_active_module_output("test_pca")
-  expect_snapshot(
-    cat(res)
-  )
+
+  app$expect_screenshot(selector = app$active_module_element("test_pca"))
 
   # Update to cor tab.
   app$set_module_input("active-MAE-subjects-MAE_SEX-inputs-selection_open", TRUE, allow_no_input_binding_ = TRUE)
@@ -200,13 +190,10 @@ test_that("pca module works as expected in the test app", {
 
   # Initiate the use of Top Variance Genes filtering functionality.
   app$set_module_input("filter_top", TRUE)
-  res <- app$wait_for_value(input = ns("n_top"))
+  res <- app$wait_for_active_module_value(input = "n_top")
   expect_identical(res, 500L)
 
-  res <- app$get_active_module_output("test_pca")
-  expect_snapshot(
-    cat(res)
-  )
+  app$expect_screenshot(selector = app$active_module_element("test_pca"))
 
   # Change the number of top genes.
   app$set_module_input("n_top", 777L)
@@ -221,22 +208,16 @@ test_that("pca module works as expected in the test app", {
   # Increase number of top genes to maximum.
   app$set_module_input("n_top", 2500L)
   app$wait_for_idle()
-  res <- app$get_active_module_output("test_pca")
-  expect_snapshot(
-    cat(res)
-  )
+  app$expect_screenshot(selector = app$active_module_element("test_pca"))
 
   # Switch off gene filtering and check that table is still the same.
   app$set_module_input("filter_top", FALSE)
   app$wait_for_idle()
-  res <- app$get_active_module_output("test_pca")
-  expect_snapshot(
-    cat(res)
-  )
+  app$expect_screenshot(selector = app$active_module_element("test_pca"))
 
   # Go back to first experiment and check that n_top stayed the same.
   app$set_module_input("experiment-name", "hd1")
-  res <- app$wait_for_value(input = ns("n_top"))
+  res <- app$wait_for_active_module_value(input = "n_top")
   expect_identical(res, 2500L)
   app$stop()
 })

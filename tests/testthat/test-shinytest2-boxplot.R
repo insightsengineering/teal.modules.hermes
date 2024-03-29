@@ -70,9 +70,8 @@ test_that("boxplot module works as expected in the test app", {
 
 
   app$wait_for_idle()
+  app$expect_screenshot(selector = app$active_module_element("table"))
 
-  res <- app$get_active_module_output("table")
-  expect_snapshot(cat(res))
 
   app$stop()
 })

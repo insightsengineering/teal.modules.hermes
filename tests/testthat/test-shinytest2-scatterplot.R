@@ -56,7 +56,7 @@ test_that("e2e: scatterplot module works as expected", {
 
   # Choose another experiment.
   app$set_module_input("experiment-name", "hd2")
-  res <- app$wait_for_value(input = ns("assay-name"))
+  res <- app$wait_for_active_module_value(input = "assay-name")
   expect_identical(res, "cpm")
 
   app$wait_for_idle()
@@ -81,7 +81,7 @@ test_that("e2e: scatterplot module works as expected", {
 
   res <- app$get_active_module_input("x_spec-genes")
   expect_identical(res, "GeneID:503538")
-  res <- app$wait_for_value(input = ns("y_spec-genes"))
+  res <- app$wait_for_active_module_value(input = "y_spec-genes")
   expect_identical(res, "GeneID:8086")
 
   # Remove sample filter
@@ -90,7 +90,7 @@ test_that("e2e: scatterplot module works as expected", {
 
   res <- app$get_active_module_input("x_spec-genes")
   expect_identical(res, "GeneID:503538")
-  res <- app$wait_for_value(input = ns("y_spec-genes"))
+  res <- app$wait_for_active_module_value(input = "y_spec-genes")
   expect_identical(res, "GeneID:8086")
 
   # Now change the experiment_name, genes, method.
@@ -101,10 +101,7 @@ test_that("e2e: scatterplot module works as expected", {
   app$set_module_input("facet_var-sample_var", "AGE18")
 
   app$wait_for_idle()
-  res <- app$get_active_module_output("table")
-  expect_snapshot(
-    cat(res)
-  )
+  app$expect_screenshot(selector = app$active_module_element("table"))
 
   app$stop()
 })

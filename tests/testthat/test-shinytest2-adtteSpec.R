@@ -92,6 +92,7 @@ test_that("adtteSpecServer module works as expected in the test app", {
   )
 
   app$wait_for_idle(timeout = 20000)
+  app$expect_no_shiny_error()
 
   # check initialization
   res <- app$get_values()

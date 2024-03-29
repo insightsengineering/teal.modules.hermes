@@ -90,11 +90,8 @@ test_that("e2e: tm_g_km module works as expected ", {
   expect_identical(res$message, "please select an endpoint")
   app$set_module_input("adtte-paramcd", "PFS")
   app$wait_for_idle()
+  app$expect_screenshot(selector = app$active_module_element("table"))
 
-  res <- app$get_active_module_output("table")
-  expect_snapshot(
-    cat(res)
-  )
   app$stop()
 })
 
