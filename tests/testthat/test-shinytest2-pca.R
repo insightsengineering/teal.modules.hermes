@@ -1,15 +1,18 @@
 # ui_g_pca ----
 
-test_that("ui_g_pca creates HTML", {
-  mae_name <- "MyMAE"
-  data <- teal.data::teal_data(MyMAE = function() hermes::multi_assay_experiment)
-  result <- ui_g_pca(
-    id = "testid",
-    mae_name = mae_name,
-    pre_output = NULL,
-    post_output = NULL
+test_that("e2e: tm_g_pca initializes without errors and snapshot test", {
+  data <- teal.data::teal_data(MAE = hermes::multi_assay_experiment)
+  app <- teal:::TealAppDriver$new(
+    data = data,
+    modules = teal::modules(
+      tm_g_pca(
+        label = "pca",
+        mae_name = "MAE",
+        .test = TRUE
+      )
+    ),
+    load_timeout = 300000
   )
-  testthat::expect_s3_class(result, "shiny.tag.list")
 })
 
 # pca Server ----
@@ -20,16 +23,20 @@ test_that("pca module works as expected in the test app", {
   skip_if_covr()
   skip_if_too_deep(5)
 
-  app <- AppDriver$new(
-    app_dir = test_path("pca"),
-    name = "pca",
-    variant = platform_variant(),
-    load_timeout = 300000,
-    seed = default_app_seed
+  data <- teal.data::teal_data(MAE = hermes::multi_assay_experiment)
+  app <- teal:::TealAppDriver$new(
+    data = data,
+    modules = teal::modules(
+      tm_g_pca(
+        label = "pca",
+        mae_name = "MAE",
+        .test = TRUE
+      )
+    ),
+    load_timeout = 300000
   )
 
   app$wait_for_idle(timeout = 20000)
-
 
   # Check initial state of encodings.
   res <- app$get_active_module_input("experiment-name")

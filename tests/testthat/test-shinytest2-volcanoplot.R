@@ -1,15 +1,25 @@
 # ui_g_volcanoplot ----
 
-test_that("ui_g_volcanoplot creates expected HTML", {
-  mae_name <- "MyMAE"
-  data <- list(MyMAE = function() hermes::multi_assay_experiment)
-  expect_silent(result <- ui_g_volcanoplot(
-    id = "testid",
-    mae_name = mae_name,
-    pre_output = NULL,
-    post_output = NULL
-  ))
-  expect_tag(result)
+test_that("e2e: tm_g_volcanoplot creates expected HTML", {
+  data <- teal.data::teal_data(MAE = hermes::multi_assay_experiment)
+  app <- teal:::TealAppDriver$new(
+    data = data,
+    modules = teal::modules(
+      tm_g_volcanoplot(
+        label = "volcanoplot",
+        mae_name = "MAE",
+        .test = TRUE
+      )
+    ),
+    load_timeout = 300000,
+    seed = default_app_seed
+  )
+
+  app$wait_for_idle(timeout = default_idle_timeout)
+  app$expect_no_shiny_error()
+
+  app$expect_screenshot(name = "app")
+  app$stop()
 })
 
 # tm_g_volcanoplot ----
@@ -20,10 +30,16 @@ test_that("volcanoplot module works as expected in the test app", {
   skip_if_covr()
   skip_if_too_deep(5)
 
-  app <- AppDriver$new(
-    app_dir = test_path("volcanoplot"),
-    name = "volcanoplot",
-    variant = platform_variant(),
+  data <- teal.data::teal_data(MAE = hermes::multi_assay_experiment)
+  app <- teal:::TealAppDriver$new(
+    data = data,
+    modules = teal::modules(
+      tm_g_volcanoplot(
+        label = "volcanoplot",
+        mae_name = "MAE",
+        .test = TRUE
+      )
+    ),
     load_timeout = 300000,
     seed = default_app_seed
   )

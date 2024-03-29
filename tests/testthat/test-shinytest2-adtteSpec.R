@@ -4,15 +4,94 @@ test_that("adtteSpecServer module works as expected in the test app", {
   skip_if_covr()
   skip_if_too_deep(5)
 
-  app <- AppDriver$new(
-    app_dir = test_path("adtteSpec"),
-    name = "adtteSpecServe",
-    variant = platform_variant(),
+  ui <- function(id) {
+    ns <- NS(id)
+
+    teal.widgets::standard_layout(
+      encoding = tags$div(
+        uiOutput(ns("experiment_ui")),
+        assaySpecInput(ns("assay")),
+        geneSpecInput(ns("genes"), funs = list(Mean = colMeans)),
+        adtteSpecInput(ns("adtte"))
+      ),
+      output = verbatimTextOutput(ns("summary"))
+    )
+  }
+
+  server <- function(id,
+                     data,
+                     filter_panel_api) {
+    moduleServer(id, function(input, output, session) {
+      output$experiment_ui <- renderUI({
+        experimentSpecInput(session$ns("experiment"), data = data, mae_name = "MAE")
+      })
+      experiment <- experimentSpecServer(
+        "experiment",
+        data = data,
+        filter_panel_api,
+        mae_name = "MAE"
+      )
+      assay <- assaySpecServer(
+        "assay",
+        assays = experiment$assays
+      )
+      genes <- geneSpecServer(
+        "genes",
+        funs = list(Mean = colMeans),
+        gene_choices = experiment$genes
+      )
+      adtte <- adtteSpecServer(
+        "adtte",
+        data = data,
+        adtte_name = "ADTTE",
+        mae_name = "MAE",
+        adtte_vars = list(
+          aval = "AVAL",
+          avalu = "AVALU",
+          is_event = "is_event",
+          paramcd = "PARAMCD",
+          usubjid = "USUBJID"
+        ),
+        experiment_data = experiment$data,
+        experiment_name = experiment$name,
+        assay = assay,
+        genes = genes,
+        probs = reactive({
+          0.5
+        }) # nolint
+      )
+      output$summary <- renderPrint({
+        binned_adtte_subset <- adtte$binned_adtte_subset()
+        summary(binned_adtte_subset)
+      })
+    })
+  }
+
+  adtte <- teal.modules.hermes::rADTTE %>%
+    dplyr::mutate(is_event = (.data$CNSR == 0))
+
+  data <- teal_data(
+    ADTTE = adtte,
+    MAE = hermes::multi_assay_experiment,
+    code =
+      "adtte <- teal.modules.hermes::rADTTE %>%
+        dplyr::mutate(is_event = (.data$CNSR == 0))"
+  )
+
+  app <- teal:::TealAppDriver$new(
+    data = data,
+    modules = teal::modules(
+      teal::module(
+        label = "adtteSpec example",
+        server = server,
+        ui = ui,
+        datanames = "all"
+      )
+    ),
     load_timeout = 300000
   )
 
   app$wait_for_idle(timeout = 20000)
-
 
   # check initialization
   res <- app$get_values()

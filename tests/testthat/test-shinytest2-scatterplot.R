@@ -1,40 +1,51 @@
 # ui_g_scatterplot ----
 
-test_that("ui_g_scatterplot creates expected HTML", {
-  mae_name <- "MyMAE"
-  set.seed(123)
-  data <- teal.data::teal_data(MyMAE = function() hermes::multi_assay_experiment)
-  expect_silent(result <- ui_g_scatterplot(
-    id = "testid",
-    mae_name = mae_name,
-    summary_funs = list(
-      Mean = colMeans
+test_that("e2e: tm_g_scatterplot creates expected HTML", {
+  data <- teal.data::teal_data(MAE = hermes::multi_assay_experiment)
+  app <- teal:::TealAppDriver$new(
+    data = teal_data(MAE = helios::large_helios_data),
+    modules = teal::modules(
+      tm_g_scatterplot(
+        label = "scatterplot",
+        mae_name = "MAE",
+        .test = TRUE
+      )
     ),
-    pre_output = NULL,
-    post_output = NULL
-  ))
+    load_timeout = 300000,
+    seed = default_app_seed
+  )
 
-  expect_tag(result)
+  app$wait_for_idle(timeout = default_idle_timeout)
+  app$expect_no_shiny_error()
+
+  app$expect_screenshot(name = "app")
+  app$stop()
+
 })
 
 # tm_g_scatterplot ----
 
 # nolint start
 
-test_that("scatterplot module works as expected in the test app", {
+test_that("e2e: scatterplot module works as expected", {
   skip_if_covr()
   skip_if_too_deep(5)
 
-  app <- AppDriver$new(
-    app_dir = test_path("scatterplot"),
-    name = "scatterplot",
-    variant = platform_variant(),
+  data <- teal.data::teal_data(MAE = hermes::multi_assay_experiment)
+  app <- teal:::TealAppDriver$new(
+    data = teal_data(MAE = helios::large_helios_data),
+    modules = teal::modules(
+      tm_g_scatterplot(
+        label = "scatterplot",
+        mae_name = "MAE",
+        .test = TRUE
+      )
+    ),
     load_timeout = 300000,
     seed = default_app_seed
   )
 
   app$wait_for_idle(timeout = 20000)
-
 
   # check initialization
   res <- app$get_active_module_input("experiment-name")

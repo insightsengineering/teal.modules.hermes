@@ -1,37 +1,46 @@
 # ui_g_quality ----
 
-test_that("ui_g_quality creates expected HTML", {
-  mae_name <- "MyMAE"
-  set.seed(123)
-  data <- teal.data::teal_data(MyMAE = function() hermes::multi_assay_experiment)
-  expect_silent(result <- ui_g_quality(
-    id = "testid",
-    mae_name = mae_name,
-    pre_output = NULL,
-    post_output = NULL
-  ))
+test_that("e2e: tm_g_quality initializes without errors and snapshot test", {
+  data <- teal.data::teal_data(MAE = hermes::multi_assay_experiment)
+  app <- teal:::TealAppDriver$new(
+    data = data,
+    modules = teal::modules(
+      tm_g_quality(
+        label = "quality",
+        mae_name = "MAE",
+        .test = TRUE
+      )
+    )
+  )
 
-  expect_tag(result)
+  app$wait_for_idle(timeout = default_idle_timeout)
+  app$expect_no_shiny_error()
+
+  app$expect_screenshot(name = "app")
+  app$stop()
 })
 
 # tm_g_quality ----
 
 # nolint start
 
-test_that("quality module works as expected in the test app", {
+test_that("e2e: quality module works as expected in the test app", {
   skip_if_covr()
   skip_if_too_deep(5)
 
-  app <- AppDriver$new(
-    app_dir = test_path("quality"),
-    name = "quality",
-    variant = platform_variant(),
-    load_timeout = 300000
+  data <- teal.data::teal_data(MAE = hermes::multi_assay_experiment)
+  app <- teal:::TealAppDriver$new(
+    data = data,
+    modules = teal::modules(
+      tm_g_quality(
+        label = "quality",
+        mae_name = "MAE",
+        .test = TRUE
+      )
+    )
   )
 
   app$wait_for_idle(timeout = 20000)
-
-
 
   # Check initial state of encodings.
   res <- app$get_active_module_input("experiment-name")
