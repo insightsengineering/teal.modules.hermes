@@ -201,7 +201,7 @@ srv_g_barplot <- function(id,
 
     if (.test) {
       table_r <- reactive({
-        str(layer_data(plot_r()))
+        utils::str(layer_data(plot_r()))
       })
       output$table <- renderPrint(table_r())
     }
