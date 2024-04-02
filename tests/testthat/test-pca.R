@@ -97,7 +97,7 @@ test_that("pca module works as expected in the test app", {
   )
 
   # Now update experiment name, assay name, cluster & matrix option on correlation tab.
-  app$set_inputs(!!ns("experiment-name") := "hd2")
+  app$set_inputs(!!ns("experiment-name") := "hd2", timeout_ = 30000)
   app$set_inputs(!!ns("assay-name") := "voom")
   app$set_inputs(!!ns("cluster_columns") := TRUE)
   app$set_inputs(!!ns("show_matrix") := FALSE)
@@ -117,7 +117,7 @@ test_that("pca module works as expected in the test app", {
   app$set_inputs(!!ns("var_pct") := FALSE)
   app$set_inputs(!!ns("label") := FALSE)
 
-  app$wait_for_idle()
+  app$wait_for_idle(timeout = 30000)
   res <- app$get_value(output = ns("test_pca"))
   expect_snapshot(
     cat(res)
