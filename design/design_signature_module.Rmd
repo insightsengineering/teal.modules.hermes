@@ -217,24 +217,24 @@ geneSpecInput <- function(id, # nolint
   ns <- NS(id)
   tagList(
     include_css_files(pattern = "*"),
-    div(
+    tags$div(
       class = "row",
-      div(
+      tags$div(
         class = "col-sm-8",
         tags$label(
           class = "control-label",
           paste("Select", axis, "gene(s)")
         )
       ),
-      div(
+      tags$div(
         class = "col-sm-4",
         actionButton(
           ns("open_text_input"),
-          span(icon("font fa-border")),
+          tags$span(icon("font fa-border")),
           title = "Enter list of genes",
           class = "pull-right list-genes"
         ),
-        div(
+        tags$div(
           class = "pull-right",
           title = "Lock gene selection",
           shinyWidgets::prettyToggle(
@@ -253,7 +253,7 @@ geneSpecInput <- function(id, # nolint
         )
       )
     ),
-    div(
+    tags$div(
       class = "custom-select-input",
       teal.widgets::optionalSelectInput(
         ns("genes"),
@@ -367,7 +367,7 @@ geneSpecServer <- function(id, # nolint
           "Enter list of genes",
           placeholder = example_list
         ),
-        span(
+        tags$span(
           "Please enter a comma-separated list of gene IDs.",
           "(Note that genes not included in current choices will be removed)"
         ),
@@ -481,7 +481,7 @@ ui_g_signature <- function(id,
   experiment_name_choices <- names(mae)
 
   teal.widgets::standard_layout(
-    encoding = div(
+    encoding = tags$div(
       selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
       selectInput(ns("assay_name"), "Select assay", choices = ""),
       geneSpecInput(ns("x_spec"), "x", summary_funs),

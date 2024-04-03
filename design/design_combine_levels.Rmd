@@ -216,28 +216,28 @@ ui_g_levels <- function(id,
   tagList(
     include_css_files(pattern = "*"),
     teal.widgets::standard_layout(
-      encoding = div(
+      encoding = tags$div(
         selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
-        div(
+        tags$div(
           class = "row",
-          div(
+          tags$div(
             class = "col-sm-8",
             tags$label(
               class = "control-label",
               "Select faceting variable"
             )
           ),
-          div(
+          tags$div(
             class = "col-sm-4",
             actionButton(
               ns("open_levels_input"),
-              span(icon("font fa-object-ungroup")),
+              tags$span(icon("font fa-object-ungroup")),
               title = "Combine factor levels",
               class = "pull-right list-genes"
             )
           )
         ),
-        div(
+        tags$div(
           class = "custom-select-input",
           teal.widgets::optionalSelectInput(
             ns("facet_var"),
@@ -351,7 +351,7 @@ srv_g_levels <- function(input,
         choices = seq_len(n_max_groups),
         selected = selected_groups
       ),
-      span(
+      tags$span(
         "Please click to group the original factor levels"
       ),
       footer = tagList(
@@ -491,7 +491,7 @@ ui_example <- function(id,
   mae <- datasets$get_data(mae_name, filtered = FALSE)
   experiment_name_choices <- names(mae)
   teal.widgets::standard_layout(
-    encoding = div(
+    encoding = tags$div(
       selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
       sampleVarSpecInput(ns("facet_var"), "Select faceting variable")
     ),

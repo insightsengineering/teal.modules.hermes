@@ -55,7 +55,7 @@ assaySpecInput <- function(inputId, # nolint
 #' server <- function(id, data, filter_panel_api) {
 #'   moduleServer(id, module = function(input, output, session) {
 #'     output$encoding_ui <- renderUI({
-#'       div(
+#'       tags$div(
 #'         experimentSpecInput(session$ns("experiment"), data, "MAE"),
 #'         assaySpecInput(
 #'           session$ns("assay"),

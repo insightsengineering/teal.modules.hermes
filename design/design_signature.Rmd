@@ -189,27 +189,27 @@ ui_g_signature <- function(id,
   tagList(
     include_css_files(pattern = "*"),
     teal.widgets::standard_layout(
-      encoding = div(
+      encoding = tags$div(
         selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
         selectInput(ns("assay_name"), "Select assay", choices = ""),
-        div(
+        tags$div(
           class = "row",
-          div(
+          tags$div(
             class = "col-sm-8",
             tags$label(
               class = "control-label",
               "Select gene(s) of interest"
             )
           ),
-          div(
+          tags$div(
             class = "col-sm-4",
             actionButton(
               ns("open_text_input"),
-              span(icon("font fa-border")),
+              tags$span(icon("font fa-border")),
               title = "Enter list of genes",
               class = "pull-right list-genes"
             ),
-            div(
+            tags$div(
               class = "pull-right",
               title = "Lock gene selection",
               shinyWidgets::prettyToggle(
@@ -228,7 +228,7 @@ ui_g_signature <- function(id,
             )
           )
         ),
-        div(
+        tags$div(
           class = "custom-select-input",
           teal.widgets::optionalSelectInput(
             ns("y_vars"),
@@ -390,7 +390,7 @@ srv_g_signature <- function(input,
         "Enter list of genes",
         placeholder = example_list
       ),
-      span(
+      tags$span(
         "Please enter a comma-separated list of gene IDs.",
         "(Note that genes not included in current choices will be removed)"
       ),

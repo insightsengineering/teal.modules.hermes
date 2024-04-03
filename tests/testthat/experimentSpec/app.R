@@ -3,7 +3,7 @@ library(teal.modules.hermes)
 ui <- function(id) {
   ns <- NS(id)
   teal.widgets::standard_layout(
-    encoding = div(
+    encoding = tags$div(
       uiOutput(ns("experiment_ui")),
       selectInput(
         ns("property"),
@@ -11,7 +11,7 @@ ui <- function(id) {
         c("data", "name", "genes", "assays")
       )
     ),
-    output = div(
+    output = tags$div(
       verbatimTextOutput(ns("summary")),
       verbatimTextOutput(ns("head"))
     )

@@ -47,39 +47,39 @@ geneSpecInput <- function(inputId, # nolint
   ns <- NS(inputId)
   tagList(
     include_css_files(pattern = "*"),
-    div(
+    tags$div(
       class = "row",
-      div(
+      tags$div(
         class = "col-sm-8",
         tags$label(
           class = "control-label",
           label_genes
         )
       ),
-      div(
+      tags$div(
         class = "col-sm-2",
         actionButton(
           ns("select_none_button"),
-          span(icon("remove-circle", lib = "glyphicon")),
+          tags$span(icon("remove-circle", lib = "glyphicon")),
           title = label_select_none_button,
           class = "pull-right list-genes"
         ),
         actionButton(
           ns("select_all_button"),
-          span(icon("ok-circle", lib = "glyphicon")),
+          tags$span(icon("ok-circle", lib = "glyphicon")),
           title = label_select_all_button,
           class = "pull-right list-genes"
         )
       ),
-      div(
+      tags$div(
         class = "col-sm-2",
         actionButton(
           ns("text_button"),
-          span(icon("fas fa-font")),
+          tags$span(icon("fas fa-font")),
           title = label_text_button,
           class = "pull-right list-genes"
         ),
-        div(
+        tags$div(
           class = "pull-right",
           title = label_lock_button,
           shinyWidgets::prettyToggle(
@@ -98,7 +98,7 @@ geneSpecInput <- function(inputId, # nolint
         )
       )
     ),
-    div(
+    tags$div(
       class = "custom-select-input",
       selectizeInput(
         ns("genes"),
@@ -222,7 +222,7 @@ h_parse_genes <- function(words, choices) {
 #' ui <- function(id, funs) {
 #'   ns <- NS(id)
 #'   teal.widgets::standard_layout(
-#'     encoding = div(
+#'     encoding = tags$div(
 #'       geneSpecInput(
 #'         ns("my_genes"),
 #'         funs = funs,

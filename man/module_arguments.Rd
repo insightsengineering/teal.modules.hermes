@@ -58,6 +58,8 @@ and maximum plot height.}
 and maximum plot width.}
 
 \item{filter_panel_api}{(\code{FilterPanelAPI})\cr object describing the actual filter panel API.}
+
+\item{.test}{(\code{flag})\cr whether to display the internal structure of the plot for testing purposes.}
 }
 \description{
 The documentation to this function lists all the conventional arguments in

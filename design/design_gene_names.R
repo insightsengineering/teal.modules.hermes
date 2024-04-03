@@ -4,7 +4,7 @@ ui <- function(id,
                datasets) {
   ns <- NS(id)
   teal.widgets::standard_layout(
-    encoding = div(
+    encoding = tags$div(
       teal.widgets::optionalSelectInput(
         ns("genes"),
         label = NULL,

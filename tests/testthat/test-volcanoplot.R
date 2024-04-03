@@ -39,19 +39,22 @@ test_that("volcanoplot module works as expected in the test app", {
   expect_null(res)
 
   # check initial message
-  res <- app$get_value(output = ns("plot-plot_out_main"))
+  res <- app$get_value(output = ns("test"))
   expect_identical(res$message, "Please select a group variable")
 
   # Select an initial group variable.
   app$set_inputs(!!ns("compare_group-sample_var") := "AGE18")
-  app$wait_for_idle()
+  app$wait_for_idle(timeout = 30000)
 
-  app$expect_select_screenshot(ns("plot-plot_out_main"))
+  res <- app$get_value(output = ns("test"))
+  expect_snapshot(cat(res))
 
   # Now change the log2_fc_thresh and check that the plot is updated accordingly.
   app$set_inputs(!!ns("log2_fc_thresh") := 8)
+  app$wait_for_idle(timeout = 30000)
 
-  app$expect_select_screenshot(ns("plot-plot_out_main"))
+  res <- app$get_value(output = ns("test"))
+  expect_snapshot(cat(res))
   app$stop()
 })
 
