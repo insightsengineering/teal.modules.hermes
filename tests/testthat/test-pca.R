@@ -112,12 +112,18 @@ test_that("pca module works as expected in the test app", {
   # label option and matrix option.
   app$set_inputs(!!ns("tab_selected") := "PCA")
   app$set_inputs(!!ns("assay-name") := "rpkm")
+  app$wait_for_idle(timeout = 30000) # Important to ensure update of x_var.
   app$set_inputs(!!ns("x_var") := "3")
   app$set_inputs(!!ns("y_var") := "4")
   app$set_inputs(!!ns("var_pct") := FALSE)
   app$set_inputs(!!ns("label") := FALSE)
 
   app$wait_for_idle(timeout = 30000)
+  res <- app$get_value(input = ns("x_var"))
+  expect_identical(res, "3")
+  res <- app$get_value(input = ns("y_var"))
+  expect_identical(res, "4")
+
   res <- app$get_value(output = ns("test_pca"))
   expect_snapshot(
     cat(res)
