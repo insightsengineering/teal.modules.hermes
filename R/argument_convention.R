@@ -43,6 +43,7 @@
 #' @param plot_width (`list`)\cr list of integers to set the default, minimum,
 #'   and maximum plot width.
 #' @param filter_panel_api (`FilterPanelAPI`)\cr object describing the actual filter panel API.
+#' @param .test (`flag`)\cr whether to display the internal structure of the plot for testing purposes.
 #'
 #' @name module_arguments
 #' @keywords internal

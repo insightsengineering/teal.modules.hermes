@@ -45,11 +45,14 @@ test_that("quality module works as expected in the test app", {
 
   # Check that warning message for at least 2 genes works as expected.
   app$set_inputs(!!ns("min_cpm") := 54356)
-  res <- app$wait_for_value(output = ns("plot-plot_out_main"))
+  res <- app$wait_for_value(output = ns("table"))
   expect_identical(res$message, "Please change gene filters to ensure that there are at least 2 genes")
 
   # Initial plot.
-  app$expect_select_screenshot(ns("plot-plot_out_main"))
+  res <- app$get_value(output = ns("table"))
+  expect_snapshot(
+    res
+  )
 
   # Choose another experiment.
   app$set_inputs(!!ns("experiment-name") := "hd3")
@@ -63,13 +66,19 @@ test_that("quality module works as expected in the test app", {
   expect_identical(res, 1777260L)
 
   # Final histogram plot.
-  app$expect_select_screenshot(ns("plot-plot_out_main"))
+  res <- app$get_value(output = ns("table"))
+  expect_snapshot(
+    cat(res)
+  )
 
   # Change to another plot type so that we can choose another assay.
   app$set_inputs(!!ns("plot_type") := "Top Genes Plot")
   app$set_inputs(!!ns("assay-name") := "cpm")
   app$wait_for_idle(timeout = 30000)
-  app$expect_select_screenshot(ns("plot-plot_out_main"))
+  res <- app$get_value(output = ns("table"))
+  expect_snapshot(
+    cat(res)
+  )
   app$stop()
 })
 

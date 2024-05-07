@@ -53,7 +53,8 @@ tm_g_forest_tte <- function(label,
                             pre_output = NULL,
                             post_output = NULL,
                             plot_height = c(600L, 200L, 2000L),
-                            plot_width = c(1360L, 500L, 2000L)) {
+                            plot_width = c(1360L, 500L, 2000L),
+                            .test = FALSE) {
   message("Initializing tm_g_forest_tte")
   assert_string(label)
   assert_string(adtte_name)
@@ -63,6 +64,7 @@ tm_g_forest_tte <- function(label,
   assert_summary_funs(summary_funs)
   assert_tag(pre_output, null.ok = TRUE)
   assert_tag(post_output, null.ok = TRUE)
+  assert_flag(.test)
 
   teal::module(
     label = label,
@@ -74,7 +76,8 @@ tm_g_forest_tte <- function(label,
       exclude_assays = exclude_assays,
       summary_funs = summary_funs,
       plot_height = plot_height,
-      plot_width = plot_width
+      plot_width = plot_width,
+      .test = .test
     ),
     ui = ui_g_forest_tte,
     ui_args = list(
@@ -82,7 +85,8 @@ tm_g_forest_tte <- function(label,
       mae_name = mae_name,
       summary_funs = summary_funs,
       pre_output = pre_output,
-      post_output = post_output
+      post_output = post_output,
+      .test = .test
     ),
     datanames = c(adtte_name, mae_name)
   )
@@ -96,7 +100,8 @@ ui_g_forest_tte <- function(id,
                             mae_name,
                             summary_funs,
                             pre_output,
-                            post_output) {
+                            post_output,
+                            .test = FALSE) {
   ns <- NS(id)
   teal.widgets::standard_layout(
     encoding = tags$div(
@@ -120,7 +125,10 @@ ui_g_forest_tte <- function(id,
         )
       )
     ),
-    output = teal.widgets::plot_with_settings_ui(ns("plot")),
+    output = div(
+      if (.test) verbatimTextOutput(ns("table")) else NULL,
+      teal.widgets::plot_with_settings_ui(ns("plot"))
+    ),
     pre_output = pre_output,
     post_output = post_output
   )
@@ -139,7 +147,8 @@ srv_g_forest_tte <- function(id,
                              exclude_assays,
                              summary_funs,
                              plot_height,
-                             plot_width) {
+                             plot_width,
+                             .test = FALSE) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   assert_class(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
@@ -219,8 +228,8 @@ srv_g_forest_tte <- function(id,
     })
 
     forest_plot <- reactive({
-      result <- result()
-      tern::g_forest(result)
+      res <- result()
+      tern::g_forest(res)
     })
 
     pws <- teal.widgets::plot_with_settings_srv(
@@ -229,6 +238,13 @@ srv_g_forest_tte <- function(id,
       height = plot_height,
       width = plot_width
     )
+
+    if (.test) {
+      table_r <- reactive({
+        rtables::as_result_df(result())
+      })
+      output$table <- renderPrint(table_r())
+    }
 
     ### REPORTER
     if (with_reporter) {
@@ -287,7 +303,7 @@ srv_g_forest_tte <- function(id,
 #' if (interactive()) {
 #'   sample_tm_g_forest_tte()
 #' }
-sample_tm_g_forest_tte <- function() { # nolint
+sample_tm_g_forest_tte <- function(.test = FALSE) { # nolint
   data <- teal_data()
   data <- within(data, {
     ADTTE <- teal.modules.hermes::rADTTE %>% # nolint
@@ -304,7 +320,8 @@ sample_tm_g_forest_tte <- function() { # nolint
       tm_g_forest_tte(
         label = "forest",
         adtte_name = "ADTTE",
-        mae_name = "MAE"
+        mae_name = "MAE",
+        .test = .test
       )
     )
   )
