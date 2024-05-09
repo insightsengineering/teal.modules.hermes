@@ -38,7 +38,7 @@ ui_g_pca2 <- function(id,
   tagList(
     include_css_files(pattern = "*"),
     teal.widgets::standard_layout(
-      encoding = div(
+      encoding = tags$div(
         tags$label("Encodings", class = "text-primary"),
         helpText("Analysis of MAE:", tags$code(mae_name)),
         selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
@@ -78,7 +78,7 @@ ui_g_pca2 <- function(id,
             "PCA",
             column(
               width = 12,
-              div(
+              tags$div(
                 class = "my-5",
                 plotOutput(ns("plot_pca"))
               ),
@@ -89,7 +89,7 @@ ui_g_pca2 <- function(id,
             "PC and Sample Correlation",
             column(
               width = 12,
-              div(
+              tags$div(
                 class = "my-5",
                 plotOutput(ns("plot_cor"))
               ),

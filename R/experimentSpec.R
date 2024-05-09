@@ -17,7 +17,7 @@ experimentSpecInput <- function(inputId, # nolint
   assert_string(inputId)
   assert_string(mae_name, min.chars = 1L)
   assert_string(label_experiments, min.chars = 1L)
-  mae <- data()[[mae_name]]
+  mae <- shiny::isolate(data()[[mae_name]])
   name_choices <- names(mae)
 
   ns <- NS(inputId)
@@ -128,24 +128,11 @@ h_gene_data <- function(object, name_annotation) {
 #'
 #' @examples
 #' ui <- function(id,
-#'                data,
 #'                mae_name) {
 #'   ns <- NS(id)
 #'   teal.widgets::standard_layout(
-#'     encoding = div(
-#'       experimentSpecInput(
-#'         ns("my_experiment"),
-#'         data,
-#'         mae_name,
-#'         label_experiments = "Please choose experiment"
-#'       ),
-#'       selectInput(
-#'         ns("property"),
-#'         "Please choose property",
-#'         c("data", "name", "genes", "assays")
-#'       )
-#'     ),
-#'     output = div(
+#'     encoding = uiOutput(ns("encoding_ui")),
+#'     output = tags$div(
 #'       verbatimTextOutput(ns("summary")),
 #'       verbatimTextOutput(ns("head"))
 #'     )
@@ -157,6 +144,21 @@ h_gene_data <- function(object, name_annotation) {
 #'                    filter_panel_api,
 #'                    mae_name) {
 #'   moduleServer(id, function(input, output, session) {
+#'     output$encoding_ui <- renderUI({
+#'       tags$div(
+#'         experimentSpecInput(
+#'           session$ns("my_experiment"),
+#'           data,
+#'           mae_name,
+#'           label_experiments = "Please choose experiment"
+#'         ),
+#'         selectInput(
+#'           session$ns("property"),
+#'           "Please choose property",
+#'           c("data", "name", "genes", "assays")
+#'         )
+#'       )
+#'     })
 #'     experiment <- experimentSpecServer(
 #'       "my_experiment",
 #'       data,
@@ -164,6 +166,7 @@ h_gene_data <- function(object, name_annotation) {
 #'       mae_name
 #'     )
 #'     result <- reactive({
+#'       req(input$property)
 #'       switch(input$property,
 #'         data = experiment$data(),
 #'         name = experiment$name(),

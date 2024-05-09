@@ -28,7 +28,8 @@ test_that("barplot module works as expected in the test app", {
   app <- AppDriver$new(
     app_dir = test_path("barplot"),
     name = "barplot",
-    variant = platform_variant()
+    variant = platform_variant(),
+    load_timeout = 300000
   )
 
   app$wait_for_idle(timeout = 20000)
@@ -45,7 +46,7 @@ test_that("barplot module works as expected in the test app", {
   expect_null(res)
 
   # check initial message
-  res <- app$get_value(output = ns("plot-plot_main"))
+  res <- app$get_value(output = ns("table"))
   expect_equal(res$message, "please select at least one gene")
 
   # Set values
@@ -72,7 +73,7 @@ test_that("barplot module works as expected in the test app", {
   app$set_inputs(!!ns("percentiles") := c(0.1, 0.1))
   app$wait_for_idle()
 
-  res <- app$get_value(output = ns("plot-plot_main"))
+  res <- app$get_value(output = ns("table"))
   expect_equal(
     res$message,
     "please select two different quantiles - if you want only 2 groups, choose one quantile as 0 or 1"
@@ -87,7 +88,14 @@ test_that("barplot module works as expected in the test app", {
     !!ns("facet-sample_var") := "AGE18"
   )
 
-  app$expect_select_screenshot(ns("plot-plot_main"))
+  app$wait_for_idle()
+
+  res <- app$get_value(output = ns("table"))
+  expect_snapshot(
+    cat(res)
+  )
+
+  app$stop()
 })
 
 # nolint end

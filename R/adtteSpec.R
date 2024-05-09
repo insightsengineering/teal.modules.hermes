@@ -162,7 +162,7 @@ adtteSpecInput <- function(inputId, # nolint
 #'   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 #'   moduleServer(id, function(input, output, session) {
 #'     output$encoding_ui <- renderUI({
-#'       div(
+#'       tags$div(
 #'         experimentSpecInput(session$ns("experiment"), data, mae_name = "MAE"),
 #'         assaySpecInput(session$ns("assay")),
 #'         geneSpecInput(session$ns("genes"), funs = list(Mean = colMeans)),
@@ -219,7 +219,7 @@ adtteSpecInput <- function(inputId, # nolint
 #'       dplyr::mutate(is_event = .data$CNSR == 0)
 #'     MAE <- hermes::multi_assay_experiment
 #'   })
-#'   datanames <- c("ADTTE", "MAE")
+#'   datanames <- c("ADSL", "ADTTE", "MAE")
 #'   datanames(data) <- datanames
 #'   join_keys(data) <- default_cdisc_join_keys[datanames]
 #'

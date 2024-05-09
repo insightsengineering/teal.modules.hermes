@@ -83,7 +83,8 @@ tm_g_quality <- function(label,
                          mae_name,
                          exclude_assays = character(),
                          pre_output = NULL,
-                         post_output = NULL) {
+                         post_output = NULL,
+                         .test = FALSE) {
   assert_string(label)
   assert_string(mae_name)
   assert_character(exclude_assays, any.missing = FALSE)
@@ -95,13 +96,15 @@ tm_g_quality <- function(label,
     server = srv_g_quality,
     server_args = list(
       mae_name = mae_name,
-      exclude_assays = exclude_assays
+      exclude_assays = exclude_assays,
+      .test = .test
     ),
     ui = ui_g_quality,
     ui_args = list(
       mae_name = mae_name,
       pre_output = pre_output,
-      post_output = post_output
+      post_output = post_output,
+      .test = .test
     ),
     datanames = mae_name
   )
@@ -113,10 +116,11 @@ tm_g_quality <- function(label,
 ui_g_quality <- function(id,
                          mae_name,
                          pre_output,
-                         post_output) {
+                         post_output,
+                         .test = FALSE) {
   ns <- NS(id)
   teal.widgets::standard_layout(
-    encoding = div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
@@ -182,7 +186,10 @@ ui_g_quality <- function(id,
         )
       )
     ),
-    output = teal.widgets::plot_with_settings_ui(ns("plot")),
+    output = div(
+      if (.test) verbatimTextOutput(ns("table")) else NULL,
+      teal.widgets::plot_with_settings_ui(ns("plot"))
+    ),
     pre_output = pre_output,
     post_output = post_output
   )
@@ -196,7 +203,8 @@ srv_g_quality <- function(id,
                           filter_panel_api,
                           reporter,
                           mae_name,
-                          exclude_assays) {
+                          exclude_assays,
+                          .test = FALSE) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   assert_class(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
@@ -352,6 +360,18 @@ srv_g_quality <- function(id,
       plot_r = plot_r
     )
 
+    if (.test) {
+      table <- reactive({
+        plot_type <- input$plot_type
+        if (plot_type == "Correlation Heatmap") {
+          object_final()
+        } else {
+          layer_data(plot_r())
+        }
+      })
+      output$table <- renderPrint(table())
+    }
+
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment, label) {
@@ -418,14 +438,15 @@ srv_g_quality <- function(id,
 #' if (interactive()) {
 #'   sample_tm_g_quality()
 #' }
-sample_tm_g_quality <- function() {
+sample_tm_g_quality <- function(.test = FALSE) {
   data <- teal.data::teal_data(MAE = hermes::multi_assay_experiment)
   app <- teal::init(
     data = data,
     modules = teal::modules(
       tm_g_quality(
         label = "quality",
-        mae_name = "MAE"
+        mae_name = "MAE",
+        .test = .test
       )
     )
   )

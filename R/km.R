@@ -56,8 +56,9 @@ tm_g_km <- function(label,
                       Max = matrixStats::colMaxs
                     ),
                     pre_output = NULL,
-                    post_output = NULL) {
-  logger::log_info("Initializing tm_g_km")
+                    post_output = NULL,
+                    .test = FALSE) {
+  message("Initializing tm_g_km")
   assert_string(label)
   assert_string(adtte_name)
   assert_string(mae_name)
@@ -75,7 +76,8 @@ tm_g_km <- function(label,
       mae_name = mae_name,
       adtte_vars = adtte_vars,
       exclude_assays = exclude_assays,
-      summary_funs = summary_funs
+      summary_funs = summary_funs,
+      .test = .test
     ),
     ui = ui_g_km,
     ui_args = list(
@@ -83,7 +85,8 @@ tm_g_km <- function(label,
       mae_name = mae_name,
       summary_funs = summary_funs,
       pre_output = pre_output,
-      post_output = post_output
+      post_output = post_output,
+      .test = .test
     ),
     datanames = c(adtte_name, mae_name)
   )
@@ -97,10 +100,11 @@ ui_g_km <- function(id,
                     mae_name,
                     summary_funs,
                     pre_output,
-                    post_output) {
+                    post_output,
+                    .test = FALSE) {
   ns <- NS(id)
   teal.widgets::standard_layout(
-    encoding = div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
@@ -127,7 +131,10 @@ ui_g_km <- function(id,
         )
       )
     ),
-    output = teal.widgets::plot_with_settings_ui(ns("plot")),
+    output = div(
+      if (.test) verbatimTextOutput(ns("table")) else NULL,
+      teal.widgets::plot_with_settings_ui(ns("plot"))
+    ),
     pre_output = pre_output,
     post_output = post_output
   )
@@ -144,7 +151,8 @@ srv_g_km <- function(id,
                      mae_name,
                      adtte_vars,
                      summary_funs,
-                     exclude_assays) {
+                     exclude_assays,
+                     .test = FALSE) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   assert_class(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
@@ -199,7 +207,7 @@ srv_g_km <- function(id,
       probs = percentiles_without_borders
     )
 
-    km_plot <- reactive({
+    km_data <- reactive({
       strata_var <- strata$sample_var()
       binned_adtte <- adtte$binned_adtte_subset()
 
@@ -209,6 +217,15 @@ srv_g_km <- function(id,
         arm = adtte$gene_factor,
         strat = strata_var
       )
+
+      list(binned_adtte = binned_adtte, variables = variables)
+    })
+
+    km_plot <- reactive({
+      km_data <- km_data()
+
+      binned_adtte <- km_data$binned_adtte
+      variables <- km_data$variables
       tern::g_km(binned_adtte, variables = variables, annot_coxph = TRUE)
     })
 
@@ -218,6 +235,10 @@ srv_g_km <- function(id,
       id = "plot",
       plot_r = km_plot
     )
+
+    if (.test) {
+      output$table <- renderPrint(km_data())
+    }
 
     ### REPORTER
     if (with_reporter) {
@@ -276,7 +297,7 @@ srv_g_km <- function(id,
 #' if (interactive()) {
 #'   sample_tm_g_km()
 #' }
-sample_tm_g_km <- function() { # nolint
+sample_tm_g_km <- function(.test = FALSE) { # nolint
   data <- teal_data()
   data <- within(data, {
     ADTTE <- teal.modules.hermes::rADTTE %>% # nolint
@@ -291,7 +312,8 @@ sample_tm_g_km <- function() { # nolint
     tm_g_km(
       label = "kaplan-meier",
       adtte_name = "ADTTE",
-      mae_name = "MAE"
+      mae_name = "MAE",
+      .test = .test
     )
   )
 
