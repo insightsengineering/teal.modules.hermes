@@ -8,6 +8,7 @@
 ### Enhancements
 
 * Updated the documentation and vignettes with the new way of specifying data for `teal::init()`. The `data` argument accepts `teal_data` object.
+* Added `{logger}` functionality for logging changes in shiny inputs in all modules. `{logger}` was added to Imports.
 
 # teal.modules.hermes 0.1.5
 
