@@ -288,6 +288,8 @@ sampleVarSpecServer <- function(id, # nolint
   assert_string(label_modal_title)
 
   moduleServer(id, function(input, output, session) {
+    ns <- session$ns
+
     to_observe <- reactive({
       list(experiment_name(), original_data())
     })
@@ -320,10 +322,9 @@ sampleVarSpecServer <- function(id, # nolint
       sel <- intersect(input$sample_var, col_data_vars)
 
       teal.widgets::updateOptionalSelectInput(
-        session,
-        "sample_var",
+        inputId = "sample_var",
         choices = col_data_vars,
-        selected = sel
+        selected = restoreInput(ns("sample_var"), sel)
       )
     })
 
@@ -383,7 +384,7 @@ sampleVarSpecServer <- function(id, # nolint
       }
       modalDialog(
         shinyRadioMatrix::radioMatrixInput(
-          session$ns("comb_assignment"),
+          ns("comb_assignment"),
           rowIDs = sample_var_levels,
           rowIDsName = "Original levels",
           rowLLabels = rep("", length = length(sample_var_levels)),
@@ -393,7 +394,7 @@ sampleVarSpecServer <- function(id, # nolint
         tags$span(label_modal_title),
         footer = tagList(
           modalButton("Cancel"),
-          actionButton(session$ns("ok"), "OK")
+          actionButton(ns("ok"), "OK")
         ),
         include_js_files("checkbox.js")
       )

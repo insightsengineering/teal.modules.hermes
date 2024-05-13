@@ -156,8 +156,8 @@ h_update_gene_selection <- function(session,
   updateSelectizeInput(
     session = session,
     inputId = inputId,
-    selected = selected[is_new_selected],
     choices = stats::setNames(choices$id, choices$name),
+    selected = restoreInput(session$ns(inputId), selected[is_new_selected]),
     server = TRUE
   )
 
@@ -300,6 +300,8 @@ geneSpecServer <- function(id, # nolint
   assert_character(label_modal_footer)
 
   moduleServer(id, function(input, output, session) {
+    ns <- session$ns
+
     # The `reactiveValues` object for storing current gene text input.
     # This will also be a data frame with id and name columns.
     parsed_genes <- reactiveVal(NULL, label = "Parsed genes")
@@ -380,14 +382,14 @@ geneSpecServer <- function(id, # nolint
     dataModal <- function(example_list) { # nolint
       modalDialog(
         textInput(
-          session$ns("gene_text"),
+          ns("gene_text"),
           label = label_modal_title,
           placeholder = example_list
         ),
         do.call("span", as.list(label_modal_footer)),
         footer = tagList(
           modalButton("Cancel"),
-          actionButton(session$ns("ok_button"), "OK")
+          actionButton(ns("ok_button"), "OK")
         )
       )
     }
