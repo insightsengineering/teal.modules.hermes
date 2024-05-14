@@ -159,7 +159,7 @@ srv_g_km <- function(id,
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
-    logger::log_shiny_input_changes(input, namespace = "teal.modules.hermes")
+    if (shiny::isRunning()) logger::log_shiny_input_changes(input, namespace = "teal.modules.hermes")
     output$experiment_ui <- renderUI({
       experimentSpecInput(session$ns("experiment"), data, mae_name)
     })
