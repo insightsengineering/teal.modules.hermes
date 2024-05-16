@@ -288,6 +288,7 @@ sampleVarSpecServer <- function(id, # nolint
   assert_string(label_modal_title)
 
   moduleServer(id, function(input, output, session) {
+    if (shiny::isRunning()) logger::log_shiny_input_changes(input, namespace = "teal.modules.hermes")
     to_observe <- reactive({
       list(experiment_name(), original_data())
     })
