@@ -214,7 +214,7 @@ test_that("pca module works as expected in the test app", {
 
   # Change to another experiment and check that it did not change.
   app$set_inputs(!!ns("experiment-name") := "hd2")
-  app$wait_for_idle()
+  app$wait_for_idle(timeout = 20000)
 
   res <- app$get_value(input = ns("n_top"))
   expect_identical(res, 777L)

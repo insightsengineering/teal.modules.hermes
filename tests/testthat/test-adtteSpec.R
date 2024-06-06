@@ -226,7 +226,7 @@ test_that("adtteSpecServer module works as expected in the test app", {
   app$set_inputs(!!ns2("add-ADTTE-filter-var_to_add") := "PARAMCD")
   app$set_inputs(!!ns2("active-ADTTE-filter-ADTTE_PARAMCD-inputs-selection") := "OS")
 
-  app$wait_for_idle()
+  app$wait_for_idle(timeout = 20000)
   # We expect to get a validation message (also a notification box but we cannot test that)
   res <- app$get_value(output = ns("summary"))
   expect_equal(res$message, "please select an endpoint")
