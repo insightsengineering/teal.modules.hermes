@@ -68,6 +68,7 @@ test_that("scatterplot module works as expected in the test app", {
   app$set_inputs(!!ns2("add-MAE-subjects-var_to_add") := "SEX")
   app$set_inputs(!!ns2("active-MAE-subjects-MAE_SEX-inputs-selection") := "F")
 
+  app$wait_for_idle()
   res <- app$get_value(input = ns("x_spec-genes"))
   expect_identical(res, "GeneID:503538")
   res <- app$wait_for_value(input = ns("y_spec-genes"))
