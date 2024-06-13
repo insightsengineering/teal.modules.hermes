@@ -300,7 +300,7 @@ geneSpecServer <- function(id, # nolint
   assert_character(label_modal_footer)
 
   moduleServer(id, function(input, output, session) {
-    if (shiny::isRunning()) logger::log_shiny_input_changes(input, namespace = "teal.modules.hermes")
+    tmh_track_shiny_input_changes(input)
     # The `reactiveValues` object for storing current gene text input.
     # This will also be a data frame with id and name columns.
     parsed_genes <- reactiveVal(NULL, label = "Parsed genes")
