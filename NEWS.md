@@ -1,4 +1,4 @@
-# teal.modules.hermes 0.1.6.9013
+# teal.modules.hermes 0.1.6.9016
 
 ### Miscellaneous
 * Added placeholders for `assaySpec`, `adtteSpec` and `geneSpec` inputs when no option is selected.
@@ -8,6 +8,7 @@
 ### Enhancements
 
 * Updated the documentation and vignettes with the new way of specifying data for `teal::init()`. The `data` argument accepts `teal_data` object.
+* Added `logger` functionality for logging changes in shiny inputs in all modules. `logger` was added to Imports.
 
 # teal.modules.hermes 0.1.5
 
