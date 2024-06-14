@@ -288,7 +288,7 @@ sampleVarSpecServer <- function(id, # nolint
   assert_string(label_modal_title)
 
   moduleServer(id, function(input, output, session) {
-    tmh_track_shiny_input_changes(input)
+    track_shiny_input_changes(input)
     to_observe <- reactive({
       list(experiment_name(), original_data())
     })

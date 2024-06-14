@@ -106,7 +106,7 @@ assaySpecServer <- function(id, # nolint
   assert_character(exclude_assays, any.missing = FALSE)
 
   moduleServer(id, function(input, output, session) {
-    tmh_track_shiny_input_changes(input)
+    track_shiny_input_changes(input)
     # When the assay names change, update the choices for assay.
     choices <- reactive({
       assays <- assays()

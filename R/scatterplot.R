@@ -130,7 +130,7 @@ srv_g_scatterplot <- function(id,
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
-    tmh_track_shiny_input_changes(input)
+    track_shiny_input_changes(input)
     output$experiment_ui <- renderUI({
       experimentSpecInput(session$ns("experiment"), data, mae_name)
     })

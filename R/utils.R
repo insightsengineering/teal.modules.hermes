@@ -78,7 +78,7 @@ include_js_files <- function(pattern = "*") { # nolint
   return(singleton(lapply(js_files, includeScript)))
 }
 
-tmh_track_shiny_input_changes <- function(input) {
+track_shiny_input_changes <- function(input) {
   if (shiny::isRunning()) {
     plot_nss <- c("plot", "plot_pca", "plot_cor")
 
