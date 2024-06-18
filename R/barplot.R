@@ -132,7 +132,7 @@ srv_g_barplot <- function(id,
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
   assert_flag(.test)
   moduleServer(id, function(input, output, session) {
-    track_shiny_input_changes(input)
+    teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.hermes")
     output$experiment_ui <- renderUI({
       experimentSpecInput(session$ns("experiment"), data, mae_name)
     })
