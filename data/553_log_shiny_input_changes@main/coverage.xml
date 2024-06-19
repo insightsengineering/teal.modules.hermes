@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE coverage SYSTEM "https://raw.githubusercontent.com/cobertura/cobertura/master/cobertura/src/site/htdocs/xml/coverage-04.dtd">
-<coverage line-rate="0.258064516129032" branch-rate="0" lines-covered="704" lines-valid="2728" branches-covered="0" branches-valid="0" complexity="0" version="3.6.4" timestamp="2024-06-14 10:04:00.641758">
+<coverage line-rate="0.258646063281825" branch-rate="0" lines-covered="703" lines-valid="2718" branches-covered="0" branches-valid="0" complexity="0" version="3.6.4" timestamp="2024-06-19 12:09:49.140449">
   <sources>
     <source>/__w/teal.modules.hermes/teal.modules.hermes/teal.modules.hermes</source>
   </sources>
   <packages>
-    <package name="teal.modules.hermes" line-rate="0.258064516129032" branch-rate="0" complexity="0">
+    <package name="teal.modules.hermes" line-rate="0.258646063281825" branch-rate="0" complexity="0">
       <classes>
         <class name="adtteSpec.R" filename="R/adtteSpec.R" line-rate="0.274853801169591" branch-rate="0" complexity="0">
           <methods>
@@ -5293,7 +5293,7 @@
             <line number="273" hits="0" branch="false"/>
           </lines>
         </class>
-        <class name="utils.R" filename="R/utils.R" line-rate="0.653846153846154" branch-rate="0" complexity="0">
+        <class name="utils.R" filename="R/utils.R" line-rate="1" branch-rate="0" complexity="0">
           <methods>
             <method name="is_blank" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
@@ -5327,20 +5327,6 @@
                 <line number="78" hits="12" branch="false"/>
               </lines>
             </method>
-            <method name="track_shiny_input_changes" signature="" line-rate="0.1" branch-rate="0" complexity="0">
-              <lines>
-                <line number="82" hits="2" branch="false"/>
-                <line number="83" hits="0" branch="false"/>
-                <line number="85" hits="0" branch="false"/>
-                <line number="87" hits="0" branch="false"/>
-                <line number="88" hits="0" branch="false"/>
-                <line number="89" hits="0" branch="false"/>
-                <line number="90" hits="0" branch="false"/>
-                <line number="91" hits="0" branch="false"/>
-                <line number="92" hits="0" branch="false"/>
-                <line number="93" hits="0" branch="false"/>
-              </lines>
-            </method>
           </methods>
           <lines>
             <line number="17" hits="3" branch="false"/>
@@ -5359,16 +5345,6 @@
             <line number="76" hits="12" branch="false"/>
             <line number="77" hits="12" branch="false"/>
             <line number="78" hits="12" branch="false"/>
-            <line number="82" hits="2" branch="false"/>
-            <line number="83" hits="0" branch="false"/>
-            <line number="85" hits="0" branch="false"/>
-            <line number="87" hits="0" branch="false"/>
-            <line number="88" hits="0" branch="false"/>
-            <line number="89" hits="0" branch="false"/>
-            <line number="90" hits="0" branch="false"/>
-            <line number="91" hits="0" branch="false"/>
-            <line number="92" hits="0" branch="false"/>
-            <line number="93" hits="0" branch="false"/>
           </lines>
         </class>
         <class name="volcanoplot.R" filename="R/volcanoplot.R" line-rate="0.147058823529412" branch-rate="0" complexity="0">
