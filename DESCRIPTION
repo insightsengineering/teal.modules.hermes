@@ -40,7 +40,6 @@ Imports:
     forcats,
     hermes (>= 1.7.1),
     lifecycle,
-    logger (>= 0.3.0),
     MultiAssayExperiment,
     rtables (>= 0.5.1),
     S4Vectors,
