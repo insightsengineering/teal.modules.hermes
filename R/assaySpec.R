@@ -106,7 +106,7 @@ assaySpecServer <- function(id, # nolint
   assert_character(exclude_assays, any.missing = FALSE)
 
   moduleServer(id, function(input, output, session) {
-    if (shiny::isRunning()) logger::log_shiny_input_changes(input, namespace = "teal.modules.hermes")
+    teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.hermes")
     # When the assay names change, update the choices for assay.
     choices <- reactive({
       assays <- assays()

@@ -221,7 +221,7 @@ experimentSpecServer <- function(id, # nolint
   assert_flag(with_mae_col_data)
 
   moduleServer(id, function(input, output, session) {
-    if (shiny::isRunning()) logger::log_shiny_input_changes(input, namespace = "teal.modules.hermes")
+    teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.hermes")
     # When the filtered data set of the chosen experiment changes, update the
     # experiment data object.
     data_return <- reactive({
