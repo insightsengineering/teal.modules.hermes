@@ -60,6 +60,7 @@ Suggests:
     dplyr,
     globals,
     knitr,
+    logger (>= 0.2.2),
     matrixStats,
     R6,
     rmarkdown,
