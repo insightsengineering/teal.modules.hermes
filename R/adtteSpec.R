@@ -16,6 +16,7 @@
 #'
 #' @export
 #' @examples
+#' library(dplyr)
 #' mae <- hermes::multi_assay_experiment
 #' adtte <- teal.modules.hermes::rADTTE %>%
 #'   dplyr::mutate(CNSR = as.logical(CNSR))
