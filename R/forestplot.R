@@ -19,7 +19,7 @@
 #' })
 #' datanames <- c("ADTTE", "MAE")
 #' datanames(data) <- datanames
-#' join_keys(data)["ADTTE", "ADTTE"] <- c("STUDYID", "USUBJID", "PARAMCD")
+#' teal.data::join_keys(data)["ADTTE", "ADTTE"] <- c("STUDYID", "USUBJID", "PARAMCD")
 #'
 #' app <- init(
 #'   data = data,
