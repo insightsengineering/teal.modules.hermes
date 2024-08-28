@@ -38,14 +38,14 @@ See the [vignette](https://insightsengineering.github.io/hermes/articles/hermes.
 
 ## Installation
 
-From July 2023 `insightsengineering` packages are available on [r-universe](https://r-universe.dev/).
-
 ```r
 # stable versions
-install.packages('teal.modules.hermes', repos = c('https://insightsengineering.r-universe.dev', 'https://cloud.r-project.org'))
+# install.packages("pak")
+pak::pkg_install("insightsengineering/teal.modules.hermes@*release")
 
 # beta versions
-install.packages('teal.modules.hermes', repos = c('https://pharmaverse.r-universe.dev', 'https://cloud.r-project.org'))
+# install.packages("pak")
+pak::pkg_install("insightsengineering/teal.modules.hermes")
 ```
 
 See package vignettes `browseVignettes(package = "teal.modules.hermes")` for usage of this package.
