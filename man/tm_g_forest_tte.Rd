@@ -128,7 +128,7 @@ library(dplyr)
 data <- teal_data()
 data <- within(data, {
   ADTTE <- teal.modules.hermes::rADTTE \%>\%
-    mutate(is_event = .data$CNSR == 0)
+    dplyr::mutate(is_event = .data$CNSR == 0)
   MAE <- hermes::multi_assay_experiment
 })
 datanames <- c("ADTTE", "MAE")

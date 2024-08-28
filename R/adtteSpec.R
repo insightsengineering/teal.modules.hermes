@@ -149,6 +149,8 @@ adtteSpecInput <- function(inputId, # nolint
 #' @export
 #'
 #' @examples
+#' library(dplyr)
+#'
 #' ui <- function(id) {
 #'   ns <- NS(id)
 #'
