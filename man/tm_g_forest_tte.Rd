@@ -123,15 +123,17 @@ This module provides an interactive survival forest plot.
 
 }}
 \examples{
+library(dplyr)
+
 data <- teal_data()
 data <- within(data, {
   ADTTE <- teal.modules.hermes::rADTTE \%>\%
-    dplyr::mutate(is_event = .data$CNSR == 0)
+    mutate(is_event = .data$CNSR == 0)
   MAE <- hermes::multi_assay_experiment
 })
 datanames <- c("ADTTE", "MAE")
 datanames(data) <- datanames
-teal.data::join_keys(data)["ADTTE", "ADTTE"] <- c("STUDYID", "USUBJID", "PARAMCD")
+join_keys(data)["ADTTE", "ADTTE"] <- c("STUDYID", "USUBJID", "PARAMCD")
 
 app <- init(
   data = data,
