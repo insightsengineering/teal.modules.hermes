@@ -74,6 +74,8 @@ and experiment, as numeric and factor columns. The factor column is created by b
 the numeric column according to the quantile cutoffs specified in \code{probs}.
 }
 \examples{
+library(dplyr)
+
 ui <- function(id) {
   ns <- NS(id)
 
