@@ -43,6 +43,7 @@ The final gene column names can start with a different string than
 the original gene IDs (or labels), in particular white space and colons are removed.
 }
 \examples{
+library(dplyr)
 mae <- hermes::multi_assay_experiment
 adtte <- teal.modules.hermes::rADTTE \%>\%
   dplyr::mutate(CNSR = as.logical(CNSR))
