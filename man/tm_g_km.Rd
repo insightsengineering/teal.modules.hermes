@@ -114,6 +114,8 @@ This teal module produces a grid style \code{Kaplan-Meier} plot for data with
 
 }}
 \examples{
+library(dplyr)
+
 data <- teal_data()
 data <- within(data, {
   ADTTE <- teal.modules.hermes::rADTTE \%>\%

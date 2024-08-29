@@ -11,6 +11,8 @@
 #' @export
 #'
 #' @examples
+#' library(dplyr)
+#'
 #' data <- teal_data()
 #' data <- within(data, {
 #'   ADTTE <- teal.modules.hermes::rADTTE %>%
