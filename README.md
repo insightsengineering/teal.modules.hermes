@@ -24,7 +24,7 @@
 ### What is `teal`?
 
 `teal` is a shiny-based interactive exploration framework for analyzing clinical trials data. `teal` currently provides a dynamic filtering facility and diverse data viewers. `teal` shiny applications are built using standard [shiny modules](https://shiny.rstudio.com/articles/modules.html).
-See [`teal` page](https://insightsengineering.github.io/teal) for more details.
+See [`teal` page](https://insightsengineering.github.io/teal/) for more details.
 
 ### What is `hermes`?
 
