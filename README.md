@@ -2,7 +2,7 @@
 
 <!-- start badges -->
 [![Check 🛠](https://github.com/insightsengineering/teal.modules.hermes/actions/workflows/check.yaml/badge.svg)](https://github.com/insightsengineering/teal.modules.hermes/actions/workflows/check.yaml)
-[![Docs 📚](https://github.com/insightsengineering/teal.modules.hermes/actions/workflows/docs.yaml/badge.svg)](https://insightsengineering.github.io/teal.modules.hermes/)
+[![Docs 📚](https://github.com/insightsengineering/teal.modules.hermes/actions/workflows/docs.yaml/badge.svg)](https://insightsengineering.github.io/teal.modules.hermes/latest-tag/)
 [![Code Coverage 📔](https://raw.githubusercontent.com/insightsengineering/teal.modules.hermes/_xml_coverage_reports/data/main/badge.svg)](https://raw.githubusercontent.com/insightsengineering/teal.modules.hermes/_xml_coverage_reports/data/main/coverage.xml)
 
 ![GitHub forks](https://img.shields.io/github/forks/insightsengineering/teal.modules.hermes?style=social)
@@ -24,7 +24,7 @@
 ### What is `teal`?
 
 `teal` is a shiny-based interactive exploration framework for analyzing clinical trials data. `teal` currently provides a dynamic filtering facility and diverse data viewers. `teal` shiny applications are built using standard [shiny modules](https://shiny.rstudio.com/articles/modules.html).
-See [`teal` page](https://insightsengineering.github.io/teal) for more details.
+See [`teal` page](https://insightsengineering.github.io/teal/) for more details.
 
 ### What is `hermes`?
 
@@ -38,7 +38,7 @@ See the [vignette](https://insightsengineering.github.io/hermes/articles/hermes.
 
 ## Installation
 
-From July 2023 `insightsengineering` packages are available on [r-universe](https://r-universe.dev/).
+From July 2023 `insightsengineering` packages are available on [r-universe](https://r-universe.dev/search).
 
 ```r
 # stable versions
