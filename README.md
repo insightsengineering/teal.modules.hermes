@@ -2,7 +2,7 @@
 
 <!-- start badges -->
 [![Check 🛠](https://github.com/insightsengineering/teal.modules.hermes/actions/workflows/check.yaml/badge.svg)](https://github.com/insightsengineering/teal.modules.hermes/actions/workflows/check.yaml)
-[![Docs 📚](https://github.com/insightsengineering/teal.modules.hermes/actions/workflows/docs.yaml/badge.svg)](https://insightsengineering.github.io/teal.modules.hermes/)
+[![Docs 📚](https://github.com/insightsengineering/teal.modules.hermes/actions/workflows/docs.yaml/badge.svg)](https://insightsengineering.github.io/teal.modules.hermes/latest-tag/)
 [![Code Coverage 📔](https://raw.githubusercontent.com/insightsengineering/teal.modules.hermes/_xml_coverage_reports/data/main/badge.svg)](https://raw.githubusercontent.com/insightsengineering/teal.modules.hermes/_xml_coverage_reports/data/main/coverage.xml)
 
 ![GitHub forks](https://img.shields.io/github/forks/insightsengineering/teal.modules.hermes?style=social)
