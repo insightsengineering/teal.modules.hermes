@@ -19,10 +19,11 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Daniel Sabanés Bové \email{daniel.sabanes_bove@roche.com}
+\strong{Maintainer}: Dony Unardi \email{unardid@gene.com}
 
 Authors:
 \itemize{
+  \item Daniel Sabanés Bové
   \item Nikolas Burkoff
   \item Dinakar Kulkarni
   \item Konrad Pagacz
