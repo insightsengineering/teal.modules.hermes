@@ -72,21 +72,14 @@ test_that("geneSpec module works as expected in the test app", {
   res <- app$get_value(output = ns("result"))
   expect_identical(res, "mean(ABCF2, ABO, ..., ADAMTS5)")
 
-  # Add chromosome filters for the first experiment.
-  app$set_inputs(!!ns2("add-MAE-hd1-row_to_add") := "chromosome")
 
-  # Lock the gene selection.
+  # lock the gene selection
   app$set_inputs(!!ns("my_genes-lock_button") := TRUE)
-  app$wait_for_idle()
-  app$set_inputs(
-    !!ns2("active-MAE-hd2-MAE_chromosome_hd1_subset-inputs-selection_open") := TRUE,
-    allow_no_input_binding_ = TRUE
-  )
-  app$set_inputs(!!ns2("active-MAE-hd1-MAE_chromosome_hd1_subset-inputs-selection") := c("1", "2"))
-  app$set_inputs(
-    !!ns2("active-MAE-hd1-MAE_chromosome_hd1_subset-inputs-selection_open") := FALSE,
-    allow_no_input_binding_ = TRUE
-  )
+
+  # Filter data using the right side panel
+  app$set_inputs(`teal-teal_modules-genespec_example-filter_panel-filters-MAE-MAE-hd1-row_to_add` = "chromosome", allow_no_input_binding_ = TRUE)
+  app$set_inputs(`teal-teal_modules-genespec_example-filter_panel-filters-MAE-hd1-MAE_chromosome_hd1_subset-inputs-selection` = c("1", "2"))
+  app$set_inputs(`teal-teal_modules-genespec_example-filter_panel-filters-MAE-hd1-MAE_chromosome_hd1_subset-inputs-selection_open` = FALSE, allow_no_input_binding_ = TRUE)
   app$wait_for_idle()
 
   # Confirm that gene selection was not changed.
@@ -115,7 +108,7 @@ test_that("geneSpec module works as expected in the test app", {
   expect_identical(res, "mean(ACP1, ACTN2)")
 
   # Remove the filter.
-  app$click(ns2("active-MAE-hd1-MAE_chromosome_hd1_subset-remove"))
+  app$click("teal-teal_modules-genespec_example-filter_panel-filters-MAE-hd1-MAE_chromosome_hd1_subset-remove")
 
   # Select a gene via text input.
   app$click(ns("my_genes-text_button"))

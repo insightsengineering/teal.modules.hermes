@@ -1,3 +1,4 @@
+library(dplyr)
 library(teal.modules.hermes)
 
 ui <- function(id) {
