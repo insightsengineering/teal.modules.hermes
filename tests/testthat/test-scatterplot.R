@@ -65,8 +65,11 @@ test_that("scatterplot module works as expected in the test app", {
   app$wait_for_idle()
 
   # Change the sample filter and confirm that genes are not updated.
-  app$set_inputs(!!ns2("add-MAE-subjects-var_to_add") := "SEX")
-  app$set_inputs(!!ns2("active-MAE-subjects-MAE_SEX-inputs-selection") := "F")
+
+  # Filtering out all samples using right side panel
+  app$set_inputs(`teal-teal_modules-scatterplot-filter_panel-filters-MAE-MAE-subjects-var_to_add` = "SEX", allow_no_input_binding_ = TRUE)
+  app$set_inputs(`teal-teal_modules-scatterplot-filter_panel-filters-MAE-subjects-MAE_SEX-inputs-selection` = "F")
+  app$wait_for_idle()
 
   app$wait_for_idle()
   res <- app$get_value(input = ns("x_spec-genes"))
@@ -75,7 +78,7 @@ test_that("scatterplot module works as expected in the test app", {
   expect_identical(res, "GeneID:8086")
 
   # Remove sample filter
-  app$click(ns2("active-MAE-subjects-MAE_SEX-remove"))
+  app$click("teal-teal_modules-scatterplot-filter_panel-filters-MAE-subjects-MAE_SEX-remove")
   app$wait_for_idle()
 
   res <- app$get_value(input = ns("x_spec-genes"))

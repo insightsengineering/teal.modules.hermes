@@ -150,7 +150,6 @@ test_that("experimentSpec module works as expected in the test app", {
   expect_match(res, "HermesData object with 9 samples of 2500 genes")
 
   # Filtering out all samples using right side panel
-  ns2 <- NS("teal-teal_modules-experimentspec_example-filter_panel-filters")
   app$set_inputs(`teal-teal_modules-experimentspec_example-filter_panel-filters-MAE-MAE-subjects-var_to_add` = "AGE18", allow_no_input_binding_ = TRUE)
   app$set_inputs(`teal-teal_modules-experimentspec_example-filter_panel-filters-MAE-subjects-MAE_AGE18-inputs-selection` = character(0))
   app$wait_for_idle()
@@ -159,7 +158,7 @@ test_that("experimentSpec module works as expected in the test app", {
   expect_identical(res, "hd2")
   res <- app$get_value(output = ns("summary"))
   expect_match(res$message, "No genes or samples included in this experiment, please adjust filters")
-  app$click(ns2("MAE-subjects-MAE_AGE18-remove"))
+  app$click("teal-teal_modules-experimentspec_example-filter_panel-filters-MAE-subjects-MAE_AGE18-remove")
 
   # Experiment selection is not affected by removing filters
   res <- app$get_value(input = ns("my_experiment-name"))
