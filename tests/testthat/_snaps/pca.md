@@ -59,16 +59,6 @@
     Code
       cat(res)
     Output
-         colour           x          y PANEL group shape size fill alpha stroke
-      1 #F8766D -0.08263642  0.6615253     1     1    19  1.5   NA    NA    0.5
-      2 #F8766D -0.53157947 -0.4023279     1     1    19  1.5   NA    NA    0.5
-      3 #F8766D  0.61421589 -0.2591974     1     1    19  1.5   NA    NA    0.5
-
----
-
-    Code
-      cat(res)
-    Output
          colour          x           y PANEL group shape size fill alpha stroke
       1 #00BFC4 -0.3939882  0.32024986     1     2    19  1.5   NA    NA    0.5
       2 #F8766D -0.1255252  0.50888177     1     1    19  1.5   NA    NA    0.5

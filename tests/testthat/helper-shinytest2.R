@@ -9,7 +9,6 @@ module_ns_shiny2 <- function(app) {
   NS(paste0(module_id, "-module"))
 }
 
-ns2 <- NS("teal-main_ui-filter_panel")
 default_app_seed <- 123
 
 # expect_select_screenshot ----

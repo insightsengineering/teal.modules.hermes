@@ -62,19 +62,17 @@ test_that("pca module works as expected in the test app", {
   )
 
   # Add a gene filter and deselect everything and check that it does not crash.
-  app$set_inputs(!!ns2("add-MAE-hd1-row_to_add") := "chromosome_name")
+  app$set_inputs(`teal-teal_modules-pca-filter_panel-filters-MAE-MAE-hd1-row_to_add` = "chromosome", allow_no_input_binding_ = TRUE)
+  app$set_inputs(`teal-teal_modules-pca-filter_panel-filters-MAE-hd1-MAE_chromosome_hd1_subset-inputs-selection` = character())
+  app$set_inputs(`teal-teal_modules-pca-filter_panel-filters-MAE-hd1-MAE_chromosome_hd1_subset-inputs-selection_open` = FALSE, allow_no_input_binding_ = TRUE)
   app$wait_for_idle()
-  app$set_inputs(!!ns2("active-MAE-hd1-MAE_chromosome_name_hd1_subset-inputs-selection_open") := TRUE, allow_no_input_binding_ = TRUE)
-  app$set_inputs(!!ns2("active-MAE-hd1-MAE_chromosome_name_hd1_subset-inputs-keep_na-value") := FALSE)
-  app$set_inputs(!!ns2("active-MAE-hd1-MAE_chromosome_name_hd1_subset-inputs-selection") := character())
-  app$set_inputs(!!ns2("active-MAE-hd1-MAE_chromosome_name_hd1_subset-inputs-selection_open") := FALSE, allow_no_input_binding_ = TRUE)
 
-  app$wait_for_idle()
   res <- app$get_value(output = ns("test_pca"))
   expect_match(res$message, "No genes or samples included in this experiment, please adjust filters")
 
   # Remove filters
-  app$click(ns2("active-MAE-hd1-MAE_chromosome_name_hd1_subset-remove"))
+  app$click("teal-teal_modules-pca-filter_panel-filters-MAE-hd1-MAE_chromosome_hd1_subset-remove")
+  app$wait_for_idle()
 
   # Update the tab selection.
   app$set_inputs(!!ns("tab_selected") := "PC and Sample Correlation")
@@ -171,33 +169,24 @@ test_that("pca module works as expected in the test app", {
   app$set_inputs(!!ns("label") := TRUE)
   app$set_inputs(!!ns("show_matrix") := TRUE)
 
-  app$set_inputs(!!ns2("add-MAE-subjects-var_to_add") := "SEX")
   app$wait_for_idle(timeout = 40000)
-  app$set_inputs(!!ns2("active-MAE-subjects-MAE_SEX-inputs-selection") := "M")
+  app$set_inputs(`teal-teal_modules-pca-filter_panel-filters-MAE-MAE-subjects-var_to_add` = "SEX", allow_no_input_binding_ = TRUE)
+  app$set_inputs(`teal-teal_modules-pca-filter_panel-filters-MAE-subjects-MAE_SEX-inputs-selection` = "F")
+  app$set_inputs(`teal-teal_modules-pca-filter_panel-filters-MAE-subjects-MAE_SEX-inputs-selection_open` = FALSE, allow_no_input_binding_ = TRUE)
 
-  # Ensure xvar and yvar get resetted to pc1 and pc2.
+  # Ensure xvar and yvar DONT get reset.
   app$wait_for_idle(timeout = 20000)
   res <- app$get_value(input = ns("x_var"))
-  expect_identical(res, "1")
+  expect_identical(res, "3")
   res <- app$get_value(input = ns("y_var"))
-  expect_identical(res, "2")
-
-  res <- app$get_value(output = ns("test_pca"))
-  expect_snapshot(
-    cat(res)
-  )
-
-  # Update to cor tab.
-  app$set_inputs(!!ns2("active-MAE-subjects-MAE_SEX-inputs-selection_open") := TRUE, allow_no_input_binding_ = TRUE)
-  app$set_inputs(!!ns2("active-MAE-subjects-MAE_SEX-inputs-selection") := "F")
-  app$set_inputs(!!ns2("active-MAE-subjects-MAE_SEX-inputs-selection_open") := FALSE, allow_no_input_binding_ = TRUE)
+  expect_identical(res, "4")
 
   app$wait_for_idle()
   res <- app$get_value(output = ns("test_pca"))
   expect_identical(res$message, "Sample size is too small. PCA needs more than 2 samples.")
 
   # Remove filter.
-  app$click(ns2("active-MAE-subjects-MAE_SEX-remove"))
+  app$click("teal-teal_modules-pca-filter_panel-filters-MAE-subjects-MAE_SEX-remove")
 
   # Initiate the use of Top Variance Genes filtering functionality.
   app$set_inputs(!!ns("filter_top") := TRUE)
