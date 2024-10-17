@@ -71,7 +71,6 @@ test_that("pca module works as expected in the test app", {
   expect_match(res$message, "No genes or samples included in this experiment, please adjust filters")
 
   # Remove filters
-  # app$click(ns2("active-MAE-hd1-MAE_chromosome_name_hd1_subset-remove"))
   app$click("teal-teal_modules-pca-filter_panel-filters-MAE-hd1-MAE_chromosome_hd1_subset-remove")
   app$wait_for_idle()
 
