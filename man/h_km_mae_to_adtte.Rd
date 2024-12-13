@@ -45,7 +45,7 @@ the original gene IDs (or labels), in particular white space and colons are remo
 \examples{
 library(dplyr)
 mae <- hermes::multi_assay_experiment
-adtte <- teal.modules.hermes::rADTTE \%>\%
+adtte <- teal.data::rADTTE \%>\%
   dplyr::mutate(CNSR = as.logical(CNSR))
 
 new_adtte <- h_km_mae_to_adtte(

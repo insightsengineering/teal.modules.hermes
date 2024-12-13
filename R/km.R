@@ -16,7 +16,7 @@
 #'
 #' data <- teal_data()
 #' data <- within(data, {
-#'   ADTTE <- teal.modules.hermes::rADTTE %>%
+#'   ADTTE <- teal.data::rADTTE %>%
 #'     dplyr::mutate(is_event = .data$CNSR == 0)
 #'   MAE <- hermes::multi_assay_experiment
 #' })
@@ -303,7 +303,7 @@ srv_g_km <- function(id,
 sample_tm_g_km <- function(.test = FALSE) { # nolint
   data <- teal_data()
   data <- within(data, {
-    ADTTE <- teal.modules.hermes::rADTTE %>% # nolint
+    ADTTE <- teal.data::rADTTE %>% # nolint
       dplyr::mutate(is_event = .data$CNSR == 0)
     MAE <- hermes::multi_assay_experiment # nolint
   })

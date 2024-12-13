@@ -65,14 +65,14 @@ server <- function(id,
 }
 
 my_app <- function() {
-  adtte <- teal.modules.hermes::rADTTE %>%
+  adtte <- teal.data::rADTTE %>%
     dplyr::mutate(is_event = (.data$CNSR == 0))
 
   data <- teal_data(
     ADTTE = adtte,
     MAE = hermes::multi_assay_experiment,
     code =
-      "adtte <- teal.modules.hermes::rADTTE %>%
+      "adtte <- teal.data::rADTTE %>%
         dplyr::mutate(is_event = (.data$CNSR == 0))"
   )
 
