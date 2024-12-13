@@ -18,7 +18,7 @@
 #' @examples
 #' library(dplyr)
 #' mae <- hermes::multi_assay_experiment
-#' adtte <- teal.modules.hermes::rADTTE %>%
+#' adtte <- teal.data::rADTTE %>%
 #'   dplyr::mutate(CNSR = as.logical(CNSR))
 #'
 #' new_adtte <- h_km_mae_to_adtte(
@@ -218,7 +218,7 @@ adtteSpecInput <- function(inputId, # nolint
 #'   data <- teal_data()
 #'   data <- within(data, {
 #'     ADSL <- teal.data::rADSL
-#'     ADTTE <- teal.modules.hermes::rADTTE %>%
+#'     ADTTE <- teal.data::rADTTE %>%
 #'       dplyr::mutate(is_event = .data$CNSR == 0)
 #'     MAE <- hermes::multi_assay_experiment
 #'   })
