@@ -50,7 +50,7 @@ Imports:
     stringr,
     SummarizedExperiment,
     teal.data (>= 0.3.0.9018),
-    teal.logger (>= 0.2.0.9004),
+    teal.logger (>= 0.3.0.9003),
     teal.reporter (>= 0.2.0),
     teal.widgets (>= 0.4.0),
     tern (>= 0.7.10),
