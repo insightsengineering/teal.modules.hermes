@@ -60,6 +60,7 @@ heatmap_plot <- function(object, assay_name) {
 #' for RNA-seq gene expression quality control.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #'
 #' @return Shiny module to be used in the teal app.
 #'
@@ -84,7 +85,8 @@ tm_g_quality <- function(label,
                          exclude_assays = character(),
                          pre_output = NULL,
                          post_output = NULL,
-                         .test = FALSE) {
+                         .test = FALSE,
+                         transformators = list()) {
   assert_string(label)
   assert_string(mae_name)
   assert_character(exclude_assays, any.missing = FALSE)
@@ -106,6 +108,7 @@ tm_g_quality <- function(label,
       post_output = post_output,
       .test = .test
     ),
+    transformators = transformators,
     datanames = mae_name
   )
 }

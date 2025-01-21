@@ -20,7 +20,8 @@ tm_g_forest_tte(
   post_output = NULL,
   plot_height = c(600L, 200L, 2000L),
   plot_width = c(1360L, 500L, 2000L),
-  .test = FALSE
+  .test = FALSE,
+  transformators = list()
 )
 
 ui_g_forest_tte(
@@ -94,6 +95,9 @@ and maximum plot height.}
 and maximum plot width.}
 
 \item{.test}{(\code{flag})\cr whether to display the internal structure of the plot for testing purposes.}
+
+\item{transformators}{(\code{list} of \code{teal_transform_module}) that will be applied to transform module's data input.
+To learn more check \code{vignette("data-transform-as-shiny-module", package = "teal")}.}
 
 \item{id}{(\code{string}) the shiny module id.}
 

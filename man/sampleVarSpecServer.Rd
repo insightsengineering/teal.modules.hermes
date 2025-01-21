@@ -44,7 +44,7 @@ from.}
 \item{label_modal_title}{(\code{string})\cr title for the dialog that asks for the text input.}
 }
 \value{
-Reactive \code{\link[SummarizedExperiment:SummarizedExperiment-class]{SummarizedExperiment::SummarizedExperiment}} which can be used as
+Reactive \code{\link[SummarizedExperiment:RangedSummarizedExperiment-class]{SummarizedExperiment::SummarizedExperiment}} which can be used as
 input for the relevant \code{hermes} functions.
 }
 \description{

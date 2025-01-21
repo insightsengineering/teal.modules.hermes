@@ -6,6 +6,7 @@
 #' analysis.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #'
 #' @return Shiny module to be used in the teal app.
 #'
@@ -35,7 +36,8 @@ tm_g_barplot <- function(label,
                          ),
                          pre_output = NULL,
                          post_output = NULL,
-                         .test = FALSE) {
+                         .test = FALSE,
+                         transformators = list()) {
   message("Initializing tm_g_barplot")
   assert_string(label)
   assert_string(mae_name)
@@ -62,6 +64,7 @@ tm_g_barplot <- function(label,
       post_output = post_output,
       .test = .test
     ),
+    transformators = transformators,
     datanames = mae_name
   )
 }
