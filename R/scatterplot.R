@@ -259,7 +259,10 @@ srv_g_scatterplot <- function(id,
 #'   sample_tm_g_scatterplot()
 #' }
 sample_tm_g_scatterplot <- function(.test = FALSE) {
-  data <- teal.data::teal_data(MAE = hermes::multi_assay_experiment)
+  data <- within(
+    teal.data::teal_data(),
+    MAE <- hermes::multi_assay_experiment
+  )
   app <- teal::init(
     data = data,
     modules = teal::modules(

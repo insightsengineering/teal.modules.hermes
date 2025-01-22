@@ -265,7 +265,10 @@ srv_g_boxplot <- function(id,
 #'   sample_tm_g_boxplot()
 #' }
 sample_tm_g_boxplot <- function(.test = FALSE) {
-  data <- teal.data::teal_data(MAE = hermes::multi_assay_experiment)
+  data <- within(
+    teal.data::teal_data(),
+    MAE = hermes::multi_assay_experiment
+  )
   app <- teal::init(
     data = data,
     modules = teal::modules(
