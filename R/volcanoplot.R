@@ -279,7 +279,10 @@ srv_g_volcanoplot <- function(id,
 #'   sample_tm_g_volcanoplot()
 #' }
 sample_tm_g_volcanoplot <- function(.test = FALSE) {
-  data <- teal.data::teal_data(MAE = hermes::multi_assay_experiment)
+  data <- within(
+    teal.data::teal_data(),
+    MAE <- hermes::multi_assay_experiment # nolint
+  )
   app <- teal::init(
     data = data,
     modules = teal::modules(
