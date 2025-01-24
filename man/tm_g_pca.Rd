@@ -13,7 +13,8 @@ tm_g_pca(
   exclude_assays = character(),
   pre_output = NULL,
   post_output = NULL,
-  .test = FALSE
+  .test = FALSE,
+  transformators = list()
 )
 
 ui_g_pca(id, mae_name, pre_output, post_output, .test = FALSE)
@@ -48,6 +49,9 @@ placed after the output to put the output into context (for example the \code{\l
 elements can be useful).}
 
 \item{.test}{(\code{flag})\cr whether to display the internal structure of the plot for testing purposes.}
+
+\item{transformators}{(\code{list} of \code{teal_transform_module}) that will be applied to transform module's data input.
+To learn more check \code{vignette("data-transform-as-shiny-module", package = "teal")}.}
 
 \item{id}{(\code{string}) the shiny module id.}
 

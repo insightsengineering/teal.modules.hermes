@@ -6,6 +6,7 @@
 #' `ADaM` structure.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #'
 #' @return Shiny module to be used in the teal app.
 #'
@@ -57,7 +58,8 @@ tm_g_km <- function(label,
                     ),
                     pre_output = NULL,
                     post_output = NULL,
-                    .test = FALSE) {
+                    .test = FALSE,
+                    transformators = list()) {
   message("Initializing tm_g_km")
   assert_string(label)
   assert_string(adtte_name)
@@ -88,6 +90,7 @@ tm_g_km <- function(label,
       post_output = post_output,
       .test = .test
     ),
+    transformators = transformators,
     datanames = c(adtte_name, mae_name)
   )
 }
