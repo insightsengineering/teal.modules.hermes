@@ -123,8 +123,6 @@ data <- within(data, {
     dplyr::mutate(is_event = .data$CNSR == 0)
   MAE <- hermes::multi_assay_experiment
 })
-datanames <- c("ADTTE", "MAE")
-datanames(data) <- datanames
 join_keys(data)["ADTTE", "ADTTE"] <- c("STUDYID", "USUBJID", "PARAMCD")
 
 

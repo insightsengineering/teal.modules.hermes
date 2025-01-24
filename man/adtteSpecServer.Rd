@@ -147,9 +147,7 @@ my_app <- function() {
       dplyr::mutate(is_event = .data$CNSR == 0)
     MAE <- hermes::multi_assay_experiment
   })
-  datanames <- c("ADSL", "ADTTE", "MAE")
-  datanames(data) <- datanames
-  join_keys(data) <- default_cdisc_join_keys[datanames]
+  join_keys(data) <- default_cdisc_join_keys[c("ADSL", "ADTTE", "MAE")]
 
   app <- init(
     data = data,

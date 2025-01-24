@@ -21,8 +21,6 @@
 #'     dplyr::mutate(is_event = .data$CNSR == 0)
 #'   MAE <- hermes::multi_assay_experiment
 #' })
-#' datanames <- c("ADTTE", "MAE")
-#' datanames(data) <- datanames
 #' join_keys(data)["ADTTE", "ADTTE"] <- c("STUDYID", "USUBJID", "PARAMCD")
 #'
 #'
@@ -310,8 +308,6 @@ sample_tm_g_km <- function(.test = FALSE) { # nolint
       dplyr::mutate(is_event = .data$CNSR == 0)
     MAE <- hermes::multi_assay_experiment # nolint
   })
-  datanames <- c("ADTTE", "MAE")
-  datanames(data) <- datanames
   join_keys(data)["ADTTE", "ADTTE"] <- c("STUDYID", "USUBJID", "PARAMCD")
 
   modules <- teal::modules(
