@@ -5,6 +5,7 @@
 #' This module provides an interactive survival forest plot.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #'
 #' @return Shiny module to be used in the teal app.
 #'
@@ -54,7 +55,8 @@ tm_g_forest_tte <- function(label,
                             post_output = NULL,
                             plot_height = c(600L, 200L, 2000L),
                             plot_width = c(1360L, 500L, 2000L),
-                            .test = FALSE) {
+                            .test = FALSE,
+                            transformators = list()) {
   message("Initializing tm_g_forest_tte")
   assert_string(label)
   assert_string(adtte_name)
@@ -88,6 +90,7 @@ tm_g_forest_tte <- function(label,
       post_output = post_output,
       .test = .test
     ),
+    transformators = transformators,
     datanames = c(adtte_name, mae_name)
   )
 }
