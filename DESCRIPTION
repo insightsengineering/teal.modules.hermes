@@ -75,7 +75,8 @@ RdMacros:
 biocViews:
 Config/Needs/website: insightsengineering/nesttemplate
 Config/Needs/verdepcheck: tidyverse/ggplot2, rstudio/shiny,
-    insightsengineering/teal, insightsengineering/teal.slice, insightsengineering/teal.transform,
+    insightsengineering/teal, insightsengineering/teal.slice, insightsengineering/teal.code, 
+    insightsengineering/teal.transform,
     mllg/checkmate, bioc::edgeR, rstudio/DT, tidyverse/forcats, insightsengineering/hermes, 
     r-lib/lifecycle,  bioc::MultiAssayExperiment, insightsengineering/rtables, bioc::S4Vectors,
     antonmalko/shinyRadioMatrix, dreamRs/shinyWidgets, tidyverse/stringr, bioc::SummarizedExperiment,
