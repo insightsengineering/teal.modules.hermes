@@ -57,7 +57,7 @@ Imports:
     utils
 Suggests:
     BiocStyle,
-    covr,
+    covr (>= 3.6.4),
     dplyr,
     globals,
     knitr,
