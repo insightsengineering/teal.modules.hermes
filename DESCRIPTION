@@ -88,16 +88,6 @@ Config/Needs/verdepcheck: tidyverse/ggplot2, rstudio/shiny,
     HenrikBengtsson/matrixStats, r-lib/R6, rstudio/rmarkdown,
     tidyverse/rvest, rstudio/shinytest2, r-lib/testthat
 Config/Needs/website: insightsengineering/nesttemplate
-Config/Needs/verdepcheck: tidyverse/ggplot2, rstudio/shiny,
-    insightsengineering/teal, insightsengineering/teal.slice, insightsengineering/teal.code, 
-    insightsengineering/teal.transform,
-    mllg/checkmate, bioc::edgeR, rstudio/DT, tidyverse/forcats, insightsengineering/hermes, 
-    r-lib/lifecycle,  bioc::MultiAssayExperiment, insightsengineering/rtables, bioc::S4Vectors,
-    antonmalko/shinyRadioMatrix, dreamRs/shinyWidgets, tidyverse/stringr, bioc::SummarizedExperiment,
-    insightsengineering/teal.data, insightsengineering/teal.logger, insightsengineering/teal.reporter,
-    insightsengineering/teal.widgets, insightsengineering/tern, bioc::BiocStyle, r-lib/covr,
-    tidyverse/dplyr, futureverse/globals, yihui/knitr, daroczig/logger, HenrikBengtsson/matrixStats,
-    r-lib/R6, rstudio/rmarkdown, tidyverse/rvest, rstudio/shinytest2, r-lib/testthat
 Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-US
