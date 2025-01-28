@@ -36,7 +36,7 @@ Depends:
     teal (>= 0.15.2.9103)
 Imports:
     checkmate,
-    DT,
+    DT (>= 0.33),
     edgeR,
     forcats,
     hermes (>= 1.7.1),
@@ -57,7 +57,7 @@ Imports:
     utils
 Suggests:
     BiocStyle,
-    covr,
+    covr (>= 3.6.4),
     dplyr,
     globals,
     knitr,
