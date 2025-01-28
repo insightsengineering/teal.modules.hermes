@@ -36,7 +36,7 @@ Depends:
     teal (>= 0.15.2.9103)
 Imports:
     checkmate,
-    DT (>= 0.30),
+    DT (>= 0.3),
     edgeR,
     forcats,
     hermes (>= 1.7.1),
