@@ -30,19 +30,6 @@ jobs:
         _R_CHECK_EXAMPLE_TIMING_THRESHOLD_=10
       additional-r-cmd-check-params: --as-cran
       deps-installation-method: setup-r-dependencies
-      lookup-refs: |
-        insightsengineering/formatters
-        insightsengineering/rtables
-        insightsengineering/rtables.officer
-        insightsengineering/hermes
-        insightsengineering/teal
-        insightsengineering/teal.transform
-        insightsengineering/teal.code
-        insightsengineering/teal.data
-        insightsengineering/teal.logger
-        insightsengineering/teal.reporter
-        insightsengineering/teal.widgets
-        insightsengineering/teal.slice
   r-cmd-non-cran:
     name: R CMD Check (non-CRAN) 🧬
     uses: insightsengineering/r.pkg.template/.github/workflows/build-check-install.yaml@main
@@ -55,19 +42,6 @@ jobs:
       concurrency-group: non-cran
       unit-test-report-directory: unit-test-report-non-cran
       deps-installation-method: setup-r-dependencies
-      lookup-refs: |
-        insightsengineering/formatters
-        insightsengineering/rtables
-        insightsengineering/rtables.officer
-        insightsengineering/hermes
-        insightsengineering/teal
-        insightsengineering/teal.transform
-        insightsengineering/teal.code
-        insightsengineering/teal.data
-        insightsengineering/teal.logger
-        insightsengineering/teal.reporter
-        insightsengineering/teal.widgets
-        insightsengineering/teal.slice
   coverage:
     name: Coverage 📔
     uses: insightsengineering/r.pkg.template/.github/workflows/test-coverage.yaml@main
@@ -77,19 +51,6 @@ jobs:
       additional-env-vars: |
         NOT_CRAN=true
       deps-installation-method: setup-r-dependencies
-      lookup-refs: |
-        insightsengineering/formatters
-        insightsengineering/rtables
-        insightsengineering/rtables.officer
-        insightsengineering/hermes
-        insightsengineering/teal
-        insightsengineering/teal.transform
-        insightsengineering/teal.code
-        insightsengineering/teal.data
-        insightsengineering/teal.logger
-        insightsengineering/teal.reporter
-        insightsengineering/teal.widgets
-        insightsengineering/teal.slice
   linter:
     if: github.event_name != 'push'
     name: SuperLinter 🦸‍♀️
@@ -102,19 +63,6 @@ jobs:
     with:
       auto-update: true
       deps-installation-method: setup-r-dependencies
-      lookup-refs: |
-        insightsengineering/formatters
-        insightsengineering/rtables
-        insightsengineering/rtables.officer
-        insightsengineering/hermes
-        insightsengineering/teal
-        insightsengineering/teal.transform
-        insightsengineering/teal.code
-        insightsengineering/teal.data
-        insightsengineering/teal.logger
-        insightsengineering/teal.reporter
-        insightsengineering/teal.widgets
-        insightsengineering/teal.slice
   gitleaks:
     name: gitleaks 💧
     uses: insightsengineering/r.pkg.template/.github/workflows/gitleaks.yaml@main
