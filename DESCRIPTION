@@ -49,9 +49,9 @@ Imports:
     stats,
     stringr,
     SummarizedExperiment (>= 1.36.0),
-    teal.data (>= 0.6.0.9025),
-    teal.logger (>= 0.3.0.9004),
-    teal.reporter (>= 0.3.1.9023),
+    teal.data (>= 0.7.0),
+    teal.logger (>= 0.3.1),
+    teal.reporter (>= 0.4.0),
     teal.widgets (>= 0.4.2.9025),
     tern (>= 0.9.7),
     utils
@@ -73,6 +73,10 @@ VignetteBuilder:
 RdMacros:
     lifecycle
 biocViews:
+Remotes:
+    insightsengineering/hermes,
+    insightsengineering/teal,
+    insightsengineering/teal.widgets
 Config/Needs/verdepcheck: tidyverse/ggplot2, rstudio/shiny,
     insightsengineering/teal, insightsengineering/teal.slice,
     insightsengineering/teal.code, insightsengineering/teal.transform,
