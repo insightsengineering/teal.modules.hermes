@@ -5,12 +5,19 @@ template:
   package: nesttemplate
 
 navbar:
+  components:
+    get-started:
+      text: Get started
+      href: articles/Getting_Started.html
+  structure:
+    left: [get-started, reference, articles, news]
   right:
     - icon: fa-github
       href: https://github.com/insightsengineering/teal.modules.hermes
 
 articles:
-  - title: All vignettes
+  - title: Get started
+    navbar: Get started
     contents:
       - Getting_Started
 
