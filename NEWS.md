@@ -1,3 +1,10 @@
+# teal.modules.hermes 0.2.0
+
+### Enhancements
+* Added `teal.logger` functionality for logging changes in shiny inputs in all modules.
+* Introduce `transformators` parameter in modules.
+
+
 # teal.modules.hermes 0.1.6.9033
 
 ### Miscellaneous
@@ -8,7 +15,6 @@
 ### Enhancements
 
 * Updated the documentation and vignettes with the new way of specifying data for `teal::init()`. The `data` argument accepts `teal_data` object.
-* Added `teal.logger` functionality for logging changes in shiny inputs in all modules.
 
 # teal.modules.hermes 0.1.5
 
