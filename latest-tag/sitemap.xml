@@ -1,171 +1,57 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/404.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/CODE_OF_CONDUCT.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/CONTRIBUTING.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/SECURITY.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/articles/Getting_Started.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/index.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/pull_request_template.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/adtteSpecInput.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/adtteSpecServer.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/assaySpecInput.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/assaySpecServer.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/assert_adtte_vars.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/assert_summary_funs.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/assertion_arguments.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/assertions.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/check_reactive.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/check_tag.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/experimentSpecInput.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/experimentSpecServer.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/function_arguments.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/geneSpecInput.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/geneSpecServer.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/h_assign_to_group_list.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/h_collapse_levels.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/h_extract_words.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/h_gene_data.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/h_km_mae_to_adtte.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/h_order_genes.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/h_parse_genes.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/h_update_gene_selection.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/heatmap_plot.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/include_css_files.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/include_js_files.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/is_blank.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/module_arguments.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/multiSampleVarSpecServer.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/rADTTE.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/sampleVarSpecInput.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/sampleVarSpecServer.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/teal.modules.hermes-package.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_barplot.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_boxplot.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_forest_tte.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_km.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_pca.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_quality.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_scatterplot.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_volcanoplot.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/top_gene_plot.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/validate_gene_spec.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.hermes/reference/validate_n_levels.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/404.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/CODE_OF_CONDUCT.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/CONTRIBUTING.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/LICENSE-text.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/SECURITY.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/articles/Getting_Started.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/articles/index.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/authors.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/index.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/news/index.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/adtteSpecInput.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/adtteSpecServer.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/assaySpecInput.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/assaySpecServer.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/assert_adtte_vars.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/assert_summary_funs.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/assertion_arguments.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/assertions.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/check_reactive.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/check_tag.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/experimentSpecInput.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/experimentSpecServer.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/function_arguments.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/geneSpecInput.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/geneSpecServer.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/h_assign_to_group_list.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/h_collapse_levels.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/h_extract_words.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/h_gene_data.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/h_km_mae_to_adtte.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/h_order_genes.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/h_parse_genes.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/h_update_gene_selection.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/heatmap_plot.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/include_css_files.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/include_js_files.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/index.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/is_blank.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/module_arguments.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/multiSampleVarSpecServer.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/sampleVarSpecInput.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/sampleVarSpecServer.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/teal.modules.hermes-package.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_barplot.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_boxplot.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_forest_tte.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_km.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_pca.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_quality.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_scatterplot.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_volcanoplot.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/top_gene_plot.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/validate_gene_spec.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.hermes/reference/validate_n_levels.html</loc></url>
 </urlset>
+
