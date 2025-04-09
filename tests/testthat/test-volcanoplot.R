@@ -9,7 +9,7 @@ test_that("ui_g_volcanoplot creates expected HTML", {
     pre_output = NULL,
     post_output = NULL
   ))
-  expect_tag(result)
+  expect_class(result, "bslib_page")
 })
 
 # tm_g_volcanoplot ----

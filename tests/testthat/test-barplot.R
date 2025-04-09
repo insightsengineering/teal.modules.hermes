@@ -14,7 +14,7 @@ test_that("ui_g_barplot creates expected HTML", {
     post_output = NULL
   ))
 
-  expect_tag(result)
+  expect_class(result, "bslib_page")
 })
 
 # tm_g_barplot ----
