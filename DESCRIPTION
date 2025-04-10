@@ -33,7 +33,7 @@ Depends:
     ggplot2,
     R (>= 4.1),
     shiny,
-    teal (>= 0.16.0)
+    teal (>= 0.16.0.9003)
 Imports:
     bslib,
     checkmate,
@@ -52,8 +52,8 @@ Imports:
     SummarizedExperiment (>= 1.36.0),
     teal.data (>= 0.7.0),
     teal.logger (>= 0.3.2),
-    teal.reporter (>= 0.4.0),
-    teal.widgets (>= 0.4.3),
+    teal.reporter (>= 0.4.0.9004),
+    teal.widgets (>= 0.4.3.9001),
     tern (>= 0.9.7),
     utils
 Suggests:
@@ -74,6 +74,10 @@ VignetteBuilder:
 RdMacros:
     lifecycle
 biocViews:
+Remotes:
+    insightsengineering/teal@main,
+    insightsengineering/teal.reporter@main,
+    insightsengineering/teal.widgets@main
 Config/Needs/verdepcheck: tidyverse/ggplot2, rstudio/shiny,
     insightsengineering/teal, insightsengineering/teal.slice,
     insightsengineering/teal.code, insightsengineering/teal.transform,
