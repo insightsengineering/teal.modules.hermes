@@ -11,7 +11,7 @@ test_that("ui_g_quality creates expected HTML", {
     post_output = NULL
   ))
 
-  expect_class(result, "bslib_page")
+  expect_tag(result)
 })
 
 # tm_g_quality ----

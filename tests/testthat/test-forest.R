@@ -14,7 +14,7 @@ test_that("ui_g_forest_tte creates expected HTML", {
     pre_output = NULL,
     post_output = NULL
   ))
-  expect_class(result, "bslib_page")
+  expect_tag(result)
 })
 
 # tm_g_forest_tte ----

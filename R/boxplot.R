@@ -94,10 +94,10 @@ ui_g_boxplot <- function(id,
       shinyWidgets::switchInput(ns("jitter"), value = FALSE, size = "mini"),
       tags$label("Violin Plot"),
       shinyWidgets::switchInput(ns("violin"), value = FALSE, size = "mini"),
-      teal.widgets::panel_group(
-        teal.widgets::panel_item(
+      bslib::accordion(
+        bslib::accordion_panel(
           input_id = "settings_item",
-          collapsed = TRUE,
+          open = TRUE,
           title = "Additional Settings",
           sampleVarSpecInput(ns("strat"), "Optional stratifying variable"),
           sampleVarSpecInput(ns("color"), "Optional color variable"),
@@ -270,7 +270,7 @@ srv_g_boxplot <- function(id,
 sample_tm_g_boxplot <- function(.test = FALSE) {
   data <- within(
     teal.data::teal_data(),
-    MAE = hermes::multi_assay_experiment
+    MAE <- hermes::multi_assay_experiment
   )
   app <- teal::init(
     data = data,

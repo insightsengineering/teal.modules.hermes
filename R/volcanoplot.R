@@ -89,10 +89,10 @@ ui_g_volcanoplot <- function(id,
       sampleVarSpecInput(ns("compare_group"), "Compare Groups", "Please group here into 2 levels"),
       tags$label("Show Top Differentiated Genes"),
       shinyWidgets::switchInput(ns("show_top_gene"), value = FALSE, size = "mini"),
-      teal.widgets::panel_group(
-        teal.widgets::panel_item(
+      bslib::accordion(
+        bslib::accordion_panel(
           input_id = "settings_item",
-          collapsed = TRUE,
+          open = TRUE,
           title = "Additional Settings",
           selectInput(ns("method"), "Method", choices = c("voom", "deseq2")),
           sliderInput(ns("log2_fc_thresh"), "Log2 fold change threshold", value = 2.5, min = 0.1, max = 10),
