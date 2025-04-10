@@ -87,10 +87,10 @@ ui_g_pca <- function(id,
           selectizeInput(ns("x_var"), "Select X-axis PC", choices = ""),
           selectizeInput(ns("y_var"), "Select Y-axis PC", choices = "")
         ),
-        teal.widgets::panel_group(
-          teal.widgets::panel_item(
+        bslib::accordion(
+          bslib::accordion_panel(
             input_id = "settings_item",
-            collapsed = TRUE,
+            open = TRUE,
             title = "Additional Settings",
             tags$label("Use only Top Variance Genes"),
             shinyWidgets::switchInput(ns("filter_top"), value = FALSE, size = "mini"),

@@ -37,6 +37,7 @@ Depends:
 Imports:
     checkmate,
     DT (>= 0.3),
+    bslib,
     edgeR,
     forcats,
     hermes (>= 1.7.1),

@@ -195,15 +195,18 @@ test_that("sampleVarSpec module works as expected in the test app", {
   expect_match(as.character(res), " < 18 >= 18 \n    4     1 ")
 
   # Filter panel works as expected
-  app$set_inputs("teal-main_ui-filter_panel-add-MAE-subjects-var_to_add" = "AGE18")
+  app$click(selector = "#teal-teal_modules-samplevarspec_example-filter_panel-filters-MAE-filter_util_icons a i")
   app$wait_for_idle()
-  app$set_inputs("teal-main_ui-filter_panel-active-MAE-subjects-MAE_AGE18-inputs-selection" = "< 18")
+  app$set_inputs("teal-teal_modules-samplevarspec_example-filter_panel-filters-MAE-MAE-subjects-var_to_add" = "AGE18")
+  app$wait_for_idle()
+  app$set_inputs("teal-teal_modules-samplevarspec_example-filter_panel-filters-MAE-subjects-MAE_AGE18-inputs-selection" = "< 18")
   app$wait_for_idle()
 
   res <- app$get_value(output = ns("summary"))
   expect_equal(res, "< 18 \n   4 ")
 
-  app$click("teal-main_ui-filter_panel-active-MAE-subjects-MAE_AGE18-remove")
+  app$click("teal-teal_modules-samplevarspec_example-filter_panel-filters-MAE-subjects-MAE_AGE18-remove")
+  app$wait_for_idle()
   res <- app$get_value(output = ns("summary"))
   expect_equal(res, " < 18 >= 18 \n    4     1 ")
 

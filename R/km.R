@@ -118,10 +118,10 @@ ui_g_km <- function(id,
       geneSpecInput(ns("genes"), summary_funs),
       helpText("Analysis of ADTTE:", tags$code(adtte_name)),
       adtteSpecInput(ns("adtte")),
-      teal.widgets::panel_group(
-        teal.widgets::panel_item(
+      bslib::accordion(
+        bslib::accordion_panel(
           input_id = "settings_item",
-          collapsed = TRUE,
+          open = TRUE,
           title = "Additional Settings",
           sampleVarSpecInput(ns("strata"), "Select Strata"),
           sliderInput(
@@ -302,9 +302,8 @@ srv_g_km <- function(id,
 #'   sample_tm_g_km()
 #' }
 sample_tm_g_km <- function(.test = FALSE) { # nolint
-  data <- teal_data()
-  data <- within(data, {
-    ADTTE <- teal.data::rADTTE %>% # nolint
+  data <- within(teal.data::teal_data(), {
+    ADTTE <- teal.data::rADTTE |> # nolint
       dplyr::mutate(is_event = .data$CNSR == 0)
     MAE <- hermes::multi_assay_experiment # nolint
   })

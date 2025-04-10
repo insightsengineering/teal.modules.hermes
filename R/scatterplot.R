@@ -96,10 +96,10 @@ ui_g_scatterplot <- function(id,
       assaySpecInput(ns("assay")),
       geneSpecInput(ns("x_spec"), summary_funs, label_genes = "Select x Gene(s)"),
       geneSpecInput(ns("y_spec"), summary_funs, label_genes = "Select y Gene(s)"),
-      teal.widgets::panel_group(
-        teal.widgets::panel_item(
+      bslib::accordion(
+        bslib::accordion_panel(
           input_id = "settings_item",
-          collapsed = TRUE,
+          open = TRUE,
           title = "Additional Settings",
           sampleVarSpecInput(ns("color_var"), "Optional color variable"),
           sampleVarSpecInput(ns("facet_var"), "Optional facet variable"),

@@ -39,7 +39,7 @@ NULL
 #' check_tag(NULL, null.ok = TRUE)
 check_tag <- function(x, null.ok = FALSE) { # nolint
   assert_flag(null.ok)
-  ok <- (null.ok && test_null(x)) || test_class(x, "shiny.tag")
+  ok <- (null.ok && test_null(x)) || test_class(x, "shiny.tag") || test_class(x, "shiny.tag.list")
   if (!ok) {
     return("Must be a 'shiny.tag' or NULL")
   }

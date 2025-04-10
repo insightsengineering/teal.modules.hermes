@@ -97,10 +97,10 @@ ui_g_barplot <- function(id,
         max = 1,
         value = c(0.2, 0.8)
       ),
-      teal.widgets::panel_group(
-        teal.widgets::panel_item(
+      bslib::accordion(
+        bslib::accordion_panel(
           input_id = "settings_item",
-          collapsed = TRUE,
+          open = TRUE,
           title = "Additional Settings",
           sampleVarSpecInput(
             ns("fill"),
@@ -271,7 +271,7 @@ srv_g_barplot <- function(id,
 sample_tm_g_barplot <- function(.test = FALSE) {
   data <- within(
     teal.data::teal_data(),
-    MAE = hermes::multi_assay_experiment
+    MAE <- hermes::multi_assay_experiment # nolint
   )
   app <- teal::init(
     data = data,

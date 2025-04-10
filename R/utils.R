@@ -66,7 +66,6 @@ include_css_files <- function(pattern = "*") { # nolint
 #' as needed. Thus, we do not export this method
 #'
 #' @param pattern (`character`) pattern of files to be included, passed to `system.file`
-#' @param except (`character`) vector of basename filenames to be excluded
 #'
 #' @return HTML code that includes `JS` files
 #' @keywords internal
