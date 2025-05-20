@@ -1,152 +1,152 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="adtteSpec" timestamp="2025-05-20T18:05:54Z" hostname="947c9481e2ce" tests="22" skipped="1" failures="0" errors="0" time="8.336">
-    <testcase time="6.482" classname="adtteSpec" name="h_km_mae_to_adtte_function_works_as_expected_with_a_single_gene"/>
-    <testcase time="0.0150000000000006" classname="adtteSpec" name="h_km_mae_to_adtte_function_works_as_expected_with_a_single_gene"/>
-    <testcase time="0.24" classname="adtteSpec" name="h_km_mae_to_adtte_function_also_works_when_some_ID_variables_are_factors"/>
-    <testcase time="0.00199999999999889" classname="adtteSpec" name="h_km_mae_to_adtte_function_also_works_when_some_ID_variables_are_factors"/>
-    <testcase time="0.778" classname="adtteSpec" name="h_km_mae_to_adtte_function_works_as_expected_with_multiple_genes"/>
-    <testcase time="0.00200000000000067" classname="adtteSpec" name="h_km_mae_to_adtte_function_works_as_expected_with_multiple_genes"/>
-    <testcase time="0.17" classname="adtteSpec" name="h_km_mae_to_adtte_function_works_as_expected_with_a_gene_signature"/>
-    <testcase time="0.00199999999999889" classname="adtteSpec" name="h_km_mae_to_adtte_function_works_as_expected_with_a_gene_signature"/>
+  <testsuite name="adtteSpec" timestamp="2025-05-20T18:06:38Z" hostname="e6058289a011" tests="22" skipped="1" failures="0" errors="0" time="8.244">
+    <testcase time="6.408" classname="adtteSpec" name="h_km_mae_to_adtte_function_works_as_expected_with_a_single_gene"/>
+    <testcase time="0.016" classname="adtteSpec" name="h_km_mae_to_adtte_function_works_as_expected_with_a_single_gene"/>
+    <testcase time="0.189" classname="adtteSpec" name="h_km_mae_to_adtte_function_also_works_when_some_ID_variables_are_factors"/>
+    <testcase time="0.000999999999999446" classname="adtteSpec" name="h_km_mae_to_adtte_function_also_works_when_some_ID_variables_are_factors"/>
+    <testcase time="0.247" classname="adtteSpec" name="h_km_mae_to_adtte_function_works_as_expected_with_multiple_genes"/>
+    <testcase time="0.000999999999999446" classname="adtteSpec" name="h_km_mae_to_adtte_function_works_as_expected_with_multiple_genes"/>
+    <testcase time="0.175000000000001" classname="adtteSpec" name="h_km_mae_to_adtte_function_works_as_expected_with_a_gene_signature"/>
+    <testcase time="0.00200000000000067" classname="adtteSpec" name="h_km_mae_to_adtte_function_works_as_expected_with_a_gene_signature"/>
     <testcase time="0.016" classname="adtteSpec" name="h_km_mae_to_adtte_fails_as_expected_with_invalid_settings"/>
-    <testcase time="0.0520000000000014" classname="adtteSpec" name="h_km_mae_to_adtte_fails_as_expected_with_invalid_settings"/>
+    <testcase time="0.0510000000000002" classname="adtteSpec" name="h_km_mae_to_adtte_fails_as_expected_with_invalid_settings"/>
     <testcase time="0.00599999999999845" classname="adtteSpec" name="h_km_mae_to_adtte_fails_as_expected_with_invalid_settings"/>
-    <testcase time="0.0600000000000005" classname="adtteSpec" name="h_km_mae_to_adtte_fails_as_expected_with_invalid_settings"/>
-    <testcase time="0.177" classname="adtteSpec" name="h_km_mae_to_adtte_warns_when_patients_are_not_in_ADTTE_and_therefore_removed"/>
-    <testcase time="0.152999999999999" classname="adtteSpec" name="h_km_mae_to_adtte_fails_as_expected_if_USUBJID_in_MAE_colData_is_different_from_sample_map"/>
-    <testcase time="0.126999999999999" classname="adtteSpec" name="h_km_mae_to_adtte_fails_as_expected_if_USUBJID_in_experiment_colData_is_different_from_sample_map"/>
-    <testcase time="0.0250000000000004" classname="adtteSpec" name="adtteSpecInput_creates_expected_HTML"/>
-    <testcase time="0.000999999999999446" classname="adtteSpec" name="adtteSpecInput_creates_expected_HTML"/>
+    <testcase time="0.048" classname="adtteSpec" name="h_km_mae_to_adtte_fails_as_expected_with_invalid_settings"/>
+    <testcase time="0.738000000000001" classname="adtteSpec" name="h_km_mae_to_adtte_warns_when_patients_are_not_in_ADTTE_and_therefore_removed"/>
+    <testcase time="0.148999999999999" classname="adtteSpec" name="h_km_mae_to_adtte_fails_as_expected_if_USUBJID_in_MAE_colData_is_different_from_sample_map"/>
+    <testcase time="0.122" classname="adtteSpec" name="h_km_mae_to_adtte_fails_as_expected_if_USUBJID_in_experiment_colData_is_different_from_sample_map"/>
+    <testcase time="0.0289999999999999" classname="adtteSpec" name="adtteSpecInput_creates_expected_HTML"/>
+    <testcase time="0.00200000000000067" classname="adtteSpec" name="adtteSpecInput_creates_expected_HTML"/>
+    <testcase time="0.00200000000000067" classname="adtteSpec" name="adtteSpecInput_creates_expected_HTML"/>
+    <testcase time="0.0109999999999992" classname="adtteSpec" name="adtteSpecInput_creates_expected_HTML"/>
     <testcase time="0.00200000000000067" classname="adtteSpec" name="adtteSpecInput_creates_expected_HTML"/>
     <testcase time="0.000999999999999446" classname="adtteSpec" name="adtteSpecInput_creates_expected_HTML"/>
-    <testcase time="0.00100000000000122" classname="adtteSpec" name="adtteSpecInput_creates_expected_HTML"/>
-    <testcase time="0.000999999999999446" classname="adtteSpec" name="adtteSpecInput_creates_expected_HTML"/>
-    <testcase time="0.0229999999999997" classname="adtteSpec" name="adtteSpecServer_module_works_as_expected_in_the_test_app">
+    <testcase time="0.0280000000000005" classname="adtteSpec" name="adtteSpecServer_module_works_as_expected_in_the_test_app">
       <skipped message="Reason: testing depth 3 is below current testing specification 5 ('test-adtteSpec.R:193:3')"/>
     </testcase>
   </testsuite>
-  <testsuite name="assaySpec" timestamp="2025-05-20T18:06:02Z" hostname="947c9481e2ce" tests="7" skipped="1" failures="0" errors="0" time="0.044">
-    <testcase time="0.0350000000000001" classname="assaySpec" name="assaySpecInput_creates_expected_HTML"/>
-    <testcase time="0.000999999999999446" classname="assaySpec" name="assaySpecInput_creates_expected_HTML"/>
+  <testsuite name="assaySpec" timestamp="2025-05-20T18:06:46Z" hostname="e6058289a011" tests="7" skipped="1" failures="0" errors="0" time="0.056">
+    <testcase time="0.0439999999999987" classname="assaySpec" name="assaySpecInput_creates_expected_HTML"/>
+    <testcase time="0.00100000000000122" classname="assaySpec" name="assaySpecInput_creates_expected_HTML"/>
+    <testcase time="0.00199999999999889" classname="assaySpec" name="assaySpecInput_creates_expected_HTML"/>
     <testcase time="0.00100000000000122" classname="assaySpec" name="assaySpecInput_creates_expected_HTML"/>
     <testcase time="0.000999999999999446" classname="assaySpec" name="assaySpecInput_creates_expected_HTML"/>
-    <testcase time="0.000999999999999446" classname="assaySpec" name="assaySpecInput_creates_expected_HTML"/>
-    <testcase time="0.00100000000000122" classname="assaySpec" name="assaySpecInput_creates_expected_HTML"/>
-    <testcase time="0.00399999999999956" classname="assaySpec" name="assaySpecServer_module_works_as_expected_in_the_test_app">
+    <testcase time="0.00200000000000067" classname="assaySpec" name="assaySpecInput_creates_expected_HTML"/>
+    <testcase time="0.00499999999999901" classname="assaySpec" name="assaySpecServer_module_works_as_expected_in_the_test_app">
       <skipped message="Reason: testing depth 3 is below current testing specification 5 ('test-assaySpec.R:25:3')"/>
     </testcase>
   </testsuite>
-  <testsuite name="barplot" timestamp="2025-05-20T18:06:02Z" hostname="947c9481e2ce" tests="3" skipped="1" failures="0" errors="0" time="0.196">
-    <testcase time="0.19" classname="barplot" name="ui_g_barplot_creates_expected_HTML"/>
-    <testcase time="0.00100000000000122" classname="barplot" name="ui_g_barplot_creates_expected_HTML"/>
-    <testcase time="0.00499999999999901" classname="barplot" name="barplot_module_works_as_expected_in_the_test_app">
+  <testsuite name="barplot" timestamp="2025-05-20T18:06:46Z" hostname="e6058289a011" tests="3" skipped="1" failures="0" errors="0" time="0.242">
+    <testcase time="0.234999999999999" classname="barplot" name="ui_g_barplot_creates_expected_HTML"/>
+    <testcase time="0.00200000000000067" classname="barplot" name="ui_g_barplot_creates_expected_HTML"/>
+    <testcase time="0.00500000000000078" classname="barplot" name="barplot_module_works_as_expected_in_the_test_app">
       <skipped message="Reason: testing depth 3 is below current testing specification 5 ('test-barplot.R:26:3')"/>
     </testcase>
   </testsuite>
-  <testsuite name="boxplot" timestamp="2025-05-20T18:06:02Z" hostname="947c9481e2ce" tests="2" skipped="1" failures="0" errors="0" time="0.108">
-    <testcase time="0.103" classname="boxplot" name="ui_g_boxplot_creates_expected_HTML"/>
-    <testcase time="0.00500000000000078" classname="boxplot" name="boxplot_module_works_as_expected_in_the_test_app">
+  <testsuite name="boxplot" timestamp="2025-05-20T18:06:46Z" hostname="e6058289a011" tests="2" skipped="1" failures="0" errors="0" time="0.137">
+    <testcase time="0.132" classname="boxplot" name="ui_g_boxplot_creates_expected_HTML"/>
+    <testcase time="0.00499999999999901" classname="boxplot" name="boxplot_module_works_as_expected_in_the_test_app">
       <skipped message="Reason: testing depth 3 is below current testing specification 5 ('test-boxplot.R:22:3')"/>
     </testcase>
   </testsuite>
-  <testsuite name="checkmate" timestamp="2025-05-20T18:06:02Z" hostname="947c9481e2ce" tests="7" skipped="0" failures="0" errors="0" time="0.044">
-    <testcase time="0.0179999999999989" classname="checkmate" name="check_tag_works_as_expected"/>
+  <testsuite name="checkmate" timestamp="2025-05-20T18:06:46Z" hostname="e6058289a011" tests="7" skipped="0" failures="0" errors="0" time="0.068">
+    <testcase time="0.0230000000000015" classname="checkmate" name="check_tag_works_as_expected"/>
     <testcase time="0.00300000000000011" classname="checkmate" name="check_tag_works_as_expected"/>
-    <testcase time="0.00300000000000011" classname="checkmate" name="check_tag_works_as_expected"/>
-    <testcase time="0.00500000000000078" classname="checkmate" name="check_tag_works_as_expected"/>
-    <testcase time="0.00499999999999901" classname="checkmate" name="assert_adtte_vars_works_as_expected"/>
-    <testcase time="0.00500000000000078" classname="checkmate" name="assert_adtte_vars_works_as_expected"/>
-    <testcase time="0.00500000000000078" classname="checkmate" name="assert_adtte_vars_works_as_expected"/>
+    <testcase time="0.00399999999999956" classname="checkmate" name="check_tag_works_as_expected"/>
+    <testcase time="0.00600000000000023" classname="checkmate" name="check_tag_works_as_expected"/>
+    <testcase time="0.00600000000000023" classname="checkmate" name="assert_adtte_vars_works_as_expected"/>
+    <testcase time="0.00599999999999845" classname="checkmate" name="assert_adtte_vars_works_as_expected"/>
+    <testcase time="0.0200000000000014" classname="checkmate" name="assert_adtte_vars_works_as_expected"/>
   </testsuite>
-  <testsuite name="experimentSpec" timestamp="2025-05-20T18:06:02Z" hostname="947c9481e2ce" tests="10" skipped="1" failures="0" errors="0" time="0.157">
-    <testcase time="0.0429999999999993" classname="experimentSpec" name="experimentSpecInput_creates_expected_HTML"/>
+  <testsuite name="experimentSpec" timestamp="2025-05-20T18:06:46Z" hostname="e6058289a011" tests="10" skipped="1" failures="0" errors="0" time="0.136">
+    <testcase time="0.0379999999999985" classname="experimentSpec" name="experimentSpecInput_creates_expected_HTML"/>
     <testcase time="0.00200000000000067" classname="experimentSpec" name="experimentSpecInput_creates_expected_HTML"/>
     <testcase time="0.00699999999999967" classname="experimentSpec" name="h_order_genes_works_as_expected_to_sort_only_by_name"/>
     <testcase time="0.00600000000000023" classname="experimentSpec" name="h_order_genes_works_as_expected_to_sort_only_by_id"/>
-    <testcase time="0.0239999999999991" classname="experimentSpec" name="h_order_genes_works_as_expected_with_mixed_id_and_name_sorting"/>
+    <testcase time="0.00600000000000023" classname="experimentSpec" name="h_order_genes_works_as_expected_with_mixed_id_and_name_sorting"/>
     <testcase time="0.00600000000000023" classname="experimentSpec" name="h_order_genes_does_not_fail_when_given_empty_data_frame"/>
-    <testcase time="0.0269999999999992" classname="experimentSpec" name="h_gene_data_works_as_expected"/>
+    <testcase time="0.0299999999999994" classname="experimentSpec" name="h_gene_data_works_as_expected"/>
     <testcase time="0.0340000000000007" classname="experimentSpec" name="h_gene_data_does_not_fail_when_object_does_not_contain_any_genes"/>
     <testcase time="0.00300000000000011" classname="experimentSpec" name="h_gene_data_does_not_fail_when_object_does_not_contain_any_genes"/>
-    <testcase time="0.00500000000000078" classname="experimentSpec" name="experimentSpec_module_works_as_expected_in_the_test_app">
+    <testcase time="0.00399999999999956" classname="experimentSpec" name="experimentSpec_module_works_as_expected_in_the_test_app">
       <skipped message="Reason: testing depth 3 is below current testing specification 5 ('test-experimentSpec.R:96:3')"/>
     </testcase>
   </testsuite>
-  <testsuite name="forest" timestamp="2025-05-20T18:06:03Z" hostname="947c9481e2ce" tests="3" skipped="1" failures="0" errors="0" time="0.086">
-    <testcase time="0.0799999999999983" classname="forest" name="ui_g_forest_tte_creates_expected_HTML"/>
-    <testcase time="0.00100000000000122" classname="forest" name="ui_g_forest_tte_creates_expected_HTML"/>
-    <testcase time="0.00499999999999901" classname="forest" name="forest_tte_module_works_as_expected_in_the_test_app">
+  <testsuite name="forest" timestamp="2025-05-20T18:06:47Z" hostname="e6058289a011" tests="3" skipped="1" failures="0" errors="0" time="0.097">
+    <testcase time="0.0920000000000005" classname="forest" name="ui_g_forest_tte_creates_expected_HTML"/>
+    <testcase time="0.000999999999999446" classname="forest" name="ui_g_forest_tte_creates_expected_HTML"/>
+    <testcase time="0.00399999999999956" classname="forest" name="forest_tte_module_works_as_expected_in_the_test_app">
       <skipped message="Reason: testing depth 3 is below current testing specification 5 ('test-forest.R:26:3')"/>
     </testcase>
   </testsuite>
-  <testsuite name="geneSpec" timestamp="2025-05-20T18:06:03Z" hostname="947c9481e2ce" tests="4" skipped="1" failures="0" errors="0" time="0.038">
-    <testcase time="0.0210000000000008" classname="geneSpec" name="geneSpecInput_creates_expected_HTML"/>
-    <testcase time="0.00600000000000023" classname="geneSpec" name="h_parse_genes_works_as_expected"/>
+  <testsuite name="geneSpec" timestamp="2025-05-20T18:06:47Z" hostname="e6058289a011" tests="4" skipped="1" failures="0" errors="0" time="0.039">
+    <testcase time="0.0220000000000002" classname="geneSpec" name="geneSpecInput_creates_expected_HTML"/>
+    <testcase time="0.00699999999999967" classname="geneSpec" name="h_parse_genes_works_as_expected"/>
     <testcase time="0.00600000000000023" classname="geneSpec" name="h_parse_genes_correctly_returns_empty_data_frame_when_no_genes_match"/>
-    <testcase time="0.00499999999999901" classname="geneSpec" name="geneSpec_module_works_as_expected_in_the_test_app">
+    <testcase time="0.00399999999999956" classname="geneSpec" name="geneSpec_module_works_as_expected_in_the_test_app">
       <skipped message="Reason: testing depth 3 is below current testing specification 5 ('test-geneSpec.R:39:3')"/>
     </testcase>
   </testsuite>
-  <testsuite name="km" timestamp="2025-05-20T18:06:03Z" hostname="947c9481e2ce" tests="3" skipped="1" failures="0" errors="0" time="0.088">
-    <testcase time="0.0820000000000007" classname="km" name="ui_g_km_creates_expected_HTML"/>
+  <testsuite name="km" timestamp="2025-05-20T18:06:47Z" hostname="e6058289a011" tests="3" skipped="1" failures="0" errors="0" time="0.09">
+    <testcase time="0.0850000000000009" classname="km" name="ui_g_km_creates_expected_HTML"/>
     <testcase time="0.000999999999999446" classname="km" name="ui_g_km_creates_expected_HTML"/>
-    <testcase time="0.00500000000000078" classname="km" name="km_module_works_as_expected_in_the_test_app">
+    <testcase time="0.00400000000000134" classname="km" name="km_module_works_as_expected_in_the_test_app">
       <skipped message="Reason: testing depth 3 is below current testing specification 5 ('test-km.R:27:3')"/>
     </testcase>
   </testsuite>
-  <testsuite name="pca" timestamp="2025-05-20T18:06:03Z" hostname="947c9481e2ce" tests="2" skipped="1" failures="0" errors="0" time="0.115">
-    <testcase time="0.109999999999999" classname="pca" name="ui_g_pca_creates_HTML"/>
+  <testsuite name="pca" timestamp="2025-05-20T18:06:47Z" hostname="e6058289a011" tests="2" skipped="1" failures="0" errors="0" time="0.119">
+    <testcase time="0.113999999999999" classname="pca" name="ui_g_pca_creates_HTML"/>
     <testcase time="0.00500000000000078" classname="pca" name="pca_module_works_as_expected_in_the_test_app">
       <skipped message="Reason: testing depth 3 is below current testing specification 5 ('test-pca.R:21:3')"/>
     </testcase>
   </testsuite>
-  <testsuite name="quality" timestamp="2025-05-20T18:06:03Z" hostname="947c9481e2ce" tests="3" skipped="1" failures="0" errors="0" time="0.082">
-    <testcase time="0.0759999999999987" classname="quality" name="ui_g_quality_creates_expected_HTML"/>
-    <testcase time="0.00100000000000122" classname="quality" name="ui_g_quality_creates_expected_HTML"/>
-    <testcase time="0.00499999999999901" classname="quality" name="quality_module_works_as_expected_in_the_test_app">
+  <testsuite name="quality" timestamp="2025-05-20T18:06:47Z" hostname="e6058289a011" tests="3" skipped="1" failures="0" errors="0" time="0.083">
+    <testcase time="0.077" classname="quality" name="ui_g_quality_creates_expected_HTML"/>
+    <testcase time="0.000999999999999446" classname="quality" name="ui_g_quality_creates_expected_HTML"/>
+    <testcase time="0.00500000000000078" classname="quality" name="quality_module_works_as_expected_in_the_test_app">
       <skipped message="Reason: testing depth 3 is below current testing specification 5 ('test-quality.R:23:3')"/>
     </testcase>
   </testsuite>
-  <testsuite name="sampleVarSpec" timestamp="2025-05-20T18:06:03Z" hostname="947c9481e2ce" tests="16" skipped="1" failures="0" errors="0" time="0.165">
-    <testcase time="0.032" classname="sampleVarSpec" name="sampleVarSpecInput_creates_expected_HTML"/>
-    <testcase time="0.000999999999999446" classname="sampleVarSpec" name="sampleVarSpecInput_creates_expected_HTML"/>
+  <testsuite name="sampleVarSpec" timestamp="2025-05-20T18:06:47Z" hostname="e6058289a011" tests="16" skipped="1" failures="0" errors="0" time="0.151">
+    <testcase time="0.0190000000000001" classname="sampleVarSpec" name="sampleVarSpecInput_creates_expected_HTML"/>
+    <testcase time="0.00199999999999889" classname="sampleVarSpec" name="sampleVarSpecInput_creates_expected_HTML"/>
     <testcase time="0.00600000000000023" classname="sampleVarSpec" name="h_assign_to_group_list_works_as_expected"/>
     <testcase time="0.00600000000000023" classname="sampleVarSpec" name="h_assign_to_group_list_retains_the_order_of_the_collapsed_levels"/>
     <testcase time="0.00600000000000023" classname="sampleVarSpec" name="h_collapse_levels_works_as_expected_when_a_group_list_is_provided"/>
-    <testcase time="0.0080000000000009" classname="sampleVarSpec" name="h_collapse_levels_fails_when_no_group_list_is_provided"/>
-    <testcase time="0.00799999999999912" classname="sampleVarSpec" name="h_collapse_levels_fails_when_x_is_not_a_factor_provided"/>
-    <testcase time="0.00500000000000078" classname="sampleVarSpec" name="validate_n_levels_passes_for_a_valid_factor_with_required_number_of_levels"/>
+    <testcase time="0.00799999999999912" classname="sampleVarSpec" name="h_collapse_levels_fails_when_no_group_list_is_provided"/>
+    <testcase time="0.0080000000000009" classname="sampleVarSpec" name="h_collapse_levels_fails_when_x_is_not_a_factor_provided"/>
+    <testcase time="0.00499999999999901" classname="sampleVarSpec" name="validate_n_levels_passes_for_a_valid_factor_with_required_number_of_levels"/>
     <testcase time="0.00300000000000011" classname="sampleVarSpec" name="validate_n_levels_passes_for_a_valid_factor_with_required_number_of_levels"/>
-    <testcase time="0.00799999999999912" classname="sampleVarSpec" name="validate_n_levels_gives_expected_validation_error_when_x_is_not_a_factor"/>
-    <testcase time="0.0080000000000009" classname="sampleVarSpec" name="validate_n_levels_gives_expected_validation_error_when_factor_x_does_not_have_required_number_of_levels"/>
+    <testcase time="0.0080000000000009" classname="sampleVarSpec" name="validate_n_levels_gives_expected_validation_error_when_x_is_not_a_factor"/>
+    <testcase time="0.00699999999999967" classname="sampleVarSpec" name="validate_n_levels_gives_expected_validation_error_when_factor_x_does_not_have_required_number_of_levels"/>
     <testcase time="0.0399999999999991" classname="sampleVarSpec" name="sampleVarSpecServer_only_gives_atomic_columns_with_at_least_one_value_in_col_data_vars"/>
-    <testcase time="0.00200000000000067" classname="sampleVarSpec" name="sampleVarSpecServer_only_gives_atomic_columns_with_at_least_one_value_in_col_data_vars"/>
-    <testcase time="0.0249999999999986" classname="sampleVarSpec" name="sampleVarSpecServer_only_gives_factor_columns_in_col_data_vars_when_categorical_only"/>
-    <testcase time="0.00200000000000067" classname="sampleVarSpec" name="sampleVarSpecServer_only_gives_factor_columns_in_col_data_vars_when_categorical_only"/>
+    <testcase time="0.00100000000000122" classname="sampleVarSpec" name="sampleVarSpecServer_only_gives_atomic_columns_with_at_least_one_value_in_col_data_vars"/>
+    <testcase time="0.0259999999999998" classname="sampleVarSpec" name="sampleVarSpecServer_only_gives_factor_columns_in_col_data_vars_when_categorical_only"/>
+    <testcase time="0.000999999999999446" classname="sampleVarSpec" name="sampleVarSpecServer_only_gives_factor_columns_in_col_data_vars_when_categorical_only"/>
     <testcase time="0.00500000000000078" classname="sampleVarSpec" name="sampleVarSpec_module_works_as_expected_in_the_test_app">
       <skipped message="Reason: testing depth 3 is below current testing specification 5 ('test-sampleVarSpec.R:173:3')"/>
     </testcase>
   </testsuite>
-  <testsuite name="scatterplot" timestamp="2025-05-20T18:06:03Z" hostname="947c9481e2ce" tests="3" skipped="1" failures="0" errors="0" time="0.096">
-    <testcase time="0.0899999999999999" classname="scatterplot" name="ui_g_scatterplot_creates_expected_HTML"/>
+  <testsuite name="scatterplot" timestamp="2025-05-20T18:06:47Z" hostname="e6058289a011" tests="3" skipped="1" failures="0" errors="0" time="0.1">
+    <testcase time="0.0939999999999994" classname="scatterplot" name="ui_g_scatterplot_creates_expected_HTML"/>
     <testcase time="0.000999999999999446" classname="scatterplot" name="ui_g_scatterplot_creates_expected_HTML"/>
     <testcase time="0.00500000000000078" classname="scatterplot" name="scatterplot_module_works_as_expected_in_the_test_app">
       <skipped message="Reason: testing depth 3 is below current testing specification 5 ('test-scatterplot.R:26:3')"/>
     </testcase>
   </testsuite>
-  <testsuite name="utils" timestamp="2025-05-20T18:06:03Z" hostname="947c9481e2ce" tests="6" skipped="0" failures="0" errors="0" time="0.038">
-    <testcase time="0.0179999999999989" classname="utils" name="is_blank_works_as_expected"/>
-    <testcase time="0.00200000000000067" classname="utils" name="is_blank_works_as_expected"/>
+  <testsuite name="utils" timestamp="2025-05-20T18:06:47Z" hostname="e6058289a011" tests="6" skipped="0" failures="0" errors="0" time="0.038">
+    <testcase time="0.0169999999999995" classname="utils" name="is_blank_works_as_expected"/>
     <testcase time="0.00300000000000011" classname="utils" name="is_blank_works_as_expected"/>
-    <testcase time="0.00799999999999912" classname="utils" name="h_extract_words_works_as_expected"/>
-    <testcase time="0.00200000000000067" classname="utils" name="h_extract_words_works_as_expected"/>
-    <testcase time="0.00499999999999901" classname="utils" name="h_extract_words_works_as_expected"/>
+    <testcase time="0.00300000000000011" classname="utils" name="is_blank_works_as_expected"/>
+    <testcase time="0.0080000000000009" classname="utils" name="h_extract_words_works_as_expected"/>
+    <testcase time="0.00199999999999889" classname="utils" name="h_extract_words_works_as_expected"/>
+    <testcase time="0.00500000000000078" classname="utils" name="h_extract_words_works_as_expected"/>
   </testsuite>
-  <testsuite name="volcanoplot" timestamp="2025-05-20T18:06:03Z" hostname="947c9481e2ce" tests="3" skipped="1" failures="0" errors="0" time="0.084">
-    <testcase time="0.0780000000000012" classname="volcanoplot" name="ui_g_volcanoplot_creates_expected_HTML"/>
-    <testcase time="0.000999999999999446" classname="volcanoplot" name="ui_g_volcanoplot_creates_expected_HTML"/>
-    <testcase time="0.00500000000000078" classname="volcanoplot" name="volcanoplot_module_works_as_expected_in_the_test_app">
+  <testsuite name="volcanoplot" timestamp="2025-05-20T18:06:47Z" hostname="e6058289a011" tests="3" skipped="1" failures="0" errors="0" time="0.117">
+    <testcase time="0.110999999999999" classname="volcanoplot" name="ui_g_volcanoplot_creates_expected_HTML"/>
+    <testcase time="0.00200000000000067" classname="volcanoplot" name="ui_g_volcanoplot_creates_expected_HTML"/>
+    <testcase time="0.00399999999999956" classname="volcanoplot" name="volcanoplot_module_works_as_expected_in_the_test_app">
       <skipped message="Reason: testing depth 3 is below current testing specification 5 ('test-volcanoplot.R:21:3')"/>
     </testcase>
   </testsuite>
