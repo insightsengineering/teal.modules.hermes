@@ -215,35 +215,35 @@
       39                <NA>                <NA>       NA     <NA> 2022-03-30     NA
       41                <NA>                <NA>       NA     <NA> 2022-03-30     NA
          ADTHAUT ASEQ TTESEQ                     PARAM PARAMCD      AVAL AVALU
-      3     <NA>    4      4 Progression Free Survival     PFS 239.08590  DAYS
-      9      Yes    2      2 Progression Free Survival     PFS 248.53707  DAYS
-      11    <NA>    3      3 Progression Free Survival     PFS 420.38459  DAYS
-      18    <NA>    3      3 Progression Free Survival     PFS  30.04978  DAYS
-      24    <NA>    2      2 Progression Free Survival     PFS 382.86110  DAYS
-      30    <NA>    1      1 Progression Free Survival     PFS 326.40156  DAYS
-      34     Yes    1      1 Progression Free Survival     PFS  45.07870  DAYS
-      39    <NA>    2      2 Progression Free Survival     PFS 899.41424  DAYS
-      41    <NA>    3      3 Progression Free Survival     PFS 131.76520  DAYS
-                        ADTM  ADY CNSR                    EVNTDESC
-      3  2022-02-16 08:01:26 1073    1       Last Tumor Assessment
-      9  2020-04-05 15:24:07  397    0         Disease Progression
-      11 2020-09-20 14:18:17  553    0                       Death
-      18 2020-10-02 09:11:52  571    1 Last Date Known To Be Alive
-      24 2021-09-04 09:35:30  909    0         Disease Progression
-      30 2019-12-14 23:53:53  268    1       Last Tumor Assessment
-      34 2019-11-14 09:38:55  241    0         Disease Progression
-      39 2020-07-15 17:21:21  497    0                       Death
-      41 2020-06-28 06:32:29  480    0                       Death
-                           CNSDTDSC lgTMATRSK is_event gene_factor
-      3            Clinical Cut Off        NA    FALSE  (50%,100%]
-      9                                    NA     TRUE    [0%,50%]
-      11                                   NA     TRUE  (50%,100%]
-      18           Clinical Cut Off        NA    FALSE    [0%,50%]
-      24                                   NA     TRUE  (50%,100%]
-      30 End of AE Reporting Period        NA    FALSE    [0%,50%]
-      34                                   NA     TRUE    [0%,50%]
-      39                                   NA     TRUE    [0%,50%]
-      41                                   NA     TRUE  (50%,100%]
+      3     <NA>    3      3 Progression Free Survival     PFS 239.34589  DAYS
+      9      Yes    4      4 Progression Free Survival     PFS  53.72392  DAYS
+      11    <NA>    2      2 Progression Free Survival     PFS 247.50869  DAYS
+      18    <NA>    1      1 Progression Free Survival     PFS 232.17469  DAYS
+      24    <NA>    1      1 Progression Free Survival     PFS 280.16788  DAYS
+      30    <NA>    1      1 Progression Free Survival     PFS  37.23394  DAYS
+      34     Yes    1      1 Progression Free Survival     PFS 239.68411  DAYS
+      39    <NA>    4      4 Progression Free Survival     PFS  27.98138  DAYS
+      41    <NA>    4      4 Progression Free Survival     PFS 222.16547  DAYS
+                        ADTM  ADY CNSR              EVNTDESC
+      3  2021-01-16 08:01:26  677    1         Adverse Event
+      9  2021-09-21 15:24:07  931    0                 Death
+      11 2020-08-14 14:18:17  516    1         Adverse Event
+      18 2020-05-08 09:11:52  424    0   Disease Progression
+      24 2019-04-09 09:35:30   30    1         Adverse Event
+      30 2019-04-16 23:53:53   26    0                 Death
+      34 2019-06-07 09:38:55   81    1 Last Tumor Assessment
+      39 2021-11-21 17:21:21  991    0                 Death
+      41 2022-02-06 06:32:29 1068    0                 Death
+                              CNSDTDSC lgTMATRSK is_event gene_factor
+      3                 Preferred Term        NA    FALSE  (50%,100%]
+      9                                       NA     TRUE    [0%,50%]
+      11                Preferred Term        NA    FALSE  (50%,100%]
+      18                                      NA     TRUE    [0%,50%]
+      24                Preferred Term        NA    FALSE  (50%,100%]
+      30                                      NA     TRUE    [0%,50%]
+      34 Completion or Discontinuation        NA    FALSE    [0%,50%]
+      39                                      NA     TRUE    [0%,50%]
+      41                                      NA     TRUE  (50%,100%]
       
       $variables
       $variables$tte
