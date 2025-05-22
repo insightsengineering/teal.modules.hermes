@@ -222,7 +222,6 @@ geneSpecInput <- function(id, # nolint
       tags$div(
         class = "col-sm-8",
         tags$label(
-          class = "control-label",
           paste("Select", axis, "gene(s)")
         )
       ),
@@ -231,8 +230,7 @@ geneSpecInput <- function(id, # nolint
         actionButton(
           ns("open_text_input"),
           tags$span(icon("font fa-border")),
-          title = "Enter list of genes",
-          class = "list-genes"
+          title = "Enter list of genes"
         ),
         tags$div(
           title = "Lock gene selection",
@@ -253,7 +251,6 @@ geneSpecInput <- function(id, # nolint
       )
     ),
     tags$div(
-      class = "custom-select-input",
       teal.widgets::optionalSelectInput(
         ns("genes"),
         label = NULL,

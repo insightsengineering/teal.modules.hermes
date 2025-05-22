@@ -48,53 +48,57 @@ geneSpecInput <- function(inputId, # nolint
   tagList(
     include_css_files(pattern = "*"),
     tags$div(
-      tags$div(
-        tags$label(
-          class = "control-label",
-          label_genes
+      style = "display: flex; justify-content: space-around;",
+      tags$label(
+        label_genes
+      ),
+      actionLink(
+        ns("select_none_button"),
+        bslib::tooltip(
+          placement = "top",
+          trigger = tags$span(icon("remove-circle", lib = "glyphicon")),
+          label_select_none_button,
+          width = "10px"
         )
       ),
-      tags$div(
-        actionButton(
-          ns("select_none_button"),
-          tags$span(icon("remove-circle", lib = "glyphicon")),
-          title = label_select_none_button,
-          class = "list-genes"
-        ),
-        actionButton(
-          ns("select_all_button"),
-          tags$span(icon("ok-circle", lib = "glyphicon")),
-          title = label_select_all_button,
-          class = "list-genes"
+      actionLink(
+        ns("select_all_button"),
+        bslib::tooltip(
+          placement = "top",
+          trigger = tags$span(icon("ok-circle", lib = "glyphicon")),
+          label_select_all_button,
+          width = "10px"
         )
       ),
-      tags$div(
-        actionButton(
-          ns("text_button"),
-          tags$span(icon("fas fa-font")),
-          title = label_text_button,
-          class = "list-genes"
-        ),
-        tags$div(
-          title = label_lock_button,
-          shinyWidgets::prettyToggle(
-            ns("lock_button"),
-            value = FALSE,
-            label_on = NULL,
-            label_off = NULL,
-            status_on = "default",
-            status_off = "default",
-            outline = FALSE,
-            plain = TRUE,
-            icon_on = icon("fas fa-lock"),
-            icon_off = icon("fas fa-lock-open"),
-            animation = "pulse"
-          )
+      actionLink(
+        ns("text_button"),
+        bslib::tooltip(
+          placement = "top",
+          trigger = tags$span(icon("font")),
+          label_text_button,
+          width = "10px"
         )
+      ),
+      bslib::tooltip(
+        placement = "top",
+        trigger = shinyWidgets::prettyToggle(
+          ns("lock_button"),
+          value = FALSE,
+          label_on = NULL,
+          label_off = NULL,
+          status_on = "default",
+          status_off = "default",
+          outline = FALSE,
+          plain = TRUE,
+          width = "10px",
+          icon_on = icon("fas fa-lock"),
+          icon_off = icon("fas fa-lock-open"),
+          animation = "pulse"
+        ),
+        label_lock_button
       )
     ),
     tags$div(
-      class = "custom-select-input",
       selectizeInput(
         ns("genes"),
         label = NULL,
@@ -105,7 +109,7 @@ geneSpecInput <- function(inputId, # nolint
           placeholder = "- Nothing selected -",
           render = I("{
           option: function(item, escape) {
-              return '<div> <span style=\"font-size: inherit;\">' + item.label + '</div>' +
+              return '<div style = \"padding: 2px 12px;\"> <span style=\"font-size: inherit;\">' + item.label + '</div>' +
                 ' <span style=\"color: #808080; font-size: xx-small;\" >' + item.value + '</div> </div>'
             }
           }"),

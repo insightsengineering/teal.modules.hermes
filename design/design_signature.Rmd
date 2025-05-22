@@ -197,7 +197,6 @@ ui_g_signature <- function(id,
           tags$div(
             class = "col-sm-8",
             tags$label(
-              class = "control-label",
               "Select gene(s) of interest"
             )
           ),
@@ -206,8 +205,7 @@ ui_g_signature <- function(id,
             actionButton(
               ns("open_text_input"),
               tags$span(icon("font fa-border")),
-              title = "Enter list of genes",
-              class = "list-genes"
+              title = "Enter list of genes"
             ),
             tags$div(
               title = "Lock gene selection",
@@ -228,7 +226,6 @@ ui_g_signature <- function(id,
           )
         ),
         tags$div(
-          class = "custom-select-input",
           teal.widgets::optionalSelectInput(
             ns("y_vars"),
             label = NULL,

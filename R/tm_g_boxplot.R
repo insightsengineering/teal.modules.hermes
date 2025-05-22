@@ -90,10 +90,17 @@ ui_g_boxplot <- function(id,
       uiOutput(ns("experiment_ui")),
       assaySpecInput(ns("assay")),
       geneSpecInput(ns("genes"), summary_funs),
-      tags$label("Jitter"),
-      shinyWidgets::switchInput(ns("jitter"), value = FALSE, size = "mini"),
-      tags$label("Violin Plot"),
-      shinyWidgets::switchInput(ns("violin"), value = FALSE, size = "mini"),
+      tags$div(
+        style = "display: flex; justify-content: space-around;",
+        tags$div(
+          tags$label("Jitter"),
+          shinyWidgets::switchInput(ns("jitter"), value = FALSE, size = "mini")
+        ),
+        tags$div(
+          tags$label("Violin Plot"),
+          shinyWidgets::switchInput(ns("violin"), value = FALSE, size = "mini")
+        )
+      ),
       bslib::accordion(
         bslib::accordion_panel(
           input_id = "settings_item",
