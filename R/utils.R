@@ -76,3 +76,15 @@ include_js_files <- function(pattern = "*") { # nolint
   )
   return(singleton(lapply(js_files, includeScript)))
 }
+
+#' @keywords internal
+#' @noRd
+toggle_dropdown_deps <- function() {
+  htmltools::htmlDependency(
+    name = "teal-modules-hermes-toggle_dropdown",
+    version = utils::packageVersion("teal.modules.hermes"),
+    package = "teal.modules.hermes",
+    src = "js",
+    script = "dropdown.js"
+  )
+}

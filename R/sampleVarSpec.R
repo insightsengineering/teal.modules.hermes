@@ -23,24 +23,18 @@ sampleVarSpecInput <- function(inputId, # nolint
 
   ns <- NS(inputId)
   tagList(
-    include_css_files(pattern = "*"),
+    # include_css_files(pattern = "*"),
     tags$div(
-      class = "row",
-      tags$div(
-        class = "col-sm-8",
-        tags$label(
-          class = "control-label",
-          label_vars
-        )
+      tags$label(
+        class = "control-label",
+        label_vars
       ),
-      tags$div(
-        class = "col-sm-4",
-        actionButton(
-          ns("levels_button"),
-          tags$span(icon("fas fa-table")),
-          title = label_levels_button,
-          class = "pull-right list-genes"
-        )
+      actionButton(
+        ns("levels_button"),
+        NULL,
+        icon("table"),
+        title = label_levels_button,
+        class = "list-genes"
       )
     ),
     tags$div(

@@ -16,7 +16,8 @@ assaySpecInput <- function(inputId, # nolint
   assert_string(label_assays, min.chars = 1L)
 
   ns <- NS(inputId)
-  tagList(
+  tags$div(
+    toggle_dropdown_deps(),
     selectizeInput(
       inputId = ns("name"),
       label = label_assays,
@@ -24,8 +25,7 @@ assaySpecInput <- function(inputId, # nolint
       options = list(
         placeholder = "- Nothing selected -"
       )
-    ),
-    include_js_files("dropdown.js")
+    )
   )
 }
 

@@ -76,8 +76,7 @@ ui_g_pca2 <- function(id,
           type = "tabs",
           tabPanel(
             "PCA",
-            column(
-              width = 12,
+            bslib::page_fluid(
               tags$div(
                 class = "my-5",
                 plotOutput(ns("plot_pca"))
@@ -87,8 +86,7 @@ ui_g_pca2 <- function(id,
           ),
           tabPanel(
             "PC and Sample Correlation",
-            column(
-              width = 12,
+            bslib::page_fluid(
               tags$div(
                 class = "my-5",
                 plotOutput(ns("plot_cor"))

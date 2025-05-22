@@ -108,14 +108,14 @@ adtteSpecInput <- function(inputId, # nolint
 
   ns <- NS(inputId)
 
-  tagList(
+  tags$div(
+    toggle_dropdown_deps(),
     selectizeInput(
       inputId = ns("paramcd"),
       label = label_paramcd,
       choices = "",
       options = list(placeholder = "- Nothing selected -")
-    ),
-    include_js_files("dropdown.js")
+    )
   )
 }
 

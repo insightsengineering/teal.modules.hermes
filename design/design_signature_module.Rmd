@@ -232,10 +232,9 @@ geneSpecInput <- function(id, # nolint
           ns("open_text_input"),
           tags$span(icon("font fa-border")),
           title = "Enter list of genes",
-          class = "pull-right list-genes"
+          class = "list-genes"
         ),
         tags$div(
-          class = "pull-right",
           title = "Lock gene selection",
           shinyWidgets::prettyToggle(
             ns("lock"),

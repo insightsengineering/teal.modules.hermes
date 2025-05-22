@@ -48,39 +48,34 @@ geneSpecInput <- function(inputId, # nolint
   tagList(
     include_css_files(pattern = "*"),
     tags$div(
-      class = "row",
       tags$div(
-        class = "col-sm-8",
         tags$label(
           class = "control-label",
           label_genes
         )
       ),
       tags$div(
-        class = "col-sm-2",
         actionButton(
           ns("select_none_button"),
           tags$span(icon("remove-circle", lib = "glyphicon")),
           title = label_select_none_button,
-          class = "pull-right list-genes"
+          class = "list-genes"
         ),
         actionButton(
           ns("select_all_button"),
           tags$span(icon("ok-circle", lib = "glyphicon")),
           title = label_select_all_button,
-          class = "pull-right list-genes"
+          class = "list-genes"
         )
       ),
       tags$div(
-        class = "col-sm-2",
         actionButton(
           ns("text_button"),
           tags$span(icon("fas fa-font")),
           title = label_text_button,
-          class = "pull-right list-genes"
+          class = "list-genes"
         ),
         tags$div(
-          class = "pull-right",
           title = label_lock_button,
           shinyWidgets::prettyToggle(
             ns("lock_button"),
