@@ -17,7 +17,6 @@ assaySpecInput <- function(inputId, # nolint
 
   ns <- NS(inputId)
   tags$div(
-    toggle_dropdown_deps(),
     selectizeInput(
       inputId = ns("name"),
       label = label_assays,
@@ -130,10 +129,6 @@ assaySpecServer <- function(id, # nolint
     observeEvent(choices(), {
       choices <- choices()
       updateSelectizeInput(session, "name", choices = choices)
-      session$sendCustomMessage(
-        "toggle_dropdown",
-        list(input_id = session$ns("name"), disabled = (length(choices) == 0))
-      )
     })
 
     reactive({

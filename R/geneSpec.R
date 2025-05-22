@@ -46,7 +46,6 @@ geneSpecInput <- function(inputId, # nolint
 
   ns <- NS(inputId)
   tagList(
-    include_css_files(pattern = "*"),
     tags$div(
       style = "display: flex; justify-content: space-around;",
       tags$label(

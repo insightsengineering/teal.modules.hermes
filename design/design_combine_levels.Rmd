@@ -215,7 +215,6 @@ ui_g_levels <- function(id,
   experiment_name_choices <- names(mae)
 
   tagList(
-    include_css_files(pattern = "*"),
     teal.widgets::standard_layout(
       encoding = tags$div(
         selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),

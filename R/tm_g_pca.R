@@ -71,7 +71,6 @@ ui_g_pca <- function(id,
 
   tagList(
     teal.widgets::standard_layout(
-      include_css_files(pattern = "*"),
       encoding = tags$div(
         ### Reporter
         teal.reporter::simple_reporter_ui(ns("simple_reporter")),

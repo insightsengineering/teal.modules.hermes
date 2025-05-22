@@ -36,7 +36,6 @@ ui_g_pca2 <- function(id,
   experiment_name_choices <- names(mae)
 
   tagList(
-    include_css_files(pattern = "*"),
     teal.widgets::standard_layout(
       encoding = tags$div(
         tags$label("Encodings", class = "text-primary"),
