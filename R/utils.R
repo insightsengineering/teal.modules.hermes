@@ -40,39 +40,3 @@ h_extract_words <- function(x) {
     "[a-zA-Z0-9:\\.]+"
   )[[1]]
 }
-
-#' Include `CSS` files from `/inst/css/` package directory to application header
-#'
-#' `system.file` should not be used to access files in other packages, it does
-#' not work with `devtools`. Therefore, we redefine this method in each package
-#' as needed. Thus, we do not export this method
-#'
-#' @param pattern (`character`) pattern of files to be included
-#'
-#' @return HTML code that includes `CSS` files
-#' @keywords internal
-include_css_files <- function(pattern = "*") { # nolint
-  css_files <- list.files(
-    system.file("css", package = "teal.modules.hermes", mustWork = TRUE),
-    pattern = pattern, full.names = TRUE
-  )
-  return(shiny::singleton(shiny::tags$head(lapply(css_files, includeCSS))))
-}
-
-#' Include `JS` files from `/inst/js/` package directory to application header
-#'
-#' `system.file` should not be used to access files in other packages, it does
-#' not work with `devtools`. Therefore, we redefine this method in each package
-#' as needed. Thus, we do not export this method
-#'
-#' @param pattern (`character`) pattern of files to be included, passed to `system.file`
-#'
-#' @return HTML code that includes `JS` files
-#' @keywords internal
-include_js_files <- function(pattern = "*") { # nolint
-  js_files <- list.files(
-    system.file("js", package = "teal.modules.hermes", mustWork = TRUE),
-    pattern = pattern, full.names = TRUE
-  )
-  return(singleton(lapply(js_files, includeScript)))
-}

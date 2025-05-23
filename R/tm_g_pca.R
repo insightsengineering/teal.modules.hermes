@@ -71,7 +71,6 @@ ui_g_pca <- function(id,
 
   tagList(
     teal.widgets::standard_layout(
-      include_css_files(pattern = "*"),
       encoding = tags$div(
         ### Reporter
         teal.reporter::simple_reporter_ui(ns("simple_reporter")),
@@ -125,8 +124,7 @@ ui_g_pca <- function(id,
           type = "tabs",
           tabPanel(
             "PCA",
-            column(
-              width = 12,
+            bslib::page_fluid(
               if (.test) verbatimTextOutput(ns("test_pca")) else NULL,
               div(
                 class = "my-5",
@@ -137,8 +135,7 @@ ui_g_pca <- function(id,
           ),
           tabPanel(
             "PC and Sample Correlation",
-            column(
-              width = 12,
+            bslib::page_fluid(
               if (.test) verbatimTextOutput(ns("test_cor")) else NULL,
               div(
                 class = "my-5",

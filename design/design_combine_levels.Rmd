@@ -84,6 +84,7 @@ Toy example for it:
 
 ```{r}
 library(shiny)
+library(bslib)
 library(shinyRadioMatrix)
 
 ## Only run examples in interactive R sessions
@@ -91,7 +92,7 @@ if (FALSE) {
   data(exTaxonList)
   data(exPftList)
 
-  ui <- fluidPage(
+  ui <- page_fluid(
     radioMatrixInput(
       inputId = "rmi01", rowIDs = head(exTaxonList$Var),
       rowLLabels = head(
@@ -214,7 +215,6 @@ ui_g_levels <- function(id,
   experiment_name_choices <- names(mae)
 
   tagList(
-    include_css_files(pattern = "*"),
     teal.widgets::standard_layout(
       encoding = tags$div(
         selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
@@ -223,7 +223,6 @@ ui_g_levels <- function(id,
           tags$div(
             class = "col-sm-8",
             tags$label(
-              class = "control-label",
               "Select faceting variable"
             )
           ),
@@ -232,13 +231,11 @@ ui_g_levels <- function(id,
             actionButton(
               ns("open_levels_input"),
               tags$span(icon("font fa-object-ungroup")),
-              title = "Combine factor levels",
-              class = "pull-right list-genes"
+              title = "Combine factor levels"
             )
           )
         ),
         tags$div(
-          class = "custom-select-input",
           teal.widgets::optionalSelectInput(
             ns("facet_var"),
             label = NULL,
@@ -357,8 +354,7 @@ srv_g_levels <- function(input,
       footer = tagList(
         modalButton("Cancel"),
         actionButton(session$ns("ok"), "OK")
-      ),
-      include_js_files("checkbox.js")
+      )
     )
   }
 

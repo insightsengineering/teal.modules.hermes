@@ -187,7 +187,6 @@ ui_g_signature <- function(id,
   experiment_name_choices <- names(mae)
 
   tagList(
-    include_css_files(pattern = "*"),
     teal.widgets::standard_layout(
       encoding = tags$div(
         selectInput(ns("experiment_name"), "Select experiment", experiment_name_choices),
@@ -197,7 +196,6 @@ ui_g_signature <- function(id,
           tags$div(
             class = "col-sm-8",
             tags$label(
-              class = "control-label",
               "Select gene(s) of interest"
             )
           ),
@@ -206,11 +204,9 @@ ui_g_signature <- function(id,
             actionButton(
               ns("open_text_input"),
               tags$span(icon("font fa-border")),
-              title = "Enter list of genes",
-              class = "pull-right list-genes"
+              title = "Enter list of genes"
             ),
             tags$div(
-              class = "pull-right",
               title = "Lock gene selection",
               shinyWidgets::prettyToggle(
                 ns("lock"),
@@ -229,7 +225,6 @@ ui_g_signature <- function(id,
           )
         ),
         tags$div(
-          class = "custom-select-input",
           teal.widgets::optionalSelectInput(
             ns("y_vars"),
             label = NULL,

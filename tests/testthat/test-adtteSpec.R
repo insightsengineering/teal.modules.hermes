@@ -175,15 +175,7 @@ test_that("adtteSpecInput creates expected HTML", {
     label_paramcd = "Select right PARAMCD"
   ))
 
-  expect_class(result, "shiny.tag.list")
-  expect_length(result, 2)
-
-  # First element is a div tag
-  expect_tag(result[[1]])
-
-  # Second element is the contents of a single js file
-  expect_length(result[[2]], 1)
-  expect_tag(result[[2]][[1]])
+  expect_class(result, "shiny.tag")
 })
 
 # nolint start

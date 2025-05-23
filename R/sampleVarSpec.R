@@ -23,28 +23,21 @@ sampleVarSpecInput <- function(inputId, # nolint
 
   ns <- NS(inputId)
   tagList(
-    include_css_files(pattern = "*"),
     tags$div(
-      class = "row",
-      tags$div(
-        class = "col-sm-8",
-        tags$label(
-          class = "control-label",
-          label_vars
-        )
-      ),
-      tags$div(
-        class = "col-sm-4",
-        actionButton(
-          ns("levels_button"),
-          tags$span(icon("fas fa-table")),
-          title = label_levels_button,
-          class = "pull-right list-genes"
-        )
+      tags$span(
+        bslib::tooltip(
+          placement = "top",
+          trigger = actionLink(
+            ns("levels_button"),
+            icon("table")
+          ),
+          label_levels_button,
+          width = "10px"
+        ),
+        label_vars
       )
     ),
     tags$div(
-      class = "custom-select-input",
       teal.widgets::optionalSelectInput(
         ns("sample_var"),
         label = NULL,
@@ -395,8 +388,7 @@ sampleVarSpecServer <- function(id, # nolint
         footer = tagList(
           modalButton("Cancel"),
           actionButton(session$ns("ok"), "OK")
-        ),
-        include_js_files("checkbox.js")
+        )
       )
     }
 

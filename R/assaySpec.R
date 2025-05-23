@@ -16,7 +16,7 @@ assaySpecInput <- function(inputId, # nolint
   assert_string(label_assays, min.chars = 1L)
 
   ns <- NS(inputId)
-  tagList(
+  tags$div(
     selectizeInput(
       inputId = ns("name"),
       label = label_assays,
@@ -24,8 +24,7 @@ assaySpecInput <- function(inputId, # nolint
       options = list(
         placeholder = "- Nothing selected -"
       )
-    ),
-    include_js_files("dropdown.js")
+    )
   )
 }
 
@@ -130,10 +129,6 @@ assaySpecServer <- function(id, # nolint
     observeEvent(choices(), {
       choices <- choices()
       updateSelectizeInput(session, "name", choices = choices)
-      session$sendCustomMessage(
-        "toggle_dropdown",
-        list(input_id = session$ns("name"), disabled = (length(choices) == 0))
-      )
     })
 
     reactive({
