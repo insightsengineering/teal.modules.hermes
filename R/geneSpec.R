@@ -108,8 +108,10 @@ geneSpecInput <- function(inputId, # nolint
           placeholder = "- Nothing selected -",
           render = I("{
           option: function(item, escape) {
-              return '<div style = \"padding: 2px 12px;\"> <span style=\"font-size: inherit;\">' + item.label + '</div>' +
-                ' <span style=\"color: #808080; font-size: xx-small;\" >' + item.value + '</div> </div>'
+              return '<div style = \"padding: 2px 12px;\">' +
+                        '<span style=\"font-size: inherit;\">' + item.label +
+                        ' <span style=\"color: red; font-size: xx-small;\" >' + item.value +
+                      '</div>'
             }
           }"),
           searchField = c("value", "label"),
