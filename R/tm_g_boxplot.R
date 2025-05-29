@@ -93,12 +93,18 @@ ui_g_boxplot <- function(id,
       tags$div(
         style = "display: flex; justify-content: space-around;",
         tags$div(
-          tags$label("Jitter"),
-          shinyWidgets::switchInput(ns("jitter"), value = FALSE, size = "mini")
+          bslib::input_switch(
+            ns("jitter"),
+            label = "Jitter",
+            value = FALSE
+          )
         ),
         tags$div(
-          tags$label("Violin Plot"),
-          shinyWidgets::switchInput(ns("violin"), value = FALSE, size = "mini")
+          bslib::input_switch(
+            ns("violin"),
+            label = "Violin Plot",
+            value = FALSE
+          )
         )
       ),
       bslib::accordion(

@@ -87,8 +87,11 @@ ui_g_volcanoplot <- function(id,
       uiOutput(ns("experiment_ui")),
       assaySpecInput(ns("assay")),
       sampleVarSpecInput(ns("compare_group"), "Compare Groups", "Please group here into 2 levels"),
-      tags$label("Show Top Differentiated Genes"),
-      shinyWidgets::switchInput(ns("show_top_gene"), value = FALSE, size = "mini"),
+      bslib::input_switch(
+        ns("show_top_gene"),
+        label = "Show Top Differentiated Genes",
+        value = FALSE
+      ),
       bslib::accordion(
         bslib::accordion_panel(
           input_id = "settings_item",

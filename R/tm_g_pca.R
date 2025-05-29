@@ -91,8 +91,11 @@ ui_g_pca <- function(id,
             input_id = "settings_item",
             open = TRUE,
             title = "Additional Settings",
-            tags$label("Use only Top Variance Genes"),
-            shinyWidgets::switchInput(ns("filter_top"), value = FALSE, size = "mini"),
+            bslib::input_switch(
+              ns("filter_top"),
+              label = "Use only Top Variance Genes",
+              value = FALSE
+            ),
             conditionalPanel(
               condition = "input.filter_top",
               ns = ns,
@@ -101,19 +104,31 @@ ui_g_pca <- function(id,
             conditionalPanel(
               condition = "input.tab_selected == 'PCA'",
               ns = ns,
-              tags$label("Show Variance %"),
-              shinyWidgets::switchInput(ns("var_pct"), value = TRUE, size = "mini"),
-              tags$label("Show Label"),
-              shinyWidgets::switchInput(ns("label"), value = TRUE, size = "mini")
+              bslib::input_switch(
+                ns("var_pct"),
+                label = "Show Variance %",
+                value = TRUE
+              ),
+              bslib::input_switch(
+                ns("label"),
+                label = "Show Label",
+                value = TRUE
+              )
             ),
             conditionalPanel(
               condition = "input.tab_selected == 'PC and Sample Correlation'",
               ns = ns,
-              tags$label("Cluster columns"),
-              shinyWidgets::switchInput(ns("cluster_columns"), value = FALSE, size = "mini")
+              bslib::input_switch(
+                ns("cluster_columns"),
+                label = "Cluster columns",
+                value = FALSE
+              )
             ),
-            tags$label("View Matrix"),
-            shinyWidgets::switchInput(ns("show_matrix"), value = TRUE, size = "mini")
+            bslib::input_switch(
+              ns("show_matrix"),
+              label = "View Matrix",
+              value = TRUE
+            )
           )
         )
       ),
