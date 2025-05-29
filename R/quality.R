@@ -147,11 +147,10 @@ ui_g_quality <- function(id,
         ns = ns,
         assaySpecInput(ns("assay"))
       ),
-      tags$label("Gene Filter Settings", class = "text-primary"),
-      shinyWidgets::switchInput(
+      bslib::input_switch(
         ns("filter_gene"),
-        value = TRUE,
-        size = "mini"
+        label = "Gene Filter Settings",
+        value = TRUE
       ),
       conditionalPanel(
         condition = "input.filter_gene",
@@ -166,11 +165,10 @@ ui_g_quality <- function(id,
           multiple = TRUE
         )
       ),
-      tags$label("Sample Filter Settings", class = "text-primary"),
-      shinyWidgets::switchInput(
+      bslib::input_switch(
         ns("filter_sample"),
-        value = TRUE,
-        size = "mini"
+        label = "Sample Filter Settings",
+        value = TRUE
       ),
       conditionalPanel(
         condition = "input.filter_sample",
