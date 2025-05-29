@@ -109,10 +109,9 @@ ui_g_pca <- function(id,
                 label = "Show Variance %",
                 value = TRUE
               ),
-              tags$label("Show Label"),
               bslib::input_switch(
                 ns("label"),
-                label = "",
+                label = "Show Label",
                 value = TRUE
               )
             ),
