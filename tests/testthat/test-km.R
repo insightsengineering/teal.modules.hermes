@@ -26,7 +26,7 @@ test_that("km module works as expected in the test app", {
   skip_if_covr()
   skip_if_too_deep(5)
 
-  app <- AppDriver$new(
+  app <- shinytest2::AppDriver$new(
     app_dir = test_path("km"),
     name = "km",
     variant = platform_variant(),

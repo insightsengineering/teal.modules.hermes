@@ -20,7 +20,7 @@ test_that("pca module works as expected in the test app", {
   skip_if_covr()
   skip_if_too_deep(5)
 
-  app <- AppDriver$new(
+  app <- shinytest2::AppDriver$new(
     app_dir = test_path("pca"),
     name = "pca",
     variant = platform_variant(),
