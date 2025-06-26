@@ -68,7 +68,7 @@ Suggests:
     rmarkdown,
     rvest,
     shinytest2 (>= 0.3.2),
-    testthat (>= 3.1.5)
+    testthat (>= 3.2.3)
 VignetteBuilder:
     knitr
 RdMacros:
