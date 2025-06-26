@@ -9,6 +9,7 @@
 #'
 #' @return The UI part.
 #' @seealso [experimentSpecServer()] for the module server and a complete example.
+#' @import hermes
 #' @export
 experimentSpecInput <- function(inputId, # nolint
                                 data,
