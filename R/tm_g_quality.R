@@ -65,7 +65,6 @@ heatmap_plot <- function(object, assay_name) {
 #' @return Shiny module to be used in the teal app.
 #'
 #' @export
-#' @inheritSection teal::example_module Reporting
 #'
 #' @examples
 #' data <- teal_data(MAE = hermes::multi_assay_experiment)
@@ -368,11 +367,6 @@ srv_g_quality <- function(id,
       output$table <- renderPrint(table())
     }
 
-    joined_qenvs <- reactive({
-      req(plot_r(), table())
-      c(plot_r(), table())
-    })
-
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment, label) {
@@ -428,7 +422,6 @@ srv_g_quality <- function(id,
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
     }
     ###
-    joined_qenvs
   })
 }
 
