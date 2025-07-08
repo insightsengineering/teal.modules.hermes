@@ -65,6 +65,7 @@ heatmap_plot <- function(object, assay_name) {
 #' @return Shiny module to be used in the teal app.
 #'
 #' @export
+#' @inheritSection teal::example_module Reporting
 #'
 #' @examples
 #' data <- teal_data(MAE = hermes::multi_assay_experiment)
@@ -124,9 +125,6 @@ ui_g_quality <- function(id,
   ns <- NS(id)
   teal.widgets::standard_layout(
     encoding = tags$div(
-      ### Reporter
-      teal.reporter::simple_reporter_ui(ns("simple_reporter")),
-      ###
       tags$label("Encodings", class = "text-primary"),
       helpText("Analysis of MAE:", tags$code(mae_name)),
       uiOutput(ns("experiment_ui")),
@@ -201,13 +199,9 @@ ui_g_quality <- function(id,
 #' @export
 srv_g_quality <- function(id,
                           data,
-                          filter_panel_api,
-                          reporter,
                           mae_name,
                           exclude_assays,
                           .test = FALSE) {
-  with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-  assert_class(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
@@ -374,6 +368,11 @@ srv_g_quality <- function(id,
       output$table <- renderPrint(table())
     }
 
+    joined_qenvs <- reactive({
+      req(plot_r(), table())
+      c(plot_r(), table())
+    })
+
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment, label) {
@@ -429,6 +428,7 @@ srv_g_quality <- function(id,
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
     }
     ###
+    joined_qenvs
   })
 }
 
