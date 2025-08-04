@@ -32,7 +32,7 @@ BugReports:
 Depends:
     ggplot2,
     R (>= 4.1),
-    shiny,
+    shiny (>= 1.8.1),
     teal (>= 0.16.0.9003)
 Imports:
     bslib,
