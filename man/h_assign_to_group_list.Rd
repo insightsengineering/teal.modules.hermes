@@ -13,8 +13,6 @@ h_assign_to_group_list(x)
 A combination list.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-
 This helper function takes an assignment list and converts it to a
 group list.
 }

@@ -9,6 +9,5 @@
 #' @import shiny
 #' @import teal teal.data
 #' @importFrom S4Vectors setListElement DataFrame
-#' @importFrom lifecycle deprecate_soft
 #' @importFrom utils str
 NULL

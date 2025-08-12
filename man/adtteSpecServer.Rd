@@ -65,8 +65,6 @@ numeric gene variable.
 }
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-
 This defines the server part for the \code{ADTTE} specification. The resulting data
 set \code{binned_adtte_subset} contains the subset of \code{ADTTE} selected by the time-to-event
 endpoint, joined together with the gene information extracted from specified assay

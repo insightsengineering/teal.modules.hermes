@@ -14,8 +14,6 @@ validate_n_levels(x, name, n_levels)
 \item{n_levels}{(\code{count})\cr required number of factor levels in \code{x}.}
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-
 This validation function checks that a given vector \code{x} is a factor with
 the specified number of levels.
 }

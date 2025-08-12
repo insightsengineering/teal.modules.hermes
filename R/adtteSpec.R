@@ -1,6 +1,6 @@
 #' Data Preprocessing for `ADTTE` Module
 #'
-#' @description `r lifecycle::badge("experimental")`
+#' @description
 #'
 #' A function to help with merging of MAE to `ADTTE`.
 #'
@@ -91,7 +91,7 @@ h_km_mae_to_adtte <- function(adtte,
 
 #' Module Input for `ADTTE` Specification
 #'
-#' @description `r lifecycle::badge("experimental")`
+#' @description
 #'
 #' This defines the input for the `ADTTE` specification.
 #'
@@ -120,7 +120,7 @@ adtteSpecInput <- function(inputId, # nolint
 
 #' Module Server for `ADTTE` Specification
 #'
-#' @description `r lifecycle::badge("experimental")`
+#' @description
 #'
 #' This defines the server part for the `ADTTE` specification. The resulting data
 #' set `binned_adtte_subset` contains the subset of `ADTTE` selected by the time-to-event

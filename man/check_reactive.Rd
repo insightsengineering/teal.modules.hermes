@@ -22,8 +22,6 @@ assertions; defaults to the heuristic implemented in \code{\link[checkmate:vname
 assertion messages, see \code{\link[checkmate:AssertCollection]{checkmate::AssertCollection}}.}
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-
 Check whether \code{x} is a reactive input.
 }
 \examples{

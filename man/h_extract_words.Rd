@@ -13,8 +13,6 @@ h_extract_words(x)
 Character vector with the extracted words.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-
 This helper function extracts words from a string. Here words are defined
 as containing lower or upper case letters, colons and dots. All other
 characters are considered separators.

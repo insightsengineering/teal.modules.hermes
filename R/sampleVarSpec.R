@@ -1,6 +1,6 @@
 #' Module Input for Sample Variable Specification
 #'
-#' @description `r lifecycle::badge("experimental")`
+#' @description
 #'
 #' This defines the input for the sample variable specification.
 #'
@@ -50,7 +50,7 @@ sampleVarSpecInput <- function(inputId, # nolint
 
 #' Helper Function For Group List Creation
 #'
-#' @description `r lifecycle::badge("experimental")`
+#' @description
 #'
 #' This helper function takes an assignment list and converts it to a
 #' group list.
@@ -91,7 +91,7 @@ h_assign_to_group_list <- function(x) {
 
 #' Helper Function for Collapsing of Factor Levels
 #'
-#' @description `r lifecycle::badge("experimental")`
+#' @description
 #'
 #' Given a group list and a factor, this helper function collapses the
 #' levels in the factor accordingly and also ensures that the resulting
@@ -133,7 +133,7 @@ h_collapse_levels <- function(x, group_list) {
 
 #' Validation of Number of Levels
 #'
-#' @description `r lifecycle::badge("experimental")`
+#' @description
 #'
 #' This validation function checks that a given vector `x` is a factor with
 #' the specified number of levels.
@@ -161,7 +161,7 @@ validate_n_levels <- function(x, name, n_levels) {
 
 #' Module Server for Sample Variable Specification
 #'
-#' @description `r lifecycle::badge("experimental")`
+#' @description
 #'
 #' This defines the server part for the sample variable specification.
 #'
@@ -463,7 +463,7 @@ sampleVarSpecServer <- function(id, # nolint
 
 #' Module Server for Specification of Multiple Sample Variables
 #'
-#' @description `r lifecycle::badge("experimental")`
+#' @description
 #'
 #' When multiple sample variables are used in a given module, then this
 #' wrapper makes it much easier to specify in the server function.

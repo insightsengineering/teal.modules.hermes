@@ -31,8 +31,6 @@ Reactive \code{\link[hermes:GeneSpec]{hermes::GeneSpec}} which can be used as in
 \code{hermes} functions.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-
 This defines the server part for the gene signature specification.
 }
 \examples{

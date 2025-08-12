@@ -1,6 +1,6 @@
 #' Module Input for Assay Specification
 #'
-#' @description `r lifecycle::badge("experimental")`
+#' @description
 #'
 #' This defines the input for the assay specification.
 #'
@@ -30,7 +30,7 @@ assaySpecInput <- function(inputId, # nolint
 
 #' Module Server for Assay Specification
 #'
-#' @description `r lifecycle::badge("experimental")`
+#' @description
 #'
 #' This defines the server part for the assay specification.
 #'

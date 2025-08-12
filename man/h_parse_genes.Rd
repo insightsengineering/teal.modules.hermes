@@ -16,8 +16,6 @@ new choices.}
 The subset of \code{choices} which matches \code{words} in ID or name.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-
 This helper function takes a vector of \code{words} and tries to match them
 with the \code{id} and \code{name} columns of possible gene choices.
 }

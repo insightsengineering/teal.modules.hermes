@@ -34,8 +34,6 @@ in the given experiment. The attribute \code{gene_cols} contains the column name
 for the gene columns.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-
 A function to help with merging of MAE to \code{ADTTE}.
 }
 \note{

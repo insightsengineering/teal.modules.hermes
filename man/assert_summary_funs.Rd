@@ -13,8 +13,6 @@ assert_summary_funs(x, null.ok = FALSE)
 a user choice is possible where no summary function should be applied.}
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-
 Check whether \code{x} is a list of summary functions.
 }
 \examples{
