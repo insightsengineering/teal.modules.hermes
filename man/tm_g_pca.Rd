@@ -67,8 +67,6 @@ during app initialization after going through the filters.}
 Shiny module to be used in the teal app.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-
 This module provides an interactive principal components plot and an
 interactive heatmap with correlation of principal components with sample
 variables.

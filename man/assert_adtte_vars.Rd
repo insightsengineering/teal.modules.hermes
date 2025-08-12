@@ -10,8 +10,6 @@ assert_adtte_vars(x)
 \item{x}{an object to check.}
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-
 Check whether \code{x} is a list of \code{ADTTE} variables.
 }
 \examples{

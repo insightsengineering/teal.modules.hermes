@@ -1,6 +1,6 @@
 #' Checking for Empty String
 #'
-#' @description `r lifecycle::badge('experimental')`
+#' @description
 #'
 #' This predicate function is helpful for functions where arguments could
 #' not yet be initialized from the teal module.
@@ -19,7 +19,7 @@ is_blank <- function(x) {
 
 #' Helper Function to Extract Words
 #'
-#' @description `r lifecycle::badge("experimental")`
+#' @description
 #'
 #' This helper function extracts words from a string. Here words are defined
 #' as containing lower or upper case letters, colons and dots. All other

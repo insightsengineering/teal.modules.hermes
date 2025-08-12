@@ -1,6 +1,6 @@
 #' Module Input for Experiment Specification
 #'
-#' @description `r lifecycle::badge("experimental")`
+#' @description
 #'
 #' This defines the input for the experiment specification.
 #'
@@ -30,7 +30,7 @@ experimentSpecInput <- function(inputId, # nolint
 
 #' Helper Function to Order Gene Choices
 #'
-#' @description `r lifecycle::badge("experimental")`
+#' @description
 #'
 #' The possible gene choices are ordered as follows. First come all genes which
 #' have a non-empty name, ordered by their name alphabetically. Last come
@@ -60,7 +60,7 @@ h_order_genes <- function(genes) {
 
 #' Helper Function to Format Gene Choices
 #'
-#' @description `r lifecycle::badge("experimental")`
+#' @description
 #'
 #' Given a [`hermes::AnyHermesData`] data object, as well as the annotation
 #' column name to use as gene name, this function formats the contained genes
@@ -104,7 +104,7 @@ h_gene_data <- function(object, name_annotation) {
 
 #' Module Server for Experiment Specification
 #'
-#' @description `r lifecycle::badge("experimental")`
+#' @description
 #'
 #' This defines the server part for the experiment specification.
 #'

@@ -12,8 +12,6 @@ validate_gene_spec(gene_spec, gene_choices)
 \item{gene_choices}{(\code{character})\cr all possible gene choices.}
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-
 This validation function checks that a given \code{\link[hermes:GeneSpec]{hermes::GeneSpec}} has at least
 one gene selected and that all genes are included in possible choices.
 }

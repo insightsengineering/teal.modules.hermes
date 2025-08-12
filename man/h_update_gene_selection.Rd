@@ -18,8 +18,6 @@ the ID used to call the module input.}
 new choices.}
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-
 This helper function takes the intersection of \code{selected} and
 \code{choices} for genes and updates the \code{inputId} accordingly. It then
 shows a notification if not all \code{selected} genes were available.

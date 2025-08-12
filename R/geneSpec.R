@@ -1,6 +1,6 @@
 #' Module Input for Gene Signature Specification
 #'
-#' @description `r lifecycle::badge("experimental")`
+#' @description
 #'
 #' This defines the input for the gene signature specification.
 #'
@@ -134,7 +134,7 @@ geneSpecInput <- function(inputId, # nolint
 
 #' Helper Function to Update Gene Selection
 #'
-#' @description `r lifecycle::badge("experimental")`
+#' @description
 #'
 #' This helper function takes the intersection of `selected` and
 #' `choices` for genes and updates the `inputId` accordingly. It then
@@ -172,7 +172,7 @@ h_update_gene_selection <- function(session,
 
 #' Helper Function to Parse Genes
 #'
-#' @description `r lifecycle::badge("experimental")`
+#' @description
 #'
 #' This helper function takes a vector of `words` and tries to match them
 #' with the `id` and `name` columns of possible gene choices.
@@ -200,7 +200,7 @@ h_parse_genes <- function(words, choices) {
 
 #' Module Server for Gene Signature Specification
 #'
-#' @description `r lifecycle::badge("experimental")`
+#' @description
 #'
 #' This defines the server part for the gene signature specification.
 #'
@@ -450,7 +450,7 @@ geneSpecServer <- function(id, # nolint
 
 #' Validation of Gene Specification
 #'
-#' @description `r lifecycle::badge("experimental")`
+#' @description
 #'
 #' This validation function checks that a given [`hermes::GeneSpec`] has at least
 #' one gene selected and that all genes are included in possible choices.

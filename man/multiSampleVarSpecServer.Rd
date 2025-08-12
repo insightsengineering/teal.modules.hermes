@@ -26,8 +26,6 @@ list \code{vars} which contains the selected sample variables as reactives
 under their input ID.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-
 When multiple sample variables are used in a given module, then this
 wrapper makes it much easier to specify in the server function.
 }

@@ -15,8 +15,6 @@ heatmap_plot(object, assay_name)
 Plot to be displayed in the teal app.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-
 This function plots the correlation heatmap.
 }
 \examples{

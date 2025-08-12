@@ -28,8 +28,6 @@ name of the MAE data used in the teal module.}
 The UI part.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-
 This defines the input for the experiment specification.
 }
 \seealso{

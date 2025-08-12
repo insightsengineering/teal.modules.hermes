@@ -41,7 +41,6 @@ Imports:
     edgeR,
     forcats,
     hermes (>= 1.7.1),
-    lifecycle,
     MultiAssayExperiment (>= 1.32.0),
     rtables (>= 0.6.11),
     S4Vectors,
@@ -71,8 +70,6 @@ Suggests:
     testthat (>= 3.1.5)
 VignetteBuilder:
     knitr
-RdMacros:
-    lifecycle
 Remotes:
     insightsengineering/teal.reporter@main,
     insightsengineering/teal.widgets@main,
@@ -82,7 +79,7 @@ Config/Needs/verdepcheck: tidyverse/ggplot2, rstudio/shiny,
     insightsengineering/teal, insightsengineering/teal.slice,
     insightsengineering/teal.code, insightsengineering/teal.transform,
     mllg/checkmate, bioc::edgeR, rstudio/DT, tidyverse/forcats,
-    insightsengineering/hermes, r-lib/lifecycle,
+    insightsengineering/hermes,
     bioc::MultiAssayExperiment, insightsengineering/rtables,
     bioc::S4Vectors, antonmalko/shinyRadioMatrix, dreamRs/shinyWidgets,
     tidyverse/stringr, bioc::SummarizedExperiment,

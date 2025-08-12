@@ -103,8 +103,6 @@ during app initialization after going through the filters.}
 Shiny module to be used in the teal app.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-
 This teal module produces a grid style \code{Kaplan-Meier} plot for data with
 \code{ADaM} structure.
 }

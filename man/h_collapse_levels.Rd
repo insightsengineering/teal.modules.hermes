@@ -16,8 +16,6 @@ specification.}
 The transformed factor \code{x} with new levels.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-
 Given a group list and a factor, this helper function collapses the
 levels in the factor accordingly and also ensures that the resulting
 levels are in the order given in the group list.

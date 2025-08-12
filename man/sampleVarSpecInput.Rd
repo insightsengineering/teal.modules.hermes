@@ -22,8 +22,6 @@ the ID used to call the module input.}
 The UI part.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-
 This defines the input for the sample variable specification.
 }
 \examples{

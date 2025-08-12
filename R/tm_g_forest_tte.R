@@ -1,6 +1,6 @@
 #' Teal Module for Survival Forest Plot
 #'
-#' @description `r lifecycle::badge("experimental")`
+#' @description
 #'
 #' This module provides an interactive survival forest plot.
 #'

@@ -14,8 +14,6 @@ gene choices. Note that no missing values are allowed.}
 The ordered \code{data.frame}.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-
 The possible gene choices are ordered as follows. First come all genes which
 have a non-empty name, ordered by their name alphabetically. Last come
 all genes with an empty name, ordered by their ID alphabetically.

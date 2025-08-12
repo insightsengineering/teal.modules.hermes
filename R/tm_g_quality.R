@@ -1,6 +1,6 @@
 #' Most Expressed Genes Plot
 #'
-#' @description `r lifecycle::badge("experimental")`
+#' @description
 #'
 #' This function plots the most expressed genes.
 #'
@@ -29,7 +29,7 @@ top_gene_plot <- function(object, assay_name) {
 
 #' Correlation Heatmap Plot
 #'
-#' @description `r lifecycle::badge("experimental")`
+#' @description
 #'
 #' This function plots the correlation heatmap.
 #'
@@ -53,7 +53,7 @@ heatmap_plot <- function(object, assay_name) {
 
 #' Teal Module for RNA-seq Quality Control
 #'
-#' @description `r lifecycle::badge("experimental")`
+#' @description
 #'
 #' This module adds quality flags, filters by genes and/or samples,
 #' normalizes `AnyHermesData` objects and provides interactive plots

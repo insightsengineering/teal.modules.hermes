@@ -18,8 +18,6 @@ names of the assays which should not be included in choices in the teal module.}
 The chosen assay as a reactive string.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-
 This defines the server part for the assay specification.
 }
 \examples{

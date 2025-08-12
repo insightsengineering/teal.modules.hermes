@@ -1,6 +1,6 @@
 #' Teal Module for RNA-seq Barplot
 #'
-#' @description `r lifecycle::badge("experimental")`
+#' @description
 #'
 #' This module provides an interactive barplot for RNA-seq gene expression
 #' analysis.

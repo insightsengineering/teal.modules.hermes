@@ -48,8 +48,6 @@ Reactive \code{\link[SummarizedExperiment:SummarizedExperiment-class]{Summarized
 input for the relevant \code{hermes} functions.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-
 This defines the server part for the sample variable specification.
 }
 \note{

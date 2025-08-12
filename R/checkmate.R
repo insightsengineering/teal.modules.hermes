@@ -1,6 +1,6 @@
 #' Additional Assertions for `checkmate`
 #'
-#' @description `r lifecycle::badge("experimental")`
+#' @description
 #'
 #' We provide additional assertion functions which can be used together with
 #' the `checkmate` functions. These are described in individual help pages
@@ -25,7 +25,7 @@ NULL
 
 #' Check for Shiny Tag
 #'
-#' @description `r lifecycle::badge("experimental")`
+#' @description
 #'
 #' Check whether `x` is a shiny tag.
 #'
@@ -64,7 +64,7 @@ expect_tag <- makeExpectationFunction(check_tag)
 
 #' Check for Reactive Input
 #'
-#' @description `r lifecycle::badge("experimental")`
+#' @description
 #'
 #' Check whether `x` is a reactive input.
 #'
@@ -93,7 +93,7 @@ test_reactive <- makeTestFunction(check_reactive)
 
 #' Check for List of Summary Functions
 #'
-#' @description `r lifecycle::badge("experimental")`
+#' @description
 #'
 #' Check whether `x` is a list of summary functions.
 #'
@@ -122,7 +122,7 @@ assert_summary_funs <- function(x, null.ok = FALSE) { # nolint
 
 #' Check for `ADTTE` Variables
 #'
-#' @description `r lifecycle::badge("experimental")`
+#' @description
 #'
 #' Check whether `x` is a list of `ADTTE` variables.
 #'
