@@ -2,11 +2,11 @@ library(shinytest2)
 
 module_ns_shiny2 <- function(app) {
   source <- app$get_html("html", outer_html = TRUE)
-  module_id <- rvest::html_attr(
-    rvest::html_node(rvest::read_html(source), css = ".teal_module"),
+  active_module_id <- rvest::html_attr(
+    rvest::html_node(rvest::read_html(source), css = ".teal_module.active"),
     "id"
   )
-  NS(paste0(module_id, "-module"))
+  NS(NS(gsub("-wrapper$", "", active_module_id), "module"))
 }
 
 default_app_seed <- 123
