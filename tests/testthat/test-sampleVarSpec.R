@@ -196,10 +196,7 @@ test_that("sampleVarSpec module works as expected in the test app", {
 
   # Filter panel works as expected
   ns_fp <- active_module_filter_panel_ns(app)
-
-  # app$click(selector = "#teal-teal_modules-samplevarspec_example-filter_panel-filters-MAE-filter_util_icons a i")
-  app$wait_for_idle()
-  app$set_inputs(!!ns_fp("MAE-MAE-subjects-var_to_add") := "AGE18")
+  app$set_inputs(!!ns_fp("MAE-MAE-subjects-var_to_add") := "AGE18", allow_no_input_binding_ = TRUE)
   app$wait_for_idle()
   app$set_inputs(!!ns_fp("MAE-subjects-MAE_AGE18-inputs-selection") := "< 18")
   app$wait_for_idle()
