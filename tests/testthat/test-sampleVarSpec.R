@@ -166,8 +166,6 @@ test_that("sampleVarSpecServer only gives factor columns in col_data_vars when c
   )
 })
 
-# nolint start
-
 test_that("sampleVarSpec module works as expected in the test app", {
   skip_if_covr()
   skip_if_too_deep(5)
@@ -224,5 +222,3 @@ test_that("sampleVarSpec module works as expected in the test app", {
   expect_match(res, "< 18/>= 18 \n         5 ")
   app$stop()
 })
-
-# nolint end

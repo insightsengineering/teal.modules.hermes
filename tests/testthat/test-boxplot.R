@@ -15,8 +15,6 @@ test_that("ui_g_boxplot creates expected HTML", {
 
 # tm_g_boxplot ----
 
-# nolint start
-
 test_that("boxplot module works as expected in the test app", {
   skip_if_covr()
   skip_if_too_deep(5)
@@ -64,5 +62,3 @@ test_that("boxplot module works as expected in the test app", {
 
   app$stop()
 })
-
-# nolint end

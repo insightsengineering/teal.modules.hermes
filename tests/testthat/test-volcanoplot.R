@@ -14,8 +14,6 @@ test_that("ui_g_volcanoplot creates expected HTML", {
 
 # tm_g_volcanoplot ----
 
-# nolint start
-
 test_that("volcanoplot module works as expected in the test app", {
   skip_if_covr()
   skip_if_too_deep(5)
@@ -57,5 +55,3 @@ test_that("volcanoplot module works as expected in the test app", {
   expect_snapshot(cat(res))
   app$stop()
 })
-
-# nolint end
