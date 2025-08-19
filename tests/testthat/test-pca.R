@@ -14,8 +14,6 @@ test_that("ui_g_pca creates HTML", {
 
 # pca Server ----
 
-# nolint start
-
 test_that("pca module works as expected in the test app", {
   skip_if_covr()
   skip_if_too_deep(5)
@@ -65,7 +63,10 @@ test_that("pca module works as expected in the test app", {
   ns_fp <- active_module_filter_panel_ns(app)
   app$set_inputs(!!ns_fp("MAE-MAE-hd1-row_to_add") := "chromosome", allow_no_input_binding_ = TRUE)
   app$set_inputs(!!ns_fp("MAE-hd1-MAE_chromosome_hd1_subset-inputs-selection") := character())
-  app$set_inputs(!!ns_fp("MAE-hd1-MAE_chromosome_hd1_subset-inputs-selection_open") := FALSE, allow_no_input_binding_ = TRUE)
+  app$set_inputs(
+    !!ns_fp("MAE-hd1-MAE_chromosome_hd1_subset-inputs-selection_open") := FALSE,
+    allow_no_input_binding_ = TRUE
+  )
   app$wait_for_idle()
 
   res <- app$get_value(output = ns("test_pca"))
@@ -231,5 +232,3 @@ test_that("pca module works as expected in the test app", {
   expect_identical(res, 2500L)
   app$stop()
 })
-
-# nolint end

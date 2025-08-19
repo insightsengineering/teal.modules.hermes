@@ -20,8 +20,6 @@ test_that("ui_g_km creates expected HTML", {
 
 # tm_g_km ----
 
-# nolint start
-
 test_that("km module works as expected in the test app", {
   skip_if_covr()
   skip_if_too_deep(5)
@@ -66,5 +64,3 @@ test_that("km module works as expected in the test app", {
   )
   app$stop()
 })
-
-# nolint end

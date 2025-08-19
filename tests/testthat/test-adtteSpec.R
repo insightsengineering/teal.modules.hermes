@@ -178,8 +178,6 @@ test_that("adtteSpecInput creates expected HTML", {
   expect_class(result, "shiny.tag")
 })
 
-# nolint start
-
 test_that("adtteSpecServer module works as expected in the test app", {
   skip_if_covr()
   skip_if_too_deep(5)
@@ -242,5 +240,3 @@ test_that("adtteSpecServer module works as expected in the test app", {
   app$click(ns_fp("ADTTE-filter-ADTTE_PARAMCD-remove"))
   app$stop()
 })
-
-# nolint end

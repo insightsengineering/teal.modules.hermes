@@ -16,8 +16,6 @@ test_that("ui_g_quality creates expected HTML", {
 
 # tm_g_quality ----
 
-# nolint start
-
 test_that("quality module works as expected in the test app", {
   skip_if_covr()
   skip_if_too_deep(5)
@@ -81,5 +79,3 @@ test_that("quality module works as expected in the test app", {
   )
   app$stop()
 })
-
-# nolint end
