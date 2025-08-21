@@ -193,6 +193,7 @@ test_that("adtteSpecServer module works as expected in the test app", {
 
   app$wait_for_idle(timeout = 20000)
   ns <- module_ns_shiny2(app)
+  ns_fp <- active_module_filter_panel_ns(app)
 
   # check initialization
   res <- app$get_values()
@@ -215,8 +216,13 @@ test_that("adtteSpecServer module works as expected in the test app", {
   res <- app$get_value(input = ns("adtte-paramcd"))
 
   # Test what happens if selected endpoint (here PFS) is no longer in filtered data.
-  app$set_inputs(`teal-teal_modules-adttespec_example-filter_panel-filters-ADTTE-ADTTE-filter-var_to_add` = "PARAMCD", allow_no_input_binding_ = TRUE)
-  app$set_inputs(`teal-teal_modules-adttespec_example-filter_panel-filters-ADTTE-filter-ADTTE_PARAMCD-inputs-selection` = "OS")
+  app$set_inputs(
+    !!ns_fp("ADTTE-ADTTE-filter-var_to_add") := "PARAMCD",
+    allow_no_input_binding_ = TRUE
+  )
+  app$set_inputs(
+    !!ns_fp("ADTTE-filter-ADTTE_PARAMCD-inputs-selection") := "OS"
+  )
   app$wait_for_idle(timeout = 20000)
   # We expect to get a validation message
   res <- app$get_value(input = ns("adtte-paramcd"))
@@ -226,12 +232,14 @@ test_that("adtteSpecServer module works as expected in the test app", {
 
   # Now we update the filter by adding PFS back. However the user would have to
   # actively select it.
-  app$set_inputs(`teal-teal_modules-adttespec_example-filter_panel-filters-ADTTE-filter-ADTTE_PARAMCD-inputs-selection` := c("PFS", "OS"))
+  app$set_inputs(
+    !!ns_fp("ADTTE-filter-ADTTE_PARAMCD-inputs-selection") := c("PFS", "OS")
+  )
   app$wait_for_idle()
   res <- app$get_value(output = ns("summary"))
   expect_equal(res$message, "please select an endpoint")
 
-  app$click("teal-teal_modules-adttespec_example-filter_panel-filters-ADTTE-filter-ADTTE_PARAMCD-remove")
+  app$click(ns_fp("ADTTE-filter-ADTTE_PARAMCD-remove"))
   app$stop()
 })
 

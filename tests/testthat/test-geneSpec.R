@@ -77,9 +77,10 @@ test_that("geneSpec module works as expected in the test app", {
   app$set_inputs(!!ns("my_genes-lock_button") := TRUE)
 
   # Filter data using the right side panel
-  app$set_inputs(`teal-teal_modules-genespec_example-filter_panel-filters-MAE-MAE-hd1-row_to_add` = "chromosome", allow_no_input_binding_ = TRUE)
-  app$set_inputs(`teal-teal_modules-genespec_example-filter_panel-filters-MAE-hd1-MAE_chromosome_hd1_subset-inputs-selection` = c("1", "2"))
-  app$set_inputs(`teal-teal_modules-genespec_example-filter_panel-filters-MAE-hd1-MAE_chromosome_hd1_subset-inputs-selection_open` = FALSE, allow_no_input_binding_ = TRUE)
+  ns_fp <- active_module_filter_panel_ns(app)
+  app$set_inputs(!!ns_fp("MAE-MAE-hd1-row_to_add") := "chromosome", allow_no_input_binding_ = TRUE)
+  app$set_inputs(!!ns_fp("MAE-hd1-MAE_chromosome_hd1_subset-inputs-selection") := c("1", "2"))
+  app$set_inputs(!!ns_fp("MAE-hd1-MAE_chromosome_hd1_subset-inputs-selection_open") := FALSE, allow_no_input_binding_ = TRUE)
   app$wait_for_idle()
 
   # Confirm that gene selection was not changed.
@@ -108,7 +109,7 @@ test_that("geneSpec module works as expected in the test app", {
   expect_identical(res, "mean(ACP1, ACTN2)")
 
   # Remove the filter.
-  app$click("teal-teal_modules-genespec_example-filter_panel-filters-MAE-hd1-MAE_chromosome_hd1_subset-remove")
+  app$click(ns_fp("MAE-hd1-MAE_chromosome_hd1_subset-remove"))
 
   # Select a gene via text input.
   app$click(ns("my_genes-text_button"))
