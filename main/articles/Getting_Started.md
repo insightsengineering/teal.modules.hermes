@@ -1,0 +1,109 @@
+# Getting Started
+
+## Introduction
+
+`teal.modules.hermes` is a package implementing a number of `teal`
+modules for the exploration of RNA-sequencing counts data. In addition
+to predefined modules, `teal.modules.hermes` enables quick and easy
+ad-hoc module creation.
+
+## Ad-hoc module example
+
+Let’s assume you have a function `awesome_plot()` which takes a count
+matrix and makes an awesome plot out of it. Now you would like to make a
+Shiny app where you can filter patients, samples, select the experiment
+out of your `MultiAssayExperiment` (MAE), select the count matrix from
+the experiment, etc. Nothing is easier than that with
+`teal.modules.hermes`! We show you below how to quickly spin up your UI,
+server and put them together into a nice little app.
+
+### UI function
+
+In `teal.modules.hermes` we provide modules that make the experiment and
+assay selection super easy, see here for the UI part:
+
+``` r
+ui <- function(id, mae_name) {
+  ns <- NS(id)
+
+  teal.widgets::standard_layout(
+    encoding = uiOutput(ns("encoding_ui")),
+    output = plotOutput(ns("awesome_plot"))
+  )
+}
+```
+
+### Server function
+
+Similarly for the server we use the modules, and call then our awesome
+plotting function.
+
+``` r
+srv <- function(input,
+                output,
+                session,
+                data,
+                filter_panel_api,
+                mae_name) {
+  output$encoding_ui <- renderUI({
+    tags$div(
+      experimentSpecInput(session$ns("experiment"), data, mae_name),
+      assaySpecInput(session$ns("assay"))
+    )
+  })
+  experiment <- experimentSpecServer(
+    "experiment",
+    data = data,
+    filter_panel_api = filter_panel_api,
+    mae_name = mae_name,
+    name_annotation = NULL # If you have a gene name column in your rowData, can specify here.
+  )
+  assay <- assaySpecServer("assay", experiment$assays)
+  output$awesome_plot <- renderPlot({
+    data <- experiment$data()
+    assay <- assay()
+    req(assay %in% SummarizedExperiment::assayNames(data))
+    counts <- SummarizedExperiment::assay(data, assay)
+    df <- data.frame(gene = rownames(counts), counts = rowSums(counts))
+    df <- na.omit(df[order(df$counts, decreasing = TRUE), ])
+    df$gene <- factor(df$gene, levels = df$gene)
+    df <- df[1:10, ]
+    ggplot(df, aes(x = gene, y = counts)) +
+      geom_col() +
+      theme(axis.text.x = element_text(angle = 90))
+  })
+}
+```
+
+### App function
+
+Now let’s assume you want to spin up your app for an MAE.
+
+``` r
+awesome_app <- function(mae, label = "My awesome app") {
+  mae_name <- "MAE"
+  data <- teal_data(MAE = hermes::lapply(mae, hermes::HermesData))
+  app <- init(
+    data = data,
+    modules = teal::modules(
+      module(
+        label = label,
+        server = srv,
+        server_args = list(mae_name = mae_name),
+        ui = ui,
+        ui_args = list(mae_name = mae_name),
+        datanames = mae_name
+      )
+    )
+  )
+  shinyApp(app$ui, app$server)
+}
+```
+
+### Testing it
+
+To test this:
+
+``` r
+awesome_app(hermes::multi_assay_experiment)
+```

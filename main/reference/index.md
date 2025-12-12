@@ -1,0 +1,166 @@
+# Package index
+
+## Package
+
+- [`teal.modules.hermes`](https://insightsengineering.github.io/teal.modules.hermes/reference/teal.modules.hermes-package.md)
+  [`teal.modules.hermes-package`](https://insightsengineering.github.io/teal.modules.hermes/reference/teal.modules.hermes-package.md)
+  :
+
+  `teal.modules.hermes` Package
+
+## Utility Functions
+
+- [`h_assign_to_group_list()`](https://insightsengineering.github.io/teal.modules.hermes/reference/h_assign_to_group_list.md)
+  : Helper Function For Group List Creation
+
+- [`h_collapse_levels()`](https://insightsengineering.github.io/teal.modules.hermes/reference/h_collapse_levels.md)
+  : Helper Function for Collapsing of Factor Levels
+
+- [`h_extract_words()`](https://insightsengineering.github.io/teal.modules.hermes/reference/h_extract_words.md)
+  : Helper Function to Extract Words
+
+- [`h_gene_data()`](https://insightsengineering.github.io/teal.modules.hermes/reference/h_gene_data.md)
+  : Helper Function to Format Gene Choices
+
+- [`h_km_mae_to_adtte()`](https://insightsengineering.github.io/teal.modules.hermes/reference/h_km_mae_to_adtte.md)
+  :
+
+  Data Preprocessing for `ADTTE` Module
+
+- [`h_order_genes()`](https://insightsengineering.github.io/teal.modules.hermes/reference/h_order_genes.md)
+  : Helper Function to Order Gene Choices
+
+- [`h_parse_genes()`](https://insightsengineering.github.io/teal.modules.hermes/reference/h_parse_genes.md)
+  : Helper Function to Parse Genes
+
+- [`h_update_gene_selection()`](https://insightsengineering.github.io/teal.modules.hermes/reference/h_update_gene_selection.md)
+  : Helper Function to Update Gene Selection
+
+- [`is_blank()`](https://insightsengineering.github.io/teal.modules.hermes/reference/is_blank.md)
+  : Checking for Empty String
+
+## Shiny Modules
+
+- [`adtteSpecInput()`](https://insightsengineering.github.io/teal.modules.hermes/reference/adtteSpecInput.md)
+  :
+
+  Module Input for `ADTTE` Specification
+
+- [`adtteSpecServer()`](https://insightsengineering.github.io/teal.modules.hermes/reference/adtteSpecServer.md)
+  :
+
+  Module Server for `ADTTE` Specification
+
+- [`assaySpecInput()`](https://insightsengineering.github.io/teal.modules.hermes/reference/assaySpecInput.md)
+  : Module Input for Assay Specification
+
+- [`assaySpecServer()`](https://insightsengineering.github.io/teal.modules.hermes/reference/assaySpecServer.md)
+  : Module Server for Assay Specification
+
+- [`experimentSpecInput()`](https://insightsengineering.github.io/teal.modules.hermes/reference/experimentSpecInput.md)
+  : Module Input for Experiment Specification
+
+- [`experimentSpecServer()`](https://insightsengineering.github.io/teal.modules.hermes/reference/experimentSpecServer.md)
+  : Module Server for Experiment Specification
+
+- [`geneSpecInput()`](https://insightsengineering.github.io/teal.modules.hermes/reference/geneSpecInput.md)
+  : Module Input for Gene Signature Specification
+
+- [`geneSpecServer()`](https://insightsengineering.github.io/teal.modules.hermes/reference/geneSpecServer.md)
+  : Module Server for Gene Signature Specification
+
+- [`sampleVarSpecInput()`](https://insightsengineering.github.io/teal.modules.hermes/reference/sampleVarSpecInput.md)
+  : Module Input for Sample Variable Specification
+
+- [`sampleVarSpecServer()`](https://insightsengineering.github.io/teal.modules.hermes/reference/sampleVarSpecServer.md)
+  : Module Server for Sample Variable Specification
+
+- [`multiSampleVarSpecServer()`](https://insightsengineering.github.io/teal.modules.hermes/reference/multiSampleVarSpecServer.md)
+  : Module Server for Specification of Multiple Sample Variables
+
+## Teal Module Functions
+
+- [`tm_g_barplot()`](https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_barplot.md)
+  [`ui_g_barplot()`](https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_barplot.md)
+  [`srv_g_barplot()`](https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_barplot.md)
+  [`sample_tm_g_barplot()`](https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_barplot.md)
+  : Teal Module for RNA-seq Barplot
+
+- [`tm_g_boxplot()`](https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_boxplot.md)
+  [`ui_g_boxplot()`](https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_boxplot.md)
+  [`srv_g_boxplot()`](https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_boxplot.md)
+  [`sample_tm_g_boxplot()`](https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_boxplot.md)
+  : Teal Module for RNA-seq Boxplot
+
+- [`tm_g_forest_tte()`](https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_forest_tte.md)
+  [`ui_g_forest_tte()`](https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_forest_tte.md)
+  [`srv_g_forest_tte()`](https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_forest_tte.md)
+  [`sample_tm_g_forest_tte()`](https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_forest_tte.md)
+  : Teal Module for Survival Forest Plot
+
+- [`tm_g_km()`](https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_km.md)
+  [`ui_g_km()`](https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_km.md)
+  [`srv_g_km()`](https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_km.md)
+  [`sample_tm_g_km()`](https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_km.md)
+  :
+
+  Teal Module for `Kaplan-Meier` Plot
+
+- [`tm_g_pca()`](https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_pca.md)
+  [`ui_g_pca()`](https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_pca.md)
+  [`srv_g_pca()`](https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_pca.md)
+  [`sample_tm_g_pca()`](https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_pca.md)
+  : Teal Module for PCA Analysis
+
+- [`tm_g_quality()`](https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_quality.md)
+  [`ui_g_quality()`](https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_quality.md)
+  [`srv_g_quality()`](https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_quality.md)
+  [`sample_tm_g_quality()`](https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_quality.md)
+  : Teal Module for RNA-seq Quality Control
+
+- [`tm_g_scatterplot()`](https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_scatterplot.md)
+  [`ui_g_scatterplot()`](https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_scatterplot.md)
+  [`srv_g_scatterplot()`](https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_scatterplot.md)
+  [`sample_tm_g_scatterplot()`](https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_scatterplot.md)
+  : Teal Module for RNA-seq Scatterplot
+
+- [`tm_g_volcanoplot()`](https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_volcanoplot.md)
+  [`ui_g_volcanoplot()`](https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_volcanoplot.md)
+  [`srv_g_volcanoplot()`](https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_volcanoplot.md)
+  [`sample_tm_g_volcanoplot()`](https://insightsengineering.github.io/teal.modules.hermes/reference/tm_g_volcanoplot.md)
+  : Teal Module for RNA-seq Volcano Plot
+
+## Graph Functions
+
+- [`heatmap_plot()`](https://insightsengineering.github.io/teal.modules.hermes/reference/heatmap_plot.md)
+  : Correlation Heatmap Plot
+- [`top_gene_plot()`](https://insightsengineering.github.io/teal.modules.hermes/reference/top_gene_plot.md)
+  : Most Expressed Genes Plot
+
+## Assertions
+
+- [`assert_adtte_vars()`](https://insightsengineering.github.io/teal.modules.hermes/reference/assert_adtte_vars.md)
+  :
+
+  Check for `ADTTE` Variables
+
+- [`check_reactive()`](https://insightsengineering.github.io/teal.modules.hermes/reference/check_reactive.md)
+  [`assert_reactive()`](https://insightsengineering.github.io/teal.modules.hermes/reference/check_reactive.md)
+  [`test_reactive()`](https://insightsengineering.github.io/teal.modules.hermes/reference/check_reactive.md)
+  : Check for Reactive Input
+
+- [`assert_summary_funs()`](https://insightsengineering.github.io/teal.modules.hermes/reference/assert_summary_funs.md)
+  : Check for List of Summary Functions
+
+- [`check_tag()`](https://insightsengineering.github.io/teal.modules.hermes/reference/check_tag.md)
+  [`assert_tag()`](https://insightsengineering.github.io/teal.modules.hermes/reference/check_tag.md)
+  [`test_tag()`](https://insightsengineering.github.io/teal.modules.hermes/reference/check_tag.md)
+  [`expect_tag()`](https://insightsengineering.github.io/teal.modules.hermes/reference/check_tag.md)
+  : Check for Shiny Tag
+
+## Validations
+
+- [`validate_gene_spec()`](https://insightsengineering.github.io/teal.modules.hermes/reference/validate_gene_spec.md)
+  : Validation of Gene Specification
+- [`validate_n_levels()`](https://insightsengineering.github.io/teal.modules.hermes/reference/validate_n_levels.md)
+  : Validation of Number of Levels
