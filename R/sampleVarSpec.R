@@ -416,8 +416,8 @@ sampleVarSpecServer <- function(id, # nolint: object_name_linter.
 
           old_values <- names(assign_lists[[experiment_name]][[sample_var]])
           if (!is.null(old_values) &&
-              length(old_values) == length(sample_var_levels) && #nolint indentation_linter
-              all(sort(old_values) == sort(sample_var_levels))) {
+            length(old_values) == length(sample_var_levels) && # nolint indentation_linter
+            all(sort(old_values) == sort(sample_var_levels))) {
             selected_groups <- assign_lists[[experiment_name]][[sample_var]]
           }
 
