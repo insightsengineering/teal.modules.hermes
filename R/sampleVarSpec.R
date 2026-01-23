@@ -14,7 +14,7 @@
 #'
 #' @examples
 #' sampleVarSpecInput("my_vars", label_vars = "Select faceting variable")
-sampleVarSpecInput <- function(inputId, # nolint
+sampleVarSpecInput <- function(inputId, # nolint: object_name_linter.
                                label_vars = "Select sample variable",
                                label_levels_button = "Combine factor levels") {
   assert_string(inputId)
@@ -261,7 +261,7 @@ validate_n_levels <- function(x, name, n_levels) {
 #' if (interactive()) {
 #'   my_app()
 #' }
-sampleVarSpecServer <- function(id, # nolint
+sampleVarSpecServer <- function(id, # nolint: object_name_linter.
                                 experiment_name,
                                 original_data,
                                 transformed_data = original_data,
@@ -366,7 +366,7 @@ sampleVarSpecServer <- function(id, # nolint
 
     # Function to return the UI for a modal dialog with matrix input for combination
     # assignment.
-    combModal <- function(sample_var_levels, # nolint
+    combModal <- function(sample_var_levels, # nolint: object_name_linter.
                           n_max_groups,
                           selected_groups) {
       if (is.null(selected_groups)) {
@@ -416,9 +416,9 @@ sampleVarSpecServer <- function(id, # nolint
 
           old_values <- names(assign_lists[[experiment_name]][[sample_var]])
           if (!is.null(old_values) &&
-            length(old_values) == length(sample_var_levels) && # nolint
-            all(sort(old_values) == sort(sample_var_levels))) { # nolint
-            selected_groups <- assign_lists[[experiment_name]][[sample_var]] # nolint
+              length(old_values) == length(sample_var_levels) && #nolint indentation_linter
+              all(sort(old_values) == sort(sample_var_levels))) {
+            selected_groups <- assign_lists[[experiment_name]][[sample_var]]
           }
 
           showModal(combModal(
@@ -490,14 +490,14 @@ sampleVarSpecServer <- function(id, # nolint
 #'   experiment_name = reactive({
 #'     input$experiment_name
 #'   }),
-#'   original_data = ori_data # nolint Please update the <ori_data>
+#'   original_data = ori_data # Please update the <ori_data>
 #' )
 #' # Then can extract the transformed data and selected variables later:
 #' experiment_data <- sample_var_specs$experiment_data()
 #' facet_var <- sample_var_specs$vars$facet_var()
 #' color_var <- sample_var_specs$vars$color_var()
 #' }
-multiSampleVarSpecServer <- function(inputIds, # nolint
+multiSampleVarSpecServer <- function(inputIds, # nolint: object_name_linter.
                                      original_data,
                                      ...) {
   assert_character(inputIds, any.missing = FALSE, unique = TRUE)

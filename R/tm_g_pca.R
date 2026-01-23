@@ -481,7 +481,7 @@ srv_g_pca <- function(id,
 sample_tm_g_pca <- function(.test = FALSE) {
   data <- within(
     teal.data::teal_data(),
-    MAE <- hermes::multi_assay_experiment # nolint
+    MAE <- hermes::multi_assay_experiment # nolint: object_name_linter.
   )
   app <- teal::init(
     data = data,

@@ -19,8 +19,6 @@ test_that("ui_g_barplot creates expected HTML", {
 
 # tm_g_barplot ----
 
-# nolint start
-
 test_that("barplot module works as expected in the test app", {
   skip_if_covr()
   skip_if_too_deep(5)
@@ -97,5 +95,3 @@ test_that("barplot module works as expected in the test app", {
 
   app$stop()
 })
-
-# nolint end

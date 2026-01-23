@@ -32,8 +32,6 @@ test_that("h_parse_genes correctly returns empty data frame when no genes match"
 
 # geneSpecServer ----
 
-# nolint start
-
 test_that("geneSpec module works as expected in the test app", {
   skip_if_covr()
   skip_if_too_deep(5)
@@ -80,7 +78,10 @@ test_that("geneSpec module works as expected in the test app", {
   ns_fp <- active_module_filter_panel_ns(app)
   app$set_inputs(!!ns_fp("MAE-MAE-hd1-row_to_add") := "chromosome", allow_no_input_binding_ = TRUE)
   app$set_inputs(!!ns_fp("MAE-hd1-MAE_chromosome_hd1_subset-inputs-selection") := c("1", "2"))
-  app$set_inputs(!!ns_fp("MAE-hd1-MAE_chromosome_hd1_subset-inputs-selection_open") := FALSE, allow_no_input_binding_ = TRUE)
+  app$set_inputs(
+    !!ns_fp("MAE-hd1-MAE_chromosome_hd1_subset-inputs-selection_open") := FALSE,
+    allow_no_input_binding_ = TRUE
+  )
   app$wait_for_idle()
 
   # Confirm that gene selection was not changed.
@@ -122,5 +123,3 @@ test_that("geneSpec module works as expected in the test app", {
 
   app$stop()
 })
-
-# nolint end
