@@ -23,6 +23,7 @@ In `teal.modules.hermes` we provide modules that make the experiment and
 assay selection super easy, see here for the UI part:
 
 ``` r
+
 ui <- function(id, mae_name) {
   ns <- NS(id)
 
@@ -39,6 +40,7 @@ Similarly for the server we use the modules, and call then our awesome
 plotting function.
 
 ``` r
+
 srv <- function(input,
                 output,
                 session,
@@ -80,6 +82,7 @@ srv <- function(input,
 Now let’s assume you want to spin up your app for an MAE.
 
 ``` r
+
 awesome_app <- function(mae, label = "My awesome app") {
   mae_name <- "MAE"
   data <- teal_data(MAE = hermes::lapply(mae, hermes::HermesData))
@@ -105,5 +108,6 @@ awesome_app <- function(mae, label = "My awesome app") {
 To test this:
 
 ``` r
+
 awesome_app(hermes::multi_assay_experiment)
 ```

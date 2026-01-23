@@ -62,6 +62,7 @@ particular `MultiAssayExperiment` (MAE) which is expected to contain the
 ## Installation
 
 ``` r
+
 # stable versions
 # install.packages("pak")
 pak::pkg_install("insightsengineering/teal.modules.hermes@*release")
