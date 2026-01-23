@@ -16,11 +16,11 @@ library(checkmate)
 
 ## Objectives
 
-We need a shiny module that captures the gene signature logic. We might also need additional functions and classes which capture reused functionality. 
+We need a shiny module that captures the gene signature logic. We might also need additional functions and classes which capture reused functionality.
 
 ## Hermes Interface
 
-### Helpers 
+### Helpers
 
 ```{r}
 shorten_list <- function(x) {

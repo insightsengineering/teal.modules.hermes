@@ -306,11 +306,11 @@ srv_g_forest_tte <- function(id,
 #' if (interactive()) {
 #'   sample_tm_g_forest_tte()
 #' }
-sample_tm_g_forest_tte <- function(.test = FALSE) { # nolint
+sample_tm_g_forest_tte <- function(.test = FALSE) {
   data <- within(teal.data::teal_data(), {
-    ADTTE <- teal.data::rADTTE |> # nolint
+    ADTTE <- teal.data::rADTTE |> # nolint: object_name_linter.
       dplyr::mutate(is_event = .data$CNSR == 0)
-    MAE <- hermes::multi_assay_experiment # nolint
+    MAE <- hermes::multi_assay_experiment # nolint: object_name_linter.
   })
   join_keys(data)["ADTTE", "ADTTE"] <- c("STUDYID", "USUBJID", "PARAMCD")
 

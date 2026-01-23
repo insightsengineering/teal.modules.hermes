@@ -166,8 +166,6 @@ test_that("sampleVarSpecServer only gives factor columns in col_data_vars when c
   )
 })
 
-# nolint start
-
 test_that("sampleVarSpec module works as expected in the test app", {
   skip_if_covr()
   skip_if_too_deep(5)
@@ -195,17 +193,16 @@ test_that("sampleVarSpec module works as expected in the test app", {
   expect_match(as.character(res), " < 18 >= 18 \n    4     1 ")
 
   # Filter panel works as expected
-  app$click(selector = "#teal-teal_modules-samplevarspec_example-filter_panel-filters-MAE-filter_util_icons a i")
+  ns_fp <- active_module_filter_panel_ns(app)
+  app$set_inputs(!!ns_fp("MAE-MAE-subjects-var_to_add") := "AGE18", allow_no_input_binding_ = TRUE)
   app$wait_for_idle()
-  app$set_inputs("teal-teal_modules-samplevarspec_example-filter_panel-filters-MAE-MAE-subjects-var_to_add" = "AGE18")
-  app$wait_for_idle()
-  app$set_inputs("teal-teal_modules-samplevarspec_example-filter_panel-filters-MAE-subjects-MAE_AGE18-inputs-selection" = "< 18")
+  app$set_inputs(!!ns_fp("MAE-subjects-MAE_AGE18-inputs-selection") := "< 18")
   app$wait_for_idle()
 
   res <- app$get_value(output = ns("summary"))
   expect_equal(res, "< 18 \n   4 ")
 
-  app$click("teal-teal_modules-samplevarspec_example-filter_panel-filters-MAE-subjects-MAE_AGE18-remove")
+  app$click(ns_fp("MAE-subjects-MAE_AGE18-remove"))
   app$wait_for_idle()
   res <- app$get_value(output = ns("summary"))
   expect_equal(res, " < 18 >= 18 \n    4     1 ")
@@ -225,5 +222,3 @@ test_that("sampleVarSpec module works as expected in the test app", {
   expect_match(res, "< 18/>= 18 \n         5 ")
   app$stop()
 })
-
-# nolint end

@@ -9,8 +9,6 @@ test_that("assaySpecInput creates expected HTML", {
   expect_class(result, "shiny.tag")
 })
 
-# nolint start
-
 # assaySpecServer ----
 test_that("assaySpecServer module works as expected in the test app", {
   skip_if_covr()
@@ -54,5 +52,3 @@ test_that("assaySpecServer module works as expected in the test app", {
 
   app$stop()
 })
-
-# nolint end

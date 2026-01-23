@@ -1,12 +1,20 @@
 library(shinytest2)
 
-module_ns_shiny2 <- function(app) {
+active_module_parent_id <- function(app) {
   source <- app$get_html("html", outer_html = TRUE)
-  module_id <- rvest::html_attr(
-    rvest::html_node(rvest::read_html(source), css = ".teal_module"),
+  active_module_wrapper_id <- rvest::html_attr(
+    rvest::html_node(rvest::read_html(source), css = ".teal_module.active"),
     "id"
   )
-  NS(paste0(module_id, "-module"))
+  gsub("-wrapper$", "", active_module_wrapper_id)
+}
+
+module_ns_shiny2 <- function(app) {
+  NS(NS(active_module_parent_id(app), "module"))
+}
+
+active_module_filter_panel_ns <- function(app) {
+  NS(NS(active_module_parent_id(app), "filter_panel-filters"))
 }
 
 default_app_seed <- 123
