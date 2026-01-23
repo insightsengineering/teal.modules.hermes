@@ -101,7 +101,7 @@ h_km_mae_to_adtte <- function(adtte,
 #' @return The UI part.
 #' @seealso [adtteSpecServer()] for the module server and a complete example.
 #' @export
-adtteSpecInput <- function(inputId, # nolint object_name_linter
+adtteSpecInput <- function(inputId, # nolint: object_name_linter.
                            label_paramcd = "Select Endpoint") {
   assert_string(inputId)
   assert_string(label_paramcd, min.chars = 1L)
@@ -240,7 +240,7 @@ adtteSpecInput <- function(inputId, # nolint object_name_linter
 #' if (interactive()) {
 #'   my_app()
 #' }
-adtteSpecServer <- function(id, # nolint object_name_linter
+adtteSpecServer <- function(id, # nolint: object_name_linter.
                             data,
                             mae_name,
                             adtte_name,

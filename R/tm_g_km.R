@@ -302,11 +302,11 @@ srv_g_km <- function(id,
 #' if (interactive()) {
 #'   sample_tm_g_km()
 #' }
-sample_tm_g_km <- function(.test = FALSE) { # nolint object_name_linter
+sample_tm_g_km <- function(.test = FALSE) { # nolint: object_name_linter.
   data <- within(teal.data::teal_data(), {
-    ADTTE <- teal.data::rADTTE |>
+    ADTTE <- teal.data::rADTTE |> # nolint: object_name_linter.
       dplyr::mutate(is_event = .data$CNSR == 0)
-    MAE <- hermes::multi_assay_experiment # nolint object_name_linter
+    MAE <- hermes::multi_assay_experiment # nolint: object_name_linter.
   })
   join_keys(data)["ADTTE", "ADTTE"] <- c("STUDYID", "USUBJID", "PARAMCD")
 

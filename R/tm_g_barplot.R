@@ -272,7 +272,7 @@ srv_g_barplot <- function(id,
 sample_tm_g_barplot <- function(.test = FALSE) {
   data <- within(
     teal.data::teal_data(),
-     object_name_linterMAE <- hermes::multi_assay_experiment # nolint object_name_linter
+    object_name_linterMAE <- hermes::multi_assay_experiment # nolint: object_name_linter.
   )
   app <- teal::init(
     data = data,

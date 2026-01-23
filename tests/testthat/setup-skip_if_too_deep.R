@@ -7,7 +7,7 @@
 #'
 #' @return `numeric(1)` the testing depth.
 #'
-testing_depth <- function() { # nolint  object_name_linter # nousage
+testing_depth <- function() { # nolint: object_name_linter. # nousage
   testing_depth <- getOption("TESTING_DEPTH")
   if (is.null(testing_depth)) testing_depth <- Sys.getenv("TESTING_DEPTH")
 
