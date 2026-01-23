@@ -17,7 +17,7 @@ test_that("h_km_mae_to_adtte function works as expected with a single gene", {
 
 test_that("h_km_mae_to_adtte function also works when some ID variables are factors", {
   mae <- hermes::multi_assay_experiment
-  SummarizedExperiment::colData(mae)$USUBJID <- # nolint
+  SummarizedExperiment::colData(mae)$USUBJID <- # nolint object_name_linter
     factor(SummarizedExperiment::colData(mae)$USUBJID)
   adtte <- teal.data::rADTTE %>%
     dplyr::mutate(USUBJID = factor(USUBJID))

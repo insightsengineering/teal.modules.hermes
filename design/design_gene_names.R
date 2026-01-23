@@ -20,7 +20,7 @@ ui <- function(id,
 }
 
 h_update_gene_selection2 <- function(session,
-                                     inputId, # nolint
+                                     inputId, # nolint object_name_linter
                                      selected,
                                      choice_data) {
   is_new_selected <- selected %in% choice_data$id

@@ -55,7 +55,7 @@ server <- function(id,
       genes = genes,
       probs = reactive({
         0.5
-      }) # nolint
+      })
     )
     output$summary <- renderPrint({
       binned_adtte_subset <- adtte$binned_adtte_subset()
