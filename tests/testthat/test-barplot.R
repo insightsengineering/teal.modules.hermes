@@ -89,9 +89,11 @@ test_that("barplot module works as expected in the test app", {
   app$wait_for_idle()
 
   res <- app$get_value(output = ns("table"))
-  expect_snapshot(
-    cat(res)
-  )
+  if (packageVersion("ggplot2") >= "4.0") {
+    expect_snapshot(
+      cat(res)
+    )
+  }
 
   app$stop()
 })

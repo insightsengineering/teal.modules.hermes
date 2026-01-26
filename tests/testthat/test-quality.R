@@ -65,17 +65,20 @@ test_that("quality module works as expected in the test app", {
 
   # Final histogram plot.
   res <- app$get_value(output = ns("table"))
-  expect_snapshot(
-    cat(res)
-  )
-
+  if (packageVersion("ggplot2") >= "4.0") {
+    expect_snapshot(
+      cat(res)
+    )
+  }
   # Change to another plot type so that we can choose another assay.
   app$set_inputs(!!ns("plot_type") := "Top Genes Plot")
   app$set_inputs(!!ns("assay-name") := "cpm")
   app$wait_for_idle(timeout = 30000)
   res <- app$get_value(output = ns("table"))
-  expect_snapshot(
-    cat(res)
-  )
+  if (packageVersion("ggplot2") >= "4.0") {
+    expect_snapshot(
+      cat(res)
+    )
+  }
   app$stop()
 })
