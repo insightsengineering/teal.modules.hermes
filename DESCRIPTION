@@ -70,9 +70,6 @@ Suggests:
     testthat (>= 3.3.2)
 VignetteBuilder:
     knitr
-Remotes:
-    insightsengineering/teal.widgets@main,
-    insightsengineering/teal@main
 biocViews:
 Config/Needs/verdepcheck: tidyverse/ggplot2, rstudio/shiny,
     insightsengineering/teal, insightsengineering/teal.slice,
