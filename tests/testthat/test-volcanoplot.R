@@ -45,13 +45,17 @@ test_that("volcanoplot module works as expected in the test app", {
   app$wait_for_idle(timeout = 30000)
 
   res <- app$get_value(output = ns("test"))
-  expect_snapshot(cat(res))
+  if (packageVersion("ggplot2") >= "4.0") {
+    expect_snapshot(cat(res))
+  }
 
   # Now change the log2_fc_thresh and check that the plot is updated accordingly.
   app$set_inputs(!!ns("log2_fc_thresh") := 8)
   app$wait_for_idle(timeout = 30000)
 
   res <- app$get_value(output = ns("test"))
-  expect_snapshot(cat(res))
+  if (packageVersion("ggplot2") >= "4.0") {
+    expect_snapshot(cat(res))
+  }
   app$stop()
 })

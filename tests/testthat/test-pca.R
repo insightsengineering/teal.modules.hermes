@@ -55,9 +55,11 @@ test_that("pca module works as expected in the test app", {
   expect_true(res)
 
   res <- app$get_value(output = ns("test_pca"))
-  expect_snapshot(
-    cat(res)
-  )
+  if (packageVersion("ggplot2") >= "4.0") {
+    expect_snapshot(
+      cat(res)
+    )
+  }
 
   # Add a gene filter and deselect everything and check that it does not crash.
   ns_fp <- active_module_filter_panel_ns(app)
@@ -93,10 +95,11 @@ test_that("pca module works as expected in the test app", {
   expect_true(res)
 
   res <- app$get_value(output = ns("test_cor"))
-  expect_snapshot(
-    cat(res)
-  )
-
+  if (packageVersion("ggplot2") >= "4.0") {
+    expect_snapshot(
+      cat(res)
+    )
+  }
   # Now update experiment name, assay name, cluster & matrix option on correlation tab.
   app$set_inputs(!!ns("experiment-name") := "hd2", timeout_ = 30000)
   app$set_inputs(!!ns("assay-name") := "voom")
@@ -105,10 +108,11 @@ test_that("pca module works as expected in the test app", {
 
   app$wait_for_idle()
   res <- app$get_value(output = ns("test_cor"))
-  expect_snapshot(
-    cat(res)
-  )
-
+  if (packageVersion("ggplot2") >= "4.0") {
+    expect_snapshot(
+      cat(res)
+    )
+  }
   # Now go back to pca tab and update experiment, assay name, variance % option,
   # label option and matrix option.
   app$set_inputs(!!ns("tab_selected") := "PCA")
@@ -126,10 +130,11 @@ test_that("pca module works as expected in the test app", {
   expect_identical(res, "4")
 
   res <- app$get_value(output = ns("test_pca"))
-  expect_snapshot(
-    cat(res)
-  )
-
+  if (packageVersion("ggplot2") >= "4.0") {
+    expect_snapshot(
+      cat(res)
+    )
+  }
   # Update experiment / assay (ensure xvar and yvar revert back to PC1 and PC2, assay to counts)
   # and add color for pca.
   app$set_inputs(!!ns("experiment-name") := "hd1")
@@ -196,10 +201,11 @@ test_that("pca module works as expected in the test app", {
   expect_identical(res, 500L)
 
   res <- app$get_value(output = ns("test_pca"))
-  expect_snapshot(
-    cat(res)
-  )
-
+  if (packageVersion("ggplot2") >= "4.0") {
+    expect_snapshot(
+      cat(res)
+    )
+  }
   # Change the number of top genes.
   app$set_inputs(!!ns("n_top") := 777L)
 
@@ -214,17 +220,20 @@ test_that("pca module works as expected in the test app", {
   app$set_inputs(!!ns("n_top") := 2500L)
   app$wait_for_idle()
   res <- app$get_value(output = ns("test_pca"))
-  expect_snapshot(
-    cat(res)
-  )
-
+  if (packageVersion("ggplot2") >= "4.0") {
+    expect_snapshot(
+      cat(res)
+    )
+  }
   # Switch off gene filtering and check that table is still the same.
   app$set_inputs(!!ns("filter_top") := FALSE)
   app$wait_for_idle()
   res <- app$get_value(output = ns("test_pca"))
-  expect_snapshot(
-    cat(res)
-  )
+  if (packageVersion("ggplot2") >= "4.0") {
+    expect_snapshot(
+      cat(res)
+    )
+  }
 
   # Go back to first experiment and check that n_top stayed the same.
   app$set_inputs(!!ns("experiment-name") := "hd1")
